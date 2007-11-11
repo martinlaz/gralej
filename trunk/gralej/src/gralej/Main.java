@@ -7,6 +7,8 @@
 
 package gralej;
 
+import java.io.*;
+
 /**
  *
  * @author Martin Lazarov
