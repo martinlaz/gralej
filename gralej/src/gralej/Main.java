@@ -10,7 +10,7 @@ package gralej;
 import java.io.*;
 
 /**
- *
+ * This needs a comment here, blah blah!
  * @author Martin Lazarov
  */
 public class Main {
