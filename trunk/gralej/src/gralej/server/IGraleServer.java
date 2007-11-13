@@ -1,6 +1,6 @@
 package gralej.server;
 
-import gralej.controler.INewStreamListener;
+import gralej.controller.INewStreamListener;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
  * applications (preferably Trale) 
  * FIXME: Does it make sense to have more than one listener? after all only one of them can read from the stream.
  * @author Niels
- * @version $Id$
+ * @version $Id:IGraleServer.java 18 2007-11-13 16:26:47Z niels@drni.de $
  */
 public interface IGraleServer {
 	
