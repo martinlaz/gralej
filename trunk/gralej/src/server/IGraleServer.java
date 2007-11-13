@@ -1,5 +1,7 @@
 package server;
 
+import java.io.IOException;
+
 import controler.INewStreamListener;
 
 /**
@@ -31,7 +33,9 @@ public interface IGraleServer {
 	 * This starts the actual server functionality. Make sure
 	 * to register a listener before, otherwise new connections
 	 * will go to nirvana.
+	 * @throws IOException if the server cannot be started, e.g.
+	 * if the port to bind to is already in use.
 	 */
-	public void startListening();
+	public void startListening() throws IOException;
 
 }
