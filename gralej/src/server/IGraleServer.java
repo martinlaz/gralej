@@ -14,13 +14,15 @@ public interface IGraleServer {
 	/**
 	 * Registeres a new listener to this server
 	 * that will be informed when a new stream comes in.
+	 * If this listener is already present, the request should
+	 * be ignored.
 	 * @param l the listener to register.
 	 */
 	public void registerNewStreamListener(INewStreamListener l);
 	
 	/**
 	 * Removes a listener from this server. If the listener
-	 * has not been registered, the request will be ignored.
+	 * has not been registered, the request should be ignored.
 	 * @param l the listener to remove.
 	 */
 	public void removeNewStreamListener(INewStreamListener l);
