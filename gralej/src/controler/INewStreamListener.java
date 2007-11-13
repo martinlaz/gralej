@@ -12,7 +12,7 @@ import java.io.InputStream;
  * @author Niels
  * @version $Id$
  */
-public interface INewStream {
+public interface INewStreamListener {
 	
 	/**
 	 * message handler to be invoked when
