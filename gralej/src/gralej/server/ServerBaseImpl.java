@@ -1,6 +1,6 @@
 package gralej.server;
 
-import gralej.controler.INewStreamListener;
+import gralej.controller.INewStreamListener;
 
 import java.io.InputStream;
 import java.util.HashSet;
