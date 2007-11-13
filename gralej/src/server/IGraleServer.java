@@ -8,6 +8,7 @@ import controler.INewStreamListener;
  * An interface providing the generic functions of
  * a Grale server that interacts with other
  * applications (preferably Trale) 
+ * FIXME: Does it make sense to have more than one listener? after all only one of them can read from the stream.
  * @author Niels
  * @version $Id$
  */
