@@ -7,9 +7,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * A multi-client (=threaded) grale server binding to a TCP/IP socket.
- * FIXME: Handle access control!
  * @author Niels
  * @version $Id:SocketServer.java 18 2007-11-13 16:26:47Z niels@drni.de $
  */
@@ -27,6 +28,17 @@ public class SocketServer extends ServerBaseImpl {
 	 */
 	private class ConnectionWaiter extends Thread {
 		
+		public ConnectionWaiter() {
+			super();
+			// informative thread name for debugging
+			this.setName("ConnectionWaiter (bind: "
+					+ socket.getInetAddress().getHostAddress() 
+					+ ":" 
+					+ socket.getLocalPort() +
+					")");
+		}
+		
+		
 		/**
 		 * Run this ConnectionWaiter: This waits for incoming connections 
 		 * and invokes new handler threads if required. Must not be run 
@@ -37,7 +49,7 @@ public class SocketServer extends ServerBaseImpl {
 			// server main loop
 			while ( true ) {
 				try {
-					System.err.println("- SocketServer waiting for (more) connections.");
+					//System.err.println("- SocketServer waiting for (more) connections.");
 					Socket clientSocket = socket.accept();
 					new ConnectionHandler(clientSocket).start();
 				} catch (IOException e) {
@@ -61,6 +73,12 @@ public class SocketServer extends ServerBaseImpl {
 		public ConnectionHandler(Socket clientSocket) {
 			super();
 			this.clientSocket = clientSocket;
+			// informative thread name for debugging			
+			this.setName("ConnectionHandler (remote: "
+					+ clientSocket.getInetAddress().getHostAddress() 
+					+ ":" 
+					+ clientSocket.getPort() +
+					")");
 		}
 		
 		/**
@@ -71,14 +89,14 @@ public class SocketServer extends ServerBaseImpl {
 		 */
 		public void run() {
 			
-			System.err.println("- SocketServer accepted new connection!");
+			//System.err.println("- SocketServer accepted new connection!");
 			
 			DataInputStream is;
 			try {
 				is = new DataInputStream(
 						clientSocket.getInputStream());
-				// TODO: do protocol type detection here
-				String type = "unknown";
+				// TODO: do protocol type detection here, for now assume old grisu
+				String type = "grisu";
 				notifyListeners(is, type);
 			} catch (IOException e) {
 				// FIXME: do proper handling of exception here
@@ -114,6 +132,8 @@ public class SocketServer extends ServerBaseImpl {
 	public SocketServer(int port, InetAddress bind) {
 		this.port = port;
 		this.bindIP = bind;
+		// FIXME: binding to public interfaces without access control is disabled
+		throw new NotImplementedException();
 	}
 	
 	/**

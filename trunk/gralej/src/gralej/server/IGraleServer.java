@@ -32,9 +32,10 @@ public interface IGraleServer {
 	public void removeNewStreamListener(INewStreamListener l);
 	
 	/**
-	 * This starts the actual server functionality. Make sure
-	 * to register a listener before, otherwise new connections
-	 * will go to nirvana.
+	 * This starts the actual server functionality. Implementations
+	 * may invoke a thread in the background and return
+	 * immediately. Make sure to register a listener before, 
+	 * otherwise new connections will go to nirvana.
 	 * @throws IOException if the server cannot be started, e.g.
 	 * if the port to bind to is already in use.
 	 */
