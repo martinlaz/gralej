@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
  * A multi-client (=threaded) grale server binding to a TCP/IP socket.
  * FIXME: Handle access control!
  * @author Niels
- * @version $Id$
+ * @version $Id:SocketServer.java 18 2007-11-13 16:26:47Z niels@drni.de $
  */
 public class SocketServer extends ServerBaseImpl {
 
@@ -37,8 +37,9 @@ public class SocketServer extends ServerBaseImpl {
 			// server main loop
 			while ( true ) {
 				try {
+					System.err.println("- SocketServer waiting for (more) connections.");
 					Socket clientSocket = socket.accept();
-					new ConnectionHandler(clientSocket).run();
+					new ConnectionHandler(clientSocket).start();
 				} catch (IOException e) {
 					// FIXME: handle failing properly here, infinite loop ahead!
 					e.printStackTrace();
@@ -58,6 +59,7 @@ public class SocketServer extends ServerBaseImpl {
 		private Socket clientSocket;
 		
 		public ConnectionHandler(Socket clientSocket) {
+			super();
 			this.clientSocket = clientSocket;
 		}
 		
@@ -68,6 +70,8 @@ public class SocketServer extends ServerBaseImpl {
 		 * afterwards.
 		 */
 		public void run() {
+			
+			System.err.println("- SocketServer accepted new connection!");
 			
 			DataInputStream is;
 			try {
