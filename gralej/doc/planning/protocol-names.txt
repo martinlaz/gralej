@@ -1,0 +1,5 @@
+Protocol names as proposed by Niels:
+
+- "unknown": we don't know (bad case...)
+- "grisu": the original Grisu/Grale protocol
+- "xml-1.0.0": xml-protocols with revision of protocol
