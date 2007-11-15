@@ -11,7 +11,7 @@ import java.util.List;
  */
 class GrisuFormatParser implements IGraleParser {
 
-	public List<AVMObject> getParses(InputStream s) {
+	public List<IParsedAVM> getParses(InputStream s) {
 		// FIXME: do parsing and don't return null
 		return null;
 	}
