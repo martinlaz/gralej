@@ -1,9 +1,10 @@
 /**
  * 
  */
-package gralej;
+package gralej.gui;
 
 import javax.swing.*;
+import gralej.controller.*;
 
 /**
  * The observer class needs subclasses for lists and frame desktop (and probably more)
@@ -12,7 +13,7 @@ import javax.swing.*;
  * @author Armin
  *
  */
-abstract class ContentObserver {
+public abstract class ContentObserver {
 	
 	protected ContentModel model;  
 	

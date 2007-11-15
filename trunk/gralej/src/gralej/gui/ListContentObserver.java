@@ -1,12 +1,14 @@
 /**
  * 
  */
-package gralej;
+package gralej.gui;
 
 //import java.beans.PropertyVetoException;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.DefaultListModel;
+
+import gralej.controller.*;
 
 /**
  * The ListContentObserver is a piece of GRALE's GUI.
