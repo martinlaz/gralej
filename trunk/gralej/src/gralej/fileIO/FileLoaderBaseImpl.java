@@ -1,26 +1,27 @@
-package gralej.server;
-
+package gralej.fileIO;
 
 import gralej.controller.INewStreamListener;
+import gralej.server.IGraleServer;
 
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
- * A Grale server base implementation for the observer
- * busines, do not forget to call <code>super()</code> when extending!
- * This should be synchronized.
- * @author no
+ * Base implementation of the file loader 
+ * (basically callback/oberver management
+ * copied from {@link IGraleServer}).
+ * Should be synchronized...
+ * @author Niels
+ * @version $Id$
  *
  */
-public abstract class ServerBaseImpl implements IGraleServer {
+public abstract class FileLoaderBaseImpl {
 	
 	private Set<INewStreamListener> listeners;
 	
-	public ServerBaseImpl() {
+	public FileLoaderBaseImpl() {
 		listeners = 
 			Collections.synchronizedSet(new HashSet<INewStreamListener>());
 	}
@@ -54,5 +55,6 @@ public abstract class ServerBaseImpl implements IGraleServer {
 			l.newStream(s, type);
 		}
 	}
+
 
 }
