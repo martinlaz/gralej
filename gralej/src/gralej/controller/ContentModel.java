@@ -1,13 +1,14 @@
 /**
  * 
  */
-package gralej;
+package gralej.controller;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.prefs.*;
 
-import javax.swing.JOptionPane;
+import gralej.*;
+import gralej.gui.*;
 
 /**
  * The content model stores the semantics. 

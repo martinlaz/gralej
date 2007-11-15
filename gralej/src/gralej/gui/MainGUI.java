@@ -1,13 +1,15 @@
 /**
  * 
  */
-package gralej;
+package gralej.gui;
 
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.*;
 import javax.swing.*;
+
+import gralej.controller.*;
 
 /**
  * @author Armin

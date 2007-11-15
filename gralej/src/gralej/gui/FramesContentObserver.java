@@ -1,11 +1,14 @@
 /**
  * 
  */
-package gralej;
+package gralej.gui;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.ArrayList;
+
+import gralej.*;
+import gralej.controller.*;
 
 /**
  * see ListContentObserver

@@ -5,6 +5,8 @@ package gralej;
 //import java.awt.event.*;
 //import java.io.*;
 //import javax.swing.*;        
+import gralej.controller.*;
+import gralej.gui.*;
 
 /**
  * This class instantiates the GUI, the data model, 
@@ -17,7 +19,7 @@ package gralej;
  *
  */
 
-public class Start {
+public class Main {
 	
 	
     /**

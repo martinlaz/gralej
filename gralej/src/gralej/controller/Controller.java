@@ -1,4 +1,4 @@
-package gralej;
+package gralej.controller;
 
 /**
  * The controller is the central element of the program's design.
