@@ -6,6 +6,6 @@ package gralej.parsers;
  */
 public interface IParseResultReceiver {
 	
-	public void newParse(AVMObject parse);
+	public void newParse(IParsedAVM parse);
 
 }
