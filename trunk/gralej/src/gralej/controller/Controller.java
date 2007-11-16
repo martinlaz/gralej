@@ -2,10 +2,11 @@ package gralej.controller;
 
 import java.io.*;
 
+import javax.swing.*;
+
 import gralej.*;
 import gralej.fileIO.FileLoader;
 import gralej.parsers.*;
-import gralej.testers.DummyStreamHandler;
 import gralej.server.*;
 
 /**
@@ -13,36 +14,23 @@ import gralej.server.*;
  * 
  * It listens to input interfaces (server and file) and to the parser interface
  * it takes input and passes it on to the parser
- * it takes parses and passes them on to the viewer? or does the viewer listen?
+ * it takes parses and passes them on to the content model (which the gui listens to)
  * 
  * 
  * @author Armin
- *
+ * @version $Id$
  */
 
-public class Controller {
+public class Controller implements INewStreamListener, IParseResultReceiver {
 	
 	private ContentModel cm; // 
-	
-	private IGraleServer server;
-	
-	private INewStreamListener listener;
 		
-	private IParseResultReceiver receiver; // listens to parse results
-	
-	
 	public void open (File file) {
 		
-		// old way: let opening be handled by the model
-		// TODO postpone this until parse is received
-		// TODO make it independent from a File (currently only used for naming the window)
-		cm.open(file);
-
-		
-		// new way: instantiate a new file handler
+		// instantiate a new file handler
 		System.err.println("-- Opening File " + file.getAbsolutePath());
 		FileLoader fl = new FileLoader(file, true);
-		fl.registerNewStreamListener(listener);
+		fl.registerNewStreamListener(this);
 		System.err.println("-- Starting to open");
 		try {
 			fl.loadFile();
@@ -53,7 +41,8 @@ public class Controller {
 		
 	}
 	
-	public void notifyOfStream(InputStream s, String type) {
+	@Override
+	public void newStream(InputStream s, String type) {
 		System.err.println("-- Controller got new stream of type " + type);				
 		
 		IGraleParser parser;
@@ -61,12 +50,27 @@ public class Controller {
 			// ask parser factory for parser
 			parser = GraleParserFactory.createParser(type);
 			// plug stream into parser, and wait for results
-			parser.parse(s, receiver);
+			parser.parse(s, this);
 		} catch (UnsupportedProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// open a dummy as long as there is no parse
+		// TODO remove this
+		cm.open(new JLabel(), "dummy of type " + type);
+		
 	}
+	
+	
+
+	@Override
+	public void newParse(IParsedAVM parse) {
+		System.err.println("-- Controller got new parse");				
+		cm.open(parse, ""); // TODO needs a name string
+		
+	}
+
 	
 	public void close () {
 		// notify content model of change. to this change in the cm, the gui listens
@@ -78,13 +82,9 @@ public class Controller {
 	}
 
 	public Controller(IGraleServer server) {
-		this.server = server;
-		listener = new StreamHandler(this);
-		server.registerNewStreamListener(listener);
+		server.registerNewStreamListener(this);
 		
 		cm = new ContentModel();
-		
-		// instantiate parse result receiver
 		
 	}
 

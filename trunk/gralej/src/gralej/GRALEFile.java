@@ -17,37 +17,25 @@ import javax.swing.*;
 public class GRALEFile {
 	
 	
-	// the source file
-	File file;
+	String name;
 	
 	// the content to be displayed
 	JComponent content;
 	
-	// internal representation
-
 	/**
 	 * 
 	 */
-	public GRALEFile(File file) {
-		this.file = file;
-		this.content = new JInternalFrame(file.getName(), true, true, true, true);
+	public GRALEFile(Object parse, String name) {
+		this.name = name;
+		this.content = (JComponent) parse;
 	}
 	
 	public String getName () {
-		return file.getName();		
+		return name;		
 	}
 	
-	/**
-	 * rendering the file means to compute a Swing representation of the AVM
-	 * 
-	 */
-	public void render () {
-		
-		
-	}
 	
 	public JComponent display() {
-//		if (content == null ) render(); // when called for the first time
 		return content;		
 	}
 
