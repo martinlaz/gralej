@@ -272,6 +272,21 @@ public class MainGUI implements ActionListener, ItemListener {
         //Display the window.
 //        frame.setUndecorated(true);
 //        frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         frame.pack();
         frame.setSize(700,400);
         frame.setVisible(true);
