@@ -9,7 +9,7 @@ import gralej.controller.*;
 import gralej.gui.*;
 
 /**
- * This class instantiates the GUI, the data model, 
+ * This class instantiates the GUI, controller (with data model), 
  * and probably the Readers, Writers etc. 
  * and registers some listeners
  * 
@@ -27,18 +27,18 @@ public class Main {
      */
     private static void createAndShowGUI() {
     	// initialize a model
-    	ContentModel model = new ContentModel();
+    	Controller c = new Controller();
     	
     	// initialize the GUI
-    	MainGUI gui = new MainGUI(model);
+    	MainGUI gui = new MainGUI(c);
     	
     	// initialize the observers
     	// list observer (registers with model in its constructor)
-    	ContentObserver list = new ListContentObserver(model);
+    	ContentObserver list = new ListContentObserver(c.getModel());
     	// add list to GUI
     	gui.addToSplit(list);
     	// frame observer (registers with model in its constructor)
-    	ContentObserver frames = new FramesContentObserver(model);
+    	ContentObserver frames = new FramesContentObserver(c.getModel());
     	// add list to GUI
     	gui.addToSplit(frames);
     }
