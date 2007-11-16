@@ -13,14 +13,14 @@ import gralej.controller.*;
 
 /**
  * @author Armin
- *
+ * @version $Id$
  */
 public class MainGUI implements ActionListener, ItemListener {
 
 //	private static GRALEContentWindow content = new GRALEContentWindow();
 	private JSplitPane content;
 	
-	private ContentModel listener;
+	private Controller c; // the gralej.controller 
 	
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_Open, m_Latex, m_Postscript, m_SVG, 
@@ -205,12 +205,12 @@ public class MainGUI implements ActionListener, ItemListener {
     		int returnVal = fc.showOpenDialog(source);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                listener.open(fc.getSelectedFile());
+                c.open(fc.getSelectedFile());
             } else {
             	// file could not be opened. doing nothing might be appropriate
             }
     	} else if (source == m_Close || source == b_Close) {
-    		listener.close();
+    		c.close();
     	} else if (source == m_Latex) {
     		// call output method
     	} else if (source == m_Postscript) {
@@ -249,8 +249,8 @@ public class MainGUI implements ActionListener, ItemListener {
 	/**
 	 * 
 	 */
-	public MainGUI(ContentModel m) {
-		listener = m;
+	public MainGUI(Controller c) {
+		this.c = c;
 
         //Create and set up the window.
         JFrame frame = new JFrame("GRALE"); // to be renamed to "GRALE - path & filename" on each focus change
@@ -270,8 +270,8 @@ public class MainGUI implements ActionListener, ItemListener {
         // to be implemented
         
         //Display the window.
-        frame.setUndecorated(true);
-        frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+//        frame.setUndecorated(true);
+//        frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
         frame.pack();
         frame.setSize(700,400);
         frame.setVisible(true);

@@ -1,5 +1,13 @@
 package gralej.controller;
 
+import java.io.*;
+
+import gralej.*;
+import gralej.fileIO.*;
+import gralej.gui.*;
+import gralej.parsers.*;
+import gralej.server.*;
+
 /**
  * The controller is the central element of the program's design.
  * 
@@ -14,10 +22,24 @@ package gralej.controller;
 
 public class Controller {
 	
-	private ContentModel model; // 
+	private ContentModel cm; // 
+	
+	
+	public void open (File file) {
+		cm.open(file);
+		
+	}
+	
+	public void close () {
+		cm.close();		
+	}
+	
+	public ContentModel getModel () {
+		return cm;
+	}
 
 	public Controller() {
-		// TODO Auto-generated constructor stub
+		cm = new ContentModel();
 	}
 
 }
