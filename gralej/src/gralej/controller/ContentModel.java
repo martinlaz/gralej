@@ -59,8 +59,8 @@ public class ContentModel { // extends DefaultListModel??
     
     // methods for adding/deleting a file. each calls notify
     
-	public void open (File file) {
-		GRALEFile newfile = new GRALEFile(file);
+	public void open (Object parse, String name) {
+		GRALEFile newfile = new GRALEFile(parse, name);
 		files.add(newfile);
 	    focused = files.size() - 1;
 	    notifyObservers("open"); // could add an event type "open file".

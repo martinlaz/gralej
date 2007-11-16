@@ -33,7 +33,8 @@ public class FramesContentObserver extends ContentObserver {
 	// methods to add, remove and focus frames
 	private void add (GRALEFile file) {
 	    // open new JInternalFrame
-	    JInternalFrame newframe = (JInternalFrame) file.display();
+	    JInternalFrame newframe = new JInternalFrame(file.getName(), true, true, true, true);
+	    newframe.add(file.display());
 	    newframe.setLocation(100, 100); // better: get location as x+30, y+30 from current active if unmaximized
 	    newframe.setSize(300, 250);
 		display.add(newframe);

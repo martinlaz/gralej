@@ -18,7 +18,7 @@ class GrisuFormatParser implements IGraleParser {
 
 	public void parse(InputStream s, IParseResultReceiver receiver) {
 		// FIXME: do parsing and send message to receivers
-
+		
 	}
 
 }
