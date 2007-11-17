@@ -56,18 +56,16 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 			e.printStackTrace();
 		}
 		
-		// open a dummy as long as there is no parse
-		// TODO remove this
-		cm.open(new JLabel(), "dummy of type " + type);
-		
 	}
 	
 	
 
 	@Override
-	public void newParse(IParsedAVM parse) {
+	public synchronized void newParse(IParsedAVM parse) {
 		System.err.println("-- Controller got new parse");				
-		cm.open(parse, ""); // TODO needs a name string
+
+		cm.open(parse.display(), parse.getName());
+		
 		
 	}
 
