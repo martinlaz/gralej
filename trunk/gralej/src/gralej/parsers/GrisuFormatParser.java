@@ -3,6 +3,7 @@ package gralej.parsers;
 import java.io.InputStream;
 import java.util.List;
 
+
 /**
  * A dummy class representing a parser for the 
  * plain old TRALE/Grisu interchange protocol
@@ -17,8 +18,11 @@ class GrisuFormatParser implements IGraleParser {
 	}
 
 	public void parse(InputStream s, IParseResultReceiver receiver) {
-		// FIXME: do parsing and send message to receivers
+		// FIXME: do parsing (also extract name)
 		
+		ParsedAVM avm = new ParsedAVM("dummy");
+		
+		receiver.newParse(avm);
 	}
 
 }
