@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.event.*;
 import javax.swing.*;
 
+
 import gralej.controller.*;
 
 /**
@@ -237,13 +238,28 @@ public class MainGUI implements ActionListener, ItemListener {
     	} else if (source ==  m_Find || source == b_Find) {
     		// send search request to content window
     	} else if (source ==  m_Pref) {
-    		// open Preferences Dialog (a class only for this)
+    		// open Preferences Dialog
+    		prefDialog();
     	}
     }
 
     public void itemStateChanged(ItemEvent e) {
 //        JMenuItem source = (JMenuItem)(e.getSource());
     }
+    
+    
+	public void prefDialog () {		
+
+		
+		JButton b_import = new JButton("Import");
+		b_import.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // import preferences from file
+            }
+        });
+
+	}
+
 
 	
 	/**
@@ -253,7 +269,7 @@ public class MainGUI implements ActionListener, ItemListener {
 		this.c = c;
 
         //Create and set up the window.
-        JFrame frame = new JFrame("GRALE"); // to be renamed to "GRALE - path & filename" on each focus change
+        JFrame frame = new JFrame("GraleJ");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // instantiate menus
