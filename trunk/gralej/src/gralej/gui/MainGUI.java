@@ -7,7 +7,9 @@ package gralej.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.*;
+import java.util.prefs.*;
 
 
 import gralej.controller.*;
@@ -134,8 +136,7 @@ public class MainGUI implements ActionListener, ItemListener {
         
         // menuitem "Settings" (spacing, fonts, colors)
         m_Pref = new JMenuItem("Preferences");
-        m_Pref.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+        m_Pref.setAccelerator(KeyStroke.getKeyStroke("F2"));
         m_Pref.addActionListener(this);
         viewmenu.add(m_Pref);
         
@@ -168,13 +169,14 @@ public class MainGUI implements ActionListener, ItemListener {
 		return toolbar;
 	}
 
+	/**
+	 * ought to be parallel to the other creators -> return JSplitPane
+	 * 
+	 */
 	private void createSplit() {
 	    //Create a split pane with the two scroll panes in it.
         content = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT); 
         
-        // observer GUIs yet missing as parameters. 
-        // how to access the scrollpane from here?
-
         
         content.setOneTouchExpandable(true);
         content.setDividerLocation(150);
@@ -247,20 +249,238 @@ public class MainGUI implements ActionListener, ItemListener {
 //        JMenuItem source = (JMenuItem)(e.getSource());
     }
     
-    
+    /**
+     * The preferences dialog allows to set (for the time being: global)
+     * preferences. It does not store them directly, 
+     * they are stored in the content model
+     * 
+     * The offered I/O functions (import/export from/to file) are handled 
+     * within the GUI
+     * 
+     * TODO is it inefficient to build the window each time it is called?
+     * how to circumvent?
+     * 
+     */
 	public void prefDialog () {		
+		System.err.println("Preferences window opened");
+		
+		final JDialog window = new JDialog();
+		final JPanel root = new JPanel();
+		window.add(root);
+		root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
+		
+		JPanel field;
+		
+		try {
+			String[] fields = c.getModel().getPrefs().keys();
+			for (int i = 0; i < fields.length; i++) {
+				field = new JPanel();
+				root.add(field);		
+				field.add(new JLabel(fields[i]));
+				field.add(new JTextField(c.getModel().getPrefs().get(fields[i], "")));
+				
+			}
+		} catch (BackingStoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+
+		final JPanel buttons = new JPanel();
+		root.add(buttons);
+		
+		final JButton b_import = new JButton("Import");
+
+		buttons.add(b_import);
+
+		final JButton b_export = new JButton("Export");
+		buttons.add(b_export);
+
+		final JButton b_cancel = new JButton("Cancel");
+		buttons.add(b_cancel);
+
+		final JButton b_ok = new JButton("OK");
+		buttons.add(b_ok);
+
+		final ActionListener prefWindowListener = new ActionListener() {
+            public final void actionPerformed(final ActionEvent e) {
+            	
+            	JButton source = (JButton) e.getSource();
+            	if (source == b_import) {
+            		System.err.println("Importing Preferences");
+            		// open file dialog
+            		JFileChooser fc = new JFileChooser();
+            		int returnVal = fc.showOpenDialog((JButton) e.getSource());
+
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                	    InputStream is = null;
+                	    try {
+                	        is = new BufferedInputStream(
+                	        		new FileInputStream(fc.getSelectedFile()));
+                	    } catch (FileNotFoundException exception) {
+                	    }
+                	    
+                	    // Import preference data
+                	    try {
+                	    	// load
+                	        Preferences.importPreferences(is);
+                        	Preferences prefs = c.getModel().getPrefs();
+                	        // TODO update display 
+                	        
+                    		try {
+                    			String[] fields = prefs.keys();
+                    			for (int i = 0; i < fields.length; i++) {
+                            		System.err.println("updating value " + 
+                            				((JTextField) ((JPanel) root.getComponent(i))
+                            				.getComponent(1)).getText() + " for key "
+                            				+ fields[i]);
+                    				((JTextField) ((JPanel) root.getComponent(i))
+                    						.getComponent(1)).setText(prefs.
+                    						get(fields[i], ""));
+                    				// (default should probably be the old value (if 
+                    				// not overridden))
+                    				
+                    			}
+                    		} catch (BackingStoreException e1) {
+                    			// TODO Auto-generated catch block
+                    			e1.printStackTrace();
+                    		}
+
+                	        
+                	        
+                	    } catch (InvalidPreferencesFormatException exception) {
+                    		System.err.println("Wrong format. Ignored.");
+                	    } catch (IOException exception) {
+                	    }
+                    } else {
+                    	// file could not be opened. doing nothing might be appropriate
+                    }
+            	} else if (source == b_export) {
+                	// first: save
+                	savePref();
+            		System.err.println("Exporting Preferences");
+            		JFileChooser fc = new JFileChooser();
+            		int returnVal = fc.showOpenDialog((JButton) e.getSource());
+
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                	    try {
+            	    	    // Export the node to a file
+                	    	c.getModel().getPrefs().exportNode(
+                	    			new FileOutputStream(fc.getSelectedFile()));
+                	    } catch (IOException exception) {
+                	    } catch (BackingStoreException exception) {
+                	    }
+                    } else {
+                    	// do nothing
+                    }
+
+            	} else if (source == b_ok) {
+                	savePref();
+            		window.dispose();
+            	} else if (source == b_cancel) {
+//            		window.setVisible(false);
+            		window.dispose();
+            	}
+            }
+        	/**
+        	 * outsourced from preferences window since needed twice
+        	 * reads the first n entries in the window assuming they
+        	 * mirror the n entries of the model's prefs
+        	 * 
+        	 * 
+        	 * @param root
+        	 */
+        	private void savePref () {
+        		System.err.println("Preferences being saved (for this session)");
+        		// save preferences
+        		try {
+        			String[] fields = c.getModel().getPrefs().keys();
+        			for (int i = 0; i < fields.length; i++) {
+                		System.err.println("saving value " + 
+                				((JTextField) ((JPanel) root.getComponent(i))
+                				.getComponent(1)).getText() + " for key "
+                				+ fields[i]);
+        				c.getModel().getPrefs().put(fields[i],
+        						((JTextField) ((JPanel) root.getComponent(i))
+        						.getComponent(1)).getText());
+        				
+        			}
+        		} catch (BackingStoreException e1) {
+        			// TODO Auto-generated catch block
+        			e1.printStackTrace();
+        		}
+
+        	}
+
+
+		};
 
 		
-		JButton b_import = new JButton("Import");
-		b_import.addActionListener(new ActionListener() {
+		b_import.addActionListener(prefWindowListener);
+		b_export.addActionListener(prefWindowListener);
+		b_cancel.addActionListener(prefWindowListener);
+		b_ok.addActionListener(prefWindowListener);
+		
+		// "escape closes window"
+		root.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, true),
+				"Copy" );
+		root.getActionMap().put( "Copy", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                // import preferences from file
+        		System.err.println("Preferences window aborted");
+        		window.dispose();
             }
-        });
+		});
+
+		// "return saves and closes window"
+		root.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),
+		"OK" );
+		root.getActionMap().put( "OK", new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				
+				// TODO the following is a copy from savePrefs().
+				// where to store this to have it accessible from both places? 
+        		System.err.println("Preferences being saved (for this session)");
+        		// save preferences
+        		try {
+        			String[] fields = c.getModel().getPrefs().keys();
+        			for (int i = 0; i < fields.length; i++) {
+                		System.err.println("saving value " + 
+                				((JTextField) ((JPanel) root.getComponent(i))
+                				.getComponent(1)).getText() + " for key "
+                				+ fields[i]);
+        				c.getModel().getPrefs().put(fields[i],
+        						((JTextField) ((JPanel) root.getComponent(i))
+        						.getComponent(1)).getText());
+        				
+        			}
+        		} catch (BackingStoreException e1) {
+        			// TODO Auto-generated catch block
+        			e1.printStackTrace();
+        		}
+				
+				
+				window.dispose();
+			}
+		});
+
+
+        root.registerKeyboardAction(
+        		new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+//                    	savePref(root);
+                		window.dispose();
+                    }
+                }, 
+        		KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+		
+		window.pack();
+		window.setVisible(true);
 
 	}
 
-
+	
 	
 	/**
 	 * 

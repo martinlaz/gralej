@@ -31,6 +31,8 @@ public class ContentModel { // extends DefaultListModel??
     // the content model also handles preferences settings
     Preferences prefs;
     
+    public Preferences getPrefs () { return prefs; }
+    
     /** code for exporting preferences
      try {
     // Export the node to a file
@@ -94,6 +96,20 @@ public class ContentModel { // extends DefaultListModel??
 	 */
 	public ContentModel() {
 		focused = -1;
+		
+		prefs = Preferences.userNodeForPackage(this.getClass());
+		resetPreferences();
+	}
+	
+	
+	/**
+	 * resetting or initializing the preferences
+	 * 
+	 * 
+	 */
+	public void resetPreferences () {
+		prefs.put("color", "white");
+		prefs.put("font size", "11");
 	}
 
 	public int getSize() {
