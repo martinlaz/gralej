@@ -3,7 +3,6 @@
  */
 package gralej.controller;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.prefs.*;
 
@@ -56,6 +55,10 @@ public class ContentModel { // extends DefaultListModel??
     } catch (IOException e) {
     }
 */
+	
+
+	
+
     
     // methods for adding/deleting a file. each calls notify
     
