@@ -4,6 +4,7 @@
 package gralej.gui;
 
 //import java.beans.PropertyVetoException;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.DefaultListModel;
@@ -40,12 +41,22 @@ public class ListContentObserver extends ContentObserver {
 	public ListContentObserver(ContentModel m) {
 		super(m);
 		listmodel = new DefaultListModel();
-	    list = new JList(listmodel);
+	    list = new JList(listmodel)
+	    {
+	    	// the following implementation shows a tooltip with the name of a list element
+	    	// useful when the name is too long
+            public String getToolTipText(MouseEvent e ) {
+                  return getModel().getElementAt(locationToIndex(e.getPoint())).toString();
+            }
+          };
+
 	    display = new JScrollPane(list);
 
 	    //  Monitor all list selections
 	    list.addListSelectionListener(new ListUpdater());
 	    
+//	    JToolTip tooltip = display.createToolTip();
+//	    display.setToolTipText("text");
 	    display.setVisible(true);
 	    
 	}
@@ -58,11 +69,8 @@ public class ListContentObserver extends ContentObserver {
 		if (message.equals("open")) {
 			listmodel.add(model.getFocused(), model.getFileAt(model.getFocused()).getName());
 		} else if (message.equals("close")) {
-//			JOptionPane.showMessageDialog(null, "closing " + model.getFocused());
 			listmodel.remove(model.getFocused());
 		}
-		// get model and rebuild list
-//	    list = new JList(model.getModel());
 	    // always set focused. automatically ignores inexistent indices
 	    list.setSelectedIndex(model.getFocused());
 	}
