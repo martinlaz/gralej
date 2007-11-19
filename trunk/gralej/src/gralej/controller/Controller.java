@@ -52,7 +52,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 			// ask parser factory for parser
 			parser = GraleParserFactory.createParser(streamMeta);
 			// plug stream into parser, and wait for results
-			parser.parse(s, this);
+			parser.parse(s, streamMeta, this);
 		} catch (UnsupportedProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
