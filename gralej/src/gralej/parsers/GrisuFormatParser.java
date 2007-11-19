@@ -20,11 +20,7 @@ class GrisuFormatParser implements IGraleParser {
 	
 	public GrisuFormatParser() {
 		try {
-			final String savedGrammar = "trale-msg.g.bin";
-			InputStream is = getClass().getResourceAsStream(savedGrammar);
-			if (is == null)
-				throw new IOException("Cannot load resource: " + savedGrammar);
-			LRTable lr = (LRTable) new ObjectInputStream(is).readObject();
+			LRTable lr = loadLRTable();
 			_parser = new Parser(lr);
 			_lexer = new TraleMsgLexer(lr.grammar());
 			_grammarHandler = (TraleMsgHandler) GrammarHandler.bind("gralej.parsers.TraleMsgHandler", lr.grammar()); 
@@ -32,6 +28,14 @@ class GrisuFormatParser implements IGraleParser {
 		catch (Exception e) {
 			new RuntimeException(e);
 		}
+	}
+	
+	private LRTable loadLRTable() throws Exception {
+		final String grammarResourceName = "trale-msg.g";
+		InputStream is = getClass().getResourceAsStream(grammarResourceName);
+		if (is == null)
+			throw new IOException("Failed to load resource: " + grammarResourceName);
+		return LRTable.newInstance(new InputStreamReader(is));
 	}
 
 	public List<IParsedAVM> getParses(InputStream s,  StreamInfo meta) {

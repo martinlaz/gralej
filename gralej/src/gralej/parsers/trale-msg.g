@@ -44,11 +44,9 @@ public class TraleMsgHandler extends GrammarHandler {
     private void bindRefs() {
         for (OM.Tag tag : _tags)
             tag.setTarget(_tag2ent.get(tag.number()));
-        _tags.clear();
         
         for (Pair<OM.Tree,Integer> p : _trees)
             p._1.setContent(_id2ent.get(p._2));
-        _trees.clear();
     }
     
     private void adviceResult(final String title, IVisitable vob) {
@@ -95,7 +93,16 @@ public class TraleMsgHandler extends GrammarHandler {
 ########################
 datapackages -> | datapackages datapackage0 .
 
-datapackage0 -> datapackage _NEWLINE .
+datapackage0
+    -> datapackage _NEWLINE 
+        {
+            _id2ent.clear();
+            _tag2ent.clear();
+            _tags.clear();
+            _trees.clear();
+            return null;
+        }
+    .
 
 datapackage
   ->  _NEWDATA windowtitle structures 
