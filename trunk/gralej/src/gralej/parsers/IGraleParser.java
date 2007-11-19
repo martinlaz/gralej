@@ -1,5 +1,7 @@
 package gralej.parsers;
 
+import gralej.controller.StreamInfo;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -9,8 +11,8 @@ import java.util.List;
  */
 public interface IGraleParser {
 	
-	public List<IParsedAVM> getParses(InputStream s);
+	public List<IParsedAVM> getParses(InputStream s, StreamInfo meta);
 	
-	public void parse(InputStream s, IParseResultReceiver receiver);
+	public void parse(InputStream s, StreamInfo meta, IParseResultReceiver receiver);
 
 }
