@@ -15,6 +15,8 @@ import java.util.prefs.*;
 import gralej.controller.*;
 
 /**
+ * TODO remember last open directory (via prefs?)
+ * 
  * @author Armin
  * @version $Id$
  */
