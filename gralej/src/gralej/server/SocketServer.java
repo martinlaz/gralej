@@ -91,13 +91,10 @@ public class SocketServer extends ServerBaseImpl {
 			
 			//System.err.println("- SocketServer accepted new connection!");
 			
-			DataInputStream is;
 			try {
-				is = new DataInputStream(
-						clientSocket.getInputStream());
 				// TODO: do protocol type detection here, for now assume old grisu
 				String type = "grisu";
-				notifyListeners(is, type);
+				notifyListeners(clientSocket.getInputStream(), type);
 			} catch (IOException e) {
 				// FIXME: do proper handling of exception here
 				e.printStackTrace();
