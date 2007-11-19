@@ -1,5 +1,7 @@
 package gralej.parsers;
 
+import gralej.controller.StreamInfo;
+
 import java.io.*;
 import java.util.*;
 import tomato.*;
@@ -32,7 +34,7 @@ class GrisuFormatParser implements IGraleParser {
 		}
 	}
 
-	public List<IParsedAVM> getParses(InputStream s) {
+	public List<IParsedAVM> getParses(InputStream s,  StreamInfo meta) {
 		final List<IParsedAVM> parses = new LinkedList<IParsedAVM>();
 		_grammarHandler.setResultReceiver(new IParseResultReceiver() {
 			public void newParse(IParsedAVM result) {
@@ -44,7 +46,7 @@ class GrisuFormatParser implements IGraleParser {
 		return parses;
 	}
 
-	public void parse(InputStream s, IParseResultReceiver receiver) {
+	public void parse(InputStream s,  StreamInfo meta, IParseResultReceiver receiver) {
 		_grammarHandler.setResultReceiver(receiver);
 		_lexer.reset(new InputStreamReader(s));
 		new Thread(new Runnable() {
