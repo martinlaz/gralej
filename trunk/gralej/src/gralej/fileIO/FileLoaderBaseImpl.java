@@ -1,6 +1,7 @@
 package gralej.fileIO;
 
 import gralej.controller.INewStreamListener;
+import gralej.controller.StreamInfo;
 import gralej.server.IGraleServer;
 
 import java.io.InputStream;
@@ -48,11 +49,11 @@ public abstract class FileLoaderBaseImpl {
 	/**
 	 * Ring up the listeners!
 	 * @param s the new stream that we've found.
-	 * @param type the type of this new stream.
+	 * @param streamMeta the type of this new stream.
 	 */
-	protected void notifyListeners(InputStream s, String type) {
+	protected void notifyListeners(InputStream s, StreamInfo streamMeta) {
 		for ( INewStreamListener l : listeners ) {
-			l.newStream(s, type);
+			l.newStream(s, streamMeta);
 		}
 	}
 

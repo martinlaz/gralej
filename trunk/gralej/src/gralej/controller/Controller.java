@@ -44,13 +44,13 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 		
 	}
 	
-	public void newStream(InputStream s, String type) {
-		System.err.println("-- Controller got new stream of type " + type);				
+	public void newStream(InputStream s, StreamInfo streamMeta) {
+		System.err.println("-- Controller got new stream of type " + streamMeta);				
 		
 		IGraleParser parser;
 		try {
 			// ask parser factory for parser
-			parser = GraleParserFactory.createParser(type);
+			parser = GraleParserFactory.createParser(streamMeta);
 			// plug stream into parser, and wait for results
 			parser.parse(s, this);
 		} catch (UnsupportedProtocolException e) {

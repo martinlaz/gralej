@@ -18,10 +18,10 @@ public interface INewStreamListener {
 	 * message handler to be invoked when
 	 * a new data stream comes in.
 	 * @param s the stream
-	 * @param type a string indicating the data format or 
+	 * @param streamMeta a string indicating the data format or 
 	 * protocol of the stream.
 	 */
-	public void newStream(InputStream s, String type); 
+	public void newStream(InputStream s, StreamInfo streamMeta); 
 
 
 }

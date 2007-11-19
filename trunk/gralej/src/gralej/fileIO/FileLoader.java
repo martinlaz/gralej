@@ -1,5 +1,7 @@
 package gralej.fileIO;
 
+import gralej.controller.StreamInfo;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,18 +25,18 @@ public class FileLoader extends FileLoaderBaseImpl {
 	private class BackgroundFileLoader extends Thread {
 		
 		InputStream is;
-		String type;
+		StreamInfo meta;
 		
-		public BackgroundFileLoader(InputStream is, String type) {
+		public BackgroundFileLoader(InputStream is, StreamInfo meta) {
 			super();
 			this.setName("BackgroundFileLoader ("
 					+ file.getAbsolutePath() + ")");
 			this.is = is;
-			this.type = type;
+			this.meta = meta;
 		}
 		
 		public void run() {
-			notifyListeners(is, type);
+			notifyListeners(is, meta);
 		}
 
 	}
@@ -80,17 +82,18 @@ public class FileLoader extends FileLoaderBaseImpl {
 	
 	public void loadFile() throws FileNotFoundException {
 		
-		String type = extension2type(file);
+		StreamInfo info = new StreamInfo(extension2type(file),
+				file.getName());
 		
 		// open
 		FileInputStream is = new FileInputStream(file);
 		
 		// either call handlers or go into thread to do so
 		if ( ! threaded) {
-			notifyListeners(is, type);
+			notifyListeners(is,info);
 		} else {
 			// anonymous thread class
-			new BackgroundFileLoader(is,type).start();
+			new BackgroundFileLoader(is,info).start();
 		}
 		
 	}
