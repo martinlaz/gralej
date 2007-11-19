@@ -2,6 +2,7 @@ package gralej.server;
 
 
 import gralej.controller.INewStreamListener;
+import gralej.controller.StreamInfo;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -49,9 +50,9 @@ public abstract class ServerBaseImpl implements IGraleServer {
 	 * @param s the new stream that we've found.
 	 * @param type the type of this new stream.
 	 */
-	protected void notifyListeners(InputStream s, String type) {
+	protected void notifyListeners(InputStream s, StreamInfo meta) {
 		for ( INewStreamListener l : listeners ) {
-			l.newStream(s, type);
+			l.newStream(s, meta);
 		}
 	}
 

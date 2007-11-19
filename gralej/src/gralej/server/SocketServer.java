@@ -1,6 +1,7 @@
 package gralej.server;
 
-import java.io.DataInputStream;
+import gralej.controller.StreamInfo;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -93,8 +94,9 @@ public class SocketServer extends ServerBaseImpl {
 			
 			try {
 				// TODO: do protocol type detection here, for now assume old grisu
-				String type = "grisu";
-				notifyListeners(clientSocket.getInputStream(), type);
+				StreamInfo info = new StreamInfo(
+						"grisu");
+				notifyListeners(clientSocket.getInputStream(), info);
 			} catch (IOException e) {
 				// FIXME: do proper handling of exception here
 				e.printStackTrace();
