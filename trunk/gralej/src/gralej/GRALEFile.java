@@ -3,8 +3,7 @@
  */
 package gralej;
 
-import java.io.*;
-import javax.swing.*;
+import javax.swing.JComponent;
 
 /**
  * A GRALEFile stores a reference to the original file and keeps an AVM representation

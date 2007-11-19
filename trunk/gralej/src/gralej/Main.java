@@ -5,14 +5,14 @@ package gralej;
 //import java.awt.event.*;
 //import java.io.*;
 //import javax.swing.*;        
-import gralej.controller.*;
-import gralej.fileIO.FileLoader;
-import gralej.gui.*;
-import gralej.server.*;
-import gralej.testers.DummyStreamHandler;
+import gralej.controller.Controller;
+import gralej.gui.ContentObserver;
+import gralej.gui.FramesContentObserver;
+import gralej.gui.ListContentObserver;
+import gralej.gui.MainGUI;
+import gralej.server.IGraleServer;
+import gralej.server.SocketServer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
