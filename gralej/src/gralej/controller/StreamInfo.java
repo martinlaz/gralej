@@ -17,7 +17,8 @@ public class StreamInfo {
 	}
 	
 	public StreamInfo(String type) {
-		this(type, "");
+		this.type = new String(type);
+		this.name = null;
 	}
 
 	/**
@@ -37,6 +38,16 @@ public class StreamInfo {
 
 	public void setType(String type) {
 		this.type = new String(type);
+	}
+	
+	public String toString() {
+		
+		if ( name == null ) {
+			return type + "_(no name)";
+		}
+		
+		return type + "_(" + name + ")";
+		
 	}
 	
 	
