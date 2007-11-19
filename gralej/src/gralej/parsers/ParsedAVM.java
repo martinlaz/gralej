@@ -29,12 +29,10 @@ public class ParsedAVM implements IParsedAVM {
 		this.name = name;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public JPanel display() {
 		// TODO Auto-generated method stub
 		return new JPanel();

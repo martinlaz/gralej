@@ -1,12 +1,16 @@
 package gralej.controller;
 
-import java.io.*;
-
-
-import gralej.*;
 import gralej.fileIO.FileLoader;
-import gralej.parsers.*;
-import gralej.server.*;
+import gralej.parsers.GraleParserFactory;
+import gralej.parsers.IGraleParser;
+import gralej.parsers.IParseResultReceiver;
+import gralej.parsers.IParsedAVM;
+import gralej.parsers.UnsupportedProtocolException;
+import gralej.server.IGraleServer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * The controller is the central element of the program's design.
@@ -40,7 +44,6 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 		
 	}
 	
-	@Override
 	public void newStream(InputStream s, String type) {
 		System.err.println("-- Controller got new stream of type " + type);				
 		
@@ -59,7 +62,6 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 	
 	
 
-	@Override
 	public synchronized void newParse(IParsedAVM parse) {
 		System.err.println("-- Controller got new parse");				
 
