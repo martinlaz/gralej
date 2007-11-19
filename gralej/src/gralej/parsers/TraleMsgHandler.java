@@ -53,7 +53,7 @@ public class TraleMsgHandler extends GrammarHandler {
     
     private void adviceResult(final String title, IVisitable vob) {
         if (_resultReceiver == null) {
-            System.err.println("++ parsed ok, but not result receiver");
+            System.err.println("++ parsed ok, but no result receiver");
             return;
         }
         StringWriter s = new StringWriter();
