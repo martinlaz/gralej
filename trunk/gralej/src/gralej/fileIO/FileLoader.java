@@ -2,6 +2,7 @@ package gralej.fileIO;
 
 import gralej.controller.StreamInfo;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -86,7 +87,8 @@ public class FileLoader extends FileLoaderBaseImpl {
 				file.getName());
 		
 		// open
-		FileInputStream is = new FileInputStream(file);
+		BufferedInputStream is = new BufferedInputStream(
+				new FileInputStream(file));
 		
 		// either call handlers or go into thread to do so
 		if ( ! threaded) {
