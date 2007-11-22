@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import gralej.om.*;
 
-public class OM2XMLVisitor implements IVisitor {
+public class OM2XMLVisitor extends AbstractVisitor {
     PrintWriter _out;
     Set<Integer> _reentrancies = new TreeSet<Integer>();
     

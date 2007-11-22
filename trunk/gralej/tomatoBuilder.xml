@@ -16,7 +16,7 @@
             depends="grale-protocol"
             unless="catchup.done">
             
-            <!-- <echo message="making catchup"/> -->
+            <echo message="Rebuilding the grammar derivatives..."/>
             
             <java classname="tomato.LRTableBuilder"
                 failonerror="true"

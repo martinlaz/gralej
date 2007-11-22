@@ -1,17 +1,28 @@
 package gralej.parsers;
 
+import gralej.gui.blocks.BlockCreatingVisitor;
+import gralej.gui.blocks.BlockPanel;
+import gralej.gui.blocks.IBlock;
+import gralej.om.IAny;
+import gralej.om.IEntity;
+import gralej.om.IFeatureValuePair;
+import gralej.om.IList;
+import gralej.om.ITree;
+import gralej.om.ITypedFeatureStructure;
+import gralej.om.IVisitable;
+
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.TreeMap;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
-
-import java.awt.GridLayout;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import gralej.om.*;
 
 import tomato.GrammarHandler;
 import tomato.Token;
@@ -49,10 +60,56 @@ public class TraleMsgHandler extends GrammarHandler {
             p._1.setContent(_id2ent.get(p._2));
     }
     
-    private void adviceResult(final String title, IVisitable vob) {
+    static void createAndShowGUI(IVisitable vob) {
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        final BlockPanel root = new BlockPanel();
+        IBlock rootContent = new BlockCreatingVisitor().createBlock(root, vob);
+        root.setContent(rootContent);
+        rootContent.setVisible(true);
+        
+        f.setContentPane(root);
+        f.pack();
+        f.setVisible(true);
+    }
+    
+    private void adviceResult(final String title, final IVisitable vob) {
         if (_resultReceiver == null) {
             System.err.println("++ parsed ok, but no result receiver");
             return;
+        }
+        try {
+            /*
+            javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                        createAndShowGUI(vob);
+                }
+            });
+            */
+            BlockPanel root = new BlockPanel();
+            IBlock rootContent = new BlockCreatingVisitor().createBlock(root, vob);
+            root.setContent(rootContent);
+            rootContent.setVisible(true);
+            final JPanel panel = new JPanel(new GridLayout());
+            panel.add(new JScrollPane(root));
+            
+            _resultReceiver.newParse(
+                    new IParsedAVM() {
+                        public String getName() {
+                            return title;
+                        }
+                        public JPanel display() {
+                            return panel;
+                        }
+                    }
+                );
+            return;
+        }
+        catch (UnsupportedOperationException e) {
+            System.err.println(e);
+            // trees are not implemented yet
+            // -- show as xml for now
         }
         StringWriter s = new StringWriter();
         vob.accept(new OM2XMLVisitor(new PrintWriter(s, true)));
