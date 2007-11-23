@@ -1,0 +1,26 @@
+@echo off
+
+rem ================================================
+rem To start this program from anywhere on your
+rem   computer, set the ROOT variable to the full
+rem   path of the directory containing this file.
+rem   To find it out: right-click, Properties...
+rem   It sould be smtg like C:\Some Dir\Blah\PolSag
+rem ------------------------------------------------
+set ROOT=.
+rem ================================================
+
+rem add path to java.exe if necessary
+set PATH=%ROOT%\sprt312;%PATH%
+
+rem ================================================
+rem Set the GRALE port if necessary
+rem ------------------------------------------------
+rem set GDE_PORTRANGE_LO=9000
+rem set GDE_PORTRANGE_HI=9000
+rem ================================================
+
+rem start /b %ROOT%\grale\app\grale
+
+set CLASSPATH=%ROOT%\java;%ROOT%\sprt312\sp312\bin\jasper.jar;%CLASSPATH%
+java JSicstusShell -r %ROOT%\trale\polsag.sav -l %ROOT%\main-for-gralej.pro
