@@ -6,10 +6,7 @@ package gralej;
 //import java.io.*;
 //import javax.swing.*;        
 import gralej.controller.Controller;
-import gralej.gui.ContentObserver;
-import gralej.gui.FramesContentObserver;
-import gralej.gui.ListContentObserver;
-import gralej.gui.MainGUI;
+import gralej.gui.*;
 import gralej.server.IGraleServer;
 import gralej.server.SocketServer;
 
@@ -18,7 +15,6 @@ import java.io.IOException;
 /**
  * This class instantiates the GUI, controller (with data model), 
  * the server (copied from Niels' ServerTestApp)
- * TODO connect server and controller
  * TODO pass server information to main GUI to be displayed in bottom line
  * 
  * and probably the Readers, Writers etc. 
@@ -27,7 +23,7 @@ import java.io.IOException;
  * after this it's done.
  * 
  * @author Armin
- *
+ * @version $Id$
  */
 
 public class Main {
@@ -64,6 +60,13 @@ public class Main {
     	ContentObserver frames = new FramesContentObserver(c.getModel());
     	// add list to GUI
     	gui.addToSplit(frames);
+    	
+// WindowObserver is not stable yet
+      	// window observer
+//    	ContentObserver windows = new WindowsContentObserver(c.getModel());
+    	// add list to GUI
+//    	gui.addToSplit(windows);
+    	
     }
 
     

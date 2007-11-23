@@ -55,9 +55,7 @@ public class FramesContentObserver extends ContentObserver {
 		if (model.getFocused() == -1) return;
 	    try {
 	    	frames.get(model.getFocused()).setSelected(true);
-	    } catch (java.beans.PropertyVetoException ignored) {
-		
-	    }
+	    } catch (java.beans.PropertyVetoException ignored) {}
 	}
 
 	/* (non-Javadoc)
