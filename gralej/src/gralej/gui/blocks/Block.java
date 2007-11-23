@@ -8,11 +8,15 @@ abstract class Block implements IBlock {
     
     public Block(IBlock parent) { _parent = parent; }
     
+    @Override
     public BlockPanel getPanel() {
         return getParentBlock().getPanel();
     }
+
     // visibility
+    @Override
     public boolean isVisible() { return _visible; }
+    @Override
     public void setVisible(boolean visible) {
         if (_visible == visible)
             return;
@@ -21,6 +25,7 @@ abstract class Block implements IBlock {
     }
     
     // size
+    @Override
     public int getWidth() {
         if (!_visible)
             return 0;
@@ -29,6 +34,7 @@ abstract class Block implements IBlock {
         return _w;
     }
     
+    @Override
     public int getHeight() {
         if (!_visible)
             return 0;
@@ -37,6 +43,7 @@ abstract class Block implements IBlock {
         return _h;
     }
     
+    @Override
     public void setSize(int w, int h) {
         if (_w == w && _h == h) {
             layoutChildren();
@@ -49,9 +56,11 @@ abstract class Block implements IBlock {
     // abstract protected void updateSize();
     
     // position
+    @Override
     public int getX() { return _x; }
+    @Override
     public int getY() { return _y; }
-    
+    @Override
     public void setPosition(int x, int y) {
         _x = x;
         _y = y;
@@ -60,7 +69,9 @@ abstract class Block implements IBlock {
     protected void layoutChildren() {}
     
     // hierarchy
+    @Override
     public IBlock getParentBlock() { return _parent; }
+    @Override
     public Iterable<IBlock> getChildren()
         { return java.util.Collections.emptyList(); }
     

@@ -3,7 +3,7 @@ package gralej.gui.blocks;
 import java.awt.Graphics2D;
 
 public interface IBlock {
-    // the root of the block hierarchy
+    // the root of the block object hierarchy
     BlockPanel getPanel();
     
     // visibility

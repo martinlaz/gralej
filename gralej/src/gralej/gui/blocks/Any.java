@@ -2,12 +2,12 @@ package gralej.gui.blocks;
 
 import java.awt.Graphics2D;
 
-class Species extends Block {
+class Any extends Block {
     Label _label;
     
-    Species(IBlock parent, String sort) {
+    Any(IBlock parent, String s) {
         super(parent);
-        _label = getPanel().getLabelFactory().createSpeciesLabel(sort, this);
+        _label = getPanel().getLabelFactory().createAnyLabel(s, this);
         _label.setVisible(true);
     }
     @Override

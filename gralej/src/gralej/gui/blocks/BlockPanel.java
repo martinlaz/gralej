@@ -1,5 +1,6 @@
 package gralej.gui.blocks;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,14 +20,17 @@ public class BlockPanel extends JPanel
     private static final long serialVersionUID = -2434960385455011813L;
     
     private IBlock _content;
-    private int _marginSize = 10;
+    private int _marginSize;
     private LabelFactory _labfac;
     private java.util.List<ContentLabel> _contentLabels;
     Cursor _defaultCursor, _handCursor, _currentCursor;
     
     public BlockPanel() {
         _contentLabels = new LinkedList<ContentLabel>();
+        _marginSize = Config.getInt("panel.margins.all");
+        
         setOpaque(true);
+        setBackground(Color.decode(Config.get("panel.background")));
         
         addMouseListener(new MouseAdapter() {
             @Override
@@ -62,8 +66,24 @@ public class BlockPanel extends JPanel
     public void setPanel(BlockPanel panel) {}
     
     public void updateSize() {
-        _content.setPosition(_marginSize, _marginSize);
-        repaint();
+        setSize(_content.getWidth(), _content.getHeight());
+        _content.setPosition(getX() + _marginSize, getY() + _marginSize);
+        revalidate();
+    }
+    
+    @Override
+    public int getWidth() {
+        return _content.getWidth() + 2 * _marginSize;
+    }
+    
+    @Override
+    public int getHeight() {
+        return _content.getHeight() + 2 * _marginSize;
+    }
+    
+    @Override
+    public Dimension getSize() {
+        return new Dimension(getWidth(), getHeight());
     }
     
     public void setPosition(int x, int y) {}
@@ -90,6 +110,7 @@ public class BlockPanel extends JPanel
             RenderingHints.KEY_TEXT_ANTIALIASING,
             RenderingHints.VALUE_TEXT_ANTIALIAS_ON
             );
+        //g.drawRect(getX() + 2, getY() + 2, getWidth() - 4, getHeight() - 4);
         _content.paint(g);
     }
     
@@ -113,15 +134,14 @@ public class BlockPanel extends JPanel
         if (rv == null)
             rv = new Rectangle();
         rv.setBounds(
-            0, 0,
-            _content.getWidth() + 2*_marginSize,
-            _content.getHeight() + 2*_marginSize
+            getX(), getY(),
+            getWidth(), getHeight()
             );
-        //System.err.println("-- get bounds: " + rv);
         return rv;
     }
     
     private void onMousePressed(MouseEvent e) {
+        //log(e);
         ContentLabel target = findContainingBlock(e.getX(), e.getY());
         if (target != null) {
             target.flipContentVisibility();
@@ -177,7 +197,7 @@ public class BlockPanel extends JPanel
     
     private void initCursors() {
         _defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-        _handCursor= Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        _handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
         _currentCursor = _defaultCursor; 
     }
     

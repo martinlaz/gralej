@@ -18,6 +18,7 @@ public class BlockCreatingVisitor extends AbstractVisitor {
         return _result;
     }
     
+    @Override
     public void visit(IList ls) {
         List lsBlock = new List(_parent);
         ListContent lsContentBlock = new ListContent(lsBlock);
@@ -33,20 +34,24 @@ public class BlockCreatingVisitor extends AbstractVisitor {
         lsBlock.init(lsContentBlock);
         _result = lsBlock;
     }
+    
+    @Override
     public void visit(ITag tag) {
         Reentrancy r = new Reentrancy(_parent, tag.number());
         r.init(getContentCreator(tag.target()));
         _result = r;
     }
     
+    @Override
     public void visit(IAny any) {
-        _result = new Species(_parent, any.value());
+        _result = new Any(_parent, any.value());
     }
     
+    @Override
     public void visit(ITypedFeatureStructure tfs) {
         AVM avm = new AVM(_parent);
-        Label sortLabel = _labfac.createSortLabel(tfs.typeName(), avm);
         AVPairList avPairs = new AVPairList(avm);
+        java.util.List<AVPair> avls = new LinkedList<AVPair>();
         
         for (IFeatureValuePair featVal : tfs.featureValuePairs()) {
             AVPair av = new AVPair(avPairs);
@@ -55,13 +60,24 @@ public class BlockCreatingVisitor extends AbstractVisitor {
             _parent = av;
             featVal.value().accept(this);
             av.init(alab, _result);
-            avPairs.addChild(av);
+            avls.add(av);
         }
         
+        avPairs.init(avls);
+        
+        Label sortLabel;
+        
+        if (avls.isEmpty())
+            sortLabel = _labfac.createSpeciesLabel(tfs.typeName(), avm);
+        else
+            sortLabel = _labfac.createSortLabel(tfs.typeName(), avm);
+        
         avm.init(sortLabel, avPairs);
+        
         _result = avm;
     }
     
+    @Override
     public void visit(ITree tree) {
         throw new UnsupportedOperationException("visit tree");
     }
