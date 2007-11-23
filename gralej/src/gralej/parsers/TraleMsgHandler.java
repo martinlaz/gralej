@@ -11,18 +11,8 @@ import gralej.om.ITree;
 import gralej.om.ITypedFeatureStructure;
 import gralej.om.IVisitable;
 
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import tomato.GrammarHandler;
 import tomato.Token;
@@ -46,10 +36,10 @@ public class TraleMsgHandler extends GrammarHandler {
     L<OM.Tag> _tags = new L<OM.Tag>();
     L<Pair<OM.Tree,Integer>> _trees = new L<Pair<OM.Tree,Integer>>();
     
-    IParseResultReceiver _resultReceiver;
+    TraleMsgHandlerHelper _helper = new TraleMsgHandlerHelper();
     
     public void setResultReceiver(IParseResultReceiver resultReceiver) {
-        _resultReceiver = resultReceiver;
+        _helper.setResultReceiver(resultReceiver);
     }
     
     private void bindRefs() {
@@ -58,76 +48,6 @@ public class TraleMsgHandler extends GrammarHandler {
         
         for (Pair<OM.Tree,Integer> p : _trees)
             p._1.setContent(_id2ent.get(p._2));
-    }
-    
-    static void createAndShowGUI(IVisitable vob) {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        final BlockPanel root = new BlockPanel();
-        IBlock rootContent = new BlockCreatingVisitor().createBlock(root, vob);
-        root.setContent(rootContent);
-        rootContent.setVisible(true);
-        
-        f.setContentPane(root);
-        f.pack();
-        f.setVisible(true);
-    }
-    
-    private void adviceResult(final String title, final IVisitable vob) {
-        if (_resultReceiver == null) {
-            System.err.println("++ parsed ok, but no result receiver");
-            return;
-        }
-        try {
-            /*
-            javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                        createAndShowGUI(vob);
-                }
-            });
-            */
-            BlockPanel root = new BlockPanel();
-            IBlock rootContent = new BlockCreatingVisitor().createBlock(root, vob);
-            root.setContent(rootContent);
-            rootContent.setVisible(true);
-            final JPanel panel = new JPanel(new GridLayout());
-            panel.add(new JScrollPane(root));
-            
-            _resultReceiver.newParse(
-                    new IParsedAVM() {
-                        public String getName() {
-                            return title;
-                        }
-                        public JPanel display() {
-                            return panel;
-                        }
-                    }
-                );
-            return;
-        }
-        catch (UnsupportedOperationException e) {
-            System.err.println(e);
-            // trees are not implemented yet
-            // -- show as xml for now
-        }
-        StringWriter s = new StringWriter();
-        vob.accept(new OM2XMLVisitor(new PrintWriter(s, true)));
-        String text = s.toString();
-        
-        final JPanel panel = new JPanel(new GridLayout());
-        panel.add(new JScrollPane(new JTextArea(text)));
-        
-        _resultReceiver.newParse(
-                new IParsedAVM() {
-                    public String getName() {
-                        return title;
-                    }
-                    public JPanel display() {
-                        return panel;
-                    }
-                }
-            );
     }
     
     static String S(Object o) {
@@ -146,6 +66,21 @@ public class TraleMsgHandler extends GrammarHandler {
 
     protected void bindReduceHandlers() {
         tomato.ReduceHandler handler;
+
+        handler = new tomato.ReduceHandler() {
+            public Object execute(Object[] _) {
+                // get ready for the next datapackage
+            _tfs  = null;
+            _tree = null;
+            _id2ent.clear();
+            _tag2ent.clear();
+            _tags.clear();
+            _trees.clear();
+            return null;
+            }
+        };
+        // datapackage0 -> [datapackage, _NEWLINE]
+        bindReduceHandler(2, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -305,31 +240,16 @@ public class TraleMsgHandler extends GrammarHandler {
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
-                _id2ent.clear();
-            _tag2ent.clear();
-            _tags.clear();
-            _trees.clear();
-            return null;
-            }
-        };
-        // datapackage0 -> [datapackage, _NEWLINE]
-        bindReduceHandler(2, handler);
-
-        handler = new tomato.ReduceHandler() {
-            public Object execute(Object[] _) {
                 bindRefs();
             
             String title = S(_[1]);
             
             if (_tree != null)
-                adviceResult(title, _tree);
+                _helper.adviceResult(title, _tree);
             else if (_tfs != null)
-                adviceResult(title, _tfs);
+                _helper.adviceResult(title, _tfs);
             else
                 throw new NotImplementedException("in datapackage");
-            
-            _tfs  = null;
-            _tree = null;
             
             return null;
             }
