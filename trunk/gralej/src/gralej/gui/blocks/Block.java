@@ -63,14 +63,7 @@ abstract class Block implements IBlock {
     public IBlock getParentBlock() { return _parent; }
     public Iterable<IBlock> getChildren()
         { return java.util.Collections.emptyList(); }
+    public boolean isLeaf() { return true; }
     
     // abstract void paint(Graphics2D g);
-    
-    public boolean contains(int x, int y) {
-        return
-            (x >= _x) && (x < _x + _w)
-            &&
-            (y >= _y) && (y < _y + _h)
-            ;
-    }
 }

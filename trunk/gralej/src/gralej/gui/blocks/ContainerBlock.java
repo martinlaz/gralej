@@ -22,6 +22,10 @@ abstract class ContainerBlock extends Block {
         return _children.isEmpty();
     }
     
+    public boolean isLeaf() {
+        return false;
+    }
+    
     @Override
     public Iterable<IBlock> getChildren() {
         return Collections.unmodifiableList(_children);
