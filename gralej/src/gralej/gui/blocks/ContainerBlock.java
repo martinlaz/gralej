@@ -44,14 +44,12 @@ abstract class ContainerBlock extends Block {
             _layout.layoutBlockChildren(this);
     }
     
-    @Override
     public void paint(Graphics2D g) {
         for (IBlock child : _children)
             if (child.isVisible())
                 child.paint(g);
     }
     
-    @Override
     public void updateSize() {
         if (_layout != null)
             _layout.updateBlockSize(this);

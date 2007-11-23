@@ -5,7 +5,6 @@ class VerticalLayout implements ILayout {
     static int SPACE_BETWEEN = Config.getInt("space.general.vertical.between");
     static int SPACE_AFTER   = Config.getInt("space.general.vertical.after");
     
-    @Override
     public void layoutBlockChildren(IBlock block) {
         final int x = block.getX();
         int y = block.getY() + SPACE_BEFORE;
@@ -18,7 +17,6 @@ class VerticalLayout implements ILayout {
         }
     }
     
-    @Override
     public void updateBlockSize(IBlock block) {
         if (!block.isVisible())
             return;

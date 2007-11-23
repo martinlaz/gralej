@@ -10,7 +10,7 @@ class Any extends Block {
         _label = getPanel().getLabelFactory().createAnyLabel(s, this);
         _label.setVisible(true);
     }
-    @Override
+
     public void paint(Graphics2D g) {
         _label.paint(g);
     }
@@ -21,7 +21,6 @@ class Any extends Block {
         _label.setPosition(x, y);
     }
     
-    @Override
     public void updateSize() {
         if (!isVisible())
             return;

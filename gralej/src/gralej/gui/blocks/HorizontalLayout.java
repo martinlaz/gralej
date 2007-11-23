@@ -5,7 +5,6 @@ class HorizontalLayout implements ILayout {
     static int SPACE_BETWEEN = Config.getInt("space.general.horizontal.between");
     static int SPACE_AFTER   = Config.getInt("space.general.horizontal.after");
     
-    @Override
     public void layoutBlockChildren(IBlock block) {
         int x = block.getX() + SPACE_BEFORE;
         int y = block.getY();
@@ -24,7 +23,6 @@ class HorizontalLayout implements ILayout {
         }
     }
     
-    @Override
     public void updateBlockSize(IBlock block) {
         if (!block.isVisible())
             return;
