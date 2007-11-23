@@ -1,12 +1,13 @@
 package gralej.gui.blocks;
 
 import java.util.List;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.awt.Graphics2D;
 
 abstract class ContainerBlock extends Block {
-    protected List<IBlock> _children = new LinkedList<IBlock>();
+    protected List<IBlock> _children = new ArrayList<IBlock>();
+    private ILayout _layout;
     
     ContainerBlock(IBlock parent) {
         super(parent);
@@ -15,6 +16,10 @@ abstract class ContainerBlock extends Block {
     protected void addChild(IBlock child) {
         _children.add(child);
         child.setVisible(true);
+    }
+    
+    public boolean isEmpty() {
+        return _children.isEmpty();
     }
     
     @Override
@@ -28,9 +33,27 @@ abstract class ContainerBlock extends Block {
         layoutChildren();
     }
     
+    protected void setLayout(ILayout layout) {
+        assert _layout == null;
+        _layout = layout;
+    }
+    
+    @Override
+    protected void layoutChildren() {
+        if (_layout != null)
+            _layout.layoutBlockChildren(this);
+    }
+    
+    @Override
     public void paint(Graphics2D g) {
         for (IBlock child : _children)
             if (child.isVisible())
                 child.paint(g);
+    }
+    
+    @Override
+    public void updateSize() {
+        if (_layout != null)
+            _layout.updateBlockSize(this);
     }
 }

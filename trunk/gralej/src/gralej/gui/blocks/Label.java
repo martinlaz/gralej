@@ -78,6 +78,7 @@ public class Label extends Block {
         _hm = horizontalMargin;
         _vm = verticalMargin;
         setFrame(frameWidth);
+        
         updateTextMetrics();
     }
     
@@ -98,7 +99,6 @@ public class Label extends Block {
         if (_text.equals(text))
             return;
         _text = text;
-        updateTextMetrics();
         updateSize();
     }
     
@@ -119,6 +119,8 @@ public class Label extends Block {
     
     public void setFont(Font font) {
         _font = font;
+        updateTextMetrics();
+        updateSize();
     }
     
     public void setColor(Color color) {
@@ -149,14 +151,9 @@ public class Label extends Block {
             // draw frame
             Rectangle frame = new Rectangle(x, y, w, h);
             g.setColor(_frameColor);
-            g.fill(frame);
-            g.clearRect(
-                    x + _frameWidth,
-                    y + _frameWidth,
-                    w - 2 * _frameWidth,
-                    h - 2 * _frameWidth
-                    );
+            g.draw(frame);
         }
+        
         g.setColor(_color);
         g.setFont(_font);
         x += _hm;

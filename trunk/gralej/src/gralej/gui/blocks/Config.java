@@ -35,15 +35,31 @@ class Config {
         return value;
     }
     
-    static int getInt(String name) {
+    static int _getInt(String name, int radix) {
         String value = get(name);
-        return Integer.parseInt(value);
+        return Integer.parseInt(value, radix);
     }
     
-    static int getInt(String name, int defaultValue) {
+    static int _getInt(String name, int defaultValue, int radix) {
         String value = get(name, "");
         if (value.length() == 0)
             return defaultValue;
-        return Integer.parseInt(value);
+        return Integer.parseInt(value, radix);
+    }
+    
+    static int getInt(String name, int defaultValue) {
+        return _getInt(name, defaultValue, 10);
+    }
+    
+    static int getInt(String name) {
+        return _getInt(name, 10);
+    }
+    
+    static int getHexInt(String name, int defaultValue) {
+        return _getInt(name, defaultValue, 16);
+    }
+    
+    static int getHexInt(String name) {
+        return _getInt(name, 16);
     }
 }
