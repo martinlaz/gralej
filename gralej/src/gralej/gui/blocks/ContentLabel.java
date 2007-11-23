@@ -23,8 +23,6 @@ class ContentLabel extends Label {
         
         _normalColor = textColor;
         _altColor = textAltColor;
-        
-        getPanel().addContentLabel(this);
     }
     
     void flipContentVisibility() {

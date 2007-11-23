@@ -24,6 +24,7 @@ public interface IBlock {
     // hierarchy
     Iterable<IBlock> getChildren();
     IBlock getParentBlock();
+    boolean isLeaf();
     
     void paint(Graphics2D g);
     

@@ -10,7 +10,6 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
-import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
@@ -22,11 +21,9 @@ public class BlockPanel extends JPanel
     private IBlock _content;
     private int _marginSize;
     private LabelFactory _labfac;
-    private java.util.List<ContentLabel> _contentLabels;
     Cursor _defaultCursor, _handCursor, _currentCursor;
     
     public BlockPanel() {
-        _contentLabels = new LinkedList<ContentLabel>();
         _marginSize = Config.getInt("panel.margins.all");
         
         setOpaque(true);
@@ -91,6 +88,7 @@ public class BlockPanel extends JPanel
     // hierarchy
     public Iterable<IBlock> getChildren()
         { return Collections.singleton(_content); }
+    public boolean isLeaf() { return false; }
     
     public IBlock getParentBlock() { return null; }
     
@@ -142,47 +140,42 @@ public class BlockPanel extends JPanel
     
     private void onMousePressed(MouseEvent e) {
         //log(e);
-        ContentLabel target = findContainingBlock(e.getX(), e.getY());
+        ContentLabel target = findContainingContentLabel(e.getX(), e.getY());
         if (target != null) {
             target.flipContentVisibility();
             updateCursorForPoint(e.getX(), e.getY());
         }
     }
     
-    ContentLabel findContainingBlock(int x, int y) {
-        //
-        // Linear search in several hundreds
-        // of items, a few times a second???
-        // Not really nice but it works fine for now.
-        // If it turns out too slow, we'll figure
-        // a better way to do it.
-        //
-        for (ContentLabel label : _contentLabels) {
-            if (label.contains(x, y)) {
-                // FIXME: bang! some major design flaw here
-                // "deep visibility"
-                if (isItReallyVisible(label)) 
-                    return label;
+    private static boolean blockContainsPoint(IBlock block, int x, int y) {
+        int X = block.getX();
+        int Y = block.getY();
+        int W = block.getWidth();
+        int H = block.getHeight();
+        
+        return
+            (x >= X) && (x < X + W)
+            &&
+            (y >= Y) && (y < Y + H)
+            ;
+    }
+    
+    private static IBlock findContainingLeaf(IBlock block, int x, int y) {
+        for (IBlock child : block.getChildren()) {
+            if (child.isVisible() && blockContainsPoint(child, x, y)) {
+                if (child.isLeaf())
+                    return child;
+                return findContainingLeaf(child, x, y);
             }
         }
         return null;
     }
     
-    private static boolean isItReallyVisible(IBlock block) {
-        do {
-            if (!block.isVisible())
-                return false;
-            block = block.getParentBlock();
-        }
-        while (block != null);
-        
-        return true;
-    }
-
-    void addContentLabel(ContentLabel contentLabel) {
-        _contentLabels.add(contentLabel);
-        if (_contentLabels.size() > 1000)
-            log("ContentLabel list size: " + _contentLabels.size());
+    ContentLabel findContainingContentLabel(int x, int y) {
+        IBlock b = findContainingLeaf(_content, x, y);
+        if (b != null && b instanceof ContentLabel)
+            return (ContentLabel) b;
+        return null;
     }
     
     void log(Object message) {
@@ -205,7 +198,7 @@ public class BlockPanel extends JPanel
         if (_defaultCursor == null)
             initCursors();
         
-        IBlock target = findContainingBlock(x, y);
+        IBlock target = findContainingContentLabel(x, y);
         
         if (target == null)
             setCursor(_defaultCursor);

@@ -1,15 +1,11 @@
 package gralej.parsers;
 
-import gralej.gui.blocks.BlockCreatingVisitor;
-import gralej.gui.blocks.BlockPanel;
-import gralej.gui.blocks.IBlock;
 import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
 import gralej.om.ITree;
 import gralej.om.ITypedFeatureStructure;
-import gralej.om.IVisitable;
 
 import java.util.Map;
 import java.util.TreeMap;
