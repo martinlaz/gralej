@@ -3,7 +3,7 @@ package gralej.gui.blocks;
 class List extends ContentOwningBlock {
     List(IBlock parent) {
         super(parent);
-        setLayout(new HorizontalLayout());
+        setLayout(LayoutFactory.getListLayout());
     }
     
     void init(ListContent content) {

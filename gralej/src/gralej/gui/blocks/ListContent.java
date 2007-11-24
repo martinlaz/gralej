@@ -3,11 +3,19 @@ package gralej.gui.blocks;
 public class ListContent extends ContainerBlock {
     ListContent(IBlock parent) {
         super(parent);
-        setLayout(new HorizontalLayout());
+        setLayout(LayoutFactory.getListContentLayout());
     }
     
     void init(Iterable<IBlock> listItems) {
-        for (IBlock item : listItems)
+        boolean firstAdded = false;
+        LabelFactory labfac = getPanel().getLabelFactory();
+        for (IBlock item : listItems) {
+            if (firstAdded)
+                addChild(labfac.createListSeparatorLabel(this));
+            else
+                firstAdded = true;
+            
             addChild(item);
+        }
     }
 }

@@ -5,7 +5,7 @@ class Reentrancy extends ContentOwningBlock {
     
     Reentrancy(IBlock parent, int tag) {
         super(parent);
-        setLayout(new HorizontalLayout());
+        setLayout(LayoutFactory.getReentrancyLayout());
         
         Label tagLabel = getPanel().getLabelFactory().createTagLabel(
                 Integer.toString(tag),
@@ -24,8 +24,7 @@ class Reentrancy extends ContentOwningBlock {
             _content = _contentCreator.createContent(this);
             // don't make it visible,
             // the content label will do so
-            //addChild(_content);
-            _children.add(_content);
+            addChild(_content, false);
         }
         return _content;
     }

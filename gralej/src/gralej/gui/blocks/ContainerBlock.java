@@ -14,8 +14,12 @@ abstract class ContainerBlock extends Block {
     }
     
     protected void addChild(IBlock child) {
+        addChild(child, true);
+    }
+    
+    protected void addChild(IBlock child, boolean visibility) {
         _children.add(child);
-        child.setVisible(true);
+        child.setVisible(visibility);
     }
     
     public boolean isEmpty() {

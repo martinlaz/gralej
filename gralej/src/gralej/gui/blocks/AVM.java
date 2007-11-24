@@ -12,7 +12,7 @@ class AVM extends ContentOwningBlock {
 
     AVM(IBlock parent) {
         super(parent);
-        setLayout(new VerticalLayout());
+        setLayout(LayoutFactory.getAVMLayout());
     }
     
     void init(Label sort, AVPairList avPairs) {
