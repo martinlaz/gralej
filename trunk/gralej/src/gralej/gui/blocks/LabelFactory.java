@@ -26,6 +26,7 @@ class LabelFactory {
     
     final static String LIST_LBRACKET_TEXT  = Config.get("label.list.text.left");
     final static String LIST_RBRACKET_TEXT  = Config.get("label.list.text.right");
+    final static String LIST_SEPARATOR_TEXT  = Config.get("label.list.text.separator");
     
     Map<String,LabelParams> _cachedLabelParams = new 
         TreeMap<String,LabelParams>();
@@ -106,14 +107,6 @@ class LabelFactory {
             );
     }
     
-    ContentLabel createNodeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(
-            text,
-            parent,
-            getLabelParams("label.node")
-            );
-    }
-    
     ContentLabel createAttributeLabel(String text, ContentOwningBlock parent) {
         return createContentLabel(
             text,
@@ -138,6 +131,14 @@ class LabelFactory {
             );
     }
     
+    Label createListSeparatorLabel(IBlock parent) {
+        return createLabel(
+                LIST_SEPARATOR_TEXT,
+                parent,
+                getLabelParams("label.list")
+                );
+    }
+    
     Label createAnyLabel(String text, IBlock parent) {
         return createLabel(
             text,
@@ -153,4 +154,20 @@ class LabelFactory {
             getLabelParams("label.sort")
             );
     }
+    
+    Label createInternalNodeLabel(String text, ContentOwningBlock parent) {
+        return createContentLabel(
+                text,
+                parent,
+                getLabelParams("label.node.internal")
+                );
+    }
+    
+    Label createLeafNodeLabel(String text, ContentOwningBlock parent) {
+        return createContentLabel(
+                text,
+                parent,
+                getLabelParams("label.node.leaf")
+                );
+    }    
 }

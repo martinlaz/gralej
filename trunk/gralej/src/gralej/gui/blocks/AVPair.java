@@ -4,7 +4,7 @@ class AVPair extends ContentOwningBlock {
     
     AVPair(IBlock parent) {
         super(parent);
-        setLayout(new HorizontalLayout());
+        setLayout(LayoutFactory.getAVPairLayout());
     }
     
     void init(Label a, IBlock v) {

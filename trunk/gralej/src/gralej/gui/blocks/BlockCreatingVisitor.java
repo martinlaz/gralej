@@ -11,6 +11,7 @@ public class BlockCreatingVisitor extends AbstractVisitor {
     IBlock _result;
     LabelFactory _labfac = LabelFactory.getInstance();
     Map<IEntity,IContentCreator> _contentCreatorCache;
+    Tree _tree;
     
     public IBlock createBlock(IBlock parent, IVisitable vob) {
         _parent = parent;
@@ -79,7 +80,30 @@ public class BlockCreatingVisitor extends AbstractVisitor {
     
     @Override
     public void visit(ITree tree) {
-        throw new UnsupportedOperationException("visit tree");
+        _tree = new Tree(_parent);
+        Node root = createTree(tree);
+        _tree.init(root);
+        _result = _tree;
+    }
+    
+    private Node createTree(ITree u) {
+        Node node = new Node(_tree);
+        java.util.List<Node> childNodes = new LinkedList<Node>();
+        Label label;
+        if (u.isLeaf())
+            label = _labfac.createLeafNodeLabel(u.label(), node);
+        else {
+            for (ITree v : u.children())
+                childNodes.add(createTree(v));
+            label = _labfac.createInternalNodeLabel(u.label(), node);
+        }
+        
+        _parent = node;
+        u.content().accept(this);
+        IBlock content = _result;
+        
+        node.init(label, content, childNodes);
+        return node;
     }
     
     private IContentCreator getContentCreator(final IEntity entity) {

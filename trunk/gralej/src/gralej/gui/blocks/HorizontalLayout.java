@@ -1,12 +1,24 @@
 package gralej.gui.blocks;
 
-class HorizontalLayout implements ILayout {
-    static int SPACE_BEFORE  = Config.getInt("space.general.horizontal.before");
-    static int SPACE_BETWEEN = Config.getInt("space.general.horizontal.between");
-    static int SPACE_AFTER   = Config.getInt("space.general.horizontal.after");
+class HorizontalLayout extends AbstractLayout {
+    static int DEFAULT_LEADING_SPACE    = Config.getInt("layout.default.horizontal.space.leading");
+    static int DEFAULT_INTRA_SPACE      = Config.getInt("layout.default.horizontal.space.intra");
+    static int DEFAULT_TRAILING_SPACE   = Config.getInt("layout.default.horizontal.space.trailing");
+    
+    HorizontalLayout() {
+        super(
+                DEFAULT_LEADING_SPACE,
+                DEFAULT_INTRA_SPACE,
+                DEFAULT_TRAILING_SPACE
+                );
+    }
+    
+    HorizontalLayout(int lead, int intra, int trail) {
+        super(lead, intra, trail);
+    }
     
     public void layoutBlockChildren(IBlock block) {
-        int x = block.getX() + SPACE_BEFORE;
+        int x = block.getX() + getLeadingSpace();
         int y = block.getY();
         int h = block.getHeight();
         
@@ -19,7 +31,7 @@ class HorizontalLayout implements ILayout {
                     y + h / 2 - child.getHeight() / 2
                     );
             x += child.getWidth();
-            x += SPACE_BETWEEN;
+            x += getIntraSpace();
         }
     }
     
@@ -40,10 +52,11 @@ class HorizontalLayout implements ILayout {
         }
         
         if (numChildren > 0) {
-            w += SPACE_BEFORE;
-            w += (numChildren - 1) * SPACE_BETWEEN;
-            w += SPACE_AFTER;
+            w += getLeadingSpace();
+            w += (numChildren - 1) * getIntraSpace();
+            w += getTrailingSpace();
         }
+        
         block.setSize(w, h);
     }
 }

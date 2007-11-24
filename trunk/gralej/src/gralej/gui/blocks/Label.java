@@ -156,7 +156,7 @@ public class Label extends Block {
         
         g.setColor(_color);
         g.setFont(_font);
-        x += _hm;
+        x += _hm;// + 1; // get rid off the trailing space
         y += _vm + _ascent;
         //System.err.println("x: " + x + "; y: " + y);
         g.drawString(_text, x, y);
