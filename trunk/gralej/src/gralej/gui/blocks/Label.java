@@ -3,12 +3,16 @@ package gralej.gui.blocks;
 import java.awt.*;
 
 public class Label extends Block {
+    final static int MAX_TEXT_LENGTH = Config.getInt("label.text.max.length");
+    final static String TEXT_CONTINUATION = Config.get("label.text.continuation");
+    
     int     _frameWidth;
     Color   _frameColor;
     
     String  _text;
     int     _tw;    // text width
     int     _th;    // text height
+    String  _completeText;
     
     Font    _font;
     Color   _color;
@@ -72,7 +76,8 @@ public class Label extends Block {
         )
     {
         super(parent);
-        _text = text;
+        _completeText = text;
+        _text = makeText(text);
         _font = font;
         _color = color;
         _hm = horizontalMargin;
@@ -80,6 +85,12 @@ public class Label extends Block {
         setFrame(frameWidth);
         
         updateTextMetrics();
+    }
+    
+    private static String makeText(String s) {
+        if (s.length() > MAX_TEXT_LENGTH)
+            s = s.substring(0, MAX_TEXT_LENGTH) + TEXT_CONTINUATION;
+        return s;
     }
     
     public void setFrame(int width) {
@@ -95,10 +106,15 @@ public class Label extends Block {
         return _text;
     }
     
+    public String getCompleteText() {
+        return _completeText;
+    }
+    
     public void setText(String text) {
-        if (_text.equals(text))
+        if (_completeText.equals(text))
             return;
-        _text = text;
+        _completeText = text;
+        _text = makeText(text);
         updateSize();
     }
     

@@ -1,6 +1,8 @@
 package gralej.gui.blocks;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class Tree extends ContainerBlock {
     Node _root;
@@ -14,31 +16,36 @@ public class Tree extends ContainerBlock {
     
     void init(Node root) {
         _root = root;
-        initChildren(root);
+        addNode(root);
     }
     
-    private void initChildren(Node node) {
+    private void addNode(Node node) {
         addChild(node);
         for (Node child : node.getChildNodes())
-            addChild(child);
+            addNode(child);
     }
     
     @Override
     public void updateSize() {
         if (!isVisible())
             return;
-        // to compute the size of the tree
+        // To compute the size of the tree
         // we first need to layout the nodes;
-        // so we do the two things at the same time
-        // -- size computation and node positioning
+        // so we do the two things at the same time:
+        // size computation and node positioning.
         
-        int maxX = layoutNode(_root, 0, 0);
+        int maxX = layoutNode(_root, getX(), getY());
         int maxY = 0;
         
         for (IBlock node : getChildren())
             maxY = Math.max(maxY, node.getY() + node.getHeight());
         
         setSize(maxX, maxY);
+    }
+    
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
     }
     
     @Override
@@ -100,23 +107,23 @@ public class Tree extends ContainerBlock {
         for (Node childNode : node.getChildNodes())
             moveNode(childNode, offX, offY);
     }
+    
+    @Override
+    public void paint(Graphics2D g) {
+        super.paint(g);
+        g.setColor(EDGE_COLOR);
+        drawEdges(_root, g);
+    }
+    
+    private void drawEdges(Node node, Graphics g) {
+        int x1 = node.getX() + node.getWidth() / 2;
+        int y1 = node.getY() + node.getHeight();
+        
+        for (Node child : node.getChildNodes()) {
+            int x2 = child.getX() + child.getWidth() / 2;
+            int y2 = child.getY();
+            g.drawLine(x1, y1, x2, y2);
+            drawEdges(child, g);
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

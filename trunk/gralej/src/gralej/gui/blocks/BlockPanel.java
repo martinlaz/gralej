@@ -94,7 +94,10 @@ public class BlockPanel extends JPanel
     
     public void setParentBlock(IBlock parent) { }
     
-    public void paint(Graphics2D g) {}
+    public void paint(Graphics2D g) { paintComponent(g); }
+    
+    @Override
+    public void paint(Graphics g) { paintComponent(g); }
     
     @Override
     protected void paintComponent(Graphics g_) {
@@ -117,7 +120,6 @@ public class BlockPanel extends JPanel
         Dimension d = new Dimension(
             _content.getWidth() + 2*_marginSize,
             _content.getHeight() + 2*_marginSize);
-        //System.err.println("pref size: " + d);
         return d;
     }
     
@@ -161,13 +163,9 @@ public class BlockPanel extends JPanel
     }
     
     private static IBlock findContainingLeaf(IBlock block, int x, int y) {
-        for (IBlock child : block.getChildren()) {
-            if (child.isVisible() && blockContainsPoint(child, x, y)) {
-                if (child.isLeaf())
-                    return child;
-                return findContainingLeaf(child, x, y);
-            }
-        }
+        for (IBlock child : block.getChildren())
+            if (child.isVisible() && blockContainsPoint(child, x, y))
+                return child.isLeaf() ? child : findContainingLeaf(child, x, y);
         return null;
     }
     
@@ -178,7 +176,7 @@ public class BlockPanel extends JPanel
         return null;
     }
     
-    void log(Object message) {
+    static void log(Object message) {
         System.err.println(message);
     }
     

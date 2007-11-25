@@ -22,16 +22,35 @@ class Config {
         }
     }
     
+    private static String getProp(String prop) {
+        return getProp(prop, null);
+    }
     
+    private static String getProp(String prop, String def) {
+        String value = _props.getProperty(prop, def);
+        if (value != null) {
+            if (value.startsWith("$") && value.length() > 1) {
+                if (value.charAt(1) != '$')
+                    // dereference
+                    value = getProp(value.substring(1));
+            }
+        }
+        return value;
+    }
     
     static String get(String name, String defaultValue) {
-        return _props.getProperty(name, defaultValue);
+        return getProp(name, defaultValue);
     }
     
     static String get(String name) {
-        String value = _props.getProperty(name);
+        String value = getProp(name);
         if (value == null)
             throw new RuntimeException("Unknown property: " + name);
+        if (value.startsWith("$") && value.length() > 1) {
+            if (value.charAt(1) != '$')
+                // dereference
+                value = get(value.substring(1));
+        }
         return value;
     }
     

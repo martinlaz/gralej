@@ -3,7 +3,7 @@ package gralej.gui.blocks;
 abstract class Block implements IBlock {
     private boolean _visible;
     private int _w = -1, _h = -1;
-    private int _x = -1, _y = -1;
+    private int _x, _y;
     private IBlock _parent;
     
     public Block(IBlock parent) { _parent = parent; }
@@ -18,6 +18,8 @@ abstract class Block implements IBlock {
         if (_visible == visible)
             return;
         _visible = visible;
+        if (_w == -1)
+            updateSize();
         getParentBlock().updateSize();
     }
     
@@ -25,16 +27,12 @@ abstract class Block implements IBlock {
     public int getWidth() {
         if (!_visible)
             return 0;
-        if (_w == -1)
-            updateSize();
         return _w;
     }
     
     public int getHeight() {
         if (!_visible)
             return 0;
-        if (_h == -1)
-            updateSize();
         return _h;
     }
     
