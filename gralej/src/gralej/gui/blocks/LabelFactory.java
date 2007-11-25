@@ -151,7 +151,7 @@ class LabelFactory {
         return createLabel(
             text,
             parent,
-            getLabelParams("label.sort")
+            getLabelParams("label.species")
             );
     }
     

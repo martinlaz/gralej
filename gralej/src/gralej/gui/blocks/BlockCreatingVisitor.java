@@ -50,6 +50,11 @@ public class BlockCreatingVisitor extends AbstractVisitor {
     
     @Override
     public void visit(ITypedFeatureStructure tfs) {
+        if (tfs.isSpecies()) {
+            _result = _labfac.createSpeciesLabel(tfs.typeName(), _parent);
+            return;
+        }
+        
         AVM avm = new AVM(_parent);
         AVPairList avPairs = new AVPairList(avm);
         java.util.List<AVPair> avls = new LinkedList<AVPair>();
