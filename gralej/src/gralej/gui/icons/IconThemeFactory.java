@@ -36,7 +36,7 @@ public class IconThemeFactory {
 	 * 
 	 * @return a list names of the themes available
 	 */
-	public List<String> getThemeNames() {
+	public static List<String> getThemeNames() {
 		
 		LinkedList<String> res = new LinkedList<String>();
 		
