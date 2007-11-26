@@ -14,6 +14,8 @@ import java.util.prefs.*;
 
 
 import gralej.controller.*;
+import gralej.gui.icons.IconTheme;
+import gralej.gui.icons.IconThemeFactory;
 
 /**
  * TODO remember last open directory (via prefs?)
@@ -160,8 +162,11 @@ public class MainGUI implements ActionListener, ItemListener {
 	private JToolBar createToolBar () {
 		// toolbar: some example buttons
 		JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
+		
+		// load icon theme
+		IconTheme theme = IconThemeFactory.getIconTheme("crystal");
 
-		b_Open = new JButton(new ImageIcon("fileopen.png"));
+		b_Open = new JButton(theme.getIcon("fileopen"));
         b_Open.addActionListener(this);
 		toolbar.add(b_Open);
     
@@ -170,9 +175,9 @@ public class MainGUI implements ActionListener, ItemListener {
     	b_Open.setPressedIcon(...);
 		 */
     
-		JButton zoomin = new JButton(new ImageIcon("zoomin.png"));
+		JButton zoomin = new JButton(theme.getIcon("zoomin"));
 		toolbar.add(zoomin);
-		JButton zoomout = new JButton(new ImageIcon("zoomout.png"));
+		JButton zoomout = new JButton(theme.getIcon("zoomout"));
 		toolbar.add(zoomout);
 		return toolbar;
 	}
