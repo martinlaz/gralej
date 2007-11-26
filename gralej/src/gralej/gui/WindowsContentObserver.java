@@ -8,6 +8,7 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JScrollPane;
 
 // FIXME has focus problems, maybe focuses/deletes wrong window
 
@@ -29,7 +30,9 @@ public class WindowsContentObserver extends ContentObserver {
 	private void add (GRALEFile file) {
 	    // open new JFrame
 	    JFrame newframe = new JFrame(file.getName());
-	    newframe.add(file.display());
+        JScrollPane scrollPane = new JScrollPane(file.display());
+//	    newframe.add(file.display());
+        newframe.setContentPane(scrollPane);
 	    newframe.setLocation(100, 100); // better: get location as x+30, y+30 from current active if unmaximized
 	    newframe.setSize(300, 250);
 		frames.add(newframe);
@@ -48,9 +51,9 @@ public class WindowsContentObserver extends ContentObserver {
 	
 	private void focus () {
 		if (model.getFocused() == -1) return;
-		System.err.println("Focus setting to "+model.getFocused());
+//		System.err.println("Focus setting to "+model.getFocused());
 		frames.get(model.getFocused()).requestFocus();// or .toFront();
-		System.err.println("Focus set     to "+model.getFocused());
+//		System.err.println("Focus set     to "+model.getFocused());
 	}
 
 	public void update(String message) {
@@ -75,7 +78,7 @@ public class WindowsContentObserver extends ContentObserver {
 		public void windowActivated(WindowEvent e) {
 			// TODO Auto-generated method stub
 			model.setFocused(frames.indexOf(e.getSource()));
-			System.err.println("Focus requested by "+frames.indexOf(e.getSource()));
+//			System.err.println("Focus requested by "+frames.indexOf(e.getSource()));
 			
 		}
 
