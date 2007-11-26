@@ -65,24 +65,18 @@ public class GenericIconTheme implements IconTheme {
 	 * @return my return null if it doesn't work out.
 	 */
 	private ImageIcon loadIcon(String filename) {
-		
-		System.err.println("Loading "
-		+	iconpackagename 
-		+ "/" +
-		filename	
-		);
-		
+
+		// construct source URL
 		URL imageURL = GenericIconTheme.class.getResource(
 				iconpackagename 
 				+ "/" +
 				filename);
 		
+		// try to load
 		ImageIcon icon = null;
 		if (imageURL != null) {
 		   icon = new ImageIcon(imageURL);
-		} else {
-			System.err.println("Loading failed");
-		}
+		}   
 		
 		return icon;
 		
