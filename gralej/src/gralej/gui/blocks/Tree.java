@@ -5,10 +5,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class Tree extends ContainerBlock {
-    Node _root;
-    final int MIN_HDIST = Config.getInt("tree.mindistance.horizontal");
-    final int MIN_VDIST = Config.getInt("tree.mindistance.vertical");
-    final Color EDGE_COLOR = Color.decode(Config.get("tree.edge.color"));
+    final static int MIN_HDIST = Config.getInt("tree.minDistance.horizontal");
+    final static int MIN_VDIST = Config.getInt("tree.minDistance.vertical");
+    final static Color EDGE_COLOR = Color.decode(Config.get("tree.edge.color"));
+    final static boolean IS_NODE_CONTENT_INITIALLY_VISIBLE = Boolean.parseBoolean(Config.get("tree.node.content.isInitiallyVisible"));
+    
+    private Node _root;
     
     Tree(IBlock parent) {
         super(parent);
@@ -21,6 +23,8 @@ public class Tree extends ContainerBlock {
     
     private void addNode(Node node) {
         addChild(node);
+        if (!IS_NODE_CONTENT_INITIALLY_VISIBLE)
+            node.getContent().setVisible(false);
         for (Node child : node.getChildNodes())
             addNode(child);
     }
@@ -41,11 +45,6 @@ public class Tree extends ContainerBlock {
             maxY = Math.max(maxY, node.getY() + node.getHeight());
         
         setSize(maxX, maxY);
-    }
-    
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
     }
     
     @Override

@@ -29,8 +29,6 @@ class AVM extends ContentOwningBlock {
     @Override
     public void paint(Graphics2D g) {
         super.paint(g);
-        if (_children.size() < 2)
-            return; // species have no brackets
         
         // paint the brackets
         g.setColor(BRACKET_COLOR);
@@ -63,7 +61,7 @@ class AVM extends ContentOwningBlock {
             return;
         }
         
-        // the default [] bracket style
+        // the default [style]
         
         // left
         g.drawLine(x, y, x, y + h);

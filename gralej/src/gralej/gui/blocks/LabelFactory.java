@@ -31,18 +31,18 @@ class LabelFactory {
     Map<String,LabelParams> _cachedLabelParams = new 
         TreeMap<String,LabelParams>();
     
-    static LabelFactory _globalFactory;
+    static private LabelFactory _globalFactory = new LabelFactory(); 
     
     static LabelFactory getInstance() {
-        if (_globalFactory == null)
-            _globalFactory = new LabelFactory();
         return _globalFactory;
     }
     
+    synchronized
     void clearCache() {
         _cachedLabelParams.clear();
     }
     
+    synchronized 
     LabelParams getLabelParams(String type) {
         LabelParams lp = _cachedLabelParams.get(type);
         if (lp == null) {
@@ -92,25 +92,19 @@ class LabelFactory {
     }
     
     ContentLabel createTagLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(
-            text,
-            parent,
+        return createContentLabel(text, parent,
             getLabelParams("label.tag")
             );
     }
     
     ContentLabel createSortLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(
-            text,
-            parent,
+        return createContentLabel(text, parent,
             getLabelParams("label.sort")
             );
     }
     
     ContentLabel createAttributeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(
-            text,
-            parent,
+        return createContentLabel(text, parent,
             getLabelParams("label.attribute")
             );
     }
@@ -140,33 +134,25 @@ class LabelFactory {
     }
     
     Label createAnyLabel(String text, IBlock parent) {
-        return createLabel(
-            text,
-            parent,
+        return createLabel(text, parent,
             getLabelParams("label.any")
             );
     }
     
     Label createSpeciesLabel(String text, IBlock parent) {
-        return createLabel(
-            text,
-            parent,
+        return createLabel(text, parent,
             getLabelParams("label.species")
             );
     }
     
     Label createInternalNodeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(
-                text,
-                parent,
+        return createContentLabel(text, parent,
                 getLabelParams("label.node.internal")
                 );
     }
     
     Label createLeafNodeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(
-                text,
-                parent,
+        return createContentLabel(text, parent,
                 getLabelParams("label.node.leaf")
                 );
     }    

@@ -22,6 +22,7 @@ public class BlockPanel extends JPanel
     private int _marginSize;
     private LabelFactory _labfac;
     Cursor _defaultCursor, _handCursor, _currentCursor;
+    double _scaleFactor = 1;
     
     public BlockPanel() {
         _marginSize = Config.getInt("panel.margins.all");
@@ -34,6 +35,12 @@ public class BlockPanel extends JPanel
             public void mousePressed(MouseEvent e) {
                 onMousePressed(e);
             }
+            /*
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("mouse clicked " + e.getClickCount() + " times");
+            }
+            */
         });
         
         addMouseMotionListener(new MouseAdapter() {
@@ -63,24 +70,24 @@ public class BlockPanel extends JPanel
     public void setPanel(BlockPanel panel) {}
     
     public void updateSize() {
-        setSize(_content.getWidth(), _content.getHeight());
+        setSize(scale(_content.getWidth()), scale(_content.getHeight()));
         _content.setPosition(getX() + _marginSize, getY() + _marginSize);
         revalidate();
     }
     
     @Override
     public int getWidth() {
-        return _content.getWidth() + 2 * _marginSize;
+        return scale(_content.getWidth() + 2 * _marginSize);
     }
     
     @Override
     public int getHeight() {
-        return _content.getHeight() + 2 * _marginSize;
+        return scale(_content.getHeight() + 2 * _marginSize);
     }
     
     @Override
     public Dimension getSize() {
-        return new Dimension(getWidth(), getHeight());
+        return new Dimension(scale(getWidth()), scale(getHeight()));
     }
     
     public void setPosition(int x, int y) {}
@@ -103,6 +110,11 @@ public class BlockPanel extends JPanel
     protected void paintComponent(Graphics g_) {
         super.paintComponent(g_);
         Graphics2D g = (Graphics2D) g_;
+        /*
+        g.setTransform(
+                AffineTransform.getScaleInstance(_scaleFactor, _scaleFactor)
+                );
+                */
         g.setRenderingHint(
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON
@@ -118,8 +130,8 @@ public class BlockPanel extends JPanel
     @Override
     public Dimension getPreferredSize() {
         Dimension d = new Dimension(
-            _content.getWidth() + 2*_marginSize,
-            _content.getHeight() + 2*_marginSize);
+            scale(_content.getWidth() + 2*_marginSize),
+            scale(_content.getHeight() + 2*_marginSize));
         return d;
     }
     
@@ -135,9 +147,22 @@ public class BlockPanel extends JPanel
             rv = new Rectangle();
         rv.setBounds(
             getX(), getY(),
-            getWidth(), getHeight()
+            scale(getWidth()), scale(getHeight())
             );
         return rv;
+    }
+    
+    public void setScaleFactor(double newValue) {
+        _scaleFactor = newValue;
+    }
+    
+    public double getScaleFactor() {
+        return _scaleFactor;
+    }
+    
+    private static int scale(int n) {
+        //return (int) (_scaleFactor * n);
+        return n;
     }
     
     private void onMousePressed(MouseEvent e) {
