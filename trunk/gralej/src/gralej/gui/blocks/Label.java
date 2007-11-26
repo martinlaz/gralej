@@ -3,16 +3,16 @@ package gralej.gui.blocks;
 import java.awt.*;
 
 public class Label extends Block {
-    final static int MAX_TEXT_LENGTH = Config.getInt("label.text.max.length");
-    final static String TEXT_CONTINUATION = Config.get("label.text.continuation");
+    final static int MAX_TEXT_LENGTH = Config.getInt("label.text.maxLength");
+    final static String TEXT_CONTINUATION = Config.get("label.continuation.text");
     
     int     _frameWidth;
     Color   _frameColor;
     
-    String  _text;
+    String  _visibleText;
     int     _tw;    // text width
     int     _th;    // text height
-    String  _completeText;
+    String  _text;
     
     Font    _font;
     Color   _color;
@@ -76,8 +76,8 @@ public class Label extends Block {
         )
     {
         super(parent);
-        _completeText = text;
-        _text = makeText(text);
+        _text = text;
+        _visibleText = trimText(text);
         _font = font;
         _color = color;
         _hm = horizontalMargin;
@@ -87,7 +87,7 @@ public class Label extends Block {
         updateTextMetrics();
     }
     
-    private static String makeText(String s) {
+    private static String trimText(String s) {
         if (s.length() > MAX_TEXT_LENGTH)
             s = s.substring(0, MAX_TEXT_LENGTH) + TEXT_CONTINUATION;
         return s;
@@ -102,19 +102,19 @@ public class Label extends Block {
         _frameColor = color;
     }
     
+    public String getVisibleText() {
+        return _visibleText;
+    }
+    
     public String getText() {
         return _text;
     }
     
-    public String getCompleteText() {
-        return _completeText;
-    }
-    
     public void setText(String text) {
-        if (_completeText.equals(text))
+        if (_text.equals(text))
             return;
-        _completeText = text;
-        _text = makeText(text);
+        _text = text;
+        _visibleText = trimText(text);
         updateSize();
     }
     
@@ -152,7 +152,7 @@ public class Label extends Block {
     
     private void updateTextMetrics() {
         FontMetrics fm = getPanel().getFontMetrics(_font);
-        _tw = fm.stringWidth(_text);
+        _tw = fm.stringWidth(_visibleText);
         _th = fm.getHeight();
         _ascent = fm.getAscent();
     }
@@ -172,9 +172,8 @@ public class Label extends Block {
         
         g.setColor(_color);
         g.setFont(_font);
-        x += _hm;// + 1; // get rid off the trailing space
+        x += _hm;
         y += _vm + _ascent;
-        //System.err.println("x: " + x + "; y: " + y);
-        g.drawString(_text, x, y);
+        g.drawString(_visibleText, x, y);
     }
 }

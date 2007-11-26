@@ -31,12 +31,12 @@ public class TestBlocks {
                     );
         }
         catch (Exception e) {
-            // ignore
+            System.err.println("-- failed to set the system's native look and feel");
         }
         StreamInfo streamInfo = new StreamInfo(STREAM_INFO_TYPE);
         IGraleParser parser = GraleParserFactory.createParser(streamInfo);
         
-        InputStream in;
+        InputStream in = null;
         
         if (args.length == 0)
             in = stringToInputStream(TEST_MESSAGE);
@@ -53,9 +53,13 @@ public class TestBlocks {
                 System.err.println("-- Waiting for a client on port " + port);
                 ServerSocket ss = new ServerSocket(port);
                 Socket s = ss.accept();
-                System.err.println("-- Connected " + s);
+                System.err.println("-- Connected: " + s);
                 ss.close();
                 in = s.getInputStream();
+            }
+            else if (opt.equals("-h") || opt.equals("-?")) {
+                System.err.println("java -jar gralej.jar [filename | -server [port]]");
+                System.exit(1);
             }
             else
                 throw new Exception("unknown option: " + opt);
@@ -72,11 +76,14 @@ public class TestBlocks {
     static void show(IParsedAVM pavm) {
         JFrame f = new JFrame();
         f.setTitle(pavm.getName());
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JScrollPane scrollPane = new JScrollPane(pavm.display());
         //f.setContentPane(pavm.display());
         f.setContentPane(scrollPane);
         f.pack();
+        //f.setSize(640, 480);
+        //f.setSize(pavm.display().getSize());
+        f.setLocationByPlatform(true);
         f.setVisible(true);
     }
     
