@@ -4,12 +4,9 @@ abstract class ContentOwningBlock
     extends ContainerBlock
     implements IContentOwner 
 {
-    protected IBlock _content;
+    protected Block _content;
     
-    ContentOwningBlock(IBlock parent)
-        { super(parent); }
-    
-    protected void setContent(IBlock content) {
+    protected void setContent(Block content) {
         _content = content;
     }
     

@@ -9,10 +9,10 @@ public class Label extends Block {
     int     _frameWidth;
     Color   _frameColor;
     
+    String  _text;
     String  _visibleText;
     int     _tw;    // text width
     int     _th;    // text height
-    String  _text;
     
     Font    _font;
     Color   _color;
@@ -21,24 +21,18 @@ public class Label extends Block {
     int     _hm;    // horizontal margin
     int     _vm;    // vertical margin
     
-    public Label(IBlock parent) {
-        super(parent);
-    }
-    
     public Label(
-        IBlock  parent,
         String  text,
         Font    font,
         Color   color,
         int     margins
         )
     {
-        this(parent, text, font, color,
+        this(text, font, color,
             margins, margins, 0);
     }
     
     public Label(
-        IBlock  parent,
         String  text,
         Font    font,
         Color   color,
@@ -46,12 +40,11 @@ public class Label extends Block {
         int     verticalMargin
         )
     {
-        this(parent, text, font, color,
+        this(text, font, color,
             horizontalMargin, verticalMargin, 0);
     }
     
     public Label(
-        IBlock  parent,
         String  text,
         Font    font,
         Color   color,
@@ -60,12 +53,11 @@ public class Label extends Block {
         int     frameWidth
         )
     {
-        this(parent, text, font, color,
+        this(text, font, color,
             horizontalMargin, verticalMargin, frameWidth, Color.BLACK);
     }
     
     public Label(
-        IBlock  parent,
         String  text,
         Font    font,
         Color   color,
@@ -75,7 +67,6 @@ public class Label extends Block {
         Color   frameColor
         )
     {
-        super(parent);
         _text = text;
         _visibleText = trimText(text);
         _font = font;
@@ -83,8 +74,11 @@ public class Label extends Block {
         _hm = horizontalMargin;
         _vm = verticalMargin;
         setFrame(frameWidth);
-        
+    }
+    
+    public void init() {
         updateTextMetrics();
+        setVisible(true);
     }
     
     private static String trimText(String s) {

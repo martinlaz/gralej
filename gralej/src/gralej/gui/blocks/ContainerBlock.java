@@ -9,16 +9,13 @@ abstract class ContainerBlock extends Block {
     protected List<IBlock> _children = new ArrayList<IBlock>();
     private ILayout _layout;
     
-    ContainerBlock(IBlock parent) {
-        super(parent);
+    protected void addChild(Block child) {
+        addChild(child, false);
     }
     
-    protected void addChild(IBlock child) {
-        addChild(child, true);
-    }
-    
-    protected void addChild(IBlock child, boolean visibility) {
+    protected void addChild(Block child, boolean visibility) {
         _children.add(child);
+        child.setParentBlock(this);
         child.setVisible(visibility);
     }
     

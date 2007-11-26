@@ -52,9 +52,13 @@ public class BlockPanel extends JPanel
         });
     }
     
+    public void init() {}
+    
     public void setContent(IBlock block) {
         assert _content == null;
+        ((Block)block).setParentBlock(this);
         _content = block;
+        _content.init();
     }
     
     IBlock getContent() {

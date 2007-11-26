@@ -4,19 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
-class AVM extends ContentOwningBlock {
+class AVMBlock extends ContentOwningBlock {
     
     final static int BRACKET_EDGE_SIZE = Config.getInt("avm.bracket.edge.length");
     final static Color BRACKET_COLOR = Color.decode(Config.get("avm.bracket.color"));
     final static boolean BRACKET_ALT_STYLE = Boolean.parseBoolean(Config.get("avm.bracket.alt.style"));
 
-    AVM(IBlock parent) {
-        super(parent);
+    AVMBlock(Label sort, AVPairListBlock avPairs) {
         setLayout(LayoutFactory.getAVMLayout());
-    }
-    
-    void init(Label sort, AVPairList avPairs) {
-        assert _children.size() == 0;
         
         addChild(sort);
         

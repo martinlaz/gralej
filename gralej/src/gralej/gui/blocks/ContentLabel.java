@@ -8,7 +8,6 @@ class ContentLabel extends Label {
     private Color _normalColor;
     
     public ContentLabel(
-        ContentOwningBlock  parent,
         String  text,
         Font    font,
         Color   textColor,
@@ -19,7 +18,7 @@ class ContentLabel extends Label {
         Color   frameColor
         )
     {
-        super(parent, text, font, textColor, hm, vm, frameWidth, frameColor);
+        super(text, font, textColor, hm, vm, frameWidth, frameColor);
         
         _normalColor = textColor;
         _altColor = textAltColor;

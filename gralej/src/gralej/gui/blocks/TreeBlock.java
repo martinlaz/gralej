@@ -4,29 +4,41 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class Tree extends ContainerBlock {
+public class TreeBlock extends ContainerBlock {
     final static int MIN_HDIST = Config.getInt("tree.minDistance.horizontal");
     final static int MIN_VDIST = Config.getInt("tree.minDistance.vertical");
     final static Color EDGE_COLOR = Color.decode(Config.get("tree.edge.color"));
     final static boolean IS_NODE_CONTENT_INITIALLY_VISIBLE = Boolean.parseBoolean(Config.get("tree.node.content.isInitiallyVisible"));
     
-    private Node _root;
+    private NodeBlock _root;
     
-    Tree(IBlock parent) {
-        super(parent);
-    }
-    
-    void init(Node root) {
+    TreeBlock(NodeBlock root) {
         _root = root;
         addNode(root);
     }
     
-    private void addNode(Node node) {
+    private void addNode(NodeBlock node) {
         addChild(node);
-        if (!IS_NODE_CONTENT_INITIALLY_VISIBLE)
-            node.getContent().setVisible(false);
-        for (Node child : node.getChildNodes())
+        for (NodeBlock child : node.getChildNodes())
             addNode(child);
+    }
+    
+    @Override
+    public void init() {
+        if (IS_NODE_CONTENT_INITIALLY_VISIBLE) {
+            super.init();
+            return;
+        }
+        // init all nodes and hide their contents 
+        initNode(_root);
+        setVisible(true);
+    }
+    
+    private static void initNode(NodeBlock node) {
+        node.init();
+        for (NodeBlock childNode : node.getChildNodes())
+            initNode(childNode);
+        node.getContent().setVisible(false);
     }
     
     @Override
@@ -61,7 +73,7 @@ public class Tree extends ContainerBlock {
         getPanel().repaint();
     }
     
-    private int layoutNode(Node u, final int x, final int y) {
+    private int layoutNode(NodeBlock u, final int x, final int y) {
         if (u.isLeafNode()) {
             u.setPosition(x, y);
             return x + u.getWidth();
@@ -69,10 +81,10 @@ public class Tree extends ContainerBlock {
         
         int nextX = x;
         int nextY = y + u.getHeight() + MIN_VDIST;
-        Node fc = null; // first child
-        Node lc = null; // last child
+        NodeBlock fc = null; // first child
+        NodeBlock lc = null; // last child
         
-        for (Node child : u.getChildNodes()) {
+        for (NodeBlock child : u.getChildNodes()) {
             if (fc == null)
                 fc = child;
             else
@@ -101,9 +113,9 @@ public class Tree extends ContainerBlock {
         return nextX;
     }
     
-    private static void moveNode(Node node, int offX, int offY) {
+    private static void moveNode(NodeBlock node, int offX, int offY) {
         node.setPosition(node.getX() + offX, node.getY() + offY);
-        for (Node childNode : node.getChildNodes())
+        for (NodeBlock childNode : node.getChildNodes())
             moveNode(childNode, offX, offY);
     }
     
@@ -114,11 +126,11 @@ public class Tree extends ContainerBlock {
         drawEdges(_root, g);
     }
     
-    private void drawEdges(Node node, Graphics g) {
+    private void drawEdges(NodeBlock node, Graphics g) {
         int x1 = node.getX() + node.getWidth() / 2;
         int y1 = node.getY() + node.getHeight();
         
-        for (Node child : node.getChildNodes()) {
+        for (NodeBlock child : node.getChildNodes()) {
             int x2 = child.getX() + child.getWidth() / 2;
             int y2 = child.getY();
             g.drawLine(x1, y1, x2, y2);

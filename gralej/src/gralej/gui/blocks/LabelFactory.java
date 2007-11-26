@@ -59,11 +59,10 @@ class LabelFactory {
     }
     
     ContentLabel createContentLabel(
-        String text, ContentOwningBlock parent, LabelParams params
+        String text, LabelParams params
         )
     {
         return new ContentLabel(
-            parent,
             text,
             params.font,
             params.textColor,
@@ -76,11 +75,10 @@ class LabelFactory {
     }
     
     Label createLabel(
-            String text, IBlock parent, LabelParams params
+            String text, LabelParams params
             )
     {
         return new Label(
-            parent,
             text,
             params.font,
             params.textColor,
@@ -91,68 +89,65 @@ class LabelFactory {
             );
     }
     
-    ContentLabel createTagLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(text, parent,
+    ContentLabel createTagLabel(String text) {
+        return createContentLabel(text,
             getLabelParams("label.tag")
             );
     }
     
-    ContentLabel createSortLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(text, parent,
+    ContentLabel createSortLabel(String text) {
+        return createContentLabel(text,
             getLabelParams("label.sort")
             );
     }
     
-    ContentLabel createAttributeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(text, parent,
+    ContentLabel createAttributeLabel(String text) {
+        return createContentLabel(text,
             getLabelParams("label.attribute")
             );
     }
     
-    Label createListLBracketLabel(ContentOwningBlock parent) {
+    Label createListLBracketLabel() {
         return createLabel(
             LIST_LBRACKET_TEXT,
-            parent,
             getLabelParams("label.list")
             );
     }
     
-    Label createListRBracketLabel(ContentOwningBlock parent) {
+    Label createListRBracketLabel() {
         return createLabel(
             LIST_RBRACKET_TEXT,
-            parent,
             getLabelParams("label.list")
             );
     }
     
-    Label createListSeparatorLabel(IBlock parent) {
+    Label createListSeparatorLabel() {
         return createLabel(
                 LIST_SEPARATOR_TEXT,
-                parent,
                 getLabelParams("label.list")
                 );
     }
     
-    Label createAnyLabel(String text, IBlock parent) {
-        return createLabel(text, parent,
+    Label createAnyLabel(String text) {
+        return createLabel(text,
             getLabelParams("label.any")
             );
     }
     
-    Label createSpeciesLabel(String text, IBlock parent) {
-        return createLabel(text, parent,
+    Label createSpeciesLabel(String text) {
+        return createLabel(text,
             getLabelParams("label.species")
             );
     }
     
-    Label createInternalNodeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(text, parent,
+    Label createInternalNodeLabel(String text) {
+        return createContentLabel(text,
                 getLabelParams("label.node.internal")
                 );
     }
     
-    Label createLeafNodeLabel(String text, ContentOwningBlock parent) {
-        return createContentLabel(text, parent,
+    Label createLeafNodeLabel(String text) {
+        return createContentLabel(text,
                 getLabelParams("label.node.leaf")
                 );
     }    
