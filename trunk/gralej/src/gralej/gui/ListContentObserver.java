@@ -45,8 +45,13 @@ public class ListContentObserver extends ContentObserver {
 	    {
 	    	// the following implementation shows a tooltip with the name of a list element
 	    	// useful when the name is too long
-            public String getToolTipText(MouseEvent e ) {
-                  return getModel().getElementAt(locationToIndex(e.getPoint())).toString();
+            public String getToolTipText(MouseEvent e) {
+            	int p = locationToIndex(e.getPoint());
+            	if (p != -1) {
+            		return getModel().getElementAt(p).toString();
+            	} else {
+            		return "";
+            	}
             }
           };
 

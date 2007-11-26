@@ -75,7 +75,6 @@ public class ContentModel { // extends DefaultListModel??
 	public void close () {
 		if (files.size() == 0) return; // don't close nothing
 		notifyObservers("close");
-//		JOptionPane.showMessageDialog(null, "closing " + focused);
 		files.remove(focused); // frame close still NEEDS reference, so can only be deleted later
 		
 		// assign new focus. could be done better

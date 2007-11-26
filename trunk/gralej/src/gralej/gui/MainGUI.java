@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.*;
 import java.io.*;
+
 import javax.swing.*;
 import java.util.prefs.*;
 
@@ -25,7 +26,9 @@ public class MainGUI implements ActionListener, ItemListener {
 	// display mode
 	static int FRAMES = 0; 
 	static int WINDOWS = 1; 
-	private int mode = FRAMES;
+	private int mode = WINDOWS;
+	
+	private String lastDir;
 
 
 	private Controller c; // the gralej.controller 
@@ -183,11 +186,18 @@ public class MainGUI implements ActionListener, ItemListener {
     		System.exit(0);
     	} else if (source == m_Open || source == b_Open) {
     		// open file dialog, send file to tabs
-    		JFileChooser fc = new JFileChooser();
+    		JFileChooser fc = new JFileChooser(lastDir);
     		int returnVal = fc.showOpenDialog(source);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                c.open(fc.getSelectedFile());
+            	File selected = fc.getSelectedFile();
+                c.open(selected);
+                try {
+					lastDir = selected.getCanonicalPath();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             } else {
             	// file could not be opened. doing nothing might be appropriate
             }
