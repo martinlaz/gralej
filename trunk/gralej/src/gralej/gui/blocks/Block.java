@@ -6,7 +6,13 @@ abstract class Block implements IBlock {
     private int _x, _y;
     private IBlock _parent;
     
-    public Block(IBlock parent) { _parent = parent; }
+    public Block() {}
+    
+    public void init() {
+        for (IBlock child : getChildren())
+            child.init();
+        setVisible(true);
+    }
     
     public BlockPanel getPanel() {
         return getParentBlock().getPanel();
@@ -59,6 +65,10 @@ abstract class Block implements IBlock {
     
     // hierarchy
     public IBlock getParentBlock() { return _parent; }
+    void setParentBlock(IBlock parent) {
+        assert _parent == null;
+        _parent = parent;
+    }
     public Iterable<IBlock> getChildren()
         { return java.util.Collections.emptyList(); }
     public boolean isLeaf() { return true; }

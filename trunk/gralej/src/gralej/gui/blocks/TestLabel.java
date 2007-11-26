@@ -20,13 +20,13 @@ public class TestLabel {
         BlockPanel panel = new BlockPanel();
         
         label = new Label(
-              panel,
               "19",
               Font.decode("ARIAL-BOLD-18"),
               Color.BLACK,
               5,
               2,
               2);
+        label.setParentBlock(panel);
         panel.setContent(label);
         label.setVisible(true);
         

@@ -1,30 +1,27 @@
 package gralej.gui.blocks;
 
-class Reentrancy extends ContentOwningBlock {
+class ReentrancyBlock extends ContentOwningBlock {
     IContentCreator _contentCreator;
     
-    Reentrancy(IBlock parent, int tag) {
-        super(parent);
+    ReentrancyBlock(int tag, IContentCreator contentCreator) {
         setLayout(LayoutFactory.getReentrancyLayout());
         
-        Label tagLabel = getPanel().getLabelFactory().createTagLabel(
-                Integer.toString(tag),
-                this
-                );
+        Label tagLabel = LabelFactory.getInstance().createTagLabel(
+                Integer.toString(tag));
         addChild(tagLabel);
-    }
     
-    void init(IContentCreator contentCreator) {
         _contentCreator = contentCreator;
     }
     
     @Override
-    public IBlock getContent() {
+    public Block getContent() {
         if (_content == null) {
-            _content = _contentCreator.createContent(this);
+            _content = _contentCreator.createContent();
             // don't make it visible,
             // the content label will do so
             addChild(_content, false);
+            _content.init();
+            _content.setVisible(false);
         }
         return _content;
     }

@@ -1,5 +1,10 @@
 package gralej.parsers;
 
+import gralej.gui.blocks.BlockCreator;
+import gralej.gui.blocks.BlockPanel;
+import gralej.gui.blocks.IBlock;
+import gralej.om.IVisitable;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.PrintWriter;
@@ -9,11 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import gralej.gui.blocks.BlockCreatingVisitor;
-import gralej.gui.blocks.BlockPanel;
-import gralej.gui.blocks.IBlock;
-import gralej.om.IVisitable;
 
 class TraleMsgHandlerHelper {
     IParseResultReceiver _resultReceiver;
@@ -30,7 +30,7 @@ class TraleMsgHandlerHelper {
         contentPane.setOpaque(true);
         
         BlockPanel root = new BlockPanel();
-        IBlock rootContent = new BlockCreatingVisitor().createBlock(root, vob);
+        IBlock rootContent = new BlockCreator().createBlock(vob);
         root.setContent(rootContent);
         rootContent.setVisible(true);
         
@@ -55,9 +55,8 @@ class TraleMsgHandlerHelper {
             });
             */
             BlockPanel root = new BlockPanel();
-            IBlock rootContent = new BlockCreatingVisitor().createBlock(root, vob);
+            IBlock rootContent = new BlockCreator().createBlock(vob);
             root.setContent(rootContent);
-            rootContent.setVisible(true);
             final JPanel panel = new JPanel(new BorderLayout());
             //panel.add(new JScrollPane(root));
             panel.setOpaque(true);

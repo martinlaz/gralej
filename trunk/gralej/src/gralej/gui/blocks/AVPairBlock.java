@@ -1,13 +1,10 @@
 package gralej.gui.blocks;
 
-class AVPair extends ContentOwningBlock {
+class AVPairBlock extends ContentOwningBlock {
     
-    AVPair(IBlock parent) {
-        super(parent);
+    AVPairBlock(Label a, Block v) {
         setLayout(LayoutFactory.getAVPairLayout());
-    }
-    
-    void init(Label a, IBlock v) {
+        
         addChild(a);
         addChild(v);
         setContent(v);

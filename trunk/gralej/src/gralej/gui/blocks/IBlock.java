@@ -6,6 +6,8 @@ public interface IBlock {
     // the root of the block object hierarchy
     BlockPanel getPanel();
     
+    void init();
+    
     // visibility
     boolean isVisible();
     void setVisible(boolean visible);
