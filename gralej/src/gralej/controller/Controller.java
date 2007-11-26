@@ -11,6 +11,7 @@ import gralej.server.IGraleServer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * The controller is the central element of the program's design.
@@ -62,10 +63,31 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 	
 	
 
-	public synchronized void newParse(IParsedAVM parse) {
+	public void newParse(IParsedAVM parse) {
 		System.err.println("-- Controller got new parse");				
+		
+		class ParseShowingRunnable implements Runnable {
+			IParsedAVM parse;
+			
+			ParseShowingRunnable (IParsedAVM parse) {
+				this.parse = parse;
+			}
+			
+			public void run () {
+        		cm.open(parse.display(), parse.getName());				
+			}
+			
+		}
 
-		cm.open(parse.display(), parse.getName());
+        try {
+			javax.swing.SwingUtilities.invokeAndWait(new ParseShowingRunnable(parse));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 	}
