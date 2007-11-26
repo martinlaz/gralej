@@ -22,9 +22,12 @@ import gralej.controller.*;
  */
 public class MainGUI implements ActionListener, ItemListener {
 
-//	private static GRALEContentWindow content = new GRALEContentWindow();
-	private JSplitPane content;
-	
+	// display mode
+	static int FRAMES = 0; 
+	static int WINDOWS = 1; 
+	private int mode = FRAMES;
+
+
 	private Controller c; // the gralej.controller 
 	
 	// menu items
@@ -171,33 +174,7 @@ public class MainGUI implements ActionListener, ItemListener {
 		return toolbar;
 	}
 
-	/**
-	 * ought to be parallel to the other creators -> return JSplitPane
-	 * 
-	 */
-	private void createSplit() {
-	    //Create a split pane with the two scroll panes in it.
-        content = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT); 
-        
-        
-        content.setOneTouchExpandable(true);
-        content.setDividerLocation(150);
-
-/*        //Provide minimum sizes for the two components in the split pane.
-        Dimension minimumSize = new Dimension(100, 50);
-        listScrollPane.setMinimumSize(minimumSize);
-        pictureScrollPane.setMinimumSize(minimumSize);
-        */
-
-        //Provide a preferred size for the split pane.
-        content.setPreferredSize(new Dimension(500, 250));
-        
-	}
 	
-	public void addToSplit(ContentObserver o) {
-		content.add(o.getDisplay());
-
-	}
 
     // User actions broadcast Events. Depending on the source, they're ActionEvents (menu item) or ItemEvents (checkbox)
     public void actionPerformed(ActionEvent e) {
@@ -501,8 +478,41 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.getContentPane().add(this.createToolBar(),BorderLayout.NORTH);
 
         // content part
-        createSplit();
-        frame.add(content, BorderLayout.CENTER);
+
+        // always needed: list observer (registers with model in its constructor)
+    	ContentObserver list = new ListContentObserver(c.getModel());
+        
+        if (mode == FRAMES) {
+        
+        	//Create a split pane with the two scroll panes in it.
+        	JSplitPane content = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT); 
+        
+        	content.setOneTouchExpandable(true);
+        	content.setDividerLocation(150);
+
+        	//Provide a preferred size for the split pane.
+        	content.setPreferredSize(new Dimension(500, 250));
+        
+        	frame.add(content, BorderLayout.CENTER);
+        
+        	content.add(list.getDisplay());
+
+        	// frame observer (registers with model in its constructor)
+        	ContentObserver frames = new FramesContentObserver(c.getModel());
+
+        	// add list to GUI
+        	content.add(frames.getDisplay());
+    	
+        } else if (mode == WINDOWS) {
+        	
+        	// alternative: external windows. no split
+        	//ContentObserver frames = 
+        		new WindowsContentObserver(c.getModel());
+        	frame.setContentPane(list.getDisplay());
+//        	frame.add(frames.getDisplay());
+        	
+        	
+        }
         
         // bottom status line
         // to be implemented

@@ -23,15 +23,11 @@ import java.io.IOException;
  * after this it's done.
  * 
  * @author Armin
- * @version $Id$
+ * @version
  */
 
-public class Main {
+public class Main {	
 	
-	
-    /**
-     * Create the GUI and show it. 
-     */
     private static void createAndShowGUI() {
     	
     	// initialize the server
@@ -47,25 +43,8 @@ public class Main {
     	// initialize the controller
     	Controller c = new Controller(server);
 
-    	
     	// initialize the GUI
-    	MainGUI gui = new MainGUI(c);
-    	
-    	// initialize the observers
-    	// list observer (registers with model in its constructor)
-    	ContentObserver list = new ListContentObserver(c.getModel());
-    	// add list to GUI
-    	gui.addToSplit(list);
-    	// frame observer (registers with model in its constructor)
-    	ContentObserver frames = new FramesContentObserver(c.getModel());
-    	// add list to GUI
-    	gui.addToSplit(frames);
-    	
-// WindowObserver is not stable yet
-      	// window observer
-//    	ContentObserver windows = new WindowsContentObserver(c.getModel());
-    	// add list to GUI
-//    	gui.addToSplit(windows);
+    	new MainGUI(c);
     	
     }
 
