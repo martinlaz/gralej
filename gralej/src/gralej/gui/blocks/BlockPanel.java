@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.Collections;
 
 import javax.swing.JPanel;
@@ -87,7 +88,7 @@ public class BlockPanel extends JPanel
     
     @Override
     public Dimension getSize() {
-        return new Dimension(scale(getWidth()), scale(getHeight()));
+        return new Dimension(getWidth(), getHeight());
     }
     
     public void setPosition(int x, int y) {}
@@ -110,11 +111,11 @@ public class BlockPanel extends JPanel
     protected void paintComponent(Graphics g_) {
         super.paintComponent(g_);
         Graphics2D g = (Graphics2D) g_;
-        /*
-        g.setTransform(
-                AffineTransform.getScaleInstance(_scaleFactor, _scaleFactor)
-                );
-                */
+        if (_scaleFactor != 1) {
+            g.setTransform(
+                    AffineTransform.getScaleInstance(
+                            _scaleFactor, _scaleFactor));
+        }
         g.setRenderingHint(
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON
@@ -129,10 +130,7 @@ public class BlockPanel extends JPanel
     
     @Override
     public Dimension getPreferredSize() {
-        Dimension d = new Dimension(
-            scale(_content.getWidth() + 2*_marginSize),
-            scale(_content.getHeight() + 2*_marginSize));
-        return d;
+        return new Dimension(getWidth(), getHeight());
     }
     
     @Override
@@ -147,27 +145,36 @@ public class BlockPanel extends JPanel
             rv = new Rectangle();
         rv.setBounds(
             getX(), getY(),
-            scale(getWidth()), scale(getHeight())
+            getWidth(), getHeight()
             );
         return rv;
     }
     
     public void setScaleFactor(double newValue) {
+        if (newValue == _scaleFactor)
+            return;
+        if (newValue <= 0.0)
+            throw new IllegalArgumentException("Scale factor must be positive");
         _scaleFactor = newValue;
+        revalidate();
     }
     
     public double getScaleFactor() {
         return _scaleFactor;
     }
     
-    private static int scale(int n) {
-        //return (int) (_scaleFactor * n);
-        return n;
+    private int scale(int n) {
+        return (int) (n * _scaleFactor);
+    }
+    
+    private int unscale(int n) {
+        return (int) (n / _scaleFactor);
     }
     
     private void onMousePressed(MouseEvent e) {
         //log(e);
-        ContentLabel target = findContainingContentLabel(e.getX(), e.getY());
+        ContentLabel target = findContainingContentLabel(
+                unscale(e.getX()), unscale(e.getY()));
         if (target != null) {
             target.flipContentVisibility();
             updateCursorForPoint(e.getX(), e.getY());
@@ -208,7 +215,7 @@ public class BlockPanel extends JPanel
     private void onMouseMoved(MouseEvent ev) {
         if (ev.getID() != MouseEvent.MOUSE_MOVED)
             return;
-        updateCursorForPoint(ev.getX(), ev.getY());
+        updateCursorForPoint(unscale(ev.getX()), unscale(ev.getY()));
     }
     
     private void initCursors() {
