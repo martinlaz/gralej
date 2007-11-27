@@ -1,18 +1,22 @@
 package gralej.gui.blocks;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Collections;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class BlockPanel extends JPanel
     implements IBlock {
@@ -22,29 +26,62 @@ public class BlockPanel extends JPanel
     private IBlock _content;
     private int _marginSize;
     private LabelFactory _labfac;
-    Cursor _defaultCursor, _handCursor, _currentCursor;
-    double _scaleFactor = 1;
+    private Cursor _defaultCursor, _handCursor, _currentCursor;
+    private double _scaleFactor = 1;
+    private JPanel _drawingPane;
+    private boolean _packOnUpdateSize;
+    
+    private class DrawingPane extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g_) {
+            super.paintComponent(g_);
+            Graphics2D g = (Graphics2D) g_;
+            AffineTransform savedTransform = null;
+            if (_scaleFactor != 1) {
+                savedTransform = g.getTransform();
+                g.transform(
+                        AffineTransform.getScaleInstance(
+                                _scaleFactor, _scaleFactor));
+            }
+            g.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON
+                );
+            g.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+                );
+            //g.drawRect(getX(), getY(), getWidth()-1, getHeight()-1);
+            _content.paint(g);
+            if (savedTransform != null)
+                g.setTransform(savedTransform);
+        }
+    }
     
     public BlockPanel() {
+        super(new BorderLayout());
+        
+        _drawingPane = new DrawingPane();
+        _drawingPane.setBackground(Color.decode(Config.get("panel.background")));
+        
+        add(new JScrollPane(_drawingPane), BorderLayout.CENTER);
+        
         _marginSize = Config.getInt("panel.margins.all");
+        _scaleFactor = Double.parseDouble(Config.get("panel.scaleFactor"));
+        _packOnUpdateSize = Boolean.parseBoolean(Config.get("panel.packOnUpdateSize"));
         
-        setOpaque(true);
-        setBackground(Color.decode(Config.get("panel.background")));
-        
-        addMouseListener(new MouseAdapter() {
+        _drawingPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 onMousePressed(e);
             }
-            /*
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("mouse clicked " + e.getClickCount() + " times");
+                //System.out.println("mouse clicked " + e.getClickCount() + " times");
             }
-            */
         });
         
-        addMouseMotionListener(new MouseAdapter() {
+        _drawingPane.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 onMouseMoved(e);
@@ -67,7 +104,7 @@ public class BlockPanel extends JPanel
     
     LabelFactory getLabelFactory() {
         if (_labfac == null)
-            return LabelFactory.getInstance();
+            _labfac = LabelFactory.getInstance();
         return _labfac;
     }
     
@@ -75,24 +112,29 @@ public class BlockPanel extends JPanel
     public void setPanel(BlockPanel panel) {}
     
     public void updateSize() {
-        setSize(scale(_content.getWidth()), scale(_content.getHeight()));
-        _content.setPosition(getX() + _marginSize, getY() + _marginSize);
-        revalidate();
+        Dimension prefSize = new Dimension(
+                    scale(_content.getWidth()  + 2 * _marginSize),
+                    scale(_content.getHeight() + 2 * _marginSize)
+                    );
+        _drawingPane.setPreferredSize(prefSize);
+        _drawingPane.setSize(prefSize);
+        _drawingPane.revalidate();
+        
+        _content.setPosition(_marginSize, _marginSize);
+        
+        if (_packOnUpdateSize)
+            pack(getParent());
     }
     
-    @Override
-    public int getWidth() {
-        return scale(_content.getWidth() + 2 * _marginSize);
-    }
-    
-    @Override
-    public int getHeight() {
-        return scale(_content.getHeight() + 2 * _marginSize);
-    }
-    
-    @Override
-    public Dimension getSize() {
-        return new Dimension(getWidth(), getHeight());
+    private void pack(Component c) {
+        if (c == null)
+            return;
+        if (c instanceof JFrame)
+            ((JFrame) c).pack();
+        else if (c instanceof JInternalFrame)
+            ((JInternalFrame) c).pack();
+        else
+            pack(c.getParent());
     }
     
     public void setPosition(int x, int y) {}
@@ -106,57 +148,7 @@ public class BlockPanel extends JPanel
     
     public void setParentBlock(IBlock parent) { }
     
-    public void paint(Graphics2D g) { paintComponent(g); }
-    
-    @Override
-    public void paint(Graphics g) { paintComponent(g); }
-    
-    @Override
-    protected void paintComponent(Graphics g_) {
-        super.paintComponent(g_);
-        Graphics2D g = (Graphics2D) g_;
-        AffineTransform savedTransform = null;
-        if (_scaleFactor != 1) {
-            savedTransform = g.getTransform();
-            g.transform(
-                    AffineTransform.getScaleInstance(
-                            _scaleFactor, _scaleFactor));
-        }
-        g.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON
-            );
-        g.setRenderingHint(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON
-            );
-        //g.drawRect(getX() + 2, getY() + 2, getWidth() - 4, getHeight() - 4);
-        _content.paint(g);
-        if (savedTransform != null)
-            g.setTransform(savedTransform);
-    }
-    
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(getWidth(), getHeight());
-    }
-    
-    @Override
-    public void setBounds(int x, int y, int w, int h) {
-        super.setBounds(x, y, w, h);
-        _content.setPosition(x + _marginSize, y + _marginSize);
-    }
-    
-    @Override
-    public Rectangle getBounds(Rectangle rv) {
-        if (rv == null)
-            rv = new Rectangle();
-        rv.setBounds(
-            getX(), getY(),
-            getWidth(), getHeight()
-            );
-        return rv;
-    }
+    public void paint(Graphics2D g) { }
     
     public void setScaleFactor(double newValue) {
         if (newValue == _scaleFactor)
@@ -240,15 +232,15 @@ public class BlockPanel extends JPanel
         IBlock target = findContainingContentLabel(x, y);
         
         if (target == null)
-            setCursor(_defaultCursor);
+            updateCursor(_defaultCursor);
         else
-            setCursor(_handCursor);
+            updateCursor(_handCursor);
     }
     
-    public void setCursor(Cursor newCursor) {
+    public void updateCursor(Cursor newCursor) {
         if (newCursor == _currentCursor)
             return;
-        super.setCursor(newCursor);
+        _drawingPane.setCursor(newCursor);
         _currentCursor = newCursor;
     }
 }
