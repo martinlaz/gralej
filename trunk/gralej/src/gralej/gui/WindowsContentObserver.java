@@ -3,6 +3,7 @@ package gralej.gui;
 import gralej.GRALEFile;
 import gralej.controller.ContentModel;
 
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -10,8 +11,15 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 
-// FIXME has focus problems, maybe focuses/deletes wrong window
-
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @author Armin
+ * @version $id$
+ */
 public class WindowsContentObserver extends ContentObserver {
 	
 	private ArrayList<JFrame> frames;
@@ -30,7 +38,9 @@ public class WindowsContentObserver extends ContentObserver {
 	    JFrame newframe = new JFrame(file.getName());
         newframe.setContentPane(new JScrollPane(file.display()));
 	    newframe.setLocationByPlatform(true);
-//	    newframe.setMinimumSize(d); // Dimension d
+	    newframe.setMinimumSize(new Dimension(250,150));
+	    newframe.setSize(file.display().getSize());
+//	    System.err.println("size "+file.display().getSize().toString());
 		frames.add(newframe);
 	    newframe.setVisible(true);
 	    newframe.addWindowListener(new Listener());
@@ -48,9 +58,15 @@ public class WindowsContentObserver extends ContentObserver {
 		if (model.getFocused() == -1) return;
 		int toFocus = model.getFocused();
 //		if (frames.get(toFocus).hasFocus()) return;
-//		System.err.println("Focus setting to "+model.getFocused());
 		frames.get(toFocus).requestFocus();// or .toFront();
-//		System.err.println("Focus set     to "+model.getFocused());
+	}
+	
+	/**
+	 * method to make the window size fit its content
+	 * 
+	 */
+	private void resize () {
+		
 	}
 
 	public void update(String message) {
@@ -62,6 +78,8 @@ public class WindowsContentObserver extends ContentObserver {
 			this.remove();
 		} else if (message.equals("focus")) {
 			this.focus();
+		} else if (message.equals("resize")) {
+			this.resize();
 			
 		}
 		
@@ -73,8 +91,6 @@ public class WindowsContentObserver extends ContentObserver {
 	class Listener implements WindowListener {
 
 		public void windowActivated(WindowEvent e) {
-//			System.err.println("Focus requested by "+
-//					frames.indexOf(e.getSource())+ " focus is "+ model.getFocused());
 			model.setFocused(frames.indexOf(e.getSource()));
 			
 		}

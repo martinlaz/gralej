@@ -4,12 +4,12 @@
 package gralej.gui;
 
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
 import javax.swing.*;
+import javax.swing.filechooser.*;
 import java.util.prefs.*;
 
 
@@ -192,13 +192,17 @@ public class MainGUI implements ActionListener, ItemListener {
     	} else if (source == m_Open || source == b_Open) {
     		// open file dialog, send file to tabs
     		JFileChooser fc = new JFileChooser(lastDir);
+    		fc.setMultiSelectionEnabled(true);
     		int returnVal = fc.showOpenDialog(source);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-            	File selected = fc.getSelectedFile();
-                c.open(selected);
+            	File[] files = fc.getSelectedFiles();
+//            	File selected = fc.getSelectedFile();
+            	for (File f : files) {
+                    c.open(f);            		
+            	}
                 try {
-					lastDir = selected.getCanonicalPath();
+					lastDir = files[0].getCanonicalPath();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -508,7 +512,7 @@ public class MainGUI implements ActionListener, ItemListener {
         	//Provide a preferred size for the split pane.
         	content.setPreferredSize(new Dimension(500, 250));
         
-        	frame.add(content, BorderLayout.CENTER);
+        	frame.getContentPane().add(content, BorderLayout.CENTER);
         
         	content.add(list.getDisplay());
 
@@ -522,8 +526,8 @@ public class MainGUI implements ActionListener, ItemListener {
         	
         	// alternative: external windows. no split
         	//ContentObserver frames = 
-        		new WindowsContentObserver(c.getModel());
-        	frame.add(list.getDisplay());
+        	new WindowsContentObserver(c.getModel());
+        	frame.getContentPane().add(list.getDisplay(), BorderLayout.CENTER);
 //        	frame.add(frames.getDisplay());
         	
         	
@@ -531,6 +535,9 @@ public class MainGUI implements ActionListener, ItemListener {
         
         // bottom status line
         // to be implemented
+        JPanel statusLine = new JPanel();
+        statusLine.add(new JLabel("status line"));
+        frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
         
         //Display the window.
 //        frame.setUndecorated(true);
