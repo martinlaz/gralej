@@ -29,7 +29,7 @@ public class BlockPanel extends JPanel
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private double _scaleFactor = 1;
     private JPanel _drawingPane;
-    private boolean _packOnUpdateSize;
+    private boolean _autoResize;
     
     private class DrawingPane extends JPanel {
         @Override
@@ -68,7 +68,7 @@ public class BlockPanel extends JPanel
         
         _marginSize = Config.getInt("panel.margins.all");
         _scaleFactor = Double.parseDouble(Config.get("panel.scaleFactor"));
-        _packOnUpdateSize = Boolean.parseBoolean(Config.get("panel.packOnUpdateSize"));
+        _autoResize = Boolean.parseBoolean(Config.get("panel.autoResize"));
         
         _drawingPane.addMouseListener(new MouseAdapter() {
             @Override
@@ -89,8 +89,8 @@ public class BlockPanel extends JPanel
         });
     }
     
-    public boolean getAutoResize() { return _packOnUpdateSize; }
-    public void setAutoResize(boolean newValue) { _packOnUpdateSize = newValue; }
+    public boolean getAutoResize() { return _autoResize; }
+    public void setAutoResize(boolean newValue) { _autoResize = newValue; }
     
     public void init() {}
     
@@ -125,11 +125,11 @@ public class BlockPanel extends JPanel
         
         _content.setPosition(_marginSize, _marginSize);
         
-        if (_packOnUpdateSize)
+        if (_autoResize)
             pack(getParent());
     }
     
-    private void pack(Component c) {
+    private static void pack(Component c) {
         if (c == null)
             return;
         if (c instanceof JFrame)
