@@ -1,8 +1,12 @@
 package gralej.gui.blocks;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
-public class Label extends Block {
+class Label extends Block {
     final static int MAX_TEXT_LENGTH = Config.getInt("label.text.maxLength");
     final static String TEXT_CONTINUATION = Config.get("label.continuation.text");
     
@@ -73,9 +77,11 @@ public class Label extends Block {
         _color = color;
         _hm = horizontalMargin;
         _vm = verticalMargin;
-        setFrame(frameWidth);
+        setFrame(frameWidth, frameColor);
     }
     
+    
+    @Override
     public void init() {
         updateTextMetrics();
         setVisible(true);
@@ -137,6 +143,7 @@ public class Label extends Block {
         _color = color;
     }
     
+    @Override
     public void updateSize() {
         int w = _tw + 2 * _hm;
         int h = _th + 2 * _vm;
@@ -151,6 +158,7 @@ public class Label extends Block {
         _ascent = fm.getAscent();
     }
     
+    @Override
     public void paint(Graphics2D g) {
         int x = getX();
         int y = getY();

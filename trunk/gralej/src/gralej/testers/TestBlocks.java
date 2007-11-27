@@ -14,6 +14,7 @@ import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class TestBlocks {
@@ -75,8 +76,12 @@ public class TestBlocks {
         }
         
         parser.parse(in, streamInfo, new IParseResultReceiver() {
-            public void newParse(IParsedAVM result) {
-                show(result);
+            public void newParse(final IParsedAVM result) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        show(result);
+                    }
+                });
             }
         });
         
