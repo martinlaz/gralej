@@ -50,13 +50,17 @@ public class TreeBlock extends ContainerBlock {
         // so we do the two things at the same time:
         // size computation and node positioning.
         
-        int maxX = layoutNode(_root, getX(), getY());
-        int maxY = 0;
+        layoutNode(_root, getX(), getY());
         
-        for (IBlock node : getChildren())
-            maxY = Math.max(maxY, node.getY() + node.getHeight());
+        int w = 0;
+        int h = 0;
         
-        setSize(maxX, maxY);
+        for (IBlock node : getChildren()) {
+            w = Math.max(w, node.getX() + node.getWidth());
+            h = Math.max(h, node.getY() + node.getHeight());
+        }
+        
+        setSize(w - getX(), h - getY());
     }
     
     @Override

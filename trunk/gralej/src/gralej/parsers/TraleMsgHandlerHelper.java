@@ -2,15 +2,10 @@ package gralej.parsers;
 
 import gralej.gui.blocks.BlockCreator;
 import gralej.gui.blocks.BlockPanel;
-import gralej.gui.blocks.IBlock;
 import gralej.om.IVisitable;
-
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -21,8 +16,8 @@ class TraleMsgHandlerHelper {
     void setResultReceiver(IParseResultReceiver resultReceiver) {
         _resultReceiver = resultReceiver;
     }
-    
-    static void createAndShowGUI(IVisitable vob) {
+    /*
+    private static void createAndShowGUI(IVisitable vob) {
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -32,15 +27,18 @@ class TraleMsgHandlerHelper {
         BlockPanel root = new BlockPanel();
         IBlock rootContent = new BlockCreator().createBlock(vob);
         root.setContent(rootContent);
-        rootContent.setVisible(true);
+        //rootContent.setVisible(true);
         
-        contentPane.add(root);
+        JScrollPane scrollPane = new JScrollPane(root);
+        scrollPane.setPreferredSize(new Dimension(100,100));
+        contentPane.add(scrollPane);
         
         f.setContentPane(contentPane);
+        //f.setContentPane(new JScrollPane(contentPane));
         f.pack();
         f.setVisible(true);
     }
-    
+    */
     void adviceResult(final String title, final IVisitable vob) {
         if (_resultReceiver == null) {
             System.err.println("++ parsed ok, but no result receiver");
@@ -48,19 +46,12 @@ class TraleMsgHandlerHelper {
         }
         try {
             /*
-            javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                        createAndShowGUI(vob);
-                }
+             javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                public void run() { createAndShowGUI(vob); }
             });
-            */
-            BlockPanel root = new BlockPanel();
-            IBlock rootContent = new BlockCreator().createBlock(vob);
-            root.setContent(rootContent);
-            final JPanel panel = new JPanel(new BorderLayout());
-            //panel.add(new JScrollPane(root));
-            panel.setOpaque(true);
-            panel.add(root);
+             */
+            final BlockPanel blockPanel = new BlockPanel();
+            blockPanel.setContent(new BlockCreator().createBlock(vob));
             
             _resultReceiver.newParse(
                     new IParsedAVM() {
@@ -68,7 +59,7 @@ class TraleMsgHandlerHelper {
                             return title;
                         }
                         public JPanel display() {
-                            return panel;
+                            return blockPanel;
                         }
                     }
                 );
