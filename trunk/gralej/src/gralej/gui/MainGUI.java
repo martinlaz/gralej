@@ -174,7 +174,7 @@ public class MainGUI implements ActionListener, ItemListener {
     	b_Open.setRolloverIcon(new ImageIcon("fileopen.png"));
     	b_Open.setPressedIcon(...);
 		 */
-    
+
 		JButton zoomin = new JButton(theme.getIcon("zoomin"));
 		toolbar.add(zoomin);
 		JButton zoomout = new JButton(theme.getIcon("zoomout"));
@@ -523,7 +523,7 @@ public class MainGUI implements ActionListener, ItemListener {
         	// alternative: external windows. no split
         	//ContentObserver frames = 
         		new WindowsContentObserver(c.getModel());
-        	frame.setContentPane(list.getDisplay());
+        	frame.add(list.getDisplay());
 //        	frame.add(frames.getDisplay());
         	
         	
