@@ -143,7 +143,6 @@ class Label extends Block {
         _color = color;
     }
     
-    @Override
     public void updateSize() {
         int w = _tw + 2 * _hm;
         int h = _th + 2 * _vm;
@@ -158,7 +157,6 @@ class Label extends Block {
         _ascent = fm.getAscent();
     }
     
-    @Override
     public void paint(Graphics2D g) {
         int x = getX();
         int y = getY();
