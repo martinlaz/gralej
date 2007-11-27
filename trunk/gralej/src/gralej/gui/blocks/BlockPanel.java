@@ -89,6 +89,9 @@ public class BlockPanel extends JPanel
         });
     }
     
+    public boolean getAutoResize() { return _packOnUpdateSize; }
+    public void setAutoResize(boolean newValue) { _packOnUpdateSize = newValue; }
+    
     public void init() {}
     
     public void setContent(IBlock block) {
