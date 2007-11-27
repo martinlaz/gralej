@@ -12,5 +12,6 @@ class AVPairBlock extends ContentOwningBlock {
     
     public IBlock getAttribute() { return _children.get(0); }
     public IBlock getValue()     { return _children.get(1); }
+    @Override
     public IBlock getContent()   { return getValue(); }
 }

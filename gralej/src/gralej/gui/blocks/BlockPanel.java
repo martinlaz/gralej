@@ -115,8 +115,10 @@ public class BlockPanel extends JPanel
     protected void paintComponent(Graphics g_) {
         super.paintComponent(g_);
         Graphics2D g = (Graphics2D) g_;
+        AffineTransform savedTransform = null;
         if (_scaleFactor != 1) {
-            g.setTransform(
+            savedTransform = g.getTransform();
+            g.transform(
                     AffineTransform.getScaleInstance(
                             _scaleFactor, _scaleFactor));
         }
@@ -130,6 +132,8 @@ public class BlockPanel extends JPanel
             );
         //g.drawRect(getX() + 2, getY() + 2, getWidth() - 4, getHeight() - 4);
         _content.paint(g);
+        if (savedTransform != null)
+            g.setTransform(savedTransform);
     }
     
     @Override
@@ -177,11 +181,12 @@ public class BlockPanel extends JPanel
     
     private void onMousePressed(MouseEvent e) {
         //log(e);
-        ContentLabel target = findContainingContentLabel(
-                unscale(e.getX()), unscale(e.getY()));
+        int x = unscale(e.getX());
+        int y = unscale(e.getY());
+        ContentLabel target = findContainingContentLabel(x, y);
         if (target != null) {
             target.flipContentVisibility();
-            updateCursorForPoint(e.getX(), e.getY());
+            updateCursorForPoint(x, y);
         }
     }
     
