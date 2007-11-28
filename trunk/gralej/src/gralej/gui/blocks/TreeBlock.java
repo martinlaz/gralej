@@ -74,7 +74,7 @@ public class TreeBlock extends ContainerBlock {
     
     @Override
     protected void layoutChildren() {
-        getPanel().repaint();
+        //getPanel().repaint();
     }
     
     private int layoutNode(NodeBlock u, final int x, final int y) {

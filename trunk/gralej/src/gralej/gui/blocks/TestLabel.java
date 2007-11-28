@@ -17,8 +17,6 @@ public class TestLabel {
         //JPanel contentPane = new JPanel(new BorderLayout());
         //contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         //contentPane.setOpaque(true);
-        BlockPanel panel = new BlockPanel();
-        
         label = new Label(
               "19",
               Font.decode("ARIAL-BOLD-18"),
@@ -26,9 +24,8 @@ public class TestLabel {
               5,
               2,
               2);
-        label.setParentBlock(panel);
-        panel.setContent(label);
-        label.setVisible(true);
+        BlockPanel panel = new BlockPanel(label);
+        //label.setVisible(true);
         
         //contentPane.add(panel);
         f.setContentPane(panel);
