@@ -9,7 +9,6 @@ import java.awt.event.*;
 import java.io.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.*;
 import java.util.prefs.*;
 
 
@@ -18,7 +17,6 @@ import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 
 /**
- * TODO remember last open directory (via prefs?)
  * 
  * @author Armin
  * @version $Id$
@@ -28,7 +26,8 @@ public class MainGUI implements ActionListener, ItemListener {
 	// display mode
 	static int FRAMES = 0; 
 	static int WINDOWS = 1; 
-	private int mode = WINDOWS;
+//	private int mode = WINDOWS;
+	private int mode = FRAMES;
 	
 	private String lastDir;
 
@@ -197,7 +196,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
             	File[] files = fc.getSelectedFiles();
-//            	File selected = fc.getSelectedFile();
+//            	File f = fc.getSelectedFile();
             	for (File f : files) {
                     c.open(f);            		
             	}

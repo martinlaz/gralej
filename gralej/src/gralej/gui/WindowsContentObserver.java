@@ -68,6 +68,24 @@ public class WindowsContentObserver extends ContentObserver {
 	private void resize () {
 		
 	}
+	
+	/**
+	 * distribute open windows over the existing space
+	 * all same size
+	 * 
+	 */
+	public void tile () {
+		
+	}
+
+	
+	/**
+	 * cascade windows as if newly generated
+	 * 
+	 */
+	public void cascade () {
+		
+	}
 
 	public void update(String message) {
 		if (message.equals("open")) {

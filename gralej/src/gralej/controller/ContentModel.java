@@ -68,15 +68,13 @@ public class ContentModel { // extends DefaultListModel??
 		GRALEFile newfile = new GRALEFile(parse, name);
 		files.add(newfile);
 	    focused = files.size() - 1;
-	    notifyObservers("open"); // could add an event type "open file".
-	                       //this would save a complete rebuild from the observers
+	    notifyObservers("open");
 	}
 
 	public void close () {
 		if (files.size() == 0) return; // don't close nothing
 		notifyObservers("close");
 		files.remove(focused); // frame close still NEEDS reference, so can only be deleted later
-		
 		// assign new focus. could be done better
 		focused = files.size() - 1;
 		
