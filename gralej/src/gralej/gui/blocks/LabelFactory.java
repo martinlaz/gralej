@@ -26,7 +26,7 @@ class LabelFactory {
     
     final static String LIST_LBRACKET_TEXT  = Config.get("label.list.text.left");
     final static String LIST_RBRACKET_TEXT  = Config.get("label.list.text.right");
-    final static String LIST_SEPARATOR_TEXT  = Config.get("label.list.text.separator");
+    final static String LIST_SEPARATOR_TEXT = Config.get("label.list.text.separator");
     
     Map<String,LabelParams> _cachedLabelParams = new 
         TreeMap<String,LabelParams>();
@@ -54,6 +54,7 @@ class LabelFactory {
             lp.vm = Config.getInt(type + ".margin.vertical", DEFAULT_VM);
             lp.frameWidth = Config.getInt(type + ".frame.width", DEFAULT_FRAME_WIDTH);
             lp.frameColor = Color.decode(Config.get(type + ".frame.color", DEFAULT_FRAME_COLOR));
+            _cachedLabelParams.put(type, lp);
         }
         return lp;
     }

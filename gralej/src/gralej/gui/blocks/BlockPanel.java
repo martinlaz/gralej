@@ -58,7 +58,7 @@ public class BlockPanel extends JPanel
         }
     }
     
-    public BlockPanel() {
+    public BlockPanel(IBlock content) {
         super(new BorderLayout());
         
         _drawingPane = new DrawingPane();
@@ -87,6 +87,8 @@ public class BlockPanel extends JPanel
                 onMouseMoved(e);
             }
         });
+        
+        setContent(content);
     }
     
     public boolean getAutoResize() { return _autoResize; }
@@ -94,7 +96,7 @@ public class BlockPanel extends JPanel
     
     public void init() {}
     
-    public void setContent(IBlock block) {
+    private void setContent(IBlock block) {
         assert _content == null;
         ((Block)block).setParentBlock(this);
         _content = block;

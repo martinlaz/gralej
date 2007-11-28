@@ -50,9 +50,9 @@ class TraleMsgHandlerHelper {
                 public void run() { createAndShowGUI(vob); }
             });
              */
-            final BlockPanel blockPanel = new BlockPanel();
-            blockPanel.setContent(new BlockCreator().createBlock(vob));
-            
+            final BlockPanel blockPanel = new BlockPanel(
+                    new BlockCreator().createBlock(vob)
+                    );
             _resultReceiver.newParse(
                     new IParsedAVM() {
                         public String getName() {
