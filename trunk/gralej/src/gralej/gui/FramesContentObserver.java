@@ -6,7 +6,7 @@ package gralej.gui;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.ArrayList;
-
+import java.awt.*;
 import gralej.*;
 import gralej.controller.*;
 
@@ -18,6 +18,9 @@ import gralej.controller.*;
  */
 public class FramesContentObserver extends ContentObserver {
 	
+    Point x; // where to display a new window
+
+	
 	private ArrayList<JInternalFrame> frames;
 
 
@@ -28,6 +31,7 @@ public class FramesContentObserver extends ContentObserver {
 		super(m);
 		display = new JDesktopPane();
 		frames = new ArrayList<JInternalFrame>();
+    	x = new Point(0,0);
 	}
 	
 	// methods to add, remove and focus frames
@@ -37,7 +41,18 @@ public class FramesContentObserver extends ContentObserver {
         JScrollPane scrollPane = new JScrollPane(file.display());
 //	    newframe.add(file.display());
         newframe.setContentPane(scrollPane);
-	    newframe.setLocation(100, 100); // better: get location as x+30, y+30 from current active if unmaximized
+        
+        
+       	x.translate(30, 30);
+       	if (x.y + 100 > display.getSize().height ) {
+       		x.move(x.x - x.y + 75, 30);
+       	}
+       	if (x.x + 100 > display.getSize().width ) {
+       		x.move(30, 30);
+       	}
+
+        
+	    newframe.setLocation(x);
 	    newframe.setSize(300, 250);
 		display.add(newframe);
 		frames.add(newframe);
@@ -59,6 +74,26 @@ public class FramesContentObserver extends ContentObserver {
 	    	frames.get(model.getFocused()).setSelected(true);
 	    } catch (java.beans.PropertyVetoException ignored) {}
 	}
+	
+	/**
+	 * distribute open frames over the existing space
+	 * all same size
+	 * 
+	 */
+	public void tile () {
+		
+	}
+
+	
+	/**
+	 * cascade windows as if newly generated
+	 * 
+	 */
+	public void cascade () {
+		
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see grale.GRALEContentObserver#update()
