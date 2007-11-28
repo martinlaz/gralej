@@ -33,27 +33,32 @@ public class GenericIconTheme implements IconTheme {
 	
 	private void preloadAllIcons() {
 		
-		map.put("closeviews",  loadIcon("closeviews.png"));
-		map.put("closewindow",  loadIcon("closewindow.png"));
-		map.put("connected",  loadIcon("connected.png"));
-		map.put("deletedata",  loadIcon("deletedata.png"));
-		map.put("disconnected",  loadIcon("disconnected.png"));
-		map.put("expand",  loadIcon("expand.png"));
-		map.put("filefloppy",  loadIcon("filefloppy.png"));
+		map.put("closeviews",  loadIcon("grale-closeviews.png"));
+		map.put("closewindow",  loadIcon("grale-closewindow.png"));
+		map.put("connected",  loadIcon("connect_established.png"));
+		map.put("deletedata",  loadIcon("grale-deletedata.png"));
+		map.put("disconnected",  loadIcon("connect_no.png"));
+		map.put("expand",  loadIcon("grale-expand.png"));
+		map.put("filefloppy",  loadIcon("filesaveas.png"));
 		map.put("fileopen",  loadIcon("fileopen.png"));
 		map.put("fileprint",  loadIcon("fileprint.png"));
 		map.put("gralelogo",  loadIcon("_GRALE.png"));
-		map.put("grale",  loadIcon("GRALE.png"));
-		map.put("magglass",  loadIcon("magglass.png"));
-		map.put("maximize",  loadIcon("maximize.png"));
-		map.put("nextstruc",  loadIcon("nextstruc.png"));
-		map.put("prevstruc",  loadIcon("prevstruc.png"));
-		map.put("raisewindow",  loadIcon("raisewindow.png"));
-		map.put("showstruc",  loadIcon("showstruc.png"));
-		map.put("showtree",  loadIcon("showtree.png"));
-		map.put("unexpand",  loadIcon("unexpand.png"));
-		map.put("zoomin",  loadIcon("zoomin.png"));
-		map.put("zoomout",  loadIcon("zoomout.png"));
+		map.put("grale",  loadIcon("grale-GRALE.png"));
+		map.put("magglass",  loadIcon("viewmag.png"));
+		map.put("maximize",  loadIcon("window_fullscreen.png"));
+		map.put("nextstruc",  loadIcon("forward.png"));
+		map.put("prevstruc",  loadIcon("back.png"));
+		map.put("raisewindow",  loadIcon("grale-raisewindow.png"));
+		map.put("showstruc",  loadIcon("grale-showstruc.png"));
+		map.put("showtree",  loadIcon("grale-showtree.png"));
+		map.put("unexpand",  loadIcon("grale-unexpand.png"));
+		map.put("zoomin",  loadIcon("viewmag+.png"));
+		map.put("zoomout",  loadIcon("viewmag-.png"));
+		map.put("cancel",  loadIcon("button_cancel.png"));
+		map.put("ok",  loadIcon("button_more.png"));
+		map.put("configure",  loadIcon("configure.png"));
+		map.put("fileclose",  loadIcon("fileclose.png"));
+		map.put("stop",  loadIcon("stop.png"));
 
 		
 		
