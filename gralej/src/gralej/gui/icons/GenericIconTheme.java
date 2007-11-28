@@ -59,6 +59,7 @@ public class GenericIconTheme implements IconTheme {
 		map.put("configure",  loadIcon("configure.png"));
 		map.put("fileclose",  loadIcon("fileclose.png"));
 		map.put("stop",  loadIcon("stop.png"));
+		map.put("fitwindow",  loadIcon("view_fit_window.png"));
 
 		
 		
