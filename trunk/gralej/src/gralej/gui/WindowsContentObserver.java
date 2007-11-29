@@ -79,7 +79,9 @@ public class WindowsContentObserver extends ContentObserver {
 	 * 
 	 */
 	public void tile () {
-		Dimension size = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle size = GraphicsEnvironment.getLocalGraphicsEnvironment()
+			.getMaximumWindowBounds();
+//		Dimension size = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 
 		int cols = (int)Math.sqrt(frames.size());
 	    int rows = (int)(Math.ceil( ((double)frames.size()) / cols));
@@ -118,7 +120,9 @@ public class WindowsContentObserver extends ContentObserver {
 	 * 
 	 */
 	public void cascade () {
-		Dimension size = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle size = GraphicsEnvironment.getLocalGraphicsEnvironment()
+		.getMaximumWindowBounds();
+//	Dimension size = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 
 		Point x = new Point(0,0);
 		for (int i = 0; i < frames.size(); i++) {
