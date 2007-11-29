@@ -6,9 +6,7 @@ package gralej;
 import javax.swing.JComponent;
 
 /**
- * A GRALEFile stores a reference to the original file and keeps an AVM representation
- * more precisely it needs a complete one and a partial one according to the user input
- *  (hidden nodes)
+ * A GRALEFile contains name and graphical representation of a parse
  * 
  * @author Armin
  *

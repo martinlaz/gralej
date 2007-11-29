@@ -82,7 +82,7 @@ public class ContentModel { // extends DefaultListModel??
 		notifyObservers("focus");
 	}
 	
-    private void notifyObservers(String message) {     
+    public void notifyObservers(String message) {     
     	for (int i=0; i < totalObs; i++) {
     		observers[i].update(message);
     	}
