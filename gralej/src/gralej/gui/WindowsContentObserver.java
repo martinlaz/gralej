@@ -4,8 +4,7 @@ import gralej.GRALEFile;
 import gralej.controller.ContentModel;
 
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -43,6 +42,8 @@ public class WindowsContentObserver extends ContentObserver {
 //	    System.err.println("size "+file.display().getSize().toString());
 		frames.add(newframe);
 	    newframe.addWindowListener(new Listener());
+
+
 	    newframe.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
 	    newframe.setVisible(true);
 	    newframe.pack();	    
@@ -66,7 +67,7 @@ public class WindowsContentObserver extends ContentObserver {
 	 * 
 	 */
 	private void resize () {
-		
+		frames.get(model.getFocused()).pack();
 	}
 	
 	/**
@@ -156,6 +157,8 @@ public class WindowsContentObserver extends ContentObserver {
 			this.cascade();
 		} else if (message.equals("tile")) {
 			this.tile();
+		} else if (message.equals("resize")) {
+			this.resize();
 			
 		}
 		
@@ -168,7 +171,7 @@ public class WindowsContentObserver extends ContentObserver {
 
 		public void windowActivated(WindowEvent e) {
 			model.setFocused(frames.indexOf(e.getSource()));
-			
+			resize();
 		}
 
 		public void windowClosed(WindowEvent arg0) {

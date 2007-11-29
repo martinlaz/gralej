@@ -37,11 +37,11 @@ public class MainGUI implements ActionListener, ItemListener {
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_Open, m_Latex, m_Postscript, m_SVG, 
 	                  m_Print, m_About, m_Tree, m_Struc, m_Expand, m_Restore, 
-	                  m_Hidden, m_Find, m_Pref, m_Cascade, m_Tile;
+	                  m_Hidden, m_Find, m_Pref, m_Cascade, m_Tile, m_Resize;
 	
 	// buttons (basically the same as the menu items)
 	private JButton b_Open, b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
-	                b_Restore, b_Find;
+	                b_Restore, b_Find, b_Resize;
 	
 	
 	private JMenuBar createMenuBar() {
@@ -134,6 +134,12 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Hidden.addActionListener(this);
         viewmenu.add(m_Hidden);
 
+        m_Resize = new JMenuItem("Adjust window size");
+        m_Resize.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+        m_Resize.addActionListener(this);
+        viewmenu.add(m_Resize);
+
         viewmenu.addSeparator();
 
         m_Cascade = new JMenuItem("Cascade Windows/Frames");
@@ -186,10 +192,15 @@ public class MainGUI implements ActionListener, ItemListener {
     	b_Open.setPressedIcon(...);
 		 */
 
-		JButton zoomin = new JButton(theme.getIcon("zoomin"));
-		toolbar.add(zoomin);
-		JButton zoomout = new JButton(theme.getIcon("zoomout"));
-		toolbar.add(zoomout);
+//		JButton zoomin = new JButton(theme.getIcon("zoomin"));
+//		toolbar.add(zoomin);
+//		JButton zoomout = new JButton(theme.getIcon("zoomout"));
+//		toolbar.add(zoomout);
+		
+		b_Resize = new JButton(theme.getIcon("maximize"));
+		toolbar.add(b_Resize);
+		
+		
 		return toolbar;
 	}
 
@@ -246,6 +257,9 @@ public class MainGUI implements ActionListener, ItemListener {
     		// send "restore" via content window to focus window
     	} else if (source ==  m_Hidden || source == b_Hidden) {
     		// send "toggle hidden" via content window to focus window
+    	} else if (source ==  m_Resize || source == b_Resize) {
+    		// send "resize" to viewer
+    		c.getModel().notifyObservers("resize");    		
     	} else if (source ==  m_Cascade) {
     		// send "cascade" to viewer
     		c.getModel().notifyObservers("cascade");
