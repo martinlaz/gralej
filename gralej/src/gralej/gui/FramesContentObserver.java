@@ -38,9 +38,8 @@ public class FramesContentObserver extends ContentObserver {
 	private void add (GRALEFile file) {
 	    // open new JInternalFrame
 	    JInternalFrame newframe = new JInternalFrame(file.getName(), true, true, true, true);
-        JScrollPane scrollPane = new JScrollPane(file.display());
-//	    newframe.add(file.display());
-        newframe.setContentPane(scrollPane);
+	    file.display().setOpaque(true);
+        newframe.setContentPane(file.display());
         
         
        	x.translate(30, 30);
@@ -57,9 +56,10 @@ public class FramesContentObserver extends ContentObserver {
 		display.add(newframe);
 		frames.add(newframe);
 		// change focus in the view
-	    newframe.setVisible(true);
 	    newframe.addInternalFrameListener(new Listener());
 	    newframe.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+	    newframe.setVisible(true);
+	    newframe.pack();
 	}
 	
 	private void remove () {
@@ -79,9 +79,42 @@ public class FramesContentObserver extends ContentObserver {
 	 * distribute open frames over the existing space
 	 * all same size
 	 * 
+	 * The code is almost directly taken from
+	 * http://www.javalobby.org/forums/thread.jspa?threadID=15696&tstart=30
+	 * (cannot find out their copyright policy)
+	 * 
 	 */
 	public void tile () {
-		
+		Dimension size = display.getSize();
+		int cols = (int)Math.sqrt(frames.size());
+	    int rows = (int)(Math.ceil( ((double)frames.size()) / cols));
+	    int lastRow = frames.size() - cols*(rows-1);
+	    int width, height;
+	 
+	    if ( lastRow == 0 ) {
+	        rows--;
+	        height = size.height / rows;
+	    }
+	    else {
+	        height = size.height / rows;
+	        if ( lastRow < cols ) {
+	            rows--;
+	            width = size.width / lastRow;
+	            for (int i = 0; i < lastRow; i++ ) {
+	                frames.get(cols*rows+i).setBounds( i*width, rows*height,
+	                                               width, height );
+	            }
+	        }
+	    }
+	            
+	    width = size.width/cols;
+	    for (int j = 0; j < rows; j++ ) {
+	        for (int i = 0; i < cols; i++ ) {
+	            frames.get(i+j*cols).setBounds( i*width, j*height,
+	                                        width, height );
+	        }
+	    }
+
 	}
 
 	
@@ -90,7 +123,20 @@ public class FramesContentObserver extends ContentObserver {
 	 * 
 	 */
 	public void cascade () {
-		
+		x = new Point(0,0);
+		for (int i = 0; i < frames.size(); i++) {
+	       	x.translate(30, 30);
+	       	if (x.y + 100 > display.getSize().height ) {
+	       		x.move(x.x - x.y + 75, 30);
+	       	}
+	       	if (x.x + 100 > display.getSize().width ) {
+	       		x.move(30, 30);
+	       	}
+	        
+		    frames.get(i).setLocation(x);
+			model.setFocused(i);
+			
+		}
 	}
 
 
@@ -108,6 +154,10 @@ public class FramesContentObserver extends ContentObserver {
 			this.remove();
 		} else if (message.equals("focus")) {
 			this.focus();
+		} else if (message.equals("cascade")) {
+			this.cascade();
+		} else if (message.equals("tile")) {
+			this.tile();
 			
 		}
 		

@@ -9,7 +9,6 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JScrollPane;
 
 /**
  * 
@@ -36,16 +35,17 @@ public class WindowsContentObserver extends ContentObserver {
 
 	private void add (GRALEFile file) {
 	    JFrame newframe = new JFrame(file.getName());
-        newframe.setContentPane(new JScrollPane(file.display()));
+	    file.display().setOpaque(true);
+        newframe.setContentPane(file.display());
 	    newframe.setLocationByPlatform(true);
 	    newframe.setMinimumSize(new Dimension(250,150));
 	    newframe.setSize(file.display().getSize());
 //	    System.err.println("size "+file.display().getSize().toString());
 		frames.add(newframe);
-	    newframe.setVisible(true);
 	    newframe.addWindowListener(new Listener());
 	    newframe.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-	    
+	    newframe.setVisible(true);
+	    newframe.pack();	    
 	}
 	
 	private void remove () {
@@ -70,12 +70,46 @@ public class WindowsContentObserver extends ContentObserver {
 	}
 	
 	/**
-	 * distribute open windows over the existing space
+	 * distribute open frames over the existing space
 	 * all same size
+	 * 
+	 * The code is almost directly taken from
+	 * http://www.javalobby.org/forums/thread.jspa?threadID=15696&tstart=30
+	 * (cannot find out their copyright policy)
 	 * 
 	 */
 	public void tile () {
-		
+		Dimension size = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+
+		int cols = (int)Math.sqrt(frames.size());
+	    int rows = (int)(Math.ceil( ((double)frames.size()) / cols));
+	    int lastRow = frames.size() - cols*(rows-1);
+	    int width, height;
+	 
+	    if ( lastRow == 0 ) {
+	        rows--;
+	        height = size.height / rows;
+	    }
+	    else {
+	        height = size.height / rows;
+	        if ( lastRow < cols ) {
+	            rows--;
+	            width = size.width / lastRow;
+	            for (int i = 0; i < lastRow; i++ ) {
+	                frames.get(cols*rows+i).setBounds( i*width, rows*height,
+	                                               width, height );
+	            }
+	        }
+	    }
+	            
+	    width = size.width/cols;
+	    for (int j = 0; j < rows; j++ ) {
+	        for (int i = 0; i < cols; i++ ) {
+	            frames.get(i+j*cols).setBounds( i*width, j*height,
+	                                        width, height );
+	        }
+	    }
+
 	}
 
 	
@@ -84,8 +118,24 @@ public class WindowsContentObserver extends ContentObserver {
 	 * 
 	 */
 	public void cascade () {
-		
+		Dimension size = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+
+		Point x = new Point(0,0);
+		for (int i = 0; i < frames.size(); i++) {
+	       	x.translate(30, 30);
+	       	if (x.y + 100 > size.height ) {
+	       		x.move(x.x - x.y + 75, 30);
+	       	}
+	       	if (x.x + 100 > size.width ) {
+	       		x.move(30, 30);
+	       	}
+	        
+		    frames.get(i).setLocation(x);
+//			model.setFocused(i); // threading problems: infinite re-focus loop
+			
+		}
 	}
+
 
 	public void update(String message) {
 		if (message.equals("open")) {
@@ -98,6 +148,10 @@ public class WindowsContentObserver extends ContentObserver {
 			this.focus();
 		} else if (message.equals("resize")) {
 			this.resize();
+		} else if (message.equals("cascade")) {
+			this.cascade();
+		} else if (message.equals("tile")) {
+			this.tile();
 			
 		}
 		

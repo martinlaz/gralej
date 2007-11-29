@@ -26,8 +26,8 @@ public class MainGUI implements ActionListener, ItemListener {
 	// display mode
 	static int FRAMES = 0; 
 	static int WINDOWS = 1; 
-//	private int mode = WINDOWS;
-	private int mode = FRAMES;
+	private int mode = WINDOWS;
+//	private int mode = FRAMES;
 	
 	private String lastDir;
 
@@ -37,7 +37,7 @@ public class MainGUI implements ActionListener, ItemListener {
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_Open, m_Latex, m_Postscript, m_SVG, 
 	                  m_Print, m_About, m_Tree, m_Struc, m_Expand, m_Restore, 
-	                  m_Hidden, m_Find, m_Pref;
+	                  m_Hidden, m_Find, m_Pref, m_Cascade, m_Tile;
 	
 	// buttons (basically the same as the menu items)
 	private JButton b_Open, b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
@@ -134,6 +134,18 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Hidden.addActionListener(this);
         viewmenu.add(m_Hidden);
 
+        viewmenu.addSeparator();
+
+        m_Cascade = new JMenuItem("Cascade Windows/Frames");
+        m_Cascade.addActionListener(this);
+        viewmenu.add(m_Cascade);
+        
+        m_Tile = new JMenuItem("Tile Windows/Frames");
+        m_Tile.addActionListener(this);
+        viewmenu.add(m_Tile);
+        
+
+        
         viewmenu.addSeparator();
 
         // menuitem "Find"
@@ -234,6 +246,12 @@ public class MainGUI implements ActionListener, ItemListener {
     		// send "restore" via content window to focus window
     	} else if (source ==  m_Hidden || source == b_Hidden) {
     		// send "toggle hidden" via content window to focus window
+    	} else if (source ==  m_Cascade) {
+    		// send "cascade" to viewer
+    		c.getModel().notifyObservers("cascade");
+    	} else if (source ==  m_Tile) {
+    		// send "tile" to viewer
+    		c.getModel().notifyObservers("tile");
     	} else if (source ==  m_Find || source == b_Find) {
     		// send search request to content window
     	} else if (source ==  m_Pref) {
