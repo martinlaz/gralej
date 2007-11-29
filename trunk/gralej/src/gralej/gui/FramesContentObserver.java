@@ -76,6 +76,14 @@ public class FramesContentObserver extends ContentObserver {
 	}
 	
 	/**
+	 * method to make the window size fit its content
+	 * 
+	 */
+	private void resize () {
+		frames.get(model.getFocused()).pack();
+	}
+
+	/**
 	 * distribute open frames over the existing space
 	 * all same size
 	 * 
@@ -158,6 +166,8 @@ public class FramesContentObserver extends ContentObserver {
 			this.cascade();
 		} else if (message.equals("tile")) {
 			this.tile();
+		} else if (message.equals("resize")) {
+			this.resize();
 			
 		}
 		

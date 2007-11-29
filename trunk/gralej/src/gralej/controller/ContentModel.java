@@ -75,11 +75,11 @@ public class ContentModel { // extends DefaultListModel??
 		if (files.size() == 0) return; // don't close nothing
 		notifyObservers("close");
 		files.remove(focused); // frame close still NEEDS reference, so can only be deleted later
-		// assign new focus. could be done better
-		focused = files.size() - 1;
-		
+
+		// assign new focus. Is that useful at all?
+//		focused = files.size() - 1;
 		// and notify of focus change
-		notifyObservers("focus");
+//		notifyObservers("focus");
 	}
 	
     public void notifyObservers(String message) {     
