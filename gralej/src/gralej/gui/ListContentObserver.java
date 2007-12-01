@@ -6,7 +6,7 @@ package gralej.gui;
 //import java.beans.PropertyVetoException;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
+//import javax.swing.event.*;
 import javax.swing.DefaultListModel;
 
 import gralej.controller.*;
@@ -40,6 +40,7 @@ public class ListContentObserver extends ContentObserver {
 	 */
 	public ListContentObserver(ContentModel m) {
 		super(m);
+		m.setLCO(this);
 		listmodel = new DefaultListModel();
 	    list = new JList(listmodel)
 	    {
@@ -53,34 +54,50 @@ public class ListContentObserver extends ContentObserver {
             		return "";
             	}
             }
-          };
+	    };
+        
+	    list.addMouseListener(new DoubleClickListener());
 
 	    display = new JScrollPane(list);
 
 	    //  Monitor all list selections
-	    list.addListSelectionListener(new ListUpdater());
+//	    list.addListSelectionListener(new ListUpdater());
 	    
-//	    JToolTip tooltip = display.createToolTip();
-//	    display.setToolTipText("text");
 	    display.setVisible(true);
 	    
 	}
+	
 			
-	/* (non-Javadoc)
-	 * @see grale.GRALEContentObserver#update()
-	 */
 	@Override
-	public void update(String message) {
-		if (message.equals("open")) {
-			listmodel.add(model.getFocused(), model.getFileAt(model.getFocused()).getName());
-		} else if (message.equals("close")) {
-			listmodel.remove(model.getFocused());
-		}
-	    // always set focused. automatically ignores inexistent indices
-	    list.setSelectedIndex(model.getFocused());
+	public void add (Object c, String name) {
+		listmodel.addElement(name);		
 	}
 	
-	 // Inner class that responds to selection
+	@Override
+	public void close () {
+		listmodel.remove(list.getSelectedIndex());
+	}
+	
+	public void clear () {
+		listmodel.clear();
+	}
+
+	
+	public int getFocus () {
+		return list.getSelectedIndex();
+	}
+
+	class DoubleClickListener extends MouseAdapter {
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2)	{
+				// open this data item in a new window
+				model.open();
+			}
+		}
+	}
+
+	
+/*	 // Inner class that responds to selection
 	 class ListUpdater implements ListSelectionListener {
 	     public void valueChanged(ListSelectionEvent e) {
 	         //  If either of these are true, the event can be ignored.
@@ -88,9 +105,9 @@ public class ListContentObserver extends ContentObserver {
 	             return;
 	         
 	         // update action
-	         model.setFocused(((JList) e.getSource()).getSelectedIndex());
+	         model.setFocus(((JList) e.getSource()).getSelectedIndex());
 	         	         
 	     }
 	 }
-
+*/
 }

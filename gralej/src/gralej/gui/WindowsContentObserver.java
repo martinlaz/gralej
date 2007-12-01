@@ -1,13 +1,14 @@
 package gralej.gui;
 
-import gralej.GRALEFile;
 import gralej.controller.ContentModel;
+import gralej.gui.icons.IconTheme;
+import gralej.gui.icons.IconThemeFactory;
+import gralej.gui.blocks.BlockPanel;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.*;
 
 /**
  * 
@@ -20,7 +21,7 @@ import javax.swing.JInternalFrame;
  */
 public class WindowsContentObserver extends ContentObserver {
 	
-	private ArrayList<JFrame> frames;
+	private ArrayList<Window> frames;
 
 
 	/**
@@ -28,46 +29,34 @@ public class WindowsContentObserver extends ContentObserver {
 	 */
 	public WindowsContentObserver(ContentModel m) {
 		super(m);
-		frames = new ArrayList<JFrame>();
+		m.setObserver(this);
+		frames = new ArrayList<Window>();
 	}
 	
 
-	private void add (GRALEFile file) {
-	    JFrame newframe = new JFrame(file.getName());
-	    file.display().setOpaque(true);
-        newframe.setContentPane(file.display());
-	    newframe.setLocationByPlatform(true);
-	    newframe.setMinimumSize(new Dimension(250,150));
-	    newframe.setSize(file.display().getSize());
-//	    System.err.println("size "+file.display().getSize().toString());
-		frames.add(newframe);
-	    newframe.addWindowListener(new Listener());
+	public void add (Object display, String name) {
+		Window w = new Window (name, (JComponent) display);
+		frames.add(w);
+	}
+	
+	@Override
+	public void close () {
+		JComponent d = model.getFileAt(model.getFocus()).display();
+		for (int i = 0; i < frames.size(); i++) {
+			if (frames.get(i).display == d) {
+				frames.get(i).dispose();				
+			}
+		}
 
-
-	    newframe.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-	    newframe.setVisible(true);
-	    newframe.pack();	    
 	}
 	
-	private void remove () {
-		// close JFrame
-		frames.get(model.getFocused()).dispose();
-		frames.remove(model.getFocused());		
-	}
-	
-	private void focus () {
-		if (model.getFocused() == -1) return;
-		int toFocus = model.getFocused();
-//		if (frames.get(toFocus).hasFocus()) return;
-		frames.get(toFocus).requestFocus();// or .toFront();
-	}
-	
-	/**
-	 * method to make the window size fit its content
-	 * 
-	 */
-	private void resize () {
-		frames.get(model.getFocused()).pack();
+	@Override
+	public void clear () {
+		for (int i = 0; i < frames.size(); i++) {
+			frames.get(i).dispose();
+		}
+		frames.clear();
+		
 	}
 	
 	/**
@@ -112,7 +101,6 @@ public class WindowsContentObserver extends ContentObserver {
 	                                        width, height );
 	        }
 	    }
-
 	}
 
 	
@@ -137,70 +125,260 @@ public class WindowsContentObserver extends ContentObserver {
 	        
 		    frames.get(i).setLocation(x);
 //			model.setFocused(i); // threading problems: infinite re-focus loop
-			
 		}
 	}
 
 
 	public void update(String message) {
 		if (message.equals("open")) {
-			// add the file recently added to the model
-			this.add(model.getFileAt(model.getFocused()));
 			
 		} else if (message.equals("close")) {
-			this.remove();
-		} else if (message.equals("focus")) {
-			this.focus();
-		} else if (message.equals("resize")) {
-			this.resize();
+			// TODO on close, all windows depending on the closed source need to be disposed
+			this.close();
 		} else if (message.equals("cascade")) {
 			this.cascade();
 		} else if (message.equals("tile")) {
 			this.tile();
-		} else if (message.equals("resize")) {
-			this.resize();
 			
 		}
-		
-		
-
 		
 	}
 	
+	private class Window extends JFrame implements ActionListener {
+		
+		String name;
+		
+		JComponent display;
+		
+		boolean autoResize = false;
+		
+		Window (String name, JComponent display) {
+			super(name);
+			this.name = name;
+			this.display = display;
+		    display.setOpaque(true);
+	        setJMenuBar(createMenuBar());        
+	        add(createToolBar(),BorderLayout.NORTH);
+	        add(display);
+		    setLocationByPlatform(true);
+		    setMinimumSize(new Dimension(250,150));
+		    setSize(display.getSize());
+//		    addWindowListener(new Listener());
+//		    setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+		    setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
+		    setVisible(true);
+		    pack();
+			return;
+		}
+	
+	private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, 
+    	m_Print, m_Tree, m_Struc, m_Expand, m_Restore, 
+    	m_Hidden, m_Find, m_Resize, m_AutoResize;
+
+	// buttons (basically the same as the menu items)
+	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
+		b_Restore, b_Find, b_Resize, b_AutoResize;
+
+
+	private JMenuBar createMenuBar() {
+		// menu
+		JMenuBar menubar = new JMenuBar();
+		// menu file
+		JMenu filemenu = new JMenu("File");
+		filemenu.add(new JSeparator());
+
+		m_Close = new JMenuItem("Close");
+		m_Close.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+		m_Close.addActionListener(this);
+		filemenu.add(m_Close);
+
+		filemenu.add(new JSeparator());
+		JMenu exportSubmenu = new JMenu("Export");
+//		sub LaTeX
+		m_Latex = new JMenuItem("LaTeX");
+		m_Latex.addActionListener(this);
+		exportSubmenu.add(m_Latex);
+//		sub Postscript
+		m_Postscript = new JMenuItem("Postscript");
+		m_Postscript.addActionListener(this);
+		exportSubmenu.add(m_Postscript);        
+		filemenu.add(exportSubmenu);
+//		sub SVG
+		m_SVG = new JMenuItem("SVG");
+		m_SVG.addActionListener(this);
+		exportSubmenu.add(m_SVG);        
+		filemenu.add(exportSubmenu);
+//		menuitem Print
+		m_Print = new JMenuItem("Print");
+		m_Print.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+		m_Print.addActionListener(this);
+		filemenu.add(m_Print);
+
+		menubar.add(filemenu);
+
+		JMenu viewmenu = new JMenu("View");
+
+		viewmenu.addSeparator();
+		ButtonGroup viewmode = new ButtonGroup();
+
+		m_Tree = new JRadioButtonMenuItem("Tree");
+		m_Tree.setSelected(true); // default
+		m_Tree.addActionListener(this);
+		viewmode.add(m_Tree);
+		viewmenu.add(m_Tree);
+
+		m_Struc = new JRadioButtonMenuItem("Structure");
+		m_Struc.addActionListener(this);
+		viewmode.add(m_Struc);
+		viewmenu.add(m_Struc);
+		viewmenu.addSeparator();
+
+		m_Expand = new JMenuItem("Expand");
+		m_Expand.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
+		m_Expand.addActionListener(this);
+		viewmenu.add(m_Expand);
+
+		m_Restore = new JMenuItem("Restore");
+		m_Restore.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+		m_Restore.addActionListener(this);
+		viewmenu.add(m_Restore);
+
+//		checkbox "Show Hidden Nodes" (shaded)
+		m_Hidden = new JCheckBoxMenuItem("Show Hidden Nodes");
+		m_Hidden.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
+		m_Hidden.addActionListener(this);
+		viewmenu.add(m_Hidden);
+
+		m_Resize = new JMenuItem("Adjust window size");
+		m_Resize.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+		m_Resize.addActionListener(this);
+		viewmenu.add(m_Resize);
+
+		m_AutoResize = new JCheckBoxMenuItem("Auto-Adjust window size");
+//		m_AutoResize.setAccelerator(KeyStroke.getKeyStroke(
+//				KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+		m_AutoResize.addActionListener(this);
+		viewmenu.add(m_AutoResize);
+
+
+		viewmenu.addSeparator();
+
+//		menuitem "Find"
+		m_Find = new JMenuItem("Find");
+		m_Find.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
+		m_Find.addActionListener(this);
+		viewmenu.add(m_Find);
+
+
+		menubar.add(viewmenu);
+		return menubar;
+	}
+
+	private JToolBar createToolBar () {
+		// toolbar: some example buttons
+		JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
+
+		// load icon theme
+		IconTheme theme = IconThemeFactory.getIconTheme("crystal");
+
+
+		b_Resize = new JButton(theme.getIcon("maximize"));
+        b_Resize.addActionListener(this);
+		toolbar.add(b_Resize);
+
+		b_AutoResize = new JButton(theme.getIcon("fitwindow"));
+        b_AutoResize.addActionListener(this);
+		toolbar.add(b_AutoResize);
+
+
+		return toolbar;
+	}
+
+
+
+//	User actions broadcast Events. Depending on the source, they're ActionEvents (menu item) or ItemEvents (checkbox)
+	public void actionPerformed(ActionEvent e) {
+		JComponent source = (JComponent)(e.getSource());
+		if (source ==  m_Close || source == b_Close) {
+			dispose();
+		} else if (source == m_Latex) {
+			// call output method
+		} else if (source == m_Postscript) {
+			// call output method
+		} else if (source == m_Print || source == b_Print) {
+			// call print method
+		} else if (source ==  m_SVG) {
+			// call output method
+		} else if (source ==  m_Tree) {
+			// send "set tree" via content window to focus window    		
+		} else if (source ==  m_Struc) {
+			// send "set structure" via content window to focus window
+		} else if (source ==  b_TreeStruc) {
+			// send "toggle tree/structure" via content window to focus window
+			// on this occasion the button icon should change (displaying the NOW state)
+		} else if (source ==  m_Expand || source == b_Expand) {
+			// send "expand" via content window to focus window
+		} else if (source ==  m_Restore || source == b_Restore) {
+			// send "restore" via content window to focus window
+		} else if (source ==  m_Hidden || source == b_Hidden) {
+			// send "toggle hidden" via content window to focus window
+		} else if (source ==  m_Resize || source == b_Resize) {
+			// send "resize" to viewer
+			this.pack();
+		} else if (source ==  m_AutoResize) {
+			autoResize = ! autoResize;
+			((BlockPanel) display).setAutoResize(autoResize);
+		} else if (source == b_AutoResize) {
+			autoResize = ! autoResize;			
+			((JCheckBoxMenuItem) m_AutoResize).setSelected(autoResize);
+			((BlockPanel) display).setAutoResize(autoResize);
+		} else if (source ==  m_Find || source == b_Find) {
+			// send search request to content window
+		}
+	}
+
+
 	class Listener implements WindowListener {
 
 		public void windowActivated(WindowEvent e) {
-			model.setFocused(frames.indexOf(e.getSource()));
-			resize();
+//			model.setFocused(frames.indexOf(e.getSource()));
 		}
 
 		public void windowClosed(WindowEvent arg0) {
-			
+
 		}
 
 		public void windowClosing(WindowEvent arg0) {
 			model.close();
-			
+
 		}
 
 		public void windowDeactivated(WindowEvent arg0) {
-			
+
 		}
 
 		public void windowDeiconified(WindowEvent arg0) {
-			
+
 		}
 
 		public void windowIconified(WindowEvent arg0) {
-			
+
 		}
 
 		public void windowOpened(WindowEvent arg0) {
-			
-		}
-				
-	}
-	
 
+		}
+
+	}
+
+
+	}
 
 }

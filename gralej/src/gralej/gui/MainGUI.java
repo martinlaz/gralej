@@ -15,6 +15,7 @@ import java.util.prefs.*;
 import gralej.controller.*;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
+import javax.swing.ImageIcon;
 
 /**
  * 
@@ -35,13 +36,13 @@ public class MainGUI implements ActionListener, ItemListener {
 	private Controller c; // the gralej.controller 
 	
 	// menu items
-	private JMenuItem m_Exit, m_Close, m_Open, m_Latex, m_Postscript, m_SVG, 
+	private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_Latex, m_Postscript, m_SVG, 
 	                  m_Print, m_About, m_Tree, m_Struc, m_Expand, m_Restore, 
-	                  m_Hidden, m_Find, m_Pref, m_Cascade, m_Tile, m_Resize;
+	                  m_Hidden, m_Pref, m_Cascade, m_Tile;
 	
 	// buttons (basically the same as the menu items)
-	private JButton b_Open, b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
-	                b_Restore, b_Find, b_Resize;
+	private JButton b_Open, b_Close, b_CloseAll, b_TreeStruc, b_Print, b_Expand, b_Hidden,
+	                b_Restore;
 	
 	
 	private JMenuBar createMenuBar() {
@@ -57,11 +58,15 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Open.addActionListener(this);
         filemenu.add(m_Open);
 
-        m_Close = new JMenuItem("Close Tab");
+        m_Close = new JMenuItem("Close");
         m_Close.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
         m_Close.addActionListener(this);
         filemenu.add(m_Close);
+
+        m_CloseAll = new JMenuItem("Close All");
+        m_CloseAll.addActionListener(this);
+        filemenu.add(m_CloseAll);
 
         filemenu.add(new JSeparator());
         JMenu exportSubmenu = new JMenu("Export");
@@ -134,12 +139,6 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Hidden.addActionListener(this);
         viewmenu.add(m_Hidden);
 
-        m_Resize = new JMenuItem("Adjust window size");
-        m_Resize.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
-        m_Resize.addActionListener(this);
-        viewmenu.add(m_Resize);
-
         viewmenu.addSeparator();
 
         m_Cascade = new JMenuItem("Cascade Windows/Frames");
@@ -154,12 +153,6 @@ public class MainGUI implements ActionListener, ItemListener {
         
         viewmenu.addSeparator();
 
-        // menuitem "Find"
-        m_Find = new JMenuItem("Find");
-        m_Find.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
-        m_Find.addActionListener(this);
-        viewmenu.add(m_Find);
         
         // menuitem "Settings" (spacing, fonts, colors)
         m_Pref = new JMenuItem("Preferences");
@@ -187,6 +180,14 @@ public class MainGUI implements ActionListener, ItemListener {
         b_Open.addActionListener(this);
 		toolbar.add(b_Open);
     
+		b_Close = new JButton(theme.getIcon("closewindow"));
+        b_Close.addActionListener(this);
+		toolbar.add(b_Close);
+    
+		b_CloseAll = new JButton(theme.getIcon("closeviews"));
+        b_CloseAll.addActionListener(this);
+		toolbar.add(b_CloseAll);
+    
 		/* code for icon change
     	b_Open.setRolloverIcon(new ImageIcon("fileopen.png"));
     	b_Open.setPressedIcon(...);
@@ -196,10 +197,6 @@ public class MainGUI implements ActionListener, ItemListener {
 //		toolbar.add(zoomin);
 //		JButton zoomout = new JButton(theme.getIcon("zoomout"));
 //		toolbar.add(zoomout);
-		
-		b_Resize = new JButton(theme.getIcon("maximize"));
-		toolbar.add(b_Resize);
-		
 		
 		return toolbar;
 	}
@@ -234,6 +231,8 @@ public class MainGUI implements ActionListener, ItemListener {
             }
     	} else if (source == m_Close || source == b_Close) {
     		c.close();
+    	} else if (source == m_CloseAll || source == b_CloseAll) {
+    		c.closeAll();
     	} else if (source == m_Latex) {
     		// call output method
     	} else if (source == m_Postscript) {
@@ -257,17 +256,12 @@ public class MainGUI implements ActionListener, ItemListener {
     		// send "restore" via content window to focus window
     	} else if (source ==  m_Hidden || source == b_Hidden) {
     		// send "toggle hidden" via content window to focus window
-    	} else if (source ==  m_Resize || source == b_Resize) {
-    		// send "resize" to viewer
-    		c.getModel().notifyObservers("resize");    		
     	} else if (source ==  m_Cascade) {
     		// send "cascade" to viewer
-    		c.getModel().notifyObservers("cascade");
+    		c.getModel().cascade();
     	} else if (source ==  m_Tile) {
     		// send "tile" to viewer
-    		c.getModel().notifyObservers("tile");
-    	} else if (source ==  m_Find || source == b_Find) {
-    		// send search request to content window
+    		c.getModel().tile();
     	} else if (source ==  m_Pref) {
     		// open Preferences Dialog
     		prefDialog();
@@ -516,9 +510,34 @@ public class MainGUI implements ActionListener, ItemListener {
 	 */
 	public MainGUI(Controller c) {
 		this.c = c;
+		
+		
+		// first: style
+		// TODO parameterize
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 
         //Create and set up the window.
         JFrame frame = new JFrame("GraleJ");
+        // set program icon
+        IconTheme theme = IconThemeFactory.getIconTheme("crystal");
+        ImageIcon icon = theme.getIcon("grale");
+        Image image = icon.getImage();
+        frame.setIconImage(image);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // instantiate menus
@@ -570,24 +589,6 @@ public class MainGUI implements ActionListener, ItemListener {
         statusLine.add(new JLabel("status line"));
         frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
         
-        //Display the window.
-//        frame.setUndecorated(true);
-//        frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-        try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         frame.pack();
         frame.setSize(700,400);
         frame.setVisible(true);

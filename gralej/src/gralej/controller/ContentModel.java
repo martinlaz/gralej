@@ -19,14 +19,11 @@ import gralej.gui.*;
  */
 public class ContentModel { // extends DefaultListModel??
 	
-	// store a list of observers (in our case the list and the desktop
-	private ContentObserver[] observers = new ContentObserver[2];
-	private int totalObs  = 0;
-	public void attach( ContentObserver o ) { observers[totalObs++] = o; }
+	private ListContentObserver list;
+	private ContentObserver observer;
 	
 	// content variables
 	private ArrayList<GRALEFile> files = new ArrayList<GRALEFile>(); 
-    private int focused;
     
     // the content model also handles preferences settings
     Preferences prefs;
@@ -67,37 +64,60 @@ public class ContentModel { // extends DefaultListModel??
 	public void open (Object parse, String name) {
 		GRALEFile newfile = new GRALEFile(parse, name);
 		files.add(newfile);
-	    focused = files.size() - 1;
-	    notifyObservers("open");
+	    list.add(parse, name);
+	    observer.add(parse, name);
+	}
+	
+	/**
+	 * Opening a new window for the selected data item.
+	 * 
+	 */
+	public void open () {
+		observer.add(files.get(list.getFocus()).display(), 
+				files.get(list.getFocus()).getName());
 	}
 
 	public void close () {
 		if (files.size() == 0) return; // don't close nothing
-		notifyObservers("close");
-		files.remove(focused); // frame close still NEEDS reference, so can only be deleted later
-
-		// assign new focus. Is that useful at all?
-//		focused = files.size() - 1;
-		// and notify of focus change
-//		notifyObservers("focus");
+		observer.close();
+		files.remove(list.getFocus());
+		list.close();
 	}
 	
-    public void notifyObservers(String message) {     
-    	for (int i=0; i < totalObs; i++) {
-    		observers[i].update(message);
-    	}
-    }
+	public void closeAll () {
+		files.clear();
+		list.clear();
+		observer.clear();
+	}
+	
+	public void tile () {
+		// TODO to be changed when other observers are allowed
+		((WindowsContentObserver) observer).tile();
+	}
+
+	public void cascade () {
+		((WindowsContentObserver) observer).cascade();
+	}
+
 
 	/**
 	 * 
 	 */
 	public ContentModel() {
-		focused = -1;
 		
 		prefs = Preferences.userNodeForPackage(this.getClass());
 		resetPreferences();
 	}
 	
+	public void setLCO (ListContentObserver l) {
+		if (list != null) return; // instead: finalizing?
+		list = l;
+	}
+	
+	public void setObserver (ContentObserver o) {
+		if (observer != null) return;
+		observer = o;
+	}
 	
 	/**
 	 * resetting or initializing the preferences
@@ -121,13 +141,8 @@ public class ContentModel { // extends DefaultListModel??
 		return files.get(i);
 	}
 
-	public int getFocused() {
-		return focused;
-	}
-
-	public void setFocused(int focused) {
-		this.focused = focused;
-		notifyObservers("focus");
+	public int getFocus() {
+		return list.getFocus();
 	}
 	
 }

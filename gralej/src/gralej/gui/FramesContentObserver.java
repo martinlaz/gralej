@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.util.ArrayList;
 import java.awt.*;
-import gralej.*;
 import gralej.controller.*;
 
 /**
@@ -35,11 +34,11 @@ public class FramesContentObserver extends ContentObserver {
 	}
 	
 	// methods to add, remove and focus frames
-	private void add (GRALEFile file) {
+	public void add (Object c, String name) {
 	    // open new JInternalFrame
-	    JInternalFrame newframe = new JInternalFrame(file.getName(), true, true, true, true);
-	    file.display().setOpaque(true);
-        newframe.setContentPane(file.display());
+	    JInternalFrame newframe = new JInternalFrame(name, true, true, true, true);
+	    ((JComponent) c).setOpaque(true);
+        newframe.setContentPane((JComponent) c);
         
         
        	x.translate(30, 30);
@@ -62,16 +61,21 @@ public class FramesContentObserver extends ContentObserver {
 	    newframe.pack();
 	}
 	
-	private void remove () {
+	public void close () {
 		// close JInternalFrame
-		frames.get(model.getFocused()).dispose();
-		frames.remove(model.getFocused());		
+		frames.get(model.getFocus()).dispose();
+		frames.remove(model.getFocus());		
 	}
 	
+	public void clear () {
+		
+	}
+
+		
 	private void focus () {
-		if (model.getFocused() == -1) return;
+		if (model.getFocus() == -1) return;
 	    try {
-	    	frames.get(model.getFocused()).setSelected(true);
+	    	frames.get(model.getFocus()).setSelected(true);
 	    } catch (java.beans.PropertyVetoException ignored) {}
 	}
 	
@@ -80,9 +84,9 @@ public class FramesContentObserver extends ContentObserver {
 	 * 
 	 */
 	private void resize () {
-		frames.get(model.getFocused()).pack();
+		frames.get(model.getFocus()).pack();
 	}
-
+	
 	/**
 	 * distribute open frames over the existing space
 	 * all same size
@@ -142,7 +146,8 @@ public class FramesContentObserver extends ContentObserver {
 	       	}
 	        
 		    frames.get(i).setLocation(x);
-			model.setFocused(i);
+		    frames.get(i).toFront();
+//			model.setFocused(i);
 			
 		}
 	}
@@ -152,14 +157,13 @@ public class FramesContentObserver extends ContentObserver {
 	/* (non-Javadoc)
 	 * @see grale.GRALEContentObserver#update()
 	 */
-	@Override
 	public void update(String message) {
 		if (message.equals("open")) {
 			// add the file recently added to the model
-			this.add(model.getFileAt(model.getFocused()));
+//			this.add(model.getFileAt(model.getFocus()));
 			
 		} else if (message.equals("close")) {
-			this.remove();
+			this.close();
 		} else if (message.equals("focus")) {
 			this.focus();
 		} else if (message.equals("cascade")) {
@@ -201,8 +205,6 @@ public class FramesContentObserver extends ContentObserver {
 		}
 
 		public void internalFrameActivated(InternalFrameEvent e) {
-			// inform model
-			model.setFocused(frames.indexOf(e.getSource()));
 
 		}
 
