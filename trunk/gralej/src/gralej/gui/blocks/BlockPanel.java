@@ -64,7 +64,10 @@ public class BlockPanel extends JPanel
         _drawingPane = new DrawingPane();
         _drawingPane.setBackground(Color.decode(Config.get("panel.background")));
         
-        add(new JScrollPane(_drawingPane), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(_drawingPane);
+        int vUnitIncrement = Config.getInt("panel.scrollbar.vertical.unitIncrement");
+        scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
+        add(scrollPane, BorderLayout.CENTER);
         
         _marginSize = Config.getInt("panel.margins.all");
         _scaleFactor = Double.parseDouble(Config.get("panel.scaleFactor"));
