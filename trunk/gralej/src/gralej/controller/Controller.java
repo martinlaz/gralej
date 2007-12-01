@@ -94,11 +94,11 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 
 	
 	public void close () {
-		// notify content model of change. to this change in the cm, the gui listens
 		cm.close();		
-		// this command is passed to the CM, 
-		// however the preferences call is sent via getModel().
-		// TODO settle on one way
+	}
+	
+	public void closeAll() {
+		cm.closeAll();
 	}
 	
 	public ContentModel getModel () {

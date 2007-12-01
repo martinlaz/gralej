@@ -23,14 +23,19 @@ public abstract class ContentObserver {
 		return display;
 	}
 	
-	public abstract void update(String message);
+	public abstract void add (Object c, String name);
+	
+	public abstract void close ();
+	
+	public abstract void clear ();
+	
 
 	/**
 	 * 
 	 */
 	public ContentObserver(ContentModel m) {
 		model = m;
-		model.attach(this); // registering with the subject
+//		model.attach(this); // registering with the subject
 	}
 
 }
