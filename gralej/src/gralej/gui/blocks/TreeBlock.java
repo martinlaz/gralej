@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class TreeBlock extends ContainerBlock {
+class TreeBlock extends ContainerBlock {
     final static int MIN_HDIST = Config.getInt("tree.minDistance.horizontal");
     final static int MIN_VDIST = Config.getInt("tree.minDistance.vertical");
     final static Color EDGE_COLOR = Color.decode(Config.get("tree.edge.color"));
@@ -16,6 +16,8 @@ public class TreeBlock extends ContainerBlock {
         _root = root;
         addNode(root);
     }
+    
+    NodeBlock getRoot() { return (NodeBlock) _children.get(0); }
     
     private void addNode(NodeBlock node) {
         addChild(node);

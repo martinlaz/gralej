@@ -13,6 +13,8 @@ class ReentrancyBlock extends ContentOwningBlock {
         _contentCreator = contentCreator;
     }
     
+    Label getTagLabel() { return (Label) _children.get(0); }
+    
     @Override
     public Block getContent() {
         if (_content == null) {
