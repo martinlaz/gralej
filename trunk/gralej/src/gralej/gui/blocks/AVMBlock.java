@@ -21,6 +21,9 @@ class AVMBlock extends ContentOwningBlock {
         }
     }
     
+    Label getTypeLabel() { return (Label)_children.get(0); }
+    AVPairListBlock getAVPairs() { return (AVPairListBlock) getContent(); }
+    
     @Override
     public void paint(Graphics2D g) {
         super.paint(g);
