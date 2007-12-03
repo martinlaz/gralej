@@ -10,15 +10,18 @@ public class StreamInfo {
 	
 	private String type;
 	private String name;
+	private String charsetName;
 
 	public StreamInfo(String type, String name) {
 		this.type = new String(type);
 		this.name = new String(name);
+		charsetName = null;
 	}
 	
 	public StreamInfo(String type) {
 		this.type = new String(type);
 		this.name = null;
+		charsetName = null;
 	}
 
 	/**
@@ -42,12 +45,28 @@ public class StreamInfo {
 	
 	public String toString() {
 		
-		if ( name == null ) {
-			return type + "_(no name)";
+		String cs ="";
+		if ( charsetName != null) {
+			cs = "@" + cs;
 		}
 		
-		return type + "_(" + name + ")";
+		if ( name == null ) {
+			return type + cs + "_(no name)";
+		}
 		
+		return type + cs + "_(" + name + ")";
+		
+	}
+
+	/**
+	 * @return the charset name for this stream, or null
+	 */
+	public String getCharsetName() {
+		return charsetName;
+	}
+
+	public void setCharsetName(String charsetName) {
+		this.charsetName = charsetName;
 	}
 	
 	
