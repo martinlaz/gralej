@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * A multi-client (=threaded) grale server binding to a TCP/IP socket.
@@ -94,15 +93,16 @@ public class SocketServer extends ServerBaseImpl {
 			//System.err.println("- SocketServer accepted new connection!");
 			
 			try {
-				// TODO: do protocol type detection here, for now assume old grisu
 				BufferedInputStream s = 
 					new BufferedInputStream(clientSocket.getInputStream());
 				StreamInfo info = new StreamInfo(
 						StreamProtocolMagic.stream2type(s));
 				notifyListeners(s, info);
 			} catch (IOException e) {
-				// FIXME: do proper handling of exception here
-				e.printStackTrace();
+				// the remote host closed the connection before something
+				// useful has happened, we can ignore this.
+				System.err.println(this.getName() + ": Remote closed connection " +
+						"before sending something useful. Closing handler.");
 			}
 			
 		}
@@ -130,12 +130,13 @@ public class SocketServer extends ServerBaseImpl {
 	 * public specific network interfaces.
 	 * @param port the port to bind to.
 	 * @param bind address of the interface to bind to.
+	 * @throws NotImplementedInServerException 
 	 */
-	public SocketServer(int port, InetAddress bind) {
+	public SocketServer(int port, InetAddress bind) throws NotImplementedInServerException {
 		this.port = port;
 		this.bindIP = bind;
-		// FIXME: binding to public interfaces without access control is disabled
-		throw new NotImplementedException();
+		// TODO: binding to public interfaces without access control is disabled
+		throw new NotImplementedInServerException();
 	}
 	
 	/**

@@ -38,6 +38,7 @@ public class StreamProtocolMagic {
 	 * @param in the stream to detect the format from
 	 * @return the format ID or "unknown" if this fails
 	 * @throws IOException 
+	 * @throws IOException 
 	 * @throws IOException if reading from the stream fails or the stream cannot
 	 * be reset.
 	 */
@@ -53,6 +54,14 @@ public class StreamProtocolMagic {
 		// try to read 1024 bytes
 		byte[] buf = new byte[bufsize];
 		int len = in.read(buf,0, bufsize);
+		
+		// if length is < 1, nothing ever was sent but connection
+		// has been closed
+		if ( len < 1 ) {
+			throw new IOException("Connection closed by remote without sending data.");
+		}
+		
+		
 		String code = new String(buf,0, len);
 		
 		// reset the stream
