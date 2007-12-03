@@ -22,6 +22,7 @@ public class BlockPanel extends JPanel
     implements IBlock {
     
     private static final long serialVersionUID = -2434960385455011813L;
+    private final double SCALING = 1.2; // scaling factor
     
     private IBlock _content;
     private int _marginSize;
@@ -170,6 +171,15 @@ public class BlockPanel extends JPanel
     public double getScaleFactor() {
         return _scaleFactor;
     }
+    
+    public void increaseScaleFactor() {
+    	_scaleFactor *= SCALING;
+    }
+    
+    public void decreaseScaleFactor() {
+    	_scaleFactor /= SCALING;
+    }
+
     
     private int scale(int n) {
         return (int) (n * _scaleFactor);

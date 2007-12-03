@@ -153,11 +153,11 @@ public class WindowsContentObserver extends ContentObserver {
 	
 	private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, 
     	m_Print, m_Tree, m_Struc, m_Expand, m_Restore, 
-    	m_Hidden, m_Find, m_Resize, m_AutoResize;
+    	m_Hidden, m_Find, m_Resize, m_AutoResize, m_ZoomPlus, m_ZoomMinus;
 
 	// buttons (basically the same as the menu items)
 	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
-		b_Restore, b_Find, b_Resize, b_AutoResize;
+		b_Restore, b_Find, b_Resize, b_AutoResize, b_ZoomPlus, b_ZoomMinus;
 
 
 	private JMenuBar createMenuBar() {
@@ -246,6 +246,16 @@ public class WindowsContentObserver extends ContentObserver {
 		m_AutoResize.addActionListener(this);
 		viewmenu.add(m_AutoResize);
 
+		m_ZoomPlus = new JMenuItem("Zoom in");
+		m_ZoomPlus.setAccelerator(KeyStroke.getKeyStroke("+"));
+		m_ZoomPlus.addActionListener(this);
+		viewmenu.add(m_ZoomPlus);
+
+		m_ZoomMinus = new JMenuItem("Zoom out");
+		m_ZoomMinus.setAccelerator(KeyStroke.getKeyStroke("-"));
+		m_ZoomMinus.addActionListener(this);
+		viewmenu.add(m_ZoomMinus);
+
 
 		viewmenu.addSeparator();
 
@@ -271,11 +281,23 @@ public class WindowsContentObserver extends ContentObserver {
 
 		b_Resize = new JButton(theme.getIcon("maximize"));
         b_Resize.addActionListener(this);
+        b_Resize.setToolTipText("Resize window to fit");
 		toolbar.add(b_Resize);
 
 		b_AutoResize = new JButton(theme.getIcon("fitwindow"));
         b_AutoResize.addActionListener(this);
+        b_AutoResize.setToolTipText("En-/Disable Auto-Resizing");
 		toolbar.add(b_AutoResize);
+
+		b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
+        b_ZoomPlus.addActionListener(this);
+        b_ZoomPlus.setToolTipText("Zoom in");
+		toolbar.add(b_ZoomPlus);
+
+		b_ZoomMinus = new JButton(theme.getIcon("zoomout"));
+        b_ZoomMinus.addActionListener(this);
+        b_ZoomMinus.setToolTipText("Zoom out");
+		toolbar.add(b_ZoomMinus);
 
 
 		return toolbar;
@@ -312,6 +334,13 @@ public class WindowsContentObserver extends ContentObserver {
 		} else if (source ==  m_Resize || source == b_Resize) {
 			// send "resize" to viewer
 			this.pack();
+		} else if (source ==  m_ZoomPlus || source == b_ZoomPlus) {
+			((BlockPanel) display).increaseScaleFactor();
+			System.err.println("Zooming in. Scaling now is "
+					+((BlockPanel) display).getScaleFactor());
+//			this.pack();
+		} else if (source ==  m_ZoomMinus || source == b_ZoomMinus) {
+			((BlockPanel) display).decreaseScaleFactor();			
 		} else if (source ==  m_AutoResize) {
 			autoResize = ! autoResize;
 			((BlockPanel) display).setAutoResize(autoResize);
