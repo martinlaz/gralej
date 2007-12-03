@@ -15,9 +15,12 @@ public class StreamProtocolMagic {
 	
 	private static String doMagic(String inputSnippet) {
 		
+
 		if ( inputSnippet.startsWith("!newdata") ) {
 			return "grisu";
 		}
+		
+		// TODO: implement protocol here, including encoding detection.
 		
 		if ( inputSnippet.matches(".*<\\?xml.+") ) {
 			return "xml-unknown";

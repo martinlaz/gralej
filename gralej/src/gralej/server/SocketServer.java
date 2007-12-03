@@ -47,17 +47,20 @@ public class SocketServer extends ServerBaseImpl {
 		 */
 		public void run() {
 			
-			// server main loop
-			while ( true ) {
-				try {
-					//System.err.println("- SocketServer waiting for (more) connections.");
+			try {
+				// server main loop
+				while ( true ) {
 					Socket clientSocket = socket.accept();
 					new ConnectionHandler(clientSocket).start();
-				} catch (IOException e) {
-					// FIXME: handle failing properly here, infinite loop ahead!
-					e.printStackTrace();
 				}
-				
+
+			} catch (IOException e) {
+				// TODO: hand this error up to the GUI/user somehow?
+				System.err.println(this.getName() + ": Exception " +
+						"occured while waiting for incoming connections." +
+						"Server thread terminates, restart the application" +
+						"to regain networking functionality. ");
+				e.printStackTrace();
 			}
 		}
 	}

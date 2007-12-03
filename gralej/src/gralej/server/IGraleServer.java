@@ -10,7 +10,7 @@ import java.io.IOException;
  * An interface providing the generic functions of
  * a Grale server that interacts with other
  * applications (preferably Trale) 
- * FIXME: Does it make sense to have more than one listener? after all only one of them can read from the stream.
+ * TODO: Does it make sense to have more than one listener? after all only one of them can read from the stream.
  * @author Niels
  * @version $Id:IGraleServer.java 18 2007-11-13 16:26:47Z niels@drni.de $
  */
