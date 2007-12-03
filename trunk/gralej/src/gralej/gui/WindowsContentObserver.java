@@ -338,12 +338,8 @@ public class WindowsContentObserver extends ContentObserver {
 			((BlockPanel) display).increaseScaleFactor();
 			System.err.println("Zooming in. Scaling now is "
 					+((BlockPanel) display).getScaleFactor());
-			((BlockPanel) display).repaint();
-			this.pack();
 		} else if (source ==  m_ZoomMinus || source == b_ZoomMinus) {
 			((BlockPanel) display).decreaseScaleFactor();			
-			((BlockPanel) display).repaint();
-			this.pack();
 		} else if (source ==  m_AutoResize) {
 			autoResize = ! autoResize;
 			((BlockPanel) display).setAutoResize(autoResize);
