@@ -1,13 +1,11 @@
-/**
- * 
- */
 package gralej.controller;
+
+import gralej.gui.*;
 
 import java.util.ArrayList;
 import java.util.prefs.*;
+import javax.swing.JComponent;
 
-import gralej.*;
-import gralej.gui.*;
 
 /**
  * The content model stores the semantics. 
@@ -73,8 +71,8 @@ public class ContentModel { // extends DefaultListModel??
 	 * 
 	 */
 	public void open () {
-		observer.add(files.get(list.getFocus()).display(), 
-				files.get(list.getFocus()).getName());
+		observer.add(files.get(list.getFocus()).display, 
+				files.get(list.getFocus()).name);
 	}
 
 	public void close () {
@@ -137,12 +135,38 @@ public class ContentModel { // extends DefaultListModel??
 		return files;
 	}
 	
-	public GRALEFile getFileAt(int i) {
-		return files.get(i);
+	public String getNameAt(int i) {
+		return files.get(i).name;
+	}
+
+	public JComponent getDisplayAt(int i) {
+		return files.get(i).display;
 	}
 
 	public int getFocus() {
 		return list.getFocus();
 	}
 	
+	/**
+	 * GRALEFiles: now only a JComponent-String pair
+	 * 
+	 * @author Armin
+	 *
+	 */
+	private class GRALEFile {
+		
+		String name;
+		JComponent display;
+
+		GRALEFile (Object parse, String name) {
+			this.name = name;
+			this.display = (JComponent) parse;
+		}
+		
+//		public String getName () { return name;	}
+		
+//		public JComponent display() { return content; }
+
+	}
+
 }

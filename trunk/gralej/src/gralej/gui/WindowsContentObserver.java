@@ -41,13 +41,12 @@ public class WindowsContentObserver extends ContentObserver {
 	
 	@Override
 	public void close () {
-		JComponent d = model.getFileAt(model.getFocus()).display();
+		JComponent d = model.getDisplayAt(model.getFocus());
 		for (int i = 0; i < frames.size(); i++) {
 			if (frames.get(i).display == d) {
 				frames.get(i).dispose();				
 			}
 		}
-
 	}
 	
 	@Override
@@ -55,8 +54,7 @@ public class WindowsContentObserver extends ContentObserver {
 		for (int i = 0; i < frames.size(); i++) {
 			frames.get(i).dispose();
 		}
-		frames.clear();
-		
+		frames.clear();		
 	}
 	
 	/**
@@ -128,22 +126,6 @@ public class WindowsContentObserver extends ContentObserver {
 		}
 	}
 
-
-	public void update(String message) {
-		if (message.equals("open")) {
-			
-		} else if (message.equals("close")) {
-			// TODO on close, all windows depending on the closed source need to be disposed
-			this.close();
-		} else if (message.equals("cascade")) {
-			this.cascade();
-		} else if (message.equals("tile")) {
-			this.tile();
-			
-		}
-		
-	}
-	
 	private class Window extends JFrame implements ActionListener {
 		
 		String name;
@@ -163,8 +145,6 @@ public class WindowsContentObserver extends ContentObserver {
 		    setLocationByPlatform(true);
 		    setMinimumSize(new Dimension(250,150));
 		    setSize(display.getSize());
-//		    addWindowListener(new Listener());
-//		    setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
 		    setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		    setVisible(true);
 		    pack();
@@ -345,38 +325,6 @@ public class WindowsContentObserver extends ContentObserver {
 	}
 
 
-	class Listener implements WindowListener {
-
-		public void windowActivated(WindowEvent e) {
-//			model.setFocused(frames.indexOf(e.getSource()));
-		}
-
-		public void windowClosed(WindowEvent arg0) {
-
-		}
-
-		public void windowClosing(WindowEvent arg0) {
-			model.close();
-
-		}
-
-		public void windowDeactivated(WindowEvent arg0) {
-
-		}
-
-		public void windowDeiconified(WindowEvent arg0) {
-
-		}
-
-		public void windowIconified(WindowEvent arg0) {
-
-		}
-
-		public void windowOpened(WindowEvent arg0) {
-
-		}
-
-	}
 
 
 	}
