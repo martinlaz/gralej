@@ -5,7 +5,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 /**
- * Icon theme interface
+ * Icon theme interface. Icon themes should
+ * implement the singleton pattern.
  * @author Niels Ott
  * @version $Id$
  */
@@ -23,5 +24,6 @@ public interface IconTheme {
 	 * @return a list of names of icons available
 	 */
 	public List<String> getIconNames();
+	
 
 }

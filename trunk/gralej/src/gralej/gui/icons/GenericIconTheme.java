@@ -10,7 +10,8 @@ import javax.swing.ImageIcon;
 
 /**
  * A generic icon theme that loads icons from 
- * a resource (jar file).
+ * a resource (jar file). This implements the
+ * singleton pattern.
  * @author Niels Ott
  * @version $Id$
  */
@@ -18,6 +19,7 @@ public class GenericIconTheme implements IconTheme {
 	
 	private String iconpackagename;
 	private HashMap<String,ImageIcon> map;
+	private static GenericIconTheme instance = null;
 
 	/**
 	 * Creates a generic icon theme using the
@@ -25,10 +27,11 @@ public class GenericIconTheme implements IconTheme {
 	 * inside the package this very class is in.
 	 * @param iconpackagename
 	 */
-	protected GenericIconTheme(String iconpackagename) {
+	private GenericIconTheme(String iconpackagename) {
 		this.iconpackagename = iconpackagename;
 		map = new HashMap<String,ImageIcon> ();
 		preloadAllIcons();
+		instance = this;
 	}
 	
 	private void preloadAllIcons() {
@@ -60,8 +63,6 @@ public class GenericIconTheme implements IconTheme {
 		map.put("fileclose",  loadIcon("fileclose.png"));
 		map.put("stop",  loadIcon("stop.png"));
 		map.put("fitwindow",  loadIcon("view_fit_window.png"));
-
-		
 		
 	}
 	
@@ -108,6 +109,20 @@ public class GenericIconTheme implements IconTheme {
 	public List<String> getIconNames() {
 		// return a clone of the map's keys
 		return new LinkedList<String>(map.keySet());
+	}
+
+	/**
+	 * Creates one generic icon theme instance (singleton pattern)
+	 *  using the
+	 * directory specified. This directory must be
+	 * inside the package this very class is in.
+	 * @param iconpackagename
+	 */	
+	public static IconTheme getInstance(String iconpackagename) {
+		if ( instance == null ) {
+			instance = new GenericIconTheme(iconpackagename);
+		}
+		return instance;
 	}
 
 }

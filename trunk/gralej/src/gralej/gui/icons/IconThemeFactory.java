@@ -20,15 +20,14 @@ public class IconThemeFactory {
 	public static IconTheme getIconTheme(String name) {
 		
 		if ( name.equals("traditional" )) {
-			return new GenericIconTheme("traditional");
+			return GenericIconTheme.getInstance("traditional");
 		} else if ( name.equals("crystal" )) {
-			return new GenericIconTheme("crystal");
+			return GenericIconTheme.getInstance("crystal");
 		}
 
-		
-		
+	
 		// "traditional" is the default for now
-		return new GenericIconTheme("traditional");
+		return GenericIconTheme.getInstance("traditional");
 		
 	}
 	
