@@ -22,7 +22,7 @@ public class BlockPanel extends JPanel
     implements IBlock {
     
     private static final long serialVersionUID = -2434960385455011813L;
-    private final double SCALING = 1.2; // scaling factor
+    private static final double SCALE_DELTA = 1.2; // scaling factor
     
     private IBlock _content;
     private int _marginSize;
@@ -121,6 +121,8 @@ public class BlockPanel extends JPanel
     public void setPanel(BlockPanel panel) {}
     
     public void updateSize() {
+        _content.setPosition(_marginSize, _marginSize);
+        
         Dimension prefSize = new Dimension(
                     scale(_content.getWidth()  + 2 * _marginSize),
                     scale(_content.getHeight() + 2 * _marginSize)
@@ -128,8 +130,7 @@ public class BlockPanel extends JPanel
         _drawingPane.setPreferredSize(prefSize);
         _drawingPane.setSize(prefSize);
         _drawingPane.revalidate();
-        
-        _content.setPosition(_marginSize, _marginSize);
+        _drawingPane.repaint();
         
         if (_autoResize)
             pack(getParent());
@@ -165,7 +166,7 @@ public class BlockPanel extends JPanel
         if (newValue <= 0.0)
             throw new IllegalArgumentException("Scale factor must be positive");
         _scaleFactor = newValue;
-        revalidate();
+        updateSize();
     }
     
     public double getScaleFactor() {
@@ -173,11 +174,11 @@ public class BlockPanel extends JPanel
     }
     
     public void increaseScaleFactor() {
-    	_scaleFactor *= SCALING;
+    	setScaleFactor(getScaleFactor() * SCALE_DELTA);
     }
     
     public void decreaseScaleFactor() {
-    	_scaleFactor /= SCALING;
+    	setScaleFactor(getScaleFactor() / SCALE_DELTA);
     }
 
     
