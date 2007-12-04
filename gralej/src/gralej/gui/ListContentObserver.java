@@ -55,15 +55,15 @@ public class ListContentObserver extends ContentObserver {
 	    // open new window instance on ENTER
 	    list.addKeyListener(new KeyListener () {
 
-	    	@Override
+	    	//@Override
 			public void keyPressed(KeyEvent arg0) {
 	    		if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 	    			model.open();
 	    		}
 			}
-			@Override
+			//@Override
 			public void keyReleased(KeyEvent arg0) {}
-			@Override
+			//@Override
 			public void keyTyped(KeyEvent arg0) {}
 	    });
 
