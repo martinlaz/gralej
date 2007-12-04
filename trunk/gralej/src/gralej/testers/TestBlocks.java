@@ -1,10 +1,11 @@
 package gralej.testers;
 
 import gralej.controller.StreamInfo;
+import gralej.gui.blocks.BlockPanel;
 import gralej.parsers.GraleParserFactory;
+import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.IParseResultReceiver;
-import gralej.parsers.IParsedAVM;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -75,24 +76,32 @@ public class TestBlocks {
         }
         
         parser.parse(in, streamInfo, new IParseResultReceiver() {
-            public void newParse(final IParsedAVM result) {
+            public void newDataPackage(final IDataPackage result) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         show(result);
                     }
                 });
             }
+
+            public void streamClosed(StreamInfo meta, Exception exception) {
+                System.err.println("-- stream '" + meta.getType() + "' closed");
+                if (exception != null)
+                    System.err.println("-- exception: " + exception);
+            }
+            
         });
         
     }
     
-    void show(final IParsedAVM pavm) {
+    void show(IDataPackage datapak) {
         JFrame f = new JFrame();
-        f.setTitle(pavm.getName());
+        f.setTitle(datapak.getTitle());
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setLocationByPlatform(true);
-        pavm.display().setOpaque(true);
-        f.setContentPane(pavm.display());
+        BlockPanel view = datapak.createView();
+        view.setOpaque(true);
+        f.setContentPane(view);
         f.pack();
         f.setVisible(true);
         lastFrame = f;

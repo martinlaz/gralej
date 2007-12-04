@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface IGraleParser {
 	
-	public List<IParsedAVM> getParses(InputStream s, StreamInfo meta);
+	public List<IDataPackage> getParses(InputStream s, StreamInfo meta) throws ParseException;
 	
 	public void parse(InputStream s, StreamInfo meta, IParseResultReceiver receiver);
 

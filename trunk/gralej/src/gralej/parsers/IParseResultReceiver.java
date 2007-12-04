@@ -1,11 +1,14 @@
 package gralej.parsers;
 
+import gralej.controller.StreamInfo;
+
 /**
  * @author Niels
  * @version $Id$
  */
 public interface IParseResultReceiver {
 	
-	public void newParse(IParsedAVM parse);
+        void newDataPackage(IDataPackage data);
+        void streamClosed(StreamInfo meta, Exception exception);
 
 }
