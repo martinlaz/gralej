@@ -9,7 +9,7 @@ package gralej.prefs;
  * @author Niels Ott
  * @version $Id$
  */
-public class NoDefaultPrefSettingException extends Exception {
+public class NoDefaultPrefSettingException extends RuntimeException {
 
 	private static final long serialVersionUID = 7850488071358010538L;
 

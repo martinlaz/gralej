@@ -62,10 +62,9 @@ public class GralePreferences {
 	}
 
 	/**
-	 * @throws NoDefaultPrefSettingException 
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public boolean getBoolean(String key) throws NoDefaultPrefSettingException {
+	public boolean getBoolean(String key) {
 		boolean res;
 
 		try {
@@ -83,10 +82,9 @@ public class GralePreferences {
 
 
 	/**
-	 * @throws NoDefaultPrefSettingException 
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public int getInt(String key) throws NoDefaultPrefSettingException {
+	public int getInt(String key)  {
 		int res;
 
 		try {
@@ -105,9 +103,8 @@ public class GralePreferences {
 
 	/**
 	 * @throws NoDefaultPrefSettingException 
-	 * @throws NoDefaultPrefSettingException
 	 */
-	public long getLong(String key) throws NoDefaultPrefSettingException {
+	public long getLong(String key)  {
 		long res;
 
 		try {
@@ -125,10 +122,9 @@ public class GralePreferences {
 	
 
 	/**
-	 * @throws NoDefaultPrefSettingException 
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public double getDouble(String key) throws NoDefaultPrefSettingException {
+	public double getDouble(String key)  {
 		double res;
 
 		try {
@@ -146,10 +142,9 @@ public class GralePreferences {
 	
 
 	/**
-	 * @throws NoDefaultPrefSettingException 
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public float getFloat(String key) throws NoDefaultPrefSettingException {
+	public float getFloat(String key)  {
 		float res;
 
 		try {
@@ -166,10 +161,9 @@ public class GralePreferences {
 	}
 
 	/**
-	 * @throws NoDefaultPrefSettingException 
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public String get(String key) throws NoDefaultPrefSettingException {
+	public String get(String key)  {
 		String res;
 
 		res = prefs.get(key, defaults.getProperty(key));
@@ -188,7 +182,7 @@ public class GralePreferences {
 	/**
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public Color getColor(String key) throws NoDefaultPrefSettingException {
+	public Color getColor(String key)  {
 
 		Color res;
 		String rgba = get(key);
@@ -210,7 +204,7 @@ public class GralePreferences {
 	/**
 	 * @throws NoDefaultPrefSettingException
 	 */
-	public Font getFont(String key) throws NoDefaultPrefSettingException {
+	public Font getFont(String key)  {
 
 		Font res;
 		String fontstr = get(key);

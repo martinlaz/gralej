@@ -9,7 +9,7 @@ package gralej.prefs;
  * @author Niels Ott
  * @version $Id$
  */
-public class PrefValueBadFormatException extends Exception {
+public class PrefValueBadFormatException extends RuntimeException {
 
 	/**
 	 * 
