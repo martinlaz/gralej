@@ -22,13 +22,16 @@ import javax.swing.*;
 public class WindowsContentObserver extends ContentObserver {
 	
 	private ArrayList<Window> frames;
+	
+	private IconTheme theme;
 
 
 	/**
 	 * @param m
 	 */
-	public WindowsContentObserver(ContentModel m) {
+	public WindowsContentObserver(ContentModel m, IconTheme theme) {
 		super(m);
+		this.theme = theme;
 		m.setObserver(this);
 		frames = new ArrayList<Window>();
 	}
@@ -158,6 +161,8 @@ public class WindowsContentObserver extends ContentObserver {
 	// buttons (basically the same as the menu items)
 	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
 		b_Restore, b_Find, b_Resize, b_AutoResize, b_ZoomPlus, b_ZoomMinus;
+	
+	private JTextField zoomfield;
 
 
 	private JMenuBar createMenuBar() {
@@ -275,10 +280,6 @@ public class WindowsContentObserver extends ContentObserver {
 		// toolbar: some example buttons
 		JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
 
-		// load icon theme
-		IconTheme theme = IconThemeFactory.getIconTheme("crystal");
-
-
 		b_Resize = new JButton(theme.getIcon("maximize"));
         b_Resize.addActionListener(this);
         b_Resize.setToolTipText("Resize window to fit");
@@ -289,15 +290,20 @@ public class WindowsContentObserver extends ContentObserver {
         b_AutoResize.setToolTipText("En-/Disable Auto-Resizing");
 		toolbar.add(b_AutoResize);
 
-		b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
-        b_ZoomPlus.addActionListener(this);
-        b_ZoomPlus.setToolTipText("Zoom in");
-		toolbar.add(b_ZoomPlus);
-
 		b_ZoomMinus = new JButton(theme.getIcon("zoomout"));
         b_ZoomMinus.addActionListener(this);
         b_ZoomMinus.setToolTipText("Zoom out");
 		toolbar.add(b_ZoomMinus);
+		
+		zoomfield = new JTextField("100");
+		zoomfield.addActionListener(this);
+		zoomfield.setMaximumSize(new Dimension(25,50));
+		toolbar.add(zoomfield); // too wide
+
+		b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
+        b_ZoomPlus.addActionListener(this);
+        b_ZoomPlus.setToolTipText("Zoom in");
+		toolbar.add(b_ZoomPlus);
 
 
 		return toolbar;
@@ -336,10 +342,15 @@ public class WindowsContentObserver extends ContentObserver {
 			this.pack();
 		} else if (source ==  m_ZoomPlus || source == b_ZoomPlus) {
 			((BlockPanel) display).increaseScaleFactor();
-			System.err.println("Zooming in. Scaling now is "
-					+((BlockPanel) display).getScaleFactor());
+			zoomfield.setText(
+					Integer.toString((int) Math.floor(((BlockPanel) display).getScaleFactor() * 100)));
 		} else if (source ==  m_ZoomMinus || source == b_ZoomMinus) {
 			((BlockPanel) display).decreaseScaleFactor();			
+			zoomfield.setText(
+					Integer.toString((int) Math.floor(((BlockPanel) display).getScaleFactor() * 100)));
+		} else if (source ==  zoomfield) {
+			((BlockPanel) display).setScaleFactor(
+					Double.parseDouble(((JTextField)source).getText()) / 100);			
 		} else if (source ==  m_AutoResize) {
 			autoResize = ! autoResize;
 			((BlockPanel) display).setAutoResize(autoResize);

@@ -1,12 +1,8 @@
-/**
- * 
- */
 package gralej.gui;
 
 //import java.beans.PropertyVetoException;
 import java.awt.event.*;
 import javax.swing.*;
-//import javax.swing.event.*;
 import javax.swing.DefaultListModel;
 
 import gralej.controller.*;
@@ -15,15 +11,6 @@ import gralej.controller.*;
  * The ListContentObserver is a piece of GRALE's GUI.
  * It displays the file list to the left.
  * 
- * When an item is selected, the observer resets the focus of the model.
- * Then the model notifies its observers (update()). 
- * On update(), the list is rebuilt (selection is automatically done, but delete and add are
- * also changes in the model which would call update. unless the model knows about the
- * specific form of this observer, a complete rebuild is the only choice (?) )
- * 
- * Actually, on open() the change in the model is enough to change the displayed list.
- * it does not have to be rebuilt. might also apply to select and close. then the 
- * listcontentobserver does not need an update() function
  * 
  * @author Armin
  *
@@ -56,7 +43,29 @@ public class ListContentObserver extends ContentObserver {
             }
 	    };
         
-	    list.addMouseListener(new DoubleClickListener());
+	    // open new window instance on double-click
+	    list.addMouseListener(new MouseAdapter () {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2)	{
+					model.open();
+				}
+			}
+		});
+	    
+	    // open new window instance on ENTER
+	    list.addKeyListener(new KeyListener () {
+
+	    	@Override
+			public void keyPressed(KeyEvent arg0) {
+	    		if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+	    			model.open();
+	    		}
+			}
+			@Override
+			public void keyReleased(KeyEvent arg0) {}
+			@Override
+			public void keyTyped(KeyEvent arg0) {}
+	    });
 
 	    display = new JScrollPane(list);
 
@@ -85,15 +94,6 @@ public class ListContentObserver extends ContentObserver {
 	
 	public int getFocus () {
 		return list.getSelectedIndex();
-	}
-
-	class DoubleClickListener extends MouseAdapter {
-		public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2)	{
-				// open this data item in a new window
-				model.open();
-			}
-		}
 	}
 
 	
