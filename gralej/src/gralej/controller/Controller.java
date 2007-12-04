@@ -4,7 +4,7 @@ import gralej.fileIO.FileLoader;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.IParseResultReceiver;
-import gralej.parsers.IParsedAVM;
+import gralej.parsers.IDataPackage;
 import gralej.parsers.UnsupportedProtocolException;
 import gralej.server.IGraleServer;
 
@@ -60,21 +60,25 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 		}
 		
 	}
+        
+        public void streamClosed(StreamInfo meta, Exception ex) {
+            
+        }
 	
 	
 
-	public void newParse(IParsedAVM parse) {
+	public void newDataPackage(IDataPackage parse) {
 		System.err.println("-- Controller got new parse");				
 		
 		class ParseShowingRunnable implements Runnable {
-			IParsedAVM parse;
+			IDataPackage parse;
 			
-			ParseShowingRunnable (IParsedAVM parse) {
+			ParseShowingRunnable (IDataPackage parse) {
 				this.parse = parse;
 			}
 			
 			public void run () {
-        		cm.open(parse.display(), parse.getName());				
+        		cm.open(parse.createView(), parse.getTitle());				
 			}
 			
 		}
