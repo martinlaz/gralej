@@ -27,23 +27,14 @@ public class PrefFoobar {
 	 */
 	public static void main(String[] args) throws GralePrefsInitException, NoDefaultPrefSettingException, IOException, InvalidPreferencesFormatException, BackingStoreException {
 		
-		Font f = new Font("Arial", 1 ,16);
-		Color c = Color.CYAN;
+		//Font f = new Font("Arial", 1 ,16);
+		//Color c = Color.CYAN;
 		
 		GralePreferences prefs = GralePreferences.getInstance();
 		prefs.restoreDefaults();
-		/*
-		Font f1 = prefs.getFont("testfont");
+		
+		Font f1 = prefs.getFont("label.font.spec");
 		System.err.println(f1);
-		Color c1 = prefs.getColor("testcol");
-		System.err.println(c1);
-		
-		
-		prefs.putFont("test2_font", f);
-		prefs.putColor("test2_col", c);*/
-
-		Color c1 = prefs.getColor("testcol");
-		System.err.println(c1);
 
 		
 		
