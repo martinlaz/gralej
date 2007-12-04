@@ -9,23 +9,23 @@ package gralej.prefs;
  * @author Niels Ott
  * @version $Id$
  */
-public class NoDefaultPrefSetting extends RuntimeException {
+public class NoDefaultPrefSettingException extends Exception {
 
 	private static final long serialVersionUID = 7850488071358010538L;
 
-	public NoDefaultPrefSetting() {
+	public NoDefaultPrefSettingException() {
 		super();
 	}
 
-	public NoDefaultPrefSetting(String message) {
+	public NoDefaultPrefSettingException(String message) {
 		super(message);
 	}
 
-	public NoDefaultPrefSetting(Throwable cause) {
+	public NoDefaultPrefSettingException(Throwable cause) {
 		super(cause);
 	}
 
-	public NoDefaultPrefSetting(String message, Throwable cause) {
+	public NoDefaultPrefSettingException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
