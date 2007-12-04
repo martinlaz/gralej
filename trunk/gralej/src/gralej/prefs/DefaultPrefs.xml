@@ -1,8 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <!-- $Id$ -->
+<!--
+Font speficiation format:
+  name,style,size
+where name is the font name like Arial, style is 0 = plain, 1 = bold,
+2 = italic, 3 = bolditalic, size is in points.
+
+Color specification format:
+  RRGGBBAA
+where RR = 2byte hex value for red
+      GG = 2byte hex value for green
+      BB = 2byte hex value for blue
+      AA = 2byte hex value for the alpha channel (ff=no transparency)
+-->
 <properties>
 <comment>GraleJ factory properties</comment>
-<entry key="testfont">Times New Roman, 0, 16</entry>
+<entry key="testfont1">Times New Roman, 0, 16</entry>
+<entry key="testfont2">Times New Roman, 1, 16</entry>
+<entry key="testfont3">Times New Roman, 2, 16</entry>
+<entry key="testfont4">Times New Roman, 3, 16</entry>
 <entry key="testcol">ff0000ff</entry>
+
+
+
+
+<!--
+Block panel
+-->
+<entry key="panel.background">ffffffff</entry>
+<entry key="panel.margins.all">20</entry>
+<entry key="panel.scrollbar.vertical.unitIncrement">20</entry>
+<entry key="panel.scaleFactor">1</entry>
+<entry key="panel.autoResize">false</entry>
+
+<!--
+Tree
+-->
+<entry key="tree.minDistance.horizontal">25</entry>
+<entry key="tree.minDistance.vertical">40</entry>
+<entry key="tree.edge.color">A7A7A7ff</entry>
+<entry key="tree.node.content.isInitiallyVisible">false</entry>
+
+<!--
+Layouts
+-->
+<entry key="layout.default.horizontal.space.leading">0</entry>
+<entry key="layout.default.horizontal.space.intra">0</entry>
+<entry key="layout.default.horizontal.space.trailing">0</entry>
+
+<entry key="layout.default.vertical.space.leading">0</entry>
+<entry key="layout.default.vertical.space.intra">0</entry>
+<entry key="layout.default.vertical.space.trailing">0</entry>
+
+<entry key="layout.avm.space.leading">3</entry>
+<entry key="layout.avm.space.intra">5</entry>
+<entry key="layout.avm.space.trailing">5</entry>
+
+<entry key="layout.avpairlist.space.leading">0</entry>
+<entry key="layout.avpairlist.space.intra">6</entry>
+<entry key="layout.avpairlist.space.trailing">0</entry>
+
+<entry key="layout.avpair.space.leading">10</entry>
+<entry key="layout.avpair.space.intra">5</entry>
+<entry key="layout.avpair.space.trailing">10</entry>
+
+<entry key="layout.reentrancy.space.leading">0</entry>
+<entry key="layout.reentrancy.space.intra">5</entry>
+<entry key="layout.reentrancy.space.trailing">0</entry>
+
+<entry key="layout.list.space.leading">0</entry>
+<entry key="layout.list.space.intra">0</entry>
+<entry key="layout.list.space.trailing">0</entry>
+
+<entry key="layout.listcontent.space.leading">3</entry>
+<entry key="layout.listcontent.space.intra">3</entry>
+<entry key="layout.listcontent.space.trailing">3</entry>
+
+<entry key="layout.node.space.leading">5</entry>
+<entry key="layout.node.space.intra">2</entry>
+<entry key="layout.node.space.trailing">5</entry>
+
+<!--
+AVM Blocks
+-->
+<entry key="avm.bracket.color">003333ff</entry>
+<entry key="avm.bracket.edge.length">4</entry>
+<entry key="avm.bracket.alt.style">true</entry>
+<!-- <entry key="avm.bracket.line.width">1</entry> -->
+
+<!--
+Labels
+-->
+<!-- defaults -->
+<entry key="label.font.spec">Times,0,12</entry>
+<entry key="label.text.color">0</entry>
+<entry key="label.text.color.alt">C0C0C0ff</entry>
+<entry key="label.text.maxLength">70</entry>
+<entry key="label.continuation.text">...</entry>
+<entry key="label.margin.horizontal">0</entry>
+<entry key="label.margin.vertical">0</entry>
+<entry key="label.frame.width">0</entry>
+<entry key="label.frame.color">0</entry>
+<entry key="label.collapsed.text.color">ff0000ff</entry>
+
+<!-- List labels -->
+<!-- <entry key="label.list.font.spec">Lucida Sans Unicode</entry> -->
+<!-- <entry key="label.list.text.left">&#x27e8;</entry> -->
+<!-- <entry key="label.list.text.right">&#x27e9;</entry> -->
+<entry key="label.list.text.left">&lt;</entry>
+<entry key="label.list.text.right">&gt;</entry>
+<entry key="label.list.text.separator">,</entry>
+
+<!-- Tag labels -->
+<entry key="label.tag.font.spec">Courier,1,12</entry>
+<entry key="label.tag.text.color">0</entry>
+<entry key="label.tag.text.color.alt">0</entry>
+<entry key="label.tag.margin.horizontal">3</entry>
+<entry key="label.tag.margin.vertical">0</entry>
+<!-- the actual value is ignored, must be > 0 for a frame to appear -->
+<entry key="label.tag.frame.width">1</entry>
+<entry key="label.tag.frame.color">0</entry>
+
+<!-- AVM sort labels -->
+<entry key="label.sort.font.spec">Times,1,12</entry>
+<entry key="label.sort.text.color">003399ff</entry>
+<entry key="label.sort.margin.horizontal">5</entry>
+<entry key="label.sort.margin.vertical">0</entry>
+<entry key="label.sort.frame.width">0</entry>
+<entry key="label.sort.frame.color">0</entry>
+
+<!-- Species labels -->
+<entry key="label.species.font.spec">$label.sort.font.spec</entry>
+<entry key="label.species.text.color">$label.sort.text.color</entry>
+<entry key="label.species.margin.horizontal">0</entry>
+
+<!-- Any labels -->
+<entry key="label.any.font.spec">Times,2,12</entry>
+<entry key="label.any.text.color">006600ff</entry>
+<entry key="label.any.margin.horizontal">0</entry>
+<entry key="label.any.margin.vertical">0</entry>
+<entry key="label.any.frame.width">0</entry>
+<entry key="label.any.frame.color">0</entry>
+
+<!-- Attribute labels -->
+<!--<entry key="label.attribute.font.spec"></entry>-->
+<!--<entry key="label.attribute.text.color"></entry>-->
+<entry key="label.attribute.margin.horizontal">0</entry>
+<entry key="label.attribute.margin.vertical">0</entry>
+<!--<entry key="label.attribute.frame.width"></entry>-->
+<!--<entry key="label.attribute.frame.color"></entry>-->
+
+<!-- Node labels -->
+<entry key="label.node.internal.font.spec">Arial,1,12</entry>
+<entry key="label.node.internal.text.color">112233ff</entry>
+<entry key="label.node.internal.text.color.alt">$label.node.internal.text.color</entry>
+<entry key="label.node.internal.margin.horizontal">0</entry>
+<entry key="label.node.internal.margin.vertical">0</entry>
+<entry key="label.node.internal.frame.width">0</entry>
+<entry key="label.node.internal.frame.color">0</entry>
+
+<entry key="label.node.leaf.font.spec">$label.node.internal.font.spec</entry>
+<entry key="label.node.leaf.text.color">993300ff</entry>
+<entry key="label.node.leaf.text.color.alt">$label.node.leaf.text.color</entry>
+<entry key="label.node.leaf.margin.horizontal">0</entry>
+<entry key="label.node.leaf.margin.vertical">0</entry>
+<entry key="label.node.leaf.frame.width">0</entry>
+<entry key="label.node.leaf.frame.color">0</entry>
+
+
 </properties>
