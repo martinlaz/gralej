@@ -30,6 +30,8 @@ public class MainGUI implements ActionListener, ItemListener {
 	private int mode = WINDOWS;
 //	private int mode = FRAMES;
 	
+	private final IconTheme theme = IconThemeFactory.getIconTheme("crystal");
+	
 	private String lastDir;
 
 
@@ -173,9 +175,6 @@ public class MainGUI implements ActionListener, ItemListener {
 		// toolbar: some example buttons
 		JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
 		
-		// load icon theme
-		IconTheme theme = IconThemeFactory.getIconTheme("crystal");
-
 		b_Open = new JButton(theme.getIcon("fileopen"));
         b_Open.addActionListener(this);
 		toolbar.add(b_Open);
@@ -280,8 +279,6 @@ public class MainGUI implements ActionListener, ItemListener {
      * The offered I/O functions (import/export from/to file) are handled 
      * within the GUI
      * 
-     * TODO is it inefficient to build the window each time it is called?
-     * how to circumvent?
      * 
      */
 	public void prefDialog () {		
@@ -534,7 +531,6 @@ public class MainGUI implements ActionListener, ItemListener {
         //Create and set up the window.
         JFrame frame = new JFrame("GraleJ");
         // set program icon
-        IconTheme theme = IconThemeFactory.getIconTheme("crystal");
         ImageIcon icon = theme.getIcon("grale");
         Image image = icon.getImage();
         frame.setIconImage(image);
@@ -576,7 +572,7 @@ public class MainGUI implements ActionListener, ItemListener {
         	
         	// alternative: external windows. no split
         	//ContentObserver frames = 
-        	new WindowsContentObserver(c.getModel());
+        	new WindowsContentObserver(c.getModel(), theme);
         	frame.getContentPane().add(list.getDisplay(), BorderLayout.CENTER);
 //        	frame.add(frames.getDisplay());
         	
