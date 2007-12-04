@@ -3,6 +3,6 @@
 <!-- $Id$ -->
 <properties>
 <comment>GraleJ factory properties</comment>
-<entry key="gralej.prefs.GralePreferences.testfont">Times New Roman, 0, 16</entry>
-<entry key="gralej.prefs.GralePreferences.testcol">000000ff</entry>
+<entry key="testfont">Times New Roman, 0, 16</entry>
+<entry key="testcol">ff0000ff</entry>
 </properties>
