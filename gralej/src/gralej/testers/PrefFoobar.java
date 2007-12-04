@@ -20,12 +20,16 @@ public class PrefFoobar {
 	/**
 	 * @param args
 	 * @throws GralePrefsInitException 
+	 * @throws GralePrefsInitException 
+	 * @throws BackingStoreException 
 	 * @throws NoDefaultPrefSettingException 
 	 * @throws BackingStoreException 
 	 * @throws InvalidPreferencesFormatException 
 	 * @throws IOException 
+	 * @throws InvalidPreferencesFormatException 
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws GralePrefsInitException, NoDefaultPrefSettingException, IOException, InvalidPreferencesFormatException, BackingStoreException {
+	public static void main(String[] args) throws GralePrefsInitException, BackingStoreException, IOException, InvalidPreferencesFormatException  {
 		
 		//Font f = new Font("Arial", 1 ,16);
 		//Color c = Color.CYAN;
