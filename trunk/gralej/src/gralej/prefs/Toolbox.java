@@ -61,7 +61,7 @@ public class Toolbox {
 	
 	public static String font2str(Font font) {
 	
-		return "" + font.getFontName() + ","
+		return "" + font.getName() + ","
 			+ font.getStyle() + "," + font.getSize();
 
 	}
@@ -72,7 +72,7 @@ public class Toolbox {
 	public static Font str2font(String s) throws PrefValueBadFormatException {
 		
 		Font res;
-		String[] fields = s.split("\\s+,\\s+");
+		String[] fields = s.split("\\s*,\\s*");
 		
 		try {
 		res = new Font(fields[0], 
