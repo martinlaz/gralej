@@ -31,15 +31,20 @@ public class PrefFoobar {
 		Color c = Color.CYAN;
 		
 		GralePreferences prefs = GralePreferences.getInstance();
-		
-		Font f1 = prefs.getFont("gralej.prefs.GralePreferences.testfont");
+		prefs.restoreDefaults();
+		/*
+		Font f1 = prefs.getFont("testfont");
 		System.err.println(f1);
-		Color c1 = prefs.getColor("gralej.prefs.GralePreferences.testcol");
+		Color c1 = prefs.getColor("testcol");
 		System.err.println(c1);
 		
 		
 		prefs.putFont("test2_font", f);
-		prefs.putColor("test2_col", c);
+		prefs.putColor("test2_col", c);*/
+
+		Color c1 = prefs.getColor("testcol");
+		System.err.println(c1);
+
 		
 		
 		prefs.exportPreferences(System.out);

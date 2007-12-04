@@ -246,6 +246,21 @@ public class GralePreferences {
 		prefs.exportSubtree(os);
 	}
 	
+	/**
+	 * this will clear the preferences registry
+	 * and load all default values 
+	 * @throws BackingStoreException 
+	 */
+	public void restoreDefaults() throws BackingStoreException {
+		prefs.clear();
+		
+		for ( Object okey : defaults.keySet() ) {
+			String key = (String)okey;
+			prefs.put(key, defaults.getProperty(key));
+		}
+		
+	}
+	
 
 
 }
