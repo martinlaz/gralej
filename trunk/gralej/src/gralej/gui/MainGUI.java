@@ -7,6 +7,8 @@ package gralej.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.*;
 import java.util.prefs.*;
@@ -40,7 +42,7 @@ public class MainGUI implements ActionListener, ItemListener {
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_Latex, m_Postscript, m_SVG, 
 	                  m_Print, m_About, m_Tree, m_Struc, m_Expand, m_Restore, 
-	                  m_Hidden, m_Pref, m_Cascade, m_Tile;
+	                  m_Hidden, m_Pref, m_Cascade, m_Tile, m_TestFile, m_WebTrale;
 	
 	// buttons (basically the same as the menu items)
 	private JButton b_Open, b_Close, b_CloseAll, b_TreeStruc, b_Print, b_Expand, b_Hidden,
@@ -60,6 +62,10 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Open.addActionListener(this);
         filemenu.add(m_Open);
 
+        m_TestFile = new JMenuItem("Open Sample");
+        m_TestFile.addActionListener(this);
+        filemenu.add(m_TestFile);
+
         m_Close = new JMenuItem("Close");
         m_Close.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
@@ -71,6 +77,15 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.add(m_CloseAll);
 
         filemenu.add(new JSeparator());
+        
+        JMenu connectSubmenu = new JMenu("Connections");
+        
+        m_WebTrale = new JMenuItem("Open WebTrale client");
+        m_WebTrale.addActionListener(this);
+        connectSubmenu.add(m_WebTrale);
+        
+        filemenu.add(connectSubmenu);
+        
         JMenu exportSubmenu = new JMenu("Export");
         // sub LaTeX
         m_Latex = new JMenuItem("LaTeX");
@@ -228,6 +243,20 @@ public class MainGUI implements ActionListener, ItemListener {
             } else {
             	// file could not be opened. doing nothing might be appropriate
             }
+    	} else if (source == m_TestFile) {
+    		c.open(new File("testdata/sample.grale"));
+    	} else if (source == m_WebTrale) {
+    		URL url;
+    		try {
+				url = new URL(JOptionPane.showInputDialog(null, "Choose server"));
+	    		c.startWebTraleClient(url);
+			} catch (HeadlessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (MalformedURLException e1) {
+				System.err.println("Malformed URL");
+			}
+
     	} else if (source == m_Close || source == b_Close) {
     		c.close();
     	} else if (source == m_CloseAll || source == b_CloseAll) {

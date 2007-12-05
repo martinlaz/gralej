@@ -2,12 +2,14 @@ package gralej.gui;
 
 import gralej.controller.ContentModel;
 import gralej.gui.icons.IconTheme;
-import gralej.gui.icons.IconThemeFactory;
 import gralej.gui.blocks.BlockPanel;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.text.NumberFormat;
+import java.text.ParseException;
+
 import javax.swing.*;
 
 /**
@@ -162,7 +164,7 @@ public class WindowsContentObserver extends ContentObserver {
 	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
 		b_Restore, b_Find, b_Resize, b_AutoResize, b_ZoomPlus, b_ZoomMinus;
 	
-	private JTextField zoomfield;
+	private JFormattedTextField zoomfield;
 
 
 	private JMenuBar createMenuBar() {
@@ -290,16 +292,25 @@ public class WindowsContentObserver extends ContentObserver {
         b_AutoResize.setToolTipText("En-/Disable Auto-Resizing");
 		toolbar.add(b_AutoResize);
 
+		toolbar.addSeparator();
+		
 		b_ZoomMinus = new JButton(theme.getIcon("zoomout"));
         b_ZoomMinus.addActionListener(this);
         b_ZoomMinus.setToolTipText("Zoom out");
 		toolbar.add(b_ZoomMinus);
 		
-		zoomfield = new JTextField("100");
-		zoomfield.addActionListener(this);
-		zoomfield.setMaximumSize(new Dimension(25,50));
-		toolbar.add(zoomfield); // too wide
+		toolbar.add(new JLabel("Zoom:"));
+		NumberFormat format1 = NumberFormat.getInstance();
+//	    format1.setMaximumFractionDigits(0);
+	    format1.setParseIntegerOnly(true);
 
+		zoomfield = new JFormattedTextField(format1);
+		zoomfield.setText("100");
+		zoomfield.addActionListener(this);
+//		zoomfield.setPreferredSize(new Dimension(10,30));
+		zoomfield.setMaximumSize(new Dimension(40,20));
+		toolbar.add(zoomfield); // too wide
+		toolbar.add(new JLabel("%"));
 		b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
         b_ZoomPlus.addActionListener(this);
         b_ZoomPlus.setToolTipText("Zoom in");
@@ -349,13 +360,23 @@ public class WindowsContentObserver extends ContentObserver {
 			zoomfield.setText(
 					Integer.toString((int) Math.floor(((BlockPanel) display).getScaleFactor() * 100)));
 		} else if (source ==  zoomfield) {
-			((BlockPanel) display).setScaleFactor(
-					Double.parseDouble(((JTextField)source).getText()) / 100);			
-		} else if (source ==  m_AutoResize) {
+			try {
+				zoomfield.commitEdit();
+			} catch (ParseException e1) {
+				zoomfield.setText("100");
+				System.err.println("Invalid zoom value. Defaulting to 100%.");
+			}
+			try {
+				((BlockPanel) display).setScaleFactor(
+						Double.parseDouble(((JTextField)source).getText()) / 100);
+			} catch (NumberFormatException e1) {
+				zoomfield.setText("100");
+				System.err.println("Invalid zoom value. Defaulting to 100%.");
+				((BlockPanel) display).setScaleFactor(1);
+			}			
+		} else if (source ==  m_AutoResize || source == b_AutoResize) {
 			autoResize = ! autoResize;
-			((BlockPanel) display).setAutoResize(autoResize);
-		} else if (source == b_AutoResize) {
-			autoResize = ! autoResize;			
+			b_AutoResize.setSelected(autoResize);
 			((JCheckBoxMenuItem) m_AutoResize).setSelected(autoResize);
 			((BlockPanel) display).setAutoResize(autoResize);
 		} else if (source ==  m_Find || source == b_Find) {
