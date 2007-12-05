@@ -3,12 +3,11 @@ package gralej.gui;
 import gralej.controller.ContentModel;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.blocks.BlockPanel;
+import gralej.parsers.IDataPackage;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.text.NumberFormat;
-import java.text.ParseException;
 
 import javax.swing.*;
 
@@ -39,16 +38,16 @@ public class WindowsContentObserver extends ContentObserver {
 	}
 	
 
-	public void add (Object display, String name) {
-		Window w = new Window (name, (JComponent) display);
+	public void add (IDataPackage data) {
+		Window w = new Window (data);
 		frames.add(w);
 	}
 	
 	@Override
 	public void close () {
-		JComponent d = model.getDisplayAt(model.getFocus());
+		IDataPackage d = model.getData(model.getFocus());
 		for (int i = 0; i < frames.size(); i++) {
-			if (frames.get(i).display == d) {
+			if (frames.get(i).data == d) {
 				frames.get(i).dispose();				
 			}
 		}
@@ -133,16 +132,16 @@ public class WindowsContentObserver extends ContentObserver {
 
 	private class Window extends JFrame implements ActionListener {
 		
-		String name;
+		IDataPackage data;
 		
 		JComponent display;
 		
 		boolean autoResize = false;
 		
-		Window (String name, JComponent display) {
-			super(name);
-			this.name = name;
-			this.display = display;
+		Window (IDataPackage data) {
+			super(data.getTitle());
+			this.data = data;
+			this.display = data.createView();
 		    display.setOpaque(true);
 	        setJMenuBar(createMenuBar());        
 	        add(createToolBar(),BorderLayout.NORTH);
@@ -158,13 +157,15 @@ public class WindowsContentObserver extends ContentObserver {
 	
 	private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, 
     	m_Print, m_Tree, m_Struc, m_Expand, m_Restore, 
-    	m_Hidden, m_Find, m_Resize, m_AutoResize, m_ZoomPlus, m_ZoomMinus;
+    	m_Hidden, m_Find, m_Resize, m_AutoResize, m_ZoomPlus, m_ZoomMinus,
+    	m_Save;
 
 	// buttons (basically the same as the menu items)
 	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
-		b_Restore, b_Find, b_Resize, b_AutoResize, b_ZoomPlus, b_ZoomMinus;
+		b_Restore, b_Find, b_Resize, b_AutoResize, b_ZoomPlus, b_ZoomMinus,
+		b_Save;
 	
-	private JFormattedTextField zoomfield;
+	private JTextField zoomfield, searchfield;
 
 
 	private JMenuBar createMenuBar() {
@@ -179,6 +180,11 @@ public class WindowsContentObserver extends ContentObserver {
 				KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
 		m_Close.addActionListener(this);
 		filemenu.add(m_Close);
+		
+        m_Save = new JMenuItem("Save");
+        m_Save.addActionListener(this);
+        filemenu.add(m_Save);
+        
 
 		filemenu.add(new JSeparator());
 		JMenu exportSubmenu = new JMenu("Export");
@@ -240,7 +246,7 @@ public class WindowsContentObserver extends ContentObserver {
 				KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
 		m_Hidden.addActionListener(this);
 		viewmenu.add(m_Hidden);
-
+		
 		m_Resize = new JMenuItem("Adjust window size");
 		m_Resize.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
@@ -254,12 +260,14 @@ public class WindowsContentObserver extends ContentObserver {
 		viewmenu.add(m_AutoResize);
 
 		m_ZoomPlus = new JMenuItem("Zoom in");
-		m_ZoomPlus.setAccelerator(KeyStroke.getKeyStroke("+"));
+		m_ZoomPlus.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK));
 		m_ZoomPlus.addActionListener(this);
 		viewmenu.add(m_ZoomPlus);
 
 		m_ZoomMinus = new JMenuItem("Zoom out");
-		m_ZoomMinus.setAccelerator(KeyStroke.getKeyStroke("-"));
+		m_ZoomMinus.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
 		m_ZoomMinus.addActionListener(this);
 		viewmenu.add(m_ZoomMinus);
 
@@ -281,6 +289,10 @@ public class WindowsContentObserver extends ContentObserver {
 	private JToolBar createToolBar () {
 		// toolbar: some example buttons
 		JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
+		
+		b_Save = new JButton(theme.getIcon("filefloppy"));
+        b_Save.addActionListener(this);
+		toolbar.add(b_Save);
 
 		b_Resize = new JButton(theme.getIcon("maximize"));
         b_Resize.addActionListener(this);
@@ -300,22 +312,31 @@ public class WindowsContentObserver extends ContentObserver {
 		toolbar.add(b_ZoomMinus);
 		
 		toolbar.add(new JLabel("Zoom:"));
-		NumberFormat format1 = NumberFormat.getInstance();
-//	    format1.setMaximumFractionDigits(0);
-	    format1.setParseIntegerOnly(true);
-
-		zoomfield = new JFormattedTextField(format1);
-		zoomfield.setText("100");
+		zoomfield = new JTextField("100");
 		zoomfield.addActionListener(this);
 //		zoomfield.setPreferredSize(new Dimension(10,30));
 		zoomfield.setMaximumSize(new Dimension(40,20));
-		toolbar.add(zoomfield); // too wide
+		zoomfield.setToolTipText("Zoom value");
+		toolbar.add(zoomfield);
 		toolbar.add(new JLabel("%"));
 		b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
         b_ZoomPlus.addActionListener(this);
         b_ZoomPlus.setToolTipText("Zoom in");
 		toolbar.add(b_ZoomPlus);
 
+		toolbar.addSeparator();
+		
+		searchfield = new JTextField();
+		searchfield.setMaximumSize(new Dimension(90,20));
+		searchfield.addActionListener(this);
+		toolbar.add(searchfield);
+		
+		b_Find = new JButton(theme.getIcon("magglass"));
+        b_Find.addActionListener(this);
+        b_Find.setToolTipText("Find");
+		toolbar.add(b_Find);
+		
+		
 
 		return toolbar;
 	}
@@ -327,6 +348,8 @@ public class WindowsContentObserver extends ContentObserver {
 		JComponent source = (JComponent)(e.getSource());
 		if (source ==  m_Close || source == b_Close) {
 			dispose();
+    	} else if (source == m_Save || source == b_Save) {
+    		model.save(data);
 		} else if (source == m_Latex) {
 			// call output method
 		} else if (source == m_Postscript) {
@@ -361,14 +384,10 @@ public class WindowsContentObserver extends ContentObserver {
 					Integer.toString((int) Math.floor(((BlockPanel) display).getScaleFactor() * 100)));
 		} else if (source ==  zoomfield) {
 			try {
-				zoomfield.commitEdit();
-			} catch (ParseException e1) {
-				zoomfield.setText("100");
-				System.err.println("Invalid zoom value. Defaulting to 100%.");
-			}
-			try {
 				((BlockPanel) display).setScaleFactor(
-						Double.parseDouble(((JTextField)source).getText()) / 100);
+						Math.floor(Double.parseDouble(((JTextField)source).getText())) / 100);
+				zoomfield.setText(
+						Integer.toString((int) Math.floor(((BlockPanel) display).getScaleFactor() * 100)));
 			} catch (NumberFormatException e1) {
 				zoomfield.setText("100");
 				System.err.println("Invalid zoom value. Defaulting to 100%.");
@@ -379,8 +398,14 @@ public class WindowsContentObserver extends ContentObserver {
 			b_AutoResize.setSelected(autoResize);
 			((JCheckBoxMenuItem) m_AutoResize).setSelected(autoResize);
 			((BlockPanel) display).setAutoResize(autoResize);
-		} else if (source ==  m_Find || source == b_Find) {
-			// send search request to content window
+		} else if (source ==  m_Find) {
+			String searchFor = JOptionPane.showInputDialog(null, 
+					"Search for sorts or attributes containing:");
+			// TODO send search request to content window
+		} else if (source == b_Find || source == searchfield) {
+			String searchFor = searchfield.getText();
+			// TODO send search request to content window
+			
 		}
 	}
 
