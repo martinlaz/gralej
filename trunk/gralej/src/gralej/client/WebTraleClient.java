@@ -6,6 +6,8 @@
 package gralej.client;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +32,7 @@ import javax.swing.UIManager;
 public class WebTraleClient extends JPanel {
 
     private URL webtraleContextURL;
-    private BlockingQueue<Byte> byteBlockingQueue = new LinkedBlockingQueue<Byte>();
+    BlockingQueue<Short> byteBlockingQueue = new LinkedBlockingQueue<Short>();
 
     /** Creates new form WebTraleClient */
     public WebTraleClient(URL url) {
@@ -61,29 +63,36 @@ public class WebTraleClient extends JPanel {
         return new InputStream() {
             public int read() throws IOException {
                 try {
-                    int b = byteBlockingQueue.take();
-                    return b & 0xff;
+                    return byteBlockingQueue.take();
                 }
                 catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
+                    ex.printStackTrace();
+                    return -1;
                 }
-            }
-            @Override
-            public int available() {
-                return byteBlockingQueue.size();
             }
             @Override
             public int read(byte[] b, int off, int len) throws IOException {
                 int reqSize = len - off;
                 if (reqSize <= 0)
                     return 0;
-                int n = available();
+                
+                int n = byteBlockingQueue.size();
                 if (n > reqSize)
                     n = reqSize;
                 else if (n == 0)
                     n = 1;
-                for (int i = 0; i < n; ++i)
+                
+                for (int i = 0; i < n - 1; ++i)
                     b[off++] = (byte) read();
+                
+                int lastByte = read();
+                if (lastByte == -1) {
+                    if (--n == 0)
+                        return -1;
+                }
+                else
+                    b[off] = (byte) lastByte;
+                
                 return n;
             }
         };
@@ -91,11 +100,18 @@ public class WebTraleClient extends JPanel {
 
     public static WebTraleClient inFrame(URL url) {
         Authenticator.install();
+        final WebTraleClient wtClient = new WebTraleClient(url);
+        
         JFrame f = new JFrame();
         f.setTitle("WebTrale client");
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent we) {
+                wtClient.byteBlockingQueue.offer((short)-1);
+            }
+        });
         f.setLocationByPlatform(true);
-        WebTraleClient wtClient = new WebTraleClient(url);
         f.setContentPane(wtClient);
         f.pack();
         f.setVisible(true);
@@ -141,7 +157,7 @@ public class WebTraleClient extends JPanel {
         byte[] b = new byte[0x1000];
         while ((n = is.read(b)) != -1) {
             for (int i = 0; i < n; ++i)
-                byteBlockingQueue.offer((byte) b[i]);
+                byteBlockingQueue.offer((short) b[i]);
         }
         is.close();
     }
