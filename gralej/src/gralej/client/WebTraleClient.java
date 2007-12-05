@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.concurrent.BlockingQueue;
@@ -99,6 +100,16 @@ public class WebTraleClient extends JPanel {
     }
 
     public static WebTraleClient inFrame(URL url) {
+        if (!url.toString().endsWith("/")) {
+            // url should always end in /
+            try {
+                url = new URL(url, "/");
+            }
+            catch (MalformedURLException e) {
+                // will not happen
+            }
+        }
+        
         Authenticator.install();
         final WebTraleClient wtClient = new WebTraleClient(url);
         
@@ -146,6 +157,8 @@ public class WebTraleClient extends JPanel {
             if (errs == null)
                 throw ex;
             String msg = readAll(errs);
+            if (!msg.startsWith("WebTrale:"))
+                throw ex;
             JOptionPane.showMessageDialog(this, msg);
             errs.close();
             return null;
@@ -163,7 +176,7 @@ public class WebTraleClient extends JPanel {
     }
     
     static String readAll(InputStream is) throws IOException {
-        return readAll(is, "UTF-8");
+        return readAll(is, "ISO-8859-1");
     }
     
     static String readAll(InputStream is, String charsetName) throws IOException {
