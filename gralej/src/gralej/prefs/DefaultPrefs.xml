@@ -15,12 +15,13 @@ where RR = 2byte hex value for red
       AA = 2byte hex value for the alpha channel (ff=no transparency)
 -->
 <properties>
+<!-- for testing, remove later! -->
 <comment>GraleJ factory properties</comment>
 <entry key="testfont1">Times New Roman, 0, 16</entry>
 <entry key="testfont2">Times New Roman, 1, 16</entry>
 <entry key="testfont3">Times New Roman, 2, 16</entry>
 <entry key="testfont4">Times New Roman, 3, 16</entry>
-<entry key="testcol">ff0000ff</entry>
+<entry key="testbool">true</entry>
 
 
 
