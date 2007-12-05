@@ -82,7 +82,8 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 			}
 			
 			public void run () {
-        		cm.open(parse.createView(), parse.getTitle());				
+//        		cm.open(parse.createView(), parse.getTitle());
+        		cm.open(parse);
 			}
 			
 		}
@@ -98,15 +99,6 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 		}
 		
 		
-	}
-
-	
-	public void close () {
-		cm.close();		
-	}
-	
-	public void closeAll() {
-		cm.closeAll();
 	}
 	
 	public ContentModel getModel () {

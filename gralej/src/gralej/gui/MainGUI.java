@@ -29,24 +29,25 @@ public class MainGUI implements ActionListener, ItemListener {
 	// display mode
 	static int FRAMES = 0; 
 	static int WINDOWS = 1; 
-	private int mode = WINDOWS;
+//	private int mode = WINDOWS;
 //	private int mode = FRAMES;
 	
 	private final IconTheme theme = IconThemeFactory.getIconTheme("crystal");
 	
 	private String lastDir;
+	
+	private boolean hasSelection = true;
 
 
 	private Controller c; // the gralej.controller 
 	
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_Latex, m_Postscript, m_SVG, 
-	                  m_Print, m_About, m_Tree, m_Struc, m_Expand, m_Restore, 
-	                  m_Hidden, m_Pref, m_Cascade, m_Tile, m_TestFile, m_WebTrale;
+	                  m_Print, m_About, m_Pref, m_Cascade, m_Tile, m_TestFile, m_WebTrale,
+	                  m_Save, m_SaveAll;
 	
 	// buttons (basically the same as the menu items)
-	private JButton b_Open, b_Close, b_CloseAll, b_TreeStruc, b_Print, b_Expand, b_Hidden,
-	                b_Restore;
+	private JButton b_Open, b_Close, b_CloseAll, b_Print, b_Save, b_SaveAll;
 	
 	
 	private JMenuBar createMenuBar() {
@@ -76,6 +77,14 @@ public class MainGUI implements ActionListener, ItemListener {
         m_CloseAll.addActionListener(this);
         filemenu.add(m_CloseAll);
 
+        m_Save = new JMenuItem("Save");
+        m_Save.addActionListener(this);
+        filemenu.add(m_Save);
+        
+        m_SaveAll = new JMenuItem("Save All");
+        m_SaveAll.addActionListener(this);
+        filemenu.add(m_SaveAll);
+        
         filemenu.add(new JSeparator());
         
         JMenu connectSubmenu = new JMenu("Connections");
@@ -119,44 +128,6 @@ public class MainGUI implements ActionListener, ItemListener {
         // menu View
         JMenu viewmenu = new JMenu("View");
         
-        // Tree/Structure (alternating; defaults to Tree, changeable)
-        viewmenu.addSeparator();
-        ButtonGroup viewmode = new ButtonGroup();
-
-        m_Tree = new JRadioButtonMenuItem("Tree");
-        m_Tree.setSelected(true); // default
-        m_Tree.addActionListener(this);
-        viewmode.add(m_Tree);
-        viewmenu.add(m_Tree);
-
-        m_Struc = new JRadioButtonMenuItem("Structure");
-        m_Struc.addActionListener(this);
-        viewmode.add(m_Struc);
-        viewmenu.add(m_Struc);
-        viewmenu.addSeparator();
-        
-        // menuitem "Expand" (expands tags)
-        m_Expand = new JMenuItem("Expand");
-        m_Expand.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
-        m_Expand.addActionListener(this);
-        viewmenu.add(m_Expand);
-        
-        // menuitem "Restore" (restores original view)
-        m_Restore = new JMenuItem("Restore");
-        m_Restore.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
-        m_Restore.addActionListener(this);
-        viewmenu.add(m_Restore);
-        
-        // checkbox "Show Hidden Nodes" (shaded)
-        m_Hidden = new JCheckBoxMenuItem("Show Hidden Nodes");
-        m_Hidden.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
-        m_Hidden.addActionListener(this);
-        viewmenu.add(m_Hidden);
-
-        viewmenu.addSeparator();
 
         m_Cascade = new JMenuItem("Cascade Windows/Frames");
         m_Cascade.addActionListener(this);
@@ -192,26 +163,30 @@ public class MainGUI implements ActionListener, ItemListener {
 		
 		b_Open = new JButton(theme.getIcon("fileopen"));
         b_Open.addActionListener(this);
+        b_Open.setToolTipText("Open");
 		toolbar.add(b_Open);
     
 		b_Close = new JButton(theme.getIcon("closewindow"));
         b_Close.addActionListener(this);
+        b_Close.setToolTipText("Close");
 		toolbar.add(b_Close);
     
 		b_CloseAll = new JButton(theme.getIcon("closeviews"));
         b_CloseAll.addActionListener(this);
+        b_CloseAll.setToolTipText("Close All");
 		toolbar.add(b_CloseAll);
-    
-		/* code for icon change
-    	b_Open.setRolloverIcon(new ImageIcon("fileopen.png"));
-    	b_Open.setPressedIcon(...);
-		 */
-
-//		JButton zoomin = new JButton(theme.getIcon("zoomin"));
-//		toolbar.add(zoomin);
-//		JButton zoomout = new JButton(theme.getIcon("zoomout"));
-//		toolbar.add(zoomout);
 		
+		b_Save = new JButton(theme.getIcon("filefloppy"));
+        b_Save.addActionListener(this);
+        b_Save.setToolTipText("Save");
+		toolbar.add(b_Save);
+		
+/*		b_SaveAll = new JButton(theme.getIcon("filefloppy"));
+        b_SaveAll.addActionListener(this);
+		toolbar.add(b_SaveAll);
+*/
+		
+    		
 		return toolbar;
 	}
 
@@ -258,9 +233,13 @@ public class MainGUI implements ActionListener, ItemListener {
 			}
 
     	} else if (source == m_Close || source == b_Close) {
-    		c.close();
+    		c.getModel().close();
     	} else if (source == m_CloseAll || source == b_CloseAll) {
-    		c.closeAll();
+    		c.getModel().closeAll();
+    	} else if (source == m_Save || source == b_Save) {
+    		c.getModel().save();
+    	} else if (source == m_SaveAll || source == b_SaveAll) {
+    		c.getModel().saveAll();
     	} else if (source == m_Latex) {
     		// call output method
     	} else if (source == m_Postscript) {
@@ -271,19 +250,6 @@ public class MainGUI implements ActionListener, ItemListener {
     		JOptionPane.showMessageDialog(null, "GRALE, Java version (2007)");
     	} else if (source ==  m_SVG) {
     		// call output method
-    	} else if (source ==  m_Tree) {
-    		// send "set tree" via content window to focus window    		
-    	} else if (source ==  m_Struc) {
-    		// send "set structure" via content window to focus window
-    	} else if (source ==  b_TreeStruc) {
-    		// send "toggle tree/structure" via content window to focus window
-    		// on this occasion the button icon should change (displaying the NOW state)
-    	} else if (source ==  m_Expand || source == b_Expand) {
-    		// send "expand" via content window to focus window
-    	} else if (source ==  m_Restore || source == b_Restore) {
-    		// send "restore" via content window to focus window
-    	} else if (source ==  m_Hidden || source == b_Hidden) {
-    		// send "toggle hidden" via content window to focus window
     	} else if (source ==  m_Cascade) {
     		// send "cascade" to viewer
     		c.getModel().cascade();
@@ -567,6 +533,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
         // instantiate menus
         frame.setJMenuBar(this.createMenuBar());
+        notifyOfSelection(false);
         
         // instantiate toolbar
         frame.getContentPane().add(this.createToolBar(),BorderLayout.NORTH);
@@ -574,9 +541,9 @@ public class MainGUI implements ActionListener, ItemListener {
         // content part
 
         // always needed: list observer (registers with model in its constructor)
-    	ContentObserver list = new ListContentObserver(c.getModel());
-        
-        if (mode == FRAMES) {
+    	ContentObserver list = new ListContentObserver(c.getModel(), this);
+    	
+/*        if (mode == FRAMES) {
         
         	//Create a split pane with the two scroll panes in it.
         	JSplitPane content = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT); 
@@ -598,7 +565,7 @@ public class MainGUI implements ActionListener, ItemListener {
         	content.add(frames.getDisplay());
     	
         } else if (mode == WINDOWS) {
-        	
+*/        	
         	// alternative: external windows. no split
         	//ContentObserver frames = 
         	new WindowsContentObserver(c.getModel(), theme);
@@ -606,7 +573,8 @@ public class MainGUI implements ActionListener, ItemListener {
 //        	frame.add(frames.getDisplay());
         	
         	
-        }
+/*        }
+ */
         
         // bottom status line
         // to be implemented
@@ -619,5 +587,28 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.setVisible(true);
         
 	}
+	
+
+	/**
+	 * Some menu items depend on a file being selected. This method
+	 * is called by the list whenever the selection changes.
+	 * 
+	 * @param b
+	 */
+	public void notifyOfSelection(boolean b) {
+		if (hasSelection == b) return; // do nothing 
+		hasSelection = b;
+		m_Latex.setEnabled(b);
+		m_Close.setEnabled(b);
+		m_CloseAll.setEnabled(b);
+		m_Latex.setEnabled(b);
+		m_Postscript.setEnabled(b);
+		m_SVG.setEnabled(b);
+        m_Print.setEnabled(b);
+        m_Save.setEnabled(b);
+        m_SaveAll.setEnabled(b);
+		
+	}
+
 
 }

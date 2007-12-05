@@ -5,6 +5,7 @@ package gralej.gui;
 
 import javax.swing.*;
 import gralej.controller.*;
+import gralej.parsers.IDataPackage;
 
 /**
  * The observer class needs subclasses for lists and frame desktop (and probably more)
@@ -23,7 +24,7 @@ public abstract class ContentObserver {
 		return display;
 	}
 	
-	public abstract void add (Object c, String name);
+	public abstract void add (IDataPackage data);
 	
 	public abstract void close ();
 	

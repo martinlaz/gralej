@@ -1,6 +1,7 @@
 package gralej.controller;
 
 import gralej.gui.*;
+import gralej.parsers.IDataPackage;
 
 import java.util.ArrayList;
 import java.util.prefs.*;
@@ -10,60 +11,30 @@ import javax.swing.JComponent;
 /**
  * The content model stores the semantics. 
  * it keeps track of open files, which one's focused etc.
- * and of the preferences
  * 
  * @author Armin
  *
  */
-public class ContentModel { // extends DefaultListModel??
+public class ContentModel {
 	
 	private ListContentObserver list;
 	private ContentObserver observer;
-	
-	// content variables
-	private ArrayList<GRALEFile> files = new ArrayList<GRALEFile>(); 
+	private ArrayList<IDataPackage> files = new ArrayList<IDataPackage>(); 
     
-    // the content model also handles preferences settings
+    // TODO delete old preference handling once Niels' new one is in
     Preferences prefs;
     
     public Preferences getPrefs () { return prefs; }
-    
-    /** code for exporting preferences
-     try {
-    // Export the node to a file
-    prefs.exportNode(new FileOutputStream("output.xml"));
-} catch (IOException e) {
-} catch (BackingStoreException e) {
-}
-*/
-    
-/** code for importing preferences    
-    // Create an input stream on a file
-    InputStream is = null;
-    try {
-        is = new BufferedInputStream(new FileInputStream("output.xml"));
-    } catch (FileNotFoundException e) {
-    }
-    
-    // Import preference data
-    try {
-        Preferences.importPreferences(is);
-    } catch (InvalidPreferencesFormatException e) {
-    } catch (IOException e) {
-    }
-*/
-	
 
+    public void resetPreferences () {
+		prefs.put("color", "white");
+		prefs.put("font size", "11");
+	}
 	
-
-    
-    // methods for adding/deleting a file. each calls notify
-    
-	public void open (Object parse, String name) {
-		GRALEFile newfile = new GRALEFile(parse, name);
-		files.add(newfile);
-	    list.add(parse, name);
-	    observer.add(parse, name);
+	public void open (IDataPackage parse) {
+		files.add(parse);
+		list.add(parse);
+		observer.add(parse);
 	}
 	
 	/**
@@ -71,8 +42,9 @@ public class ContentModel { // extends DefaultListModel??
 	 * 
 	 */
 	public void open () {
-		observer.add(files.get(list.getFocus()).display, 
-				files.get(list.getFocus()).name);
+//		observer.add(files.get(list.getFocus()).createView(), 
+//				files.get(list.getFocus()).getTitle());
+		observer.add(files.get(list.getFocus()));
 	}
 
 	public void close () {
@@ -88,6 +60,25 @@ public class ContentModel { // extends DefaultListModel??
 		observer.clear();
 	}
 	
+	public void save () {
+		save(files.get(list.getFocus()));
+	}
+	
+	public void saveAll () {
+		// TODO save all
+		for (int i = 0; i < files.size(); i++) {
+			save(files.get(i));
+		}
+		
+	}
+	
+	public void save (IDataPackage dataItem) {
+		// TODO implement saving
+		
+		
+		// TODO finally, generalize this to multi-format exporting
+	}
+	
 	public void tile () {
 		// TODO to be changed when other observers are allowed
 		((WindowsContentObserver) observer).tile();
@@ -97,10 +88,6 @@ public class ContentModel { // extends DefaultListModel??
 		((WindowsContentObserver) observer).cascade();
 	}
 
-
-	/**
-	 * 
-	 */
 	public ContentModel() {
 		
 		prefs = Preferences.userNodeForPackage(this.getClass());
@@ -117,56 +104,21 @@ public class ContentModel { // extends DefaultListModel??
 		observer = o;
 	}
 	
-	/**
-	 * resetting or initializing the preferences
-	 * 
-	 * 
-	 */
-	public void resetPreferences () {
-		prefs.put("color", "white");
-		prefs.put("font size", "11");
-	}
 
 	public int getSize() {
 		return files.size();
 	}
 	
-	public ArrayList<GRALEFile> getFiles() {
+	public ArrayList<IDataPackage> getFiles() {
 		return files;
 	}
 	
-	public String getNameAt(int i) {
-		return files.get(i).name;
-	}
-
-	public JComponent getDisplayAt(int i) {
-		return files.get(i).display;
+	public IDataPackage getData(int i) {
+		return files.get(i);
 	}
 
 	public int getFocus() {
 		return list.getFocus();
 	}
 	
-	/**
-	 * GRALEFiles: now only a JComponent-String pair
-	 * 
-	 * @author Armin
-	 *
-	 */
-	private class GRALEFile {
-		
-		String name;
-		JComponent display;
-
-		GRALEFile (Object parse, String name) {
-			this.name = name;
-			this.display = (JComponent) parse;
-		}
-		
-//		public String getName () { return name;	}
-		
-//		public JComponent display() { return content; }
-
-	}
-
 }
