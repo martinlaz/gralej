@@ -118,7 +118,7 @@ public class GenericIconTheme implements IconTheme {
 	 * inside the package this very class is in.
 	 * @param iconpackagename
 	 */	
-	public static IconTheme getInstance(String iconpackagename) {
+	protected static IconTheme getInstance(String iconpackagename) {
 		if ( instance == null ) {
 			instance = new GenericIconTheme(iconpackagename);
 		}
