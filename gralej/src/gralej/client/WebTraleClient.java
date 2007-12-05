@@ -114,7 +114,7 @@ public class WebTraleClient extends JPanel {
         final WebTraleClient wtClient = new WebTraleClient(url);
         
         JFrame f = new JFrame();
-        f.setTitle("WebTrale client");
+        f.setTitle(url.getHost() + " - WebTrale");
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.addWindowListener(new WindowAdapter() {
             @Override
