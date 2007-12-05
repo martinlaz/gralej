@@ -4,7 +4,6 @@ import gralej.prefs.GralePreferences;
 import gralej.prefs.GralePrefsInitException;
 import gralej.prefs.NoDefaultPrefSettingException;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
 import java.util.prefs.BackingStoreException;
