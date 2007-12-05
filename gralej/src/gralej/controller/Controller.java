@@ -64,7 +64,9 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 	}
         
         public void streamClosed(StreamInfo meta, Exception ex) {
-            
+            System.err.println("-- Stream closed: " + meta);
+            if (ex != null)
+                System.err.println("------ Exception: " + ex);
         }
 	
 	
