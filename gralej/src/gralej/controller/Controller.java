@@ -1,5 +1,6 @@
 package gralej.controller;
 
+import gralej.client.WebTraleClient;
 import gralej.fileIO.FileLoader;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
 /**
  * The controller is the central element of the program's design.
@@ -115,5 +117,14 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 		cm = new ContentModel();
 		
 	}
+        
+        public void startWebTraleClient(URL url) {
+            final WebTraleClient wtc = WebTraleClient.inFrame(url);
+            new Thread(new Runnable() {
+                public void run() {
+                    newStream(wtc.getInputStream(), new StreamInfo("grisu", "WebTrale"));
+                }
+            }).start();
+        }
 
 }
