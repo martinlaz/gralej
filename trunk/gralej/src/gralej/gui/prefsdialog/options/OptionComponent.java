@@ -36,9 +36,12 @@ public abstract class OptionComponent extends JComponent {
 		return prefkey;
 	}
 	
+	// TODO: shouldn't this be abstract?
 	public void savePref() {
 		prefs.put(prefkey, prefvalue);
 	}
+	
+	public abstract  void reloadPref();
 	
 	
 

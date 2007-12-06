@@ -31,38 +31,33 @@ public class CFontOption extends OptionComponent {
 	public CFontOption(GralePreferences prefs, String prefkey, String label) {
 		super(prefs, prefkey);
 		
-		theFont = prefs.getFont(prefkey);
+		setLayout(new FlowLayout());
 		
 		// create components
-		setLayout(new FlowLayout());
-		JLabel l = new JLabel(label);
+		JLabel l = null;
+		if ( label != null ) {
+			setLayout(new FlowLayout());
+			l = new JLabel(label);
+		}
 		
 		// font name combo box
 		fontNames = GraphicsEnvironment.
 			getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 		nameCombo = new JComboBox(fontNames); 
-		int selIndex;
-		for ( selIndex = 0; selIndex < fontNames.length; selIndex++) {
-			if ( fontNames[selIndex].equals(theFont.getName()) ) {
-				break;
-			}
-		}
-		nameCombo.setSelectedIndex(selIndex);
 		
-		// font style combo box, the selection index coincides
-		// with java font style numbers
+		// font style combo box, 
 		styleCombo = new JComboBox(fontStyles);
-		styleCombo.setSelectedIndex(theFont.getStyle());
 		
 		// font size spinner
 		sizeSpinner = new JSpinner(new SpinnerNumberModel(
-				theFont.getSize(), fontSizeMin, fontSizeMax,1));
-		/*sizeSpinner.setPreferredSize( new Dimension( 
-				sizeSpinner.getPreferredSize().height *2, 
-				sizeSpinner.getPreferredSize().height) );*/
+				fontSizeMin, fontSizeMin, fontSizeMax,1));
 
+		// initialize
+		reloadPref();
 		
-		add(l);
+		if (l != null) {
+			add(l);
+		}
 		add(nameCombo);
 		add(styleCombo);
 		add(sizeSpinner);
@@ -91,6 +86,29 @@ public class CFontOption extends OptionComponent {
 	public void savePref() {
 		createFont();
 		getPrefs().putFont(getPrefKey(), theFont);
+	}
+
+	@Override
+	public void reloadPref() {
+		theFont = getPrefs().getFont(getPrefKey());
+
+		// select the right font name
+		int selIndex;
+		for ( selIndex = 0; selIndex < fontNames.length; selIndex++) {
+			if ( fontNames[selIndex].equals(theFont.getName()) ) {
+				break;
+			}
+		}
+		nameCombo.setSelectedIndex(selIndex);
+		
+		// select the right font style
+		// the selection index coincides
+		// with java font style numbers
+		styleCombo.setSelectedIndex(theFont.getStyle());
+		
+		// set size spinner
+		((SpinnerNumberModel)sizeSpinner.getModel()).setValue(theFont.getSize());
+		
 	}
 
 }

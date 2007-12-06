@@ -24,10 +24,15 @@ public class CBooleanOption extends OptionComponent {
 
 		super(prefs,prefkey);
 		
+		String l = label;
+		if ( l == null) {
+			l ="";
+		}
+		
 		// create checkbox for the actual function
 		setLayout(new FlowLayout());
-		checkbox = new JCheckBox(label);
-		checkbox.setSelected(prefs.getBoolean(prefkey));
+		checkbox = new JCheckBox(l);
+		reloadPref();
 		add(checkbox);
 		
 	}
@@ -38,6 +43,11 @@ public class CBooleanOption extends OptionComponent {
 	@Override
 	public void savePref() {
 		getPrefs().putBoolean(getPrefKey(), checkbox.isSelected());
+	}
+
+	@Override
+	public void reloadPref() {
+		checkbox.setSelected(getPrefs().getBoolean(getPrefKey()));
 	}
 	
 	
