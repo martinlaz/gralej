@@ -1,9 +1,6 @@
 package gralej.testers;
 
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-
-import gralej.gui.prefsdialog.PrefDialogFrame;
+import gralej.gui.prefsdialog.GenDialog;
 import gralej.prefs.GralePrefsInitException;
 
 /**
@@ -16,10 +13,11 @@ public class PrefsDialogester {
 
 	public static void main(String[] args) throws GralePrefsInitException {
 
-		JFrame frame = new PrefDialogFrame();
+		//JFrame frame = new PrefDialogFrame();
+		GenDialog frame = new GenDialog(null);
 		
 		// don't do this at home, this is just for this tester
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		//frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
 		frame.setVisible(true);
 		
