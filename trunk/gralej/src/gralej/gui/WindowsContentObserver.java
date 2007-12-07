@@ -3,10 +3,12 @@ package gralej.gui;
 import gralej.controller.ContentModel;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.blocks.BlockPanel;
-import gralej.parsers.IDataPackage;
+import gralej.parsers.*;
+import gralej.gui.MainGUI;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -26,13 +28,15 @@ public class WindowsContentObserver extends ContentObserver {
 	
 	private IconTheme theme;
 
+	private MainGUI gui;
 
 	/**
 	 * @param m
 	 */
-	public WindowsContentObserver(ContentModel m, IconTheme theme) {
+	public WindowsContentObserver(ContentModel m, IconTheme theme, MainGUI gui) {
 		super(m);
 		this.theme = theme;
+		this.gui = gui;
 		m.setObserver(this);
 		frames = new ArrayList<Window>();
 	}
@@ -158,7 +162,7 @@ public class WindowsContentObserver extends ContentObserver {
 	private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, 
     	m_Print, m_Tree, m_Struc, m_Expand, m_Restore, 
     	m_Hidden, m_Find, m_Resize, m_AutoResize, m_ZoomPlus, m_ZoomMinus,
-    	m_Save;
+    	m_Save, m_XML;
 
 	// buttons (basically the same as the menu items)
 	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
@@ -201,6 +205,11 @@ public class WindowsContentObserver extends ContentObserver {
 		m_SVG = new JMenuItem("SVG");
 		m_SVG.addActionListener(this);
 		exportSubmenu.add(m_SVG);        
+		// sub XML
+		m_XML = new JMenuItem("XML");
+		m_XML.addActionListener(this);
+		exportSubmenu.add(m_XML);        
+		
 		filemenu.add(exportSubmenu);
 //		menuitem Print
 		m_Print = new JMenuItem("Print");
@@ -349,21 +358,23 @@ public class WindowsContentObserver extends ContentObserver {
 		if (source ==  m_Close || source == b_Close) {
 			dispose();
     	} else if (source == m_Save || source == b_Save) {
-    		model.save(data);
+    		save(OutputFormatter.TRALEFormat);
 		} else if (source == m_Latex) {
-			// call output method
-		} else if (source == m_Postscript) {
-			// call output method
+    		save(OutputFormatter.LaTeXFormat);
+ 		} else if (source == m_Postscript) {
+    		save(OutputFormatter.PostscriptFormat);
 		} else if (source == m_Print || source == b_Print) {
 			// call print method
 		} else if (source ==  m_SVG) {
-			// call output method
+    		save(OutputFormatter.SVGFormat);
+		} else if (source ==  m_XML) {
+    		save(OutputFormatter.XMLFormat);
 		} else if (source ==  m_Tree) {
-			// send "set tree" via content window to focus window    		
+
 		} else if (source ==  m_Struc) {
-			// send "set structure" via content window to focus window
+
 		} else if (source ==  b_TreeStruc) {
-			// send "toggle tree/structure" via content window to focus window
+
 			// on this occasion the button icon should change (displaying the NOW state)
 		} else if (source ==  m_Expand || source == b_Expand) {
 			// send "expand" via content window to focus window
@@ -409,6 +420,15 @@ public class WindowsContentObserver extends ContentObserver {
 		}
 	}
 
+	private void save (int format) {
+		File f = gui.saveDialog(format);
+		if (f != null) {
+    		model.save(f, data, format);
+        } else {
+        	// file could not be opened. doing nothing might be appropriate
+        }
+		
+	}
 
 
 
