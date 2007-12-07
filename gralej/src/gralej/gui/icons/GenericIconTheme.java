@@ -45,7 +45,7 @@ public class GenericIconTheme implements IconTheme {
 		map.put("filefloppy",  loadIcon("filesaveas.png"));
 		map.put("fileopen",  loadIcon("fileopen.png"));
 		map.put("fileprint",  loadIcon("fileprint.png"));
-		map.put("gralelogo",  loadIcon("_GRALE.png"));
+		map.put("gralelogo",  loadIcon("grale-LOGO.png"));
 		map.put("grale",  loadIcon("grale-GRALE.png"));
 		map.put("magglass",  loadIcon("viewmag.png"));
 		map.put("maximize",  loadIcon("window_fullscreen.png"));
@@ -64,6 +64,8 @@ public class GenericIconTheme implements IconTheme {
 		map.put("fileclose",  loadIcon("fileclose.png"));
 		map.put("stop",  loadIcon("stop.png"));
 		map.put("fitwindow",  loadIcon("view_fit_window.png"));
+		map.put("dummy.v",  loadIcon("vertical-dummy.png"));
+		
 		
 	}
 	
@@ -85,6 +87,10 @@ public class GenericIconTheme implements IconTheme {
 		if (imageURL != null) {
 		   icon = new ImageIcon(imageURL);
 		}   
+		
+		if ( icon == null ) {
+			System.err.println("GenericIconTheme: Failed to load icon: " + filename);
+		}
 		
 		return icon;
 		
