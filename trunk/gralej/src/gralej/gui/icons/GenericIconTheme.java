@@ -53,6 +53,7 @@ public class GenericIconTheme implements IconTheme {
 		map.put("prevstruc",  loadIcon("back.png"));
 		map.put("raisewindow",  loadIcon("grale-raisewindow.png"));
 		map.put("showstruc",  loadIcon("grale-showstruc.png"));
+		map.put("large-showstruc",  loadIcon("grale-large-showstruc.png"));
 		map.put("showtree",  loadIcon("grale-showtree.png"));
 		map.put("unexpand",  loadIcon("grale-unexpand.png"));
 		map.put("zoomin",  loadIcon("viewmag+.png"));
