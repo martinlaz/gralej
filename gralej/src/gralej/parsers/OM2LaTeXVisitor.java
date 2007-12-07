@@ -1,30 +1,30 @@
 package gralej.parsers;
 
-//import java.io.PrintWriter;
 import java.util.Set;
 import java.util.TreeSet;
 
 import gralej.om.*;
 
-public class OM2XMLVisitor extends AbstractVisitor {
+
+public class OM2LaTeXVisitor extends AbstractVisitor {
+	
 	StringBuffer _out;
-//    PrintWriter _out;
     Set<Integer> _reentrancies = new TreeSet<Integer>();
-    
-//    OM2XMLVisitor(PrintWriter out) {
-//        _out = out;
-//    }
-    
-    OM2XMLVisitor() {
-//        this(new PrintWriter(System.out, true));
-    }
-    
+	
     public String output (IVisitable root) {
     	_out = new StringBuffer();
     	root.accept(this);
     	return _out.toString();
     }
     
+    // TODO convert Strings to TeX (basically: escape some characters)
+    private String texify (String in) {
+    	String out = in;
+    	out = out.replace("_", "\\_");
+    	return out;
+    }
+
+
     public void visit(IVisitable visitable) {
         throw new RuntimeException("unknown visitable: " + visitable);
     }
@@ -34,49 +34,50 @@ public class OM2XMLVisitor extends AbstractVisitor {
     }
     
     public void visit(IFeatureValuePair featVal) {
-        _out.append("<f name='" + featVal.feature() + "'>\n");
+        _out.append(texify(featVal.feature()) + " & ");
         featVal.value().accept(this);
-        _out.append("</f>\n");
+        _out.append("\\\\\n");
     }
     
     public void visit(IList ls) {
-        _out.append("<ls>\n");
+        _out.append("\\<");
         for (IEntity e : ls.elements())
             e.accept(this);
-        _out.append("</ls>\n");
+        _out.append("\\>\\\\\n");
     }
     
     public void visit(ITag tag) {
-        _out.append("<tag ");
         if (_reentrancies.add(tag.number())) {
-        	_out.append("id='" + tag.number() + "'>");
+        	_out.append("\\@{" + tag.number() + "}");
             tag.target().accept(this);
-            _out.append("</tag>\n");
         }
         else {
-        	_out.append("ref='" + tag.number() + "'/>\n");
+        	_out.append("\\@{" + tag.number() + "}");
         }
     }
     
     public void visit(IAny any) {
-        _out.append("<any>" + any.value() + "</any>\n");
+        _out.append(any.value()); // TODO vacuous
     }
     
     public void visit(ITypedFeatureStructure tfs) {
-        _out.append("<tfs type='" + tfs.typeName() + "'>\n");
+    	boolean complex = tfs.featureValuePairs().iterator().hasNext();
+    	if (complex) _out.append("\\[\\tp{");
+        _out.append(texify(tfs.typeName()));
+        if (complex) _out.append("}");
+        _out.append("\\\\\n");
+        
         for (IFeatureValuePair featVal : tfs.featureValuePairs())
             featVal.accept(this);
-        _out.append("</tfs>\n");
+        
+        if (complex) _out.append("\\]\n");
     }
     
-    public void visit(ITree tree) {
-        _out.append("<tree label='" + tree.label() + "'>\n");
-        _out.append("<content>\n");
+    public void visit(ITree tree) { // TODO vacuous
         tree.content().accept(this);
-        _out.append("</content>\n");
         for (ITree child : tree.children())
             child.accept(this);
-        _out.append("</tree>\n");
 
     }
+
 }

@@ -11,12 +11,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.*;
+
 import java.util.prefs.*;
 
 
 import gralej.controller.*;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
+import gralej.parsers.OutputFormatter;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -44,7 +47,7 @@ public class MainGUI implements ActionListener, ItemListener {
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_Latex, m_Postscript, m_SVG, 
 	                  m_Print, m_About, m_Pref, m_Cascade, m_Tile, m_TestFile, m_WebTrale,
-	                  m_Save, m_SaveAll;
+	                  m_Save, m_SaveAll, m_XML;
 	
 	// buttons (basically the same as the menu items)
 	private JButton b_Open, b_Close, b_CloseAll, b_Print, b_Save, b_SaveAll;
@@ -109,6 +112,12 @@ public class MainGUI implements ActionListener, ItemListener {
         m_SVG = new JMenuItem("SVG");
         m_SVG.addActionListener(this);
         exportSubmenu.add(m_SVG);        
+		// sub XML
+		m_XML = new JMenuItem("XML");
+		m_XML.addActionListener(this);
+		exportSubmenu.add(m_XML);        
+		
+        
         filemenu.add(exportSubmenu);
         //  menuitem Print
         m_Print = new JMenuItem("Print");
@@ -186,6 +195,10 @@ public class MainGUI implements ActionListener, ItemListener {
 		toolbar.add(b_SaveAll);
 */
 		
+		b_Print = new JButton(theme.getIcon("fileprint"));
+        b_Print.addActionListener(this);
+        b_Print.setToolTipText("Print");
+		toolbar.add(b_Print);
     		
 		return toolbar;
 	}
@@ -198,7 +211,6 @@ public class MainGUI implements ActionListener, ItemListener {
     	if (source == m_Exit) {
     		System.exit(0);
     	} else if (source == m_Open || source == b_Open) {
-    		// open file dialog, send file to tabs
     		JFileChooser fc = new JFileChooser(lastDir);
     		fc.setMultiSelectionEnabled(true);
     		int returnVal = fc.showOpenDialog(source);
@@ -219,7 +231,11 @@ public class MainGUI implements ActionListener, ItemListener {
             	// file could not be opened. doing nothing might be appropriate
             }
     	} else if (source == m_TestFile) {
-    		c.open(new File("testdata/sample.grale"));
+    		   final String resName = "/gralej/resource/sample.grale";
+    		   InputStream is = getClass().getResourceAsStream(resName);
+    		   if (is == null) // should never happen
+    		       throw new RuntimeException("Internal program error");
+    		   c.newStream(is, new StreamInfo("grisu", resName)); 
     	} else if (source == m_WebTrale) {
     		URL url;
     		try {
@@ -237,19 +253,26 @@ public class MainGUI implements ActionListener, ItemListener {
     	} else if (source == m_CloseAll || source == b_CloseAll) {
     		c.getModel().closeAll();
     	} else if (source == m_Save || source == b_Save) {
-    		c.getModel().save();
+    		save(OutputFormatter.TRALEFormat);
     	} else if (source == m_SaveAll || source == b_SaveAll) {
-    		c.getModel().saveAll();
+    		File f = saveDialog(OutputFormatter.TRALEFormat);
+    		if (f != null) {
+    			c.getModel().saveAll(f, OutputFormatter.TRALEFormat);
+            } else {
+            	// file could not be opened. doing nothing might be appropriate
+            }
     	} else if (source == m_Latex) {
-    		// call output method
+    		save(OutputFormatter.LaTeXFormat);
     	} else if (source == m_Postscript) {
-    		// call output method
+    		save(OutputFormatter.PostscriptFormat);
     	} else if (source == m_Print || source == b_Print) {
     		// call print method
     	} else if (source == m_About) {
     		JOptionPane.showMessageDialog(null, "GRALE, Java version (2007)");
     	} else if (source ==  m_SVG) {
-    		// call output method
+    		save(OutputFormatter.SVGFormat);
+    	} else if (source ==  m_XML) {
+    		save(OutputFormatter.XMLFormat);
     	} else if (source ==  m_Cascade) {
     		// send "cascade" to viewer
     		c.getModel().cascade();
@@ -260,6 +283,32 @@ public class MainGUI implements ActionListener, ItemListener {
     		// open Preferences Dialog
     		prefDialog();
     	}
+    }
+    
+	private void save (int format) {
+		File f = saveDialog(format);
+		if (f != null) {
+			c.getModel().saveAll(f, format);
+        } else {
+        	// file could not be opened. doing nothing might be appropriate
+        }
+	}
+    
+    public File saveDialog (int format) {
+    	// TODO implement filter according to format
+		JFileChooser fc = new JFileChooser(lastDir);
+		fc.setMultiSelectionEnabled(false);
+		int returnVal = fc.showSaveDialog(null);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        	File f = fc.getSelectedFile();
+        	if (!f.exists() || JOptionPane.showConfirmDialog(null,
+        			"File exists. Overwrite?", "Overwrite?", JOptionPane.YES_NO_OPTION)
+        			== JOptionPane.YES_OPTION) {
+            	return f;
+        	}
+        }
+    	return null;    	
     }
 
     public void itemStateChanged(ItemEvent e) {
@@ -533,10 +582,10 @@ public class MainGUI implements ActionListener, ItemListener {
 
         // instantiate menus
         frame.setJMenuBar(this.createMenuBar());
-        notifyOfSelection(false);
         
         // instantiate toolbar
         frame.getContentPane().add(this.createToolBar(),BorderLayout.NORTH);
+        notifyOfSelection(false);
 
         // content part
 
@@ -568,7 +617,7 @@ public class MainGUI implements ActionListener, ItemListener {
 */        	
         	// alternative: external windows. no split
         	//ContentObserver frames = 
-        	new WindowsContentObserver(c.getModel(), theme);
+        	new WindowsContentObserver(c.getModel(), theme, this);
         	frame.getContentPane().add(list.getDisplay(), BorderLayout.CENTER);
 //        	frame.add(frames.getDisplay());
         	
@@ -598,16 +647,26 @@ public class MainGUI implements ActionListener, ItemListener {
 	public void notifyOfSelection(boolean b) {
 		if (hasSelection == b) return; // do nothing 
 		hasSelection = b;
+		
+		// menu items
 		m_Latex.setEnabled(b);
 		m_Close.setEnabled(b);
-		m_CloseAll.setEnabled(b);
+//		m_CloseAll.setEnabled(b);
 		m_Latex.setEnabled(b);
 		m_Postscript.setEnabled(b);
 		m_SVG.setEnabled(b);
         m_Print.setEnabled(b);
         m_Save.setEnabled(b);
-        m_SaveAll.setEnabled(b);
+//        m_SaveAll.setEnabled(b); // SaveAll depends on items being in the list, not on selection
+        // TODO handle empty/non-empty list
 		
+        // buttons
+    	b_Close.setEnabled(b);
+//    	b_CloseAll
+    	b_Print.setEnabled(b);
+    	b_Save.setEnabled(b);
+//    	b_SaveAll;
+
 	}
 
 
