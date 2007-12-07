@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="200"
+   height="200"
+   id="svg5230"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   version="1.0"
+   sodipodi:docbase="/home/no/Kunden/SFB/eclipse-workspace/gralej/artwork/icons/traditional-additional"
+   sodipodi:docname="avm-window.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/no/Kunden/SFB/eclipse-workspace/gralej/src/gralej/gui/icons/traditional/grale-large-showstruc.png"
+   inkscape:export-xdpi="18"
+   inkscape:export-ydpi="18">
+  <defs
+     id="defs5232" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="169.41401"
+     inkscape:cy="80.23514"
+     inkscape:document-units="px"
+     inkscape:current-layer="g5284"
+     height="200px"
+     width="200px"
+     inkscape:window-width="784"
+     inkscape:window-height="583"
+     inkscape:window-x="1094"
+     inkscape:window-y="98"
+     showguides="true"
+     inkscape:guide-bbox="true" />
+  <metadata
+     id="metadata5235">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g5284"
+       transform="matrix(0.8350771,0,0,0.8982123,8.9161421,22.790211)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.37150669;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2230"
+         width="202.2823"
+         height="202.78033"
+         x="7.9312391"
+         y="-15.430769" />
+      <rect
+         style="fill:#0004cf;fill-opacity:1;stroke:#000000;stroke-width:0.55537641;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3203"
+         width="199.1274"
+         height="35.190144"
+         x="9.5087013"
+         y="-13.964187" />
+      <image
+         y="16.907583"
+         x="25.36739"
+         id="image2196"
+         height="169.11763"
+         width="169.11763"
+         sodipodi:absref="/home/no/Kunden/SFB/eclipse-workspace/gralej/src/gralej/gui/icons/traditional/grale-showstruc.png"
+         xlink:href="/home/no/Kunden/SFB/eclipse-workspace/gralej/src/gralej/gui/icons/traditional/grale-showstruc.png" />
+    </g>
+  </g>
+</svg>
