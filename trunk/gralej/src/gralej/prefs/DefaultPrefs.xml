@@ -23,7 +23,8 @@ where RR = 2byte hex value for red
 <entry key="testfont4">Times New Roman, 3, 16</entry>
 <entry key="testbool">true</entry>
 
-
+<!-- generic look and feel -->
+<entry key="gui.l+f.icontheme">crystal</entry>
 
 
 <!--
