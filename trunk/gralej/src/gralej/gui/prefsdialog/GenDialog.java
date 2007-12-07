@@ -1,5 +1,7 @@
 package gralej.gui.prefsdialog;
 
+import gralej.gui.icons.IconTheme;
+import gralej.gui.icons.IconThemeFactory;
 import gralej.prefs.GralePreferences;
 import gralej.prefs.GralePrefsInitException;
 
@@ -8,10 +10,12 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -56,6 +60,8 @@ import javax.swing.event.ListSelectionListener;
 	private JPanel tabsPanel = null;
 
 	private JList tabsList = null;
+	
+	private IconTheme icontheme;
 
 	/**
 	 * @param owner
@@ -73,25 +79,51 @@ import javax.swing.event.ListSelectionListener;
 	 * @throws GralePrefsInitException 
 	 */
 	private void initialize() throws GralePrefsInitException {
-		this.setSize(570, 270);
+		this.setSize(610, 350);
 		this.setTitle("GraleJ Preferences");
 		this.setContentPane(getJContentPane());
 		
+		// get preferences
 		GralePreferences prefs = GralePreferences.getInstance();
+		// get icon theme
+		icontheme = IconThemeFactory.getIconTheme(prefs.get("gui.l+f.icontheme"));
+		
+		// set icons to buttons and the dialog
+		CancelButton.setIcon(icontheme.getIcon("cancel"));
+		OKButton.setIcon(icontheme.getIcon("ok"));
+		ImportButton.setIcon(icontheme.getIcon("fileopen"));
+		ExportButton.setIcon(icontheme.getIcon("filefloppy"));
+		DefaultsButton.setIcon(icontheme.getIcon("dummy.v"));
+		ImageIcon icon = icontheme.getIcon("configure");
+        Image image = icon.getImage();
+        setIconImage(image);
+		
 		
 		// set list model
 		DefaultListModel lmodel = new DefaultListModel();
 		tabsList.setModel(lmodel);
+		
+		ImageIcon listicons[] = new ImageIcon[2];
+		String[] listlabels = new String[2];
 
 		// add one tab
 		JComponent panel1 = new AvmDisplayOptsPane(prefs);
-		lmodel.addElement("AVM Display");
-		tabsPanel.add("AVM Display", panel1);
+		listlabels[0] = "AVM Display";
+		lmodel.addElement("0");
+		tabsPanel.add("0", panel1);
+		listicons[0] = icontheme.getIcon("large-showstruc");
 
 		// add another tab
 		JComponent panel2 = new JLabel("Empty right now");
-		lmodel.addElement("Empty Panel");
-		tabsPanel.add("Empty Panel", panel2);
+		listlabels[1] = "Empty";
+		lmodel.addElement("1");
+		tabsPanel.add("1", panel2);
+		listicons[1] = icontheme.getIcon("large-showstruc");
+		
+		
+		// attach the icon based cell renderer
+		tabsList.setCellRenderer(new ImageListCellRenderer(listicons,
+				listlabels));
 		
 		// marry listener
 		tabsList.setSelectedIndex(0);

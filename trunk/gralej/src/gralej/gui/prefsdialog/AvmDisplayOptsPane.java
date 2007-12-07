@@ -1,5 +1,9 @@
 package gralej.gui.prefsdialog;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+
 import gralej.gui.prefsdialog.options.OptionComponent;
 import gralej.gui.prefsdialog.options.OptionComponentFactory;
 import gralej.prefs.GralePreferences;
@@ -26,15 +30,34 @@ public class AvmDisplayOptsPane extends JComponent {
 	
 	public AvmDisplayOptsPane(GralePreferences prefs) {
 		
-        SpringLayout layout = new SpringLayout();
+        GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
+
+        GridBagConstraints cons = new GridBagConstraints();
+        cons.fill = GridBagConstraints.NONE;
+        //cons.weightx = 1.0;
         
         JLabel l1 = new JLabel("Font 1:");
         OptionComponent o1 = OptionComponentFactory.getComponent(
         		prefs, "testfont1", "font");
+        cons.anchor = GridBagConstraints.EAST;
+        layout.setConstraints(l1, cons);
         add(l1);
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o1, cons);
         add(o1);
         
+        JLabel l2 = new JLabel("Font 2 blah:");
+        OptionComponent o2 = OptionComponentFactory.getComponent(
+        		prefs, "testfont2", "font");
+        //layout.setConstraints(l2, cons);
+        add(l2);
+        //cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        //layout.setConstraints(o2, cons);
+        add(o2);
+        
+        
+        /*
         // put label to (space,x) of the container 
         layout.putConstraint(SpringLayout.WEST, l1,
         		paddingSpace,
@@ -60,7 +83,7 @@ public class AvmDisplayOptsPane extends JComponent {
         layout.putConstraint(SpringLayout.SOUTH, this,
         		paddingSpace,
         		SpringLayout.SOUTH, o1);
-		
+		*/
 	}
 
 	
