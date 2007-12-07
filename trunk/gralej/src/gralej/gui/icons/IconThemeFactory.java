@@ -27,6 +27,7 @@ public class IconThemeFactory {
 
 	
 		// "traditional" is the default for now
+		System.err.println("IconThemeFactory: " + name + " not found, using 'traditional'");
 		return GenericIconTheme.getInstance("traditional");
 		
 	}
