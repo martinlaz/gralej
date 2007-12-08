@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
 /**
@@ -253,6 +254,21 @@ public class GralePreferences {
 			prefs.put(key, defaults.getProperty(key));
 		}
 		
+	}
+	
+	/**
+	 * @see Preferences#addPreferenceChangeListener(PreferenceChangeListener)
+	 * @param pcl
+	 */
+	public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
+		prefs.addPreferenceChangeListener(pcl);
+	}
+	
+	/**
+	 * @see Preferences#removePreferenceChangeListener(PreferenceChangeListener)
+	 */
+	public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
+		prefs.removePreferenceChangeListener(pcl);
 	}
 	
 
