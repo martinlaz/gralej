@@ -7,6 +7,8 @@ import gralej.prefs.GralePreferences;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JLabel;
+
 /**
  * the options pane general application behaviour settings
  * @author Niels
@@ -42,9 +44,21 @@ public class BehaviorOptsPane extends OptionsPane {
         OptionComponent o2 = OptionComponentFactory.getComponent(
         		prefs, "behavior.alwaysfitsize", "boolean",
         		"Auto-resizing is switched on by default");
-        
-        //layout.setConstraints(o2, cons);
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o2, cons);
         add(o2);
+        
+        JLabel l3 = new JLabel("Default zoom factor: ");
+        OptionComponent o3 = OptionComponentFactory.getComponent(
+        		prefs, "behavior.defaultzoom", "int",
+        		"%");
+        cons.gridwidth = GridBagConstraints.RELATIVE; 
+        layout.setConstraints(l3, cons);
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o3, cons);
+        add(l3);
+        add(o3);
+        
         
         
 /*        JLabel l1 = new JLabel("Font 1:");
