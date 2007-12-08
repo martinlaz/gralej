@@ -7,14 +7,12 @@ import gralej.prefs.GralePreferences;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.swing.JLabel;
-
 /**
- * the options pane for AVM display options
+ * the options pane general application behaviour settings
  * @author Niels
  * @version $Id$
  */
-public class AvmDisplayOptsPane extends OptionsPane {
+public class BehaviorOptsPane extends OptionsPane {
 	
 
 
@@ -24,16 +22,32 @@ public class AvmDisplayOptsPane extends OptionsPane {
 	private static final long serialVersionUID = -6530235629219328411L;
 	
 	
-	public AvmDisplayOptsPane(GralePreferences prefs) {
+	public BehaviorOptsPane(GralePreferences prefs) {
 		
         GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
 
         GridBagConstraints cons = new GridBagConstraints();
         cons.fill = GridBagConstraints.NONE;
+        cons.anchor = GridBagConstraints.WEST;
         //cons.weightx = 1.0;
         
-        JLabel l1 = new JLabel("Font 1:");
+        OptionComponent o1 = OptionComponentFactory.getComponent(
+        		prefs, "behavior.internalframes", "boolean",
+        		"Use internal windows for AVMs");
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o1, cons);
+        add(o1);
+        
+        OptionComponent o2 = OptionComponentFactory.getComponent(
+        		prefs, "behavior.alwaysfitsize", "boolean",
+        		"Auto-resizing is switched on by default");
+        
+        //layout.setConstraints(o2, cons);
+        add(o2);
+        
+        
+/*        JLabel l1 = new JLabel("Font 1:");
         OptionComponent o1 = OptionComponentFactory.getComponent(
         		prefs, "testfont1", "font");
         cons.anchor = GridBagConstraints.EAST;
@@ -50,7 +64,7 @@ public class AvmDisplayOptsPane extends OptionsPane {
         add(l2);
         //cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
         //layout.setConstraints(o2, cons);
-        add(o2);
+        add(o2);*/
         
         
         /*

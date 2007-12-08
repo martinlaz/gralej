@@ -26,6 +26,11 @@ where RR = 2byte hex value for red
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>
 
+<!-- application behavior -->
+<entry key="behavior.internalframes">false</entry>
+<entry key="behavior.alwaysfitsize">false</entry>
+
+
 
 <!--
 Block panel
