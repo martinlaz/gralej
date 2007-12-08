@@ -19,9 +19,8 @@ where RR = 2byte hex value for red
 <comment>GraleJ factory properties</comment>
 <entry key="testfont1">Times New Roman, 0, 16</entry>
 <entry key="testfont2">Times New Roman, 1, 16</entry>
-<entry key="testfont3">Times New Roman, 2, 16</entry>
-<entry key="testfont4">Times New Roman, 3, 16</entry>
-<entry key="testbool">true</entry>
+<entry key="testcolor1">ffffffff</entry>
+<entry key="testcolor2">ffffffff</entry>
 
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>
@@ -29,6 +28,10 @@ where RR = 2byte hex value for red
 <!-- application behavior -->
 <entry key="behavior.internalframes">false</entry>
 <entry key="behavior.alwaysfitsize">false</entry>
+<entry key="behavior.defaultzoom">100</entry>
+<!--those are required! -->
+<entry key="behavior.defaultzoom.min">10</entry>
+<entry key="behavior.defaultzoom.max">1600</entry>
 
 
 

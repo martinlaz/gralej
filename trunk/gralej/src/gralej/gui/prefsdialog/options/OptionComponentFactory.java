@@ -15,7 +15,12 @@ public class OptionComponentFactory {
 			return new CBooleanOption(prefs, key, label);
 		} else 	if ( type.equals("font")) {
 			return new CFontOption(prefs, key, label);
+		} else 	if ( type.equals("int")) {
+			return new CIntOption(prefs, key, label);
+		} else 	if ( type.equals("color")) {
+			return new CColorOption(prefs, key, label);
 		}
+		
 		
 		return null;
 	}

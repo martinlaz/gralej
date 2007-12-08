@@ -37,8 +37,10 @@ public class AvmDisplayOptsPane extends OptionsPane {
         OptionComponent o1 = OptionComponentFactory.getComponent(
         		prefs, "testfont1", "font");
         cons.anchor = GridBagConstraints.EAST;
+        cons.gridwidth = GridBagConstraints.RELATIVE; 
         layout.setConstraints(l1, cons);
         add(l1);
+        cons.anchor = GridBagConstraints.WEST;
         cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
         layout.setConstraints(o1, cons);
         add(o1);
@@ -46,11 +48,38 @@ public class AvmDisplayOptsPane extends OptionsPane {
         JLabel l2 = new JLabel("Font 2 blah:");
         OptionComponent o2 = OptionComponentFactory.getComponent(
         		prefs, "testfont2", "font");
-        //layout.setConstraints(l2, cons);
+        cons.anchor = GridBagConstraints.EAST;
+        cons.gridwidth = GridBagConstraints.RELATIVE; 
+        layout.setConstraints(l2, cons);
         add(l2);
-        //cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
-        //layout.setConstraints(o2, cons);
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o2, cons);
         add(o2);
+        
+        JLabel l3 = new JLabel("Color 1:");
+        OptionComponent o3 = OptionComponentFactory.getComponent(
+        		prefs, "testcolor1", "color");
+        cons.anchor = GridBagConstraints.EAST;
+        cons.gridwidth = GridBagConstraints.RELATIVE; 
+        layout.setConstraints(l3, cons);
+        add(l3);
+        cons.anchor = GridBagConstraints.WEST;
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o3, cons);
+        add(o3);
+
+        JLabel l4 = new JLabel("Color 2:");
+        OptionComponent o4 = OptionComponentFactory.getComponent(
+        		prefs, "testcolor2", "color");
+        cons.anchor = GridBagConstraints.EAST;
+        cons.gridwidth = GridBagConstraints.RELATIVE; 
+        layout.setConstraints(l4, cons);
+        add(l4);
+        cons.anchor = GridBagConstraints.WEST;
+        cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
+        layout.setConstraints(o4, cons);
+        add(o4);
+        
         
         
         /*
