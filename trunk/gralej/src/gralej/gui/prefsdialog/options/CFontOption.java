@@ -84,6 +84,7 @@ public class CFontOption extends OptionComponent {
 	 */
 	@Override
 	public void savePref() {
+		//System.err.println("Saving " + getPrefKey());
 		createFont();
 		getPrefs().putFont(getPrefKey(), theFont);
 	}

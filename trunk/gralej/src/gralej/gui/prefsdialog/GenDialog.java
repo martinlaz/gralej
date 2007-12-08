@@ -6,11 +6,15 @@ import gralej.prefs.GralePreferences;
 import gralej.prefs.GralePrefsInitException;
 
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -21,9 +25,11 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -62,6 +68,8 @@ import javax.swing.event.ListSelectionListener;
 	private JList tabsList = null;
 	
 	private IconTheme icontheme;
+	
+	private GralePreferences prefs;
 
 	/**
 	 * @param owner
@@ -84,7 +92,7 @@ import javax.swing.event.ListSelectionListener;
 		this.setContentPane(getJContentPane());
 		
 		// get preferences
-		GralePreferences prefs = GralePreferences.getInstance();
+		prefs = GralePreferences.getInstance();
 		// get icon theme
 		icontheme = IconThemeFactory.getIconTheme(prefs.get("gui.l+f.icontheme"));
 		
@@ -103,31 +111,47 @@ import javax.swing.event.ListSelectionListener;
 		DefaultListModel lmodel = new DefaultListModel();
 		tabsList.setModel(lmodel);
 		
-		ImageIcon listicons[] = new ImageIcon[2];
-		String[] listlabels = new String[2];
+		ImageIcon listicons[] = new ImageIcon[3];
+		String[] listlabels = new String[3];
 
 		// add one tab
-		JComponent panel1 = new AvmDisplayOptsPane(prefs);
-		listlabels[0] = "AVM Display";
+		JComponent panel0 = new BehaviorOptsPane(prefs);
+		listlabels[0] = "Behavior";
 		lmodel.addElement("0");
-		tabsPanel.add("0", panel1);
-		listicons[0] = icontheme.getIcon("large-showstruc");
+		tabsPanel.add("0", panel0);
+		listicons[0] = icontheme.getIcon("large-configure");
+		
+		// one more tab
+		JComponent panel1 = new AvmDisplayOptsPane(prefs);
+		listlabels[1] = "AVM Display";
+		lmodel.addElement("1");
+		tabsPanel.add("1", panel1);
+		listicons[1] = icontheme.getIcon("large-showstruc");
 
 		// add another tab
 		JComponent panel2 = new JLabel("Empty right now");
-		listlabels[1] = "Empty";
-		lmodel.addElement("1");
-		tabsPanel.add("1", panel2);
-		listicons[1] = icontheme.getIcon("large-showstruc");
+		listlabels[2] = "Look & Feel";
+		lmodel.addElement("2");
+		tabsPanel.add("2", panel2);
+		listicons[2] = icontheme.getIcon("large-l+f");
 		
 		
 		// attach the icon based cell renderer
 		tabsList.setCellRenderer(new ImageListCellRenderer(listicons,
 				listlabels));
 		
-		// marry listener
+		// marry listeners
 		tabsList.setSelectedIndex(0);
 		tabsList.addListSelectionListener(new tabSelectListener());
+		ButtonClickListener buttonclick = new ButtonClickListener(this);
+		OKButton.addActionListener(buttonclick);
+		CancelButton.addActionListener(buttonclick);
+		ImportButton.addActionListener(buttonclick);
+		ExportButton.addActionListener(buttonclick);
+		DefaultsButton.addActionListener(buttonclick);
+		
+		// kill dialog on close
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		
 	}
@@ -142,6 +166,85 @@ import javax.swing.event.ListSelectionListener;
 		    cl.show(tabsPanel, (String)tabsList.getSelectedValue());
 		}
 		
+	}
+	
+	/**
+	 * listener invoke when the user clicks on of the buttons 
+	 * like cancel or OK
+	 */
+	private class ButtonClickListener implements ActionListener {
+		
+		GenDialog parent;
+		
+		public ButtonClickListener(GenDialog parent) {
+			this.parent = parent;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+
+			if ( e.getSource() == OKButton ) {
+				parent.saveAllPrefs();
+				parent.dispose();
+			} else if ( e.getSource() == CancelButton) {
+				parent.dispose();
+			} else if ( e.getSource() == ImportButton) {
+				JOptionPane.showMessageDialog(parent, 
+						"Importing preferences has not been implemented yet.",
+						"Not implemented!",
+						JOptionPane.ERROR_MESSAGE);
+			} else if ( e.getSource() == ExportButton) {
+				JOptionPane.showMessageDialog(parent, 
+						"Exporting preferences has not been implemented yet.",
+						"Not implemented!",
+						JOptionPane.ERROR_MESSAGE);
+			} else if ( e.getSource() == DefaultsButton) {
+				JOptionPane.showMessageDialog(parent, 
+						"Loading the defaults has not been implemented yet.",
+						"Not implemented!",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * saves the preferences of all panels that
+	 * are instances of {@link OptionsPane}
+	 */
+	void reloadAllPrefs() {
+		
+		// loop over them and invoke reload
+		int count = tabsPanel.getComponentCount();
+		for ( int i = 0; i< count; i++ ) {
+			Component c = tabsPanel.getComponent(i);
+			if ( c instanceof OptionsPane) {
+				((OptionsPane) c).reloadAllPrefs();
+			}
+		}
+	}
+	
+	/**
+	 * saves the preferences of all panels that
+	 * are instances of {@link OptionsPane}
+	 */
+	void saveAllPrefs() {
+
+		// loop over them and invoke save
+		int count = tabsPanel.getComponentCount();
+		for ( int i = 0; i< count; i++ ) {
+			Component c = tabsPanel.getComponent(i);
+			if ( c instanceof OptionsPane) {
+				((OptionsPane) c).saveAllPrefs();
+			}
+		}
+		// save to backing store
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

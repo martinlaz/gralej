@@ -42,6 +42,7 @@ public class CBooleanOption extends OptionComponent {
 	 */
 	@Override
 	public void savePref() {
+		//System.err.println("Saving " + getPrefKey());
 		getPrefs().putBoolean(getPrefKey(), checkbox.isSelected());
 	}
 
