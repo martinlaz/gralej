@@ -237,7 +237,7 @@ public class MainGUI implements ActionListener, ItemListener {
             	// file could not be opened. doing nothing might be appropriate
             }
     	} else if (source == m_TestFile) {
-    		   final String resName = "/gralej/resource/sample.grale";
+    		   final String resName = "/gralej/resource/sample.GRALE";
     		   InputStream is = getClass().getResourceAsStream(resName);
     		   if (is == null) // should never happen
     		       throw new RuntimeException("Internal program error");
