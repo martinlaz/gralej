@@ -649,9 +649,15 @@ public class MainGUI implements ActionListener, ItemListener {
         
         frame.pack();
         // TODO size from preferences
-		GralePreferences gp = GralePreferences.getInstance();
-        frame.setSize(gp.getInt("gui.windows.main.size.width"),
-        		gp.getInt("gui.windows.main.size.height"));
+        try {
+			GralePreferences gp = GralePreferences.getInstance();
+	        frame.setSize(gp.getInt("gui.windows.main.size.width"),
+	        		gp.getInt("gui.windows.main.size.height"));
+		} catch (GralePrefsInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			frame.setSize(400,400);
+		}
         frame.setVisible(true);
         
 	}
