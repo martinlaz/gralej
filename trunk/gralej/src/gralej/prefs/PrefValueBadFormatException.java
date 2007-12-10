@@ -9,26 +9,27 @@ package gralej.prefs;
  * @author Niels Ott
  * @version $Id$
  */
-public class PrefValueBadFormatException extends RuntimeException {
+public class PrefValueBadFormatException extends GralePrefsException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8056855465468084405L;
+	private static final long serialVersionUID = 478852184144492112L;
 
 	public PrefValueBadFormatException() {
-	}
-
-	public PrefValueBadFormatException(String message) {
-		super(message);
-	}
-
-	public PrefValueBadFormatException(Throwable cause) {
-		super(cause);
+		super();
 	}
 
 	public PrefValueBadFormatException(String message, Throwable cause) {
 		super(message, cause);
 	}
+
+	public PrefValueBadFormatException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+	public PrefValueBadFormatException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
+
 
 }

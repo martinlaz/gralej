@@ -10,7 +10,7 @@ package gralej.prefs;
  * @author Niels Ott
  * @version $Id$
  */
-public class GralePrefsInitException extends Exception {
+public class GralePrefsInitException extends GralePrefsException {
 
 	private static final long serialVersionUID = -8041431375691755974L;
 
