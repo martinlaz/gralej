@@ -68,7 +68,9 @@ class GrisuFormatParser implements IGraleParser {
     }
 
     public void parse(final InputStream s, final StreamInfo meta, final IParseResultReceiver receiver) {
-        _grammarHandler.setResultReceiver(receiver);
+        _grammarHandler._helper.setResultReceiver(receiver);
+        _grammarHandler._helper.setCharBuffer(_lexer.getCharBuffer());
+        _grammarHandler._helper.setStreamInfo(meta);
         _lexer.reset(new InputStreamReader(s));
         new Thread(new Runnable() {
 
