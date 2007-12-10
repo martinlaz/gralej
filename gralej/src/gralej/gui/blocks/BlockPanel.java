@@ -123,10 +123,8 @@ public class BlockPanel extends JPanel
     public void updateSize() {
         _content.setPosition(_marginSize, _marginSize);
         
-        Dimension prefSize = new Dimension(
-                    scale(_content.getWidth()  + 2 * _marginSize),
-                    scale(_content.getHeight() + 2 * _marginSize)
-                    );
+        Dimension prefSize = getScaledSize();
+        
         _drawingPane.setPreferredSize(prefSize);
         _drawingPane.setSize(prefSize);
         _drawingPane.revalidate();
@@ -134,6 +132,14 @@ public class BlockPanel extends JPanel
         
         if (_autoResize)
             pack(getParent());
+    }
+    
+    public Dimension getScaledSize() {
+        Dimension size = new Dimension(
+                    scale(_content.getWidth()  + 2 * _marginSize),
+                    scale(_content.getHeight() + 2 * _marginSize)
+                    );
+        return size;
     }
     
     private static void pack(Component c) {
@@ -158,7 +164,7 @@ public class BlockPanel extends JPanel
     
     public void setParentBlock(IBlock parent) { }
     
-    public void paint(Graphics2D g) { }
+    public void paint(Graphics2D g) { _drawingPane.paint(g); }
     
     public void setScaleFactor(double newValue) {
         if (newValue == _scaleFactor)
