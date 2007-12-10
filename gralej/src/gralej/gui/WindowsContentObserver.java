@@ -162,7 +162,7 @@ public class WindowsContentObserver extends ContentObserver {
 	private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, 
     	m_Print, m_Tree, m_Struc, m_Expand, m_Restore, 
     	m_Hidden, m_Find, m_Resize, m_AutoResize, m_ZoomPlus, m_ZoomMinus,
-    	m_Save, m_XML;
+    	m_Save, m_XML, m_JPG;
 
 	// buttons (basically the same as the menu items)
 	private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
@@ -209,6 +209,10 @@ public class WindowsContentObserver extends ContentObserver {
 		m_XML = new JMenuItem("XML");
 		m_XML.addActionListener(this);
 		exportSubmenu.add(m_XML);        
+		// sub JPG
+		m_JPG = new JMenuItem("JPG");
+		m_JPG.addActionListener(this);
+		exportSubmenu.add(m_JPG);        
 		
 		filemenu.add(exportSubmenu);
 //		menuitem Print
@@ -369,6 +373,8 @@ public class WindowsContentObserver extends ContentObserver {
     		save(OutputFormatter.SVGFormat);
 		} else if (source ==  m_XML) {
     		save(OutputFormatter.XMLFormat);
+		} else if (source ==  m_JPG) {
+    		save(OutputFormatter.JPGFormat);
 		} else if (source ==  m_Tree) {
 
 		} else if (source ==  m_Struc) {

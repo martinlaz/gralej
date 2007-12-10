@@ -84,17 +84,21 @@ public class ListContentObserver extends ContentObserver {
 	@Override
 	public void add (IDataPackage data) {
 		listmodel.addElement(data.getTitle());		
+        gui.notifyOfEmptyList(false);
+
 	}
 	
 	@Override
 	public void close () {
 		listmodel.remove(list.getSelectedIndex());
 		gui.notifyOfSelection(list.getSelectedIndex() != -1);
+        gui.notifyOfEmptyList(listmodel.isEmpty());
 	}
 	
 	public void clear () {
 		listmodel.clear();
 		gui.notifyOfSelection(false);
+        gui.notifyOfEmptyList(true);
 	}
 
 	
@@ -108,7 +112,7 @@ public class ListContentObserver extends ContentObserver {
 		public void valueChanged(ListSelectionEvent e) {
 	    	if (!e.getValueIsAdjusting()) return;
 	        gui.notifyOfSelection(e.getFirstIndex() != -1);
-	        System.err.println("selection changed");
+//	        System.err.println("selection changed");
 	        return;
 		}
 	}

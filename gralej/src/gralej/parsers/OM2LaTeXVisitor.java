@@ -17,10 +17,9 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
     	return _out.toString();
     }
     
-    // TODO convert Strings to TeX (basically: escape some characters)
     private String texify (String in) {
     	String out = in;
-    	out = out.replace("_", "\\_");
+    	out = out.replace("_", "\\_"); // more?
     	return out;
     }
 
@@ -34,6 +33,7 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
     }
     
     public void visit(IFeatureValuePair featVal) {
+    	if (featVal.isHidden()) return;
         _out.append(texify(featVal.feature()) + " & ");
         featVal.value().accept(this);
         _out.append("\\\\\n");
@@ -47,13 +47,18 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
     }
     
     public void visit(ITag tag) {
-        if (_reentrancies.add(tag.number())) {
+/*        if (_reentrancies.add(tag.number())) {
         	_out.append("\\@{" + tag.number() + "}");
             tag.target().accept(this);
         }
         else {
         	_out.append("\\@{" + tag.number() + "}");
         }
+        */
+		_out.append("\\@{" + tag.number() + "}");
+    	if (tag.isExpanded()) {
+    		tag.target().accept(this);
+    	}
     }
     
     public void visit(IAny any) {
@@ -73,10 +78,24 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
         if (complex) _out.append("\\]\n");
     }
     
-    public void visit(ITree tree) { // TODO vacuous
+    public void visit(ITree tree) {
+    	if (!tree.isLeaf())	_out.append("\\begin{bundle}{");
+        _out.append("\\begin{Avm}{"+tree.label()+"}\n");    	
         tree.content().accept(this);
-        for (ITree child : tree.children())
-            child.accept(this);
+        _out.append("\\end{Avm}\n");
+        if (!tree.isLeaf())	_out.append("}\n");    	
+        for (ITree child : tree.children()) {
+        	_out.append("\\chunk{");
+    		if (child instanceof ITree) {
+                child.accept(this);
+    		} else {
+    			_out.append("\\begin{Avm}\n");
+                child.accept(this);
+    			_out.append("\\end{Avm}\n");
+    		}
+            _out.append("}\n");
+        }
+        if (!tree.isLeaf()) _out.append("\\end{bundle}\n");
 
     }
 

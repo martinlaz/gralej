@@ -1,6 +1,16 @@
 package gralej.parsers;
 
+import gralej.om.ITree;
+
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.JComponent;
 
 public class OutputFormatter {
 	
@@ -8,7 +18,7 @@ public class OutputFormatter {
 	public final static int LaTeXFormat = 1;
 	public final static int SVGFormat = 2;
 	public final static int PostscriptFormat = 3;
-	public final static int TiffFormat = 4;
+	public final static int JPGFormat = 4;
 	public final static int XMLFormat = 5;
 	
 	private ArrayList<String> formats;
@@ -30,32 +40,68 @@ public class OutputFormatter {
 	
 	public String toLaTeX (IDataPackage data) {
 		OM2LaTeXVisitor visitor = new OM2LaTeXVisitor();
-		return "% AVM output by GraleJ\n"
+		String output = "% AVM output by GraleJ\n"
 			+"\\documentclass{article}\n"
 			+"\\usepackage{avm+}\n"
+			+"\\usepackage{ecltree+}\n"
 			+"\\avmoptions{center}\n"
-			+"\\begin{document}\n"
-			+"\\begin{Avm}{"
+			+"\\begin{document}\n";
+		if (data.getModel() instanceof ITree) {
+			output += visitor.output(data.getModel());
+		} else {
+			output += "\\begin{Avm}{"
 			+data.getTitle()
 			+"}\n"
 			+visitor.output(data.getModel())
-			+"\\end{Avm}\n"
-			+"\\end{document}";
+			+"\\end{Avm}\n";
+		}
+		output += "\\end{document}";
+		return output;
 	}
 
 	public String toSVG (IDataPackage data) {
 		System.err.println("SVG format ain't implemented yet. Returning an empty file.");
-		return ""; // TODO implement SVG
+		return null; // TODO implement SVG
 	}
 	
 	public String toPostscript (IDataPackage data) {
 		System.err.println("Postscript format ain't implemented yet. Returning an empty file.");
-		return ""; // TODO implement Postscript
+		return null; // TODO implement Postscript
 	}
 
-	public String toTiff (IDataPackage data) {
-		System.err.println("Tiff format ain't implemented yet. Returning an empty file.");
-		return ""; // TODO implement Tiff
+	public String toJPG (IDataPackage data) {
+		
+		JComponent comp = data.createView();
+//		comp.setDoubleBuffered(false);
+		
+		Dimension componentSize = comp.getPreferredSize();
+//		comp.setSize(componentSize); 
+		System.err.println("size "+componentSize.width+" "+
+                  componentSize.height);
+		BufferedImage img = new BufferedImage(componentSize.width,
+	                                            componentSize.height,
+	                                            BufferedImage.TYPE_INT_RGB);
+		Graphics2D grap = img.createGraphics();
+		grap.fillRect(0,0,img.getWidth(),img.getHeight());
+		comp.paint(grap);
+		//grap.dispose();
+		
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(img,"jpg",baos);
+			baos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String output = baos.toString();
+//		System.err.println(output);
+		return output;
+		        			
+
+//		System.err.println("JPG format ain't implemented yet. Returning an empty file.");
+//		return ""; // TODO implement JPG
 	}
 
 	public String toXML (IDataPackage data) {
@@ -69,7 +115,7 @@ public class OutputFormatter {
 		case LaTeXFormat: return toLaTeX(data);
 		case SVGFormat: return toSVG(data);
 		case PostscriptFormat: return toPostscript(data);
-		case TiffFormat: return toTiff(data);
+		case JPGFormat: return toJPG(data);
 		case XMLFormat: return toXML(data);
 		}
 		// TODO Auto-generated method stub

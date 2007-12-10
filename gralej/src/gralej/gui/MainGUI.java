@@ -19,6 +19,8 @@ import gralej.controller.*;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 import gralej.parsers.OutputFormatter;
+import gralej.prefs.GralePreferences;
+import gralej.prefs.GralePrefsInitException;
 
 import javax.swing.ImageIcon;
 
@@ -47,7 +49,7 @@ public class MainGUI implements ActionListener, ItemListener {
 	// menu items
 	private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_Latex, m_Postscript, m_SVG, 
 	                  m_Print, m_About, m_Pref, m_Cascade, m_Tile, m_TestFile, m_WebTrale,
-	                  m_Save, m_SaveAll, m_XML;
+	                  m_Save, m_SaveAll, m_XML, m_JPG;
 	
 	// buttons (basically the same as the menu items)
 	private JButton b_Open, b_Close, b_CloseAll, b_Print, b_Save, b_SaveAll;
@@ -116,6 +118,10 @@ public class MainGUI implements ActionListener, ItemListener {
 		m_XML = new JMenuItem("XML");
 		m_XML.addActionListener(this);
 		exportSubmenu.add(m_XML);        
+		// sub JPG
+		m_JPG = new JMenuItem("JPG");
+		m_JPG.addActionListener(this);
+		exportSubmenu.add(m_JPG);        
 		
         
         filemenu.add(exportSubmenu);
@@ -175,6 +181,11 @@ public class MainGUI implements ActionListener, ItemListener {
         b_Open.setToolTipText("Open");
 		toolbar.add(b_Open);
     
+		b_Save = new JButton(theme.getIcon("filefloppy"));
+        b_Save.addActionListener(this);
+        b_Save.setToolTipText("Save");
+		toolbar.add(b_Save);
+		
 		b_Close = new JButton(theme.getIcon("closewindow"));
         b_Close.addActionListener(this);
         b_Close.setToolTipText("Close");
@@ -184,11 +195,6 @@ public class MainGUI implements ActionListener, ItemListener {
         b_CloseAll.addActionListener(this);
         b_CloseAll.setToolTipText("Close All");
 		toolbar.add(b_CloseAll);
-		
-		b_Save = new JButton(theme.getIcon("filefloppy"));
-        b_Save.addActionListener(this);
-        b_Save.setToolTipText("Save");
-		toolbar.add(b_Save);
 		
 /*		b_SaveAll = new JButton(theme.getIcon("filefloppy"));
         b_SaveAll.addActionListener(this);
@@ -273,6 +279,8 @@ public class MainGUI implements ActionListener, ItemListener {
     		save(OutputFormatter.SVGFormat);
     	} else if (source ==  m_XML) {
     		save(OutputFormatter.XMLFormat);
+		} else if (source ==  m_JPG) {
+    		save(OutputFormatter.JPGFormat);
     	} else if (source ==  m_Cascade) {
     		// send "cascade" to viewer
     		c.getModel().cascade();
@@ -302,6 +310,13 @@ public class MainGUI implements ActionListener, ItemListener {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
         	File f = fc.getSelectedFile();
+            try {
+				lastDir = f.getCanonicalPath();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
         	if (!f.exists() || JOptionPane.showConfirmDialog(null,
         			"File exists. Overwrite?", "Overwrite?", JOptionPane.YES_NO_OPTION)
         			== JOptionPane.YES_OPTION) {
@@ -586,6 +601,7 @@ public class MainGUI implements ActionListener, ItemListener {
         // instantiate toolbar
         frame.getContentPane().add(this.createToolBar(),BorderLayout.NORTH);
         notifyOfSelection(false);
+        notifyOfEmptyList(true);
 
         // content part
 
@@ -632,7 +648,10 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
         
         frame.pack();
-        frame.setSize(700,400);
+        // TODO size from preferences
+		GralePreferences gp = GralePreferences.getInstance();
+        frame.setSize(gp.getInt("gui.windows.main.size.width"),
+        		gp.getInt("gui.windows.main.size.height"));
         frame.setVisible(true);
         
 	}
@@ -668,6 +687,13 @@ public class MainGUI implements ActionListener, ItemListener {
 //    	b_SaveAll;
 
 	}
+
+	public void notifyOfEmptyList(boolean isEmpty) {
+		m_SaveAll.setEnabled(!isEmpty);
+		m_CloseAll.setEnabled(!isEmpty);
+//		b_SaveAll.setEnabled(!isEmpty);
+	}
+
 
 
 }

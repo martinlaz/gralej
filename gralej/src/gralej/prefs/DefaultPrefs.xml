@@ -24,6 +24,8 @@ where RR = 2byte hex value for red
 
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>
+<entry key="gui.windows.main.size.width">400</entry>
+<entry key="gui.windows.main.size.height">400</entry>
 
 <!-- application behavior -->
 <entry key="behavior.internalframes">false</entry>
