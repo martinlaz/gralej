@@ -42,6 +42,11 @@ public class DefaultProperties extends Properties {
 		return Boolean.parseBoolean(getProperty(key));
 
 	}
+	
+	public void putBoolean(String key, boolean value) {
+		put(key, Boolean.toString(value));
+	}
+	
 
 	/**
 	 * @throws NumberFormatException
@@ -49,6 +54,11 @@ public class DefaultProperties extends Properties {
 	public int getInt(String key) {
 		return Integer.parseInt(getProperty(key));
 	}
+	
+	public void putInt(String key, int value) {
+		put(key, Integer.toString(value));
+	}
+	
 
 	/**
 	 * @throws NumberFormatException
@@ -56,6 +66,11 @@ public class DefaultProperties extends Properties {
 	public double getDouble(String key) {
 		return Double.parseDouble(getProperty(key));
 	}
+	
+	public void putDouble(String key, double value) {
+		put(key, Double.toString(value));
+	}
+	
 
 	/**
 	 * @throws NumberFormatException
@@ -63,6 +78,11 @@ public class DefaultProperties extends Properties {
 	public float getFloat(String key) {
 		return Float.parseFloat(getProperty(key));
 	}
+
+	public void putFloat(String key, float value) {
+		put(key, Float.toString(value));
+	}
+
 	
 	/**
 	 * @throws NumberFormatException
@@ -70,6 +90,35 @@ public class DefaultProperties extends Properties {
 	public long getLong(String key) {
 		return Long.parseLong(getProperty(key));
 	}
+	
+	public void putLong(String key, long value) {
+		put(key, Long.toString(value));
+	}
+	
+	public String get(String key) {
+		return new String((String)super.get(key));
+	}
+	
+	public void put(String key, String value) {
+		super.put(key, new String(value));
+	}
+	
+	
+	/** (non-Javadoc)
+	 * @see java.util.Hashtable#clone()
+	 */
+	@Override
+	public synchronized DefaultProperties clone() {
+		DefaultProperties newProp = new DefaultProperties();
+		for ( Object okey : this.keySet() ) {
+			String key = (String)okey;
+			newProp.put(key, new String(this.get(key)));
+		}	
+		
+		return newProp;
+	}
+	
+	
 	
 	
 	

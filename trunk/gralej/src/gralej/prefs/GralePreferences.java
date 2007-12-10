@@ -3,13 +3,8 @@ package gralej.prefs;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
 /**
@@ -27,9 +22,13 @@ public class GralePreferences {
 
 	private static GralePreferences instance = null;
 
-	private Preferences prefs;
+	private Preferences backingprefs;
 
 	private DefaultProperties defaults;
+	private DefaultProperties prefs;
+	
+	private boolean backingsynced;
+	private boolean backingavailable;
 
 	/**
 	 * private constructor (singleton)
@@ -37,8 +36,10 @@ public class GralePreferences {
 	 * @throws GralePrefsInitException
 	 */
 	private GralePreferences() throws GralePrefsInitException {
-		prefs = Preferences.userNodeForPackage(GralePreferences.class);
-
+		
+		prefs = new DefaultProperties();
+		
+		// load the default values int a special object
 		defaults = new DefaultProperties();
 		URL prefsURL = GralePreferences.class.getResource(defaultPrefFile);
 		FileInputStream is;
@@ -49,8 +50,68 @@ public class GralePreferences {
 			throw new GralePrefsInitException(e);
 		}
 
-	}
+		// try to initalize the backend
+		try { 
+			backingprefs = Preferences.userNodeForPackage(GralePreferences.class);
+			backingavailable = true;
+			// load settings, init empty settings with default
+			reloadFromBackend();
+		} catch (Exception e) {
+			backingavailable = false;
+			System.err.println("GralePreferences: Java Preferences not available, will not save anything.");
+			e.printStackTrace();
+			// use the default settings as settings
+			try {
+				restoreDefaults();
+			} catch (BackingStoreException e1) {
+				throw new RuntimeException("Weird Application Error: Restoring without backing store sync cannot cause this exception!?!?", e1);
+			}
+		}
+		
+		setSync(true);
 
+	}
+	
+	/**
+	 * @return true if we sync and the backing store is
+	 * available, false otherwise
+	 */
+	public boolean syncAvailable() {
+		
+		return ( backingsynced && backingavailable );
+		
+	}
+	
+	/**
+	 * called by each getter: the backing store
+	 * might have changed, so if we're in sync we
+	 * must copy the value from the backing store
+	 * before returning anything.
+	 * @param key
+	 */
+	private void syncKeyBeforeGet(String key) {
+		
+		if ( syncAvailable() ) {
+			prefs.put(key,(backingprefs.get(key, defaults.get(key))));
+		}
+		
+	}
+	
+	/**
+	 * called by each setter: if we're in sync,
+	 * this will copy the internal value to the backing
+	 * store
+	 * @param key
+	 */
+	private void syncKeyAfterSet(String key) {
+		
+		if ( syncAvailable() ) {
+			backingprefs.put(key, prefs.get(key));
+		}
+		
+	}
+	
+	
 	/**
 	 * @return the instance if our preferences
 	 * @throws GralePrefsInitException
@@ -69,7 +130,8 @@ public class GralePreferences {
 		boolean res;
 
 		try {
-			res = prefs.getBoolean(key, defaults.getBoolean(key));
+			syncKeyBeforeGet(key);
+			res = prefs.getBoolean(key);
 		} catch (NumberFormatException e) {
 			throw new NoDefaultPrefSettingException(key, e);
 		}
@@ -79,6 +141,7 @@ public class GralePreferences {
 	
 	public void putBoolean(String key, boolean value) {
 		prefs.putBoolean(key, value);
+		syncKeyAfterSet(key);
 	}
 
 
@@ -89,7 +152,8 @@ public class GralePreferences {
 		int res;
 
 		try {
-			res = prefs.getInt(key, defaults.getInt(key));
+			syncKeyBeforeGet(key);
+			res = prefs.getInt(key);
 		} catch (NumberFormatException e) {
 			throw new NoDefaultPrefSettingException(key, e);
 		}
@@ -99,6 +163,7 @@ public class GralePreferences {
 	
 	public void putInt(String key, int value) {
 		prefs.putInt(key, value);
+		syncKeyAfterSet(key);
 	}
 
 
@@ -109,7 +174,8 @@ public class GralePreferences {
 		long res;
 
 		try {
-			res = prefs.getLong(key, defaults.getLong(key));
+			syncKeyBeforeGet(key);
+			res = prefs.getLong(key);
 		} catch (NumberFormatException e) {
 			throw new NoDefaultPrefSettingException(key, e);
 		}
@@ -119,6 +185,7 @@ public class GralePreferences {
 	
 	public void putLong(String key, long value) {
 		prefs.putLong(key, value);
+		syncKeyAfterSet(key);
 	}
 	
 
@@ -129,7 +196,8 @@ public class GralePreferences {
 		double res;
 
 		try {
-			res = prefs.getDouble(key, defaults.getDouble(key));
+			syncKeyBeforeGet(key);
+			res = prefs.getDouble(key);
 		} catch (NumberFormatException e) {
 			throw new NoDefaultPrefSettingException(key, e);
 		}
@@ -139,6 +207,7 @@ public class GralePreferences {
 	
 	public void putDouble(String key, double value) {
 		prefs.putDouble(key, value);
+		syncKeyAfterSet(key);
 	}
 	
 
@@ -149,7 +218,8 @@ public class GralePreferences {
 		float res;
 
 		try {
-			res = prefs.getFloat(key, defaults.getFloat(key));
+			syncKeyBeforeGet(key);
+			res = prefs.getFloat(key);
 		} catch (NumberFormatException e) {
 			throw new NoDefaultPrefSettingException(key, e);
 		}
@@ -159,6 +229,7 @@ public class GralePreferences {
 	
 	public void putFloat(String key, float value) {
 		prefs.putFloat(key, value);
+		syncKeyAfterSet(key);
 	}
 
 	/**
@@ -167,7 +238,8 @@ public class GralePreferences {
 	public String get(String key)  {
 		String res;
 
-		res = prefs.get(key, defaults.getProperty(key));
+		syncKeyBeforeGet(key);
+		res = prefs.get(key);
 		if (res == null) {
 			throw new NoDefaultPrefSettingException(key);
 		}
@@ -177,6 +249,7 @@ public class GralePreferences {
 	
 	public void put(String key, String value) {
 		prefs.put(key, value);
+		syncKeyAfterSet(key);
 	}
 	
 
@@ -186,6 +259,7 @@ public class GralePreferences {
 	public Color getColor(String key)  {
 
 		Color res;
+		syncKeyBeforeGet(key);
 		String rgba = get(key);
 
 		try {
@@ -200,6 +274,7 @@ public class GralePreferences {
 	public void putColor(String key, Color color) {
 		String value = Toolbox.color2RGBA(color);
 		prefs.put(key, value);
+		syncKeyAfterSet(key);
 	}
 	
 	/**
@@ -208,6 +283,7 @@ public class GralePreferences {
 	public Font getFont(String key)  {
 
 		Font res;
+		syncKeyBeforeGet(key);
 		String fontstr = get(key);
 
 		try {
@@ -222,54 +298,103 @@ public class GralePreferences {
 	public void putFont(String key, Font font) {
 		String value = Toolbox.font2str(font);
 		prefs.put(key, value);
+		syncKeyAfterSet(key);
 	}
 	
+	/**
+	 * Set the sync with the backing store.
+	 * You might want to call {@link #syncToBackend()}
+	 * after switching on. 
+	 * @param s
+	 */
+	public void setSync(boolean s) {
+		backingsynced = s;
+	}
+	
+	/**
+	 * sync back preferences to the backing store.
+	 * If sync is switched off, nothing every happens,
+	 * the same holds of the backing store is not available
+	 */
+	public void syncToBackend() {
+		if ( syncAvailable() ) {
+			syncEverythingToBackingStore();
+		}
+	}
 	
 	/**
 	 * flushes the preferences to the registry
 	 * @throws BackingStoreException
 	 */
 	public void flush() throws BackingStoreException {
-		prefs.flush();
-	}
-	
-	public void importPreferences(InputStream is) throws IOException, InvalidPreferencesFormatException {
-		Preferences.importPreferences(is);
-	}
-	
-	public void exportPreferences(OutputStream os) throws IOException, InvalidPreferencesFormatException, BackingStoreException {
-		prefs.exportSubtree(os);
+		backingprefs.flush();
 	}
 	
 	/**
-	 * this will clear the preferences registry
-	 * and load all default values 
+	 * this will load the default values. If sync is
+	 * on this will clear the backing store and keep it
+	 * in sync
 	 * @throws BackingStoreException 
 	 */
 	public void restoreDefaults() throws BackingStoreException {
-		prefs.clear();
-		
-		for ( Object okey : defaults.keySet() ) {
-			String key = (String)okey;
-			prefs.put(key, defaults.getProperty(key));
-		}
+		prefs = defaults.clone();
+
+		// clean up and save if backing store is available
+		if ( syncAvailable() ) {
+			prefs.clear();
+			syncEverythingToBackingStore();
+		}	
 		
 	}
+	
+	/** 
+	 * this will sync everything back to the backing store
+	 */
+	private void syncEverythingToBackingStore() {
+		
+		for ( Object okey : prefs.keySet() ) {
+			String key = (String)okey;
+			syncKeyAfterSet(key);
+		}			
+		
+	}
+	
+	/**
+	 * Reloads all values from the backend.
+	 * The behaviour is undefined if the backend
+	 * is not available.
+	 * This is done by looping over the defaults.
+	 * If the backend does not contain a value for
+	 * a key, the default is tored in the backend.
+	 */
+	public void reloadFromBackend() {
+		
+		// will fail if backingprefs are not available
+		
+		// loop over defaults and get values from backing store
+		for ( Object okey : defaults.keySet() ) {
+			String key = (String)okey;
+			prefs.put(key, 
+					backingprefs.get(key, defaults.getProperty(key)));
+		}			
+		
+	}
+	
 	
 	/**
 	 * @see Preferences#addPreferenceChangeListener(PreferenceChangeListener)
 	 * @param pcl
 	 */
-	public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
+	/*public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
 		prefs.addPreferenceChangeListener(pcl);
-	}
+	}*/
 	
 	/**
 	 * @see Preferences#removePreferenceChangeListener(PreferenceChangeListener)
 	 */
-	public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
+	/*public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
 		prefs.removePreferenceChangeListener(pcl);
-	}
+	}*/
 	
 
 
