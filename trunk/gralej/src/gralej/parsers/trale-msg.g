@@ -34,10 +34,6 @@ public class TraleMsgHandler extends GrammarHandler {
     
     TraleMsgHandlerHelper _helper = new TraleMsgHandlerHelper();
     
-    public void setResultReceiver(IParseResultReceiver resultReceiver) {
-        _helper.setResultReceiver(resultReceiver);
-    }
-    
     private void bindRefs() {
         for (OM.Tag tag : _tags)
             tag.setTarget(_tag2ent.get(tag.number()));

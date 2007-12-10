@@ -14,6 +14,7 @@ public class TraleMsgLexer implements Lexer {
     PushbackReader _in;
     Tokens _tokens;
     Token _current;
+    StringBuilder _consumed = new StringBuilder();
     
     public TraleMsgLexer(Grammar g, Reader in) {
     	this(g);
@@ -48,12 +49,16 @@ public class TraleMsgLexer implements Lexer {
         return _current != _tokens._EOF;
     }
     
+    StringBuilder getCharBuffer() {
+        return _consumed;
+    }
+    
     public Token next() {
         try {
             int c;
             int c2;
             while (true) {
-                c = _in.read();
+                c = read();
                 if (!Character.isWhitespace(c))
                     break;
                 if (c == '\n')
@@ -65,7 +70,7 @@ public class TraleMsgLexer implements Lexer {
                 case '(':
                     _current = _tokens._LPAR;
                     // check for a _BEGIN
-                    switch ((char)(c2 = _in.read())) {
+                    switch ((char)(c2 = read())) {
                         case 'A':
                             _current = _tokens._BEGIN_ANY;
                             break;
@@ -110,13 +115,13 @@ public class TraleMsgLexer implements Lexer {
                             break;
                         default:
                             // _current stays _LPAR
-                            _in.unread(c2);
+                            unread(c2);
                     }
                     break;
                 case '"': // string
                     {
                         StringBuilder s = new StringBuilder();
-                        while ((c = _in.read()) != -1) {
+                        while ((c = read()) != -1) {
                             char ch = (char) c;
                             if (ch == '"')
                                 break;
@@ -152,7 +157,7 @@ public class TraleMsgLexer implements Lexer {
                     {
                         String s = "newdata";
                         for (int i = 0; i < s.length(); ++i) {
-                            if (s.charAt(i) != (char) _in.read())
+                            if (s.charAt(i) != (char) read())
                                 throw new IllegalTokenException("Expected 'newdata' after '!'");
                         }
                     }
@@ -163,10 +168,10 @@ public class TraleMsgLexer implements Lexer {
                         StringBuilder s = new StringBuilder();
                         do {
                             s.append((char) c);
-                            c = _in.read();
+                            c = read();
                         }
                         while (Character.isDigit(c));
-                        _in.unread(c);
+                        unread(c);
                         _current = _tokens.INT(s);
                     }
                     else {
@@ -183,6 +188,18 @@ public class TraleMsgLexer implements Lexer {
     
     public void remove() {
         throw new UnsupportedOperationException();
+    }
+    
+    private int read() throws IOException {
+        int c = _in.read();
+        if (c != -1)
+            _consumed.append((char) c);
+        return c;
+    }
+    
+    private void unread(int c) throws IOException {
+        _in.unread(c);
+        _consumed.deleteCharAt(_consumed.length() - 1);
     }
 
     static class T implements Token {
