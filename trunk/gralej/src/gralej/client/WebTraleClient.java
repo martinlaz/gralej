@@ -101,9 +101,9 @@ public class WebTraleClient extends JPanel {
 
     public static WebTraleClient inFrame(URL url) {
         if (!url.toString().endsWith("/")) {
-            // url should always end in /
+            // url should always end in '/'
             try {
-                url = new URL(url, "/");
+                url = new URL(url.toString() + "/");
             }
             catch (MalformedURLException e) {
                 // will not happen
