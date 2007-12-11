@@ -272,7 +272,7 @@ public class MainGUI implements ActionListener, ItemListener {
     	} else if (source == m_Postscript) {
     		save(OutputFormatter.PostscriptFormat);
     	} else if (source == m_Print || source == b_Print) {
-    		// call print method
+    		c.getModel().print();
     	} else if (source == m_About) {
     		JOptionPane.showMessageDialog(null, "GRALE, Java version (2007)");
     	} else if (source ==  m_SVG) {
