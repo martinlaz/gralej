@@ -8,13 +8,9 @@ import gralej.gui.MainGUI;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
@@ -372,19 +368,13 @@ public class WindowsContentObserver extends ContentObserver {
  		} else if (source == m_Postscript) {
     		save(OutputFormatter.PostscriptFormat);
 		} else if (source == m_Print || source == b_Print) {
-			// call print method
+			model.print(data);
 		} else if (source ==  m_SVG) {
     		save(OutputFormatter.SVGFormat);
 		} else if (source ==  m_XML) {
     		save(OutputFormatter.XMLFormat);
 		} else if (source ==  m_JPG) {
-    		//save(OutputFormatter.JPGFormat);
-                    try {
-                        saveAsImage("jpg", new File("Test.jpg"));
-                    }
-                    catch (IOException ioex) {
-                        JOptionPane.showMessageDialog(this, ioex, "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+    		save(OutputFormatter.JPGFormat);
 		} else if (source ==  m_Tree) {
 
 		} else if (source ==  m_Struc) {
@@ -399,7 +389,6 @@ public class WindowsContentObserver extends ContentObserver {
 		} else if (source ==  m_Hidden || source == b_Hidden) {
 			// send "toggle hidden" via content window to focus window
 		} else if (source ==  m_Resize || source == b_Resize) {
-			// send "resize" to viewer
 			this.pack();
 		} else if (source ==  m_ZoomPlus || source == b_ZoomPlus) {
 			((BlockPanel) display).increaseScaleFactor();
@@ -445,21 +434,6 @@ public class WindowsContentObserver extends ContentObserver {
         }
 		
 	}
-        
-        void saveAsImage(String imgFormatName, File file) throws IOException {
-            BlockPanel bp = (BlockPanel) display;
-
-            Dimension imgSize = bp.getScaledSize();
-            BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
-                                                BufferedImage.TYPE_INT_RGB);
-            Graphics2D grap = img.createGraphics();
-            bp.paint(grap);
-            grap.dispose();
-
-            ImageIO.write(img, imgFormatName, file);
-        }
-
-
 
 
 	}

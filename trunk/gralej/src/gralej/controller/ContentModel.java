@@ -4,9 +4,6 @@ import gralej.gui.*;
 import gralej.parsers.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.prefs.*;
 
@@ -77,18 +74,9 @@ public class ContentModel {
 	 * 		regardless of whether the format is meant to understand that.
 	 */
 	public void saveAll (File f, int format) {
-		try {
-			OutputFormatter of = new OutputFormatter();
-			PrintStream p = new PrintStream(new FileOutputStream(f));
-			for (int i = 0; i < files.size(); i++) {
-				String output = of.convertToString(files.get(i), format);
-				p.print(output);
-			}
-			p.close();
-		} catch (IOException e) {
-			System.err.println("Saving failed.");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		OutputFormatter of = new OutputFormatter(f);
+		for (int i = 0; i < files.size(); i++) {
+			of.save(files.get(i), format);
 		}
 		
 	}
@@ -96,20 +84,17 @@ public class ContentModel {
 	public void save (File f, IDataPackage dataItem, int format) {
 		System.err.println("Attempting to save data item "+dataItem.getTitle()
 				+" to file "+f.getName());
-		try {
-			OutputFormatter of = new OutputFormatter();
-			PrintStream p = new PrintStream(new FileOutputStream(f));
-			String output = of.convertToString(dataItem, format);
-			p.print(output);
-			p.close();
-		} catch (IOException e) {
-			System.err.println("Saving failed.");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		// TODO finally, generalize this to multi-format exporting
+		OutputFormatter of = new OutputFormatter(f);
+		of.save(dataItem, format);
+	}
+	
+	public void print () {
+		print(files.get(list.getFocus()));
+	}
+	
+	public void print (IDataPackage data) {
+		OutputFormatter of = new OutputFormatter(null);
+		of.print(data);
 	}
 	
 	public void tile () {
