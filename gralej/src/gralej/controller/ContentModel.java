@@ -1,11 +1,14 @@
 package gralej.controller;
 
 import gralej.gui.*;
+import gralej.gui.blocks.BlockPanel;
 import gralej.parsers.*;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.prefs.*;
+
+import javax.swing.JComponent;
 
 
 /**
@@ -21,15 +24,6 @@ public class ContentModel {
 	private ContentObserver observer;
 	private ArrayList<IDataPackage> files = new ArrayList<IDataPackage>(); 
     
-    // TODO delete old preference handling once Niels' new one is in
-    Preferences prefs;
-    
-    public Preferences getPrefs () { return prefs; }
-
-    public void resetPreferences () {
-		prefs.put("color", "white");
-		prefs.put("font size", "11");
-	}
 	
 	public void open (IDataPackage parse) {
 		files.add(parse);
@@ -42,8 +36,6 @@ public class ContentModel {
 	 * 
 	 */
 	public void open () {
-//		observer.add(files.get(list.getFocus()).createView(), 
-//				files.get(list.getFocus()).getTitle());
 		observer.add(files.get(list.getFocus()));
 	}
 
@@ -82,19 +74,24 @@ public class ContentModel {
 	}
 	
 	public void save (File f, IDataPackage dataItem, int format) {
-		System.err.println("Attempting to save data item "+dataItem.getTitle()
-				+" to file "+f.getName());
 		OutputFormatter of = new OutputFormatter(f);
 		of.save(dataItem, format);
 	}
 	
+	public void save (File f, BlockPanel view, int format) {
+		OutputFormatter of = new OutputFormatter(f);
+		of.save(view, format);
+	}
+
+	
 	public void print () {
-		print(files.get(list.getFocus()));
+//		print(files.get(list.getFocus()));
+		// TODO access the windowscontentmodel to find the according view... impossible
 	}
 	
-	public void print (IDataPackage data) {
+	public void print (JComponent view) {
 		OutputFormatter of = new OutputFormatter(null);
-		of.print(data);
+		of.print(view);
 	}
 	
 	public void tile () {
@@ -108,8 +105,6 @@ public class ContentModel {
 
 	public ContentModel() {
 		
-		prefs = Preferences.userNodeForPackage(this.getClass());
-		resetPreferences();
 	}
 	
 	public void setLCO (ListContentObserver l) {

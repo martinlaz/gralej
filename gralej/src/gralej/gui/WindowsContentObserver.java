@@ -368,7 +368,7 @@ public class WindowsContentObserver extends ContentObserver {
  		} else if (source == m_Postscript) {
     		save(OutputFormatter.PostscriptFormat);
 		} else if (source == m_Print || source == b_Print) {
-			model.print(data);
+			model.print(display);
 		} else if (source ==  m_SVG) {
     		save(OutputFormatter.SVGFormat);
 		} else if (source ==  m_XML) {
