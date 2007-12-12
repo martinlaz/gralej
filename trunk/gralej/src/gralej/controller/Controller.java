@@ -19,8 +19,8 @@ import java.net.URL;
  * The controller is the central element of the program's design.
  * 
  * It listens to input interfaces (server and file) and to the parser interface
- * it takes input and passes it on to the parser
- * it takes parses and passes them on to the content model (which the gui listens to)
+ * it takes input and passes it on to the parser it takes parses and passes them
+ * on to the content model (which the gui listens to)
  * 
  * 
  * @author Armin
@@ -28,97 +28,97 @@ import java.net.URL;
  */
 
 public class Controller implements INewStreamListener, IParseResultReceiver {
-	
-	private ContentModel cm; // 
-		
-	public void open (File file) {
-		
-		// instantiate a new file handler
-		System.err.println("-- Opening File " + file.getAbsolutePath());
-		FileLoader fl = new FileLoader(file, true);
-		fl.registerNewStreamListener(this);
-		System.err.println("-- Starting to open");
-		try {
-			fl.loadFile();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		System.err.println("-- Opening should run in its thread now");		
-		
-	}
-	
-	public void newStream(InputStream s, StreamInfo streamMeta) {
-		System.err.println("-- Controller got new stream of type " + streamMeta);				
-		
-		IGraleParser parser;
-		try {
-			// ask parser factory for parser
-			parser = GraleParserFactory.createParser(streamMeta);
-			// plug stream into parser, and wait for results
-			parser.parse(s, streamMeta, this);
-		} catch (UnsupportedProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-        
-        public void streamClosed(StreamInfo meta, Exception ex) {
-            System.err.println("-- Stream closed: " + meta);
-            if (ex != null)
-                System.err.println("------ Exception: " + ex);
-        }
-	
-	
 
-	public void newDataPackage(IDataPackage parse) {
-		System.err.println("-- Controller got new parse");				
-		
-		class ParseShowingRunnable implements Runnable {
-			IDataPackage parse;
-			
-			ParseShowingRunnable (IDataPackage parse) {
-				this.parse = parse;
-			}
-			
-			public void run () {
-//        		cm.open(parse.createView(), parse.getTitle());
-        		cm.open(parse);
-			}
-			
-		}
+    private ContentModel cm; // 
+
+    public void open(File file) {
+
+        // instantiate a new file handler
+        System.err.println("-- Opening File " + file.getAbsolutePath());
+        FileLoader fl = new FileLoader(file, true);
+        fl.registerNewStreamListener(this);
+        System.err.println("-- Starting to open");
+        try {
+            fl.loadFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.err.println("-- Opening should run in its thread now");
+
+    }
+
+    public void newStream(InputStream s, StreamInfo streamMeta) {
+        System.err
+                .println("-- Controller got new stream of type " + streamMeta);
+
+        IGraleParser parser;
+        try {
+            // ask parser factory for parser
+            parser = GraleParserFactory.createParser(streamMeta);
+            // plug stream into parser, and wait for results
+            parser.parse(s, streamMeta, this);
+        } catch (UnsupportedProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public void streamClosed(StreamInfo meta, Exception ex) {
+        System.err.println("-- Stream closed: " + meta);
+        if (ex != null)
+            System.err.println("------ Exception: " + ex);
+    }
+
+    public void newDataPackage(IDataPackage parse) {
+        System.err.println("-- Controller got new parse");
+
+        class ParseShowingRunnable implements Runnable {
+            IDataPackage parse;
+
+            ParseShowingRunnable(IDataPackage parse) {
+                this.parse = parse;
+            }
+
+            public void run() {
+                // cm.open(parse.createView(), parse.getTitle());
+                cm.open(parse);
+            }
+
+        }
 
         try {
-			javax.swing.SwingUtilities.invokeAndWait(new ParseShowingRunnable(parse));
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
-	
-	public ContentModel getModel () {
-		return cm;
-	}
-
-	public Controller(IGraleServer server) {
-		server.registerNewStreamListener(this);
-		
-		cm = new ContentModel();
-		
-	}
-        
-        public void startWebTraleClient(URL url) {
-            final WebTraleClient wtc = WebTraleClient.inFrame(url);
-            new Thread(new Runnable() {
-                public void run() {
-                    newStream(wtc.getInputStream(), new StreamInfo("grisu", "WebTrale"));
-                }
-            }).start();
+            javax.swing.SwingUtilities.invokeAndWait(new ParseShowingRunnable(
+                    parse));
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
+    }
+
+    public ContentModel getModel() {
+        return cm;
+    }
+
+    public Controller(IGraleServer server) {
+        server.registerNewStreamListener(this);
+
+        cm = new ContentModel();
+
+    }
+
+    public void startWebTraleClient(URL url) {
+        final WebTraleClient wtc = WebTraleClient.inFrame(url);
+        new Thread(new Runnable() {
+            public void run() {
+                newStream(wtc.getInputStream(), new StreamInfo("grisu",
+                        "WebTrale"));
+            }
+        }).start();
+    }
 
 }

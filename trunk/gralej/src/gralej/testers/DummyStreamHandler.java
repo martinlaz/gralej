@@ -10,27 +10,27 @@ import gralej.controller.StreamInfo;
 
 /**
  * A dummy stream handler that puts anything to stderr
+ * 
  * @author Niels
  * @version $Id$
- *
+ * 
  */
 public class DummyStreamHandler implements INewStreamListener {
 
-	public void newStream(InputStream s, StreamInfo meta) {
+    public void newStream(InputStream s, StreamInfo meta) {
 
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(s));
-		
-		System.err.println("---- Got new stream of type " + meta.getType());
-		String line ;
-		try {
-			while ( ( line = in.readLine() ) != null) {
-				System.err.println("Got line: " + line);
-			}
-		} catch (IOException e) {
-			System.err.println(e);
-		}
-		
-	}
+        BufferedReader in = new BufferedReader(new InputStreamReader(s));
+
+        System.err.println("---- Got new stream of type " + meta.getType());
+        String line;
+        try {
+            while ((line = in.readLine()) != null) {
+                System.err.println("Got line: " + line);
+            }
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+
+    }
 
 }

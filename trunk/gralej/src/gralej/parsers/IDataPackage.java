@@ -10,13 +10,17 @@ import gralej.gui.blocks.BlockPanel;
 import gralej.om.IVisitable;
 
 /**
- *
+ * 
  * @author Martin
  */
 public interface IDataPackage {
     String getTitle();
+
     IVisitable getModel();
+
     char[] getCharacters();
+
     StreamInfo getStreamInfo();
+
     BlockPanel createView();
 }

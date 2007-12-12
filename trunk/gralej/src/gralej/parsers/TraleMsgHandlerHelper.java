@@ -14,11 +14,11 @@ class TraleMsgHandlerHelper {
     void setResultReceiver(IParseResultReceiver resultReceiver) {
         _resultReceiver = resultReceiver;
     }
-    
+
     void setCharBuffer(StringBuilder charBuffer) {
         _charBuffer = charBuffer;
     }
-    
+
     void setStreamInfo(StreamInfo streamInfo) {
         _streamInfo = streamInfo;
     }
@@ -30,7 +30,8 @@ class TraleMsgHandlerHelper {
         }
         char[] chars = _charBuffer.toString().toCharArray();
         _charBuffer.delete(0, _charBuffer.length());
-        _resultReceiver.newDataPackage(new DataPackage(title, vob, chars, _streamInfo));
+        _resultReceiver.newDataPackage(new DataPackage(title, vob, chars,
+                _streamInfo));
     }
 
     static class DataPackage implements IDataPackage {
@@ -39,7 +40,8 @@ class TraleMsgHandlerHelper {
         char[] _chars;
         StreamInfo _streamInfo;
 
-        DataPackage(String title, IVisitable model, char[] chars, StreamInfo streamInfo) {
+        DataPackage(String title, IVisitable model, char[] chars,
+                StreamInfo streamInfo) {
             _title = title;
             _model = model;
             _chars = chars;

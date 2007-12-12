@@ -7,8 +7,9 @@ import gralej.controller.StreamInfo;
  * @version $Id$
  */
 public interface IParseResultReceiver {
-	
-        void newDataPackage(IDataPackage data);
-        void streamClosed(StreamInfo meta, Exception exception);
+
+    void newDataPackage(IDataPackage data);
+
+    void streamClosed(StreamInfo meta, Exception exception);
 
 }
