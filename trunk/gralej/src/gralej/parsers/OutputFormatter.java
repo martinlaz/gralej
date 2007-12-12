@@ -239,7 +239,7 @@ public class OutputFormatter {
             this.view = view;
         }
 
-        @Override
+        //@Override
         public int print(Graphics g, PageFormat pageFormat, int pageIndex)
                 throws PrinterException {
             if (pageIndex > 0) {
