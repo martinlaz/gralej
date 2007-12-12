@@ -14,6 +14,7 @@ import java.awt.print.PrinterJob;
 import java.io.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
 import javax.swing.RepaintManager;
 
 public class OutputFormatter {
@@ -32,6 +33,18 @@ public class OutputFormatter {
 	}
 	
 	public void save (IDataPackage data, int format) {
+		// JPGs: will get a new view, not what's on screen
+		// better call next method directly
+		if (format == JPGFormat) save(data, format, data.createView()); 
+		else save (data, format, null); 
+	}
+	
+	public void save (BlockPanel view, int format) {
+		if (format == JPGFormat) save(null, format, view); 
+		else throw new RuntimeException("Saving failed due to a missing parameter.");
+	}
+	
+	public void save (IDataPackage data, int format, BlockPanel view) {
 		
 		try {
 			PrintStream p = new PrintStream(new FileOutputStream(file));
@@ -42,7 +55,7 @@ public class OutputFormatter {
 			case LaTeXFormat:      toLaTeX(data, p); break;
 			case SVGFormat:        toSVG(data, p); break;
 			case PostscriptFormat: toPostscript(data, p); break;
-			case JPGFormat:        toJPG(data, p); break;
+			case JPGFormat:        toJPG(view, p); break;
 			case XMLFormat:        toXML(data, p); break;
 			}
 
@@ -56,11 +69,11 @@ public class OutputFormatter {
 	}
 
 	
-	public void toTRALE (IDataPackage data, PrintStream p) {
+	private void toTRALE (IDataPackage data, PrintStream p) {
 		p.print(data.getCharacters());
 	}
 	
-	public void toLaTeX (IDataPackage data, PrintStream p) {
+	private void toLaTeX (IDataPackage data, PrintStream p) {
 		OM2LaTeXVisitor visitor = new OM2LaTeXVisitor();
 		String output = "% AVM output by GraleJ\n"
 			+"\\documentclass{article}\n"
@@ -82,27 +95,22 @@ public class OutputFormatter {
 		p.print(output);
 	}
 
-	public void toSVG (IDataPackage data, PrintStream p) {
+	private void toSVG (IDataPackage data, PrintStream p) {
 		System.err.println("SVG format ain't implemented yet.");
 		// TODO implement SVG
 	}
 	
-	public void toPostscript (IDataPackage data, PrintStream p) {
+	private void toPostscript (IDataPackage data, PrintStream p) {
 		System.err.println("Postscript format ain't implemented yet.");
 		// TODO implement Postscript
 	}
 
-	public void toJPG (IDataPackage data, PrintStream p) {
-		
-		BlockPanel bp = data.createView();
-//		JComponent comp = data.createView();
+	private void toJPG (BlockPanel bp, PrintStream p) {
 		
         Dimension imgSize = bp.getScaledSize();
-//		Dimension componentSize = comp.getPreferredSize();
         BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
                                             BufferedImage.TYPE_INT_RGB);
         Graphics2D grap = img.createGraphics();
-//		grap.fillRect(0,0,img.getWidth(),img.getHeight());
         bp.paint(grap);
         grap.dispose();
 
@@ -115,17 +123,14 @@ public class OutputFormatter {
 
 	}
 
-	public void toXML (IDataPackage data, PrintStream p) {
+	private void toXML (IDataPackage data, PrintStream p) {
 		OM2XMLVisitor visitor = new OM2XMLVisitor();
 		p.print(visitor.output(data.getModel()));
 	}
 	
-	public void print (IDataPackage data) {
-		
-			
-
+	public void print (JComponent view) {
 		PrinterJob printJob = PrinterJob.getPrinterJob();
-		printJob.setPrintable(new DataPrinter(data.createView()));
+		printJob.setPrintable(new DataPrinter(view));
 
 
 		if (printJob.printDialog())
@@ -141,9 +146,9 @@ public class OutputFormatter {
 
     class DataPrinter implements Printable {
     	
-    	BlockPanel view;
+    	JComponent view;
     	
-    	DataPrinter (BlockPanel view) {
+    	DataPrinter (JComponent view) {
     		this.view = view;
     	}
     	
