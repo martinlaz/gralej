@@ -6,7 +6,7 @@
 package gralej.parsers;
 
 /**
- *
+ * 
  * @author Martin
  */
 public class ParseException extends Exception {

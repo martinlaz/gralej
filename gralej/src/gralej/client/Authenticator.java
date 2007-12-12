@@ -12,14 +12,16 @@ import java.net.URL;
 import javax.swing.JDialog;
 
 /**
- *
+ * 
  * @author Martin
  */
 public class Authenticator extends java.net.Authenticator {
-    
+
     private static Authenticator instance;
+
     public static void install() {
-        if (instance != null) return;
+        if (instance != null)
+            return;
         instance = new Authenticator();
         java.net.Authenticator.setDefault(instance);
     }
@@ -29,20 +31,22 @@ public class Authenticator extends java.net.Authenticator {
         URL url = getRequestingURL();
         return showAuthenticationDialog(url);
     }
-    
+
     private PasswordAuthentication showAuthenticationDialog(URL url) {
         Window focusedWindow = null;
-        KeyboardFocusManager kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        KeyboardFocusManager kfm = KeyboardFocusManager
+                .getCurrentKeyboardFocusManager();
         if (kfm != null)
             focusedWindow = kfm.getFocusedWindow();
-                
-        JDialog dlg = new JDialog(focusedWindow, "Authentication required", Dialog.ModalityType.APPLICATION_MODAL);
+
+        JDialog dlg = new JDialog(focusedWindow, "Authentication required",
+                Dialog.ModalityType.APPLICATION_MODAL);
         AuthenticatorPanel ap = new AuthenticatorPanel(dlg, url);
         dlg.add(ap);
         dlg.pack();
         dlg.setVisible(true);
         dlg.dispose();
-        
+
         return ap.getPasswordAuthentication();
     }
 }

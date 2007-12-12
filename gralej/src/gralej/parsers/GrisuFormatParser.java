@@ -8,10 +8,10 @@ import tomato.GrammarHandler;
 import tomato.LRTable;
 import tomato.Parser;
 
-
 /**
- * A dummy class representing a parser for the 
- * plain old TRALE/Grisu interchange protocol
+ * A dummy class representing a parser for the plain old TRALE/Grisu interchange
+ * protocol
+ * 
  * @author Niels
  * @version $Id$
  */
@@ -26,7 +26,8 @@ class GrisuFormatParser implements IGraleParser {
             LRTable lr = loadLRTable();
             _parser = new Parser(lr);
             _lexer = new TraleMsgLexer(lr.grammar());
-            _grammarHandler = (TraleMsgHandler) GrammarHandler.bind("gralej.parsers.TraleMsgHandler", lr.grammar());
+            _grammarHandler = (TraleMsgHandler) GrammarHandler.bind(
+                    "gralej.parsers.TraleMsgHandler", lr.grammar());
         } catch (Exception e) {
             new RuntimeException(e);
         }
@@ -36,22 +37,24 @@ class GrisuFormatParser implements IGraleParser {
         final String grammarResourceName = "trale-msg.g";
         InputStream is = getClass().getResourceAsStream(grammarResourceName);
         if (is == null) {
-            throw new IOException("Failed to load resource: " + grammarResourceName);
+            throw new IOException("Failed to load resource: "
+                    + grammarResourceName);
         }
         return LRTable.newInstance(new InputStreamReader(is));
     }
 
-    public List<IDataPackage> getParses(InputStream s, StreamInfo meta) throws ParseException {
+    public List<IDataPackage> getParses(InputStream s, StreamInfo meta)
+            throws ParseException {
         final List<IDataPackage> parses = new LinkedList<IDataPackage>();
         _grammarHandler.setResultReceiver(new IParseResultReceiver() {
 
-                    public void newDataPackage(IDataPackage data) {
-                        parses.add(data);
-                    }
+            public void newDataPackage(IDataPackage data) {
+                parses.add(data);
+            }
 
-                    public void streamClosed(StreamInfo meta, Exception exception) {
-                    }
-                });
+            public void streamClosed(StreamInfo meta, Exception exception) {
+            }
+        });
         _lexer.reset(new InputStreamReader(s));
         try {
             _parser.parse(_lexer);
@@ -67,28 +70,28 @@ class GrisuFormatParser implements IGraleParser {
         return parses;
     }
 
-    public void parse(final InputStream s, final StreamInfo meta, final IParseResultReceiver receiver) {
+    public void parse(final InputStream s, final StreamInfo meta,
+            final IParseResultReceiver receiver) {
         _grammarHandler._helper.setResultReceiver(receiver);
         _grammarHandler._helper.setCharBuffer(_lexer.getCharBuffer());
         _grammarHandler._helper.setStreamInfo(meta);
         _lexer.reset(new InputStreamReader(s));
         new Thread(new Runnable() {
 
-                    public void run() {
-                        Exception exception = null;
-                        try {
-                            _parser.parse(_lexer);
-                        }
-                        catch (Exception ex) {
-                            exception = ex;
-                        }
-                        try {
-                            s.close();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                        receiver.streamClosed(meta, exception);
-                    }
-                }).start();
+            public void run() {
+                Exception exception = null;
+                try {
+                    _parser.parse(_lexer);
+                } catch (Exception ex) {
+                    exception = ex;
+                }
+                try {
+                    s.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                receiver.streamClosed(meta, exception);
+            }
+        }).start();
     }
 }
