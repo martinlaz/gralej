@@ -55,8 +55,15 @@ public class ContentModel {
         observer.clear();
     }
 
+    /**
+     * Minimal saving method taking only a file and a format
+     * argument. 
+     * 
+     * @param f
+     * @param format
+     */
     public void save(File f, int format) {
-        save(f, files.get(list.getFocus()), format);
+        save(f, files.get(list.getFocus()), null, format);
     }
 
     /**
@@ -71,17 +78,22 @@ public class ContentModel {
      */
     public void saveAll(File f, int format) {
         for (int i = 0; i < files.size(); i++) {
-            of.save(f, files.get(i), format);
+            of.save(f, files.get(i), null, format);
         }
 
     }
 
-    public void save(File f, IDataPackage dataItem, int format) {
-        of.save(f, dataItem, format);
-    }
-
-    public void save(File f, BlockPanel view, int format) {
-        of.save(f, view, format);
+    /**
+     * Full saving method with all parameters. These are directly passed to
+     * the OutputFormatter's saving method.
+     * 
+     * @param f
+     * @param dataItem
+     * @param display
+     * @param format
+     */
+    public void save(File f, IDataPackage dataItem, JComponent display, int format) {
+        of.save(f, dataItem, display, format);
     }
 
     public void print() {
@@ -104,7 +116,7 @@ public class ContentModel {
     }
 
     public ContentModel() {
-
+        of = OutputFormatter.getInstance();
     }
 
     public void setLCO(ListContentObserver l) {

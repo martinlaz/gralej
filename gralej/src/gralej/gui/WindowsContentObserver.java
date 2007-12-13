@@ -158,13 +158,12 @@ public class WindowsContentObserver extends ContentObserver {
 
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Hidden, m_Find,
-                m_Resize, m_AutoResize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
+                m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
                 m_JPG;
 
         // buttons (basically the same as the menu items)
-        private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden,
-                b_Restore, b_Find, b_Resize, b_AutoResize, b_ZoomPlus,
-                b_ZoomMinus, b_Save;
+        private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
+                b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save;
 
         private JTextField zoomfield, searchfield;
 
@@ -182,10 +181,11 @@ public class WindowsContentObserver extends ContentObserver {
             filemenu.add(m_Close);
 
             m_Save = new JMenuItem("Save");
+            m_Save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                    InputEvent.CTRL_DOWN_MASK));
             m_Save.addActionListener(this);
             filemenu.add(m_Save);
 
-            filemenu.add(new JSeparator());
             JMenu exportSubmenu = new JMenu("Export");
             // sub LaTeX
             m_Latex = new JMenuItem("LaTeX");
@@ -199,7 +199,7 @@ public class WindowsContentObserver extends ContentObserver {
             // sub SVG
             m_SVG = new JMenuItem("SVG");
             m_SVG.addActionListener(this);
-            exportSubmenu.add(m_SVG);
+//            exportSubmenu.add(m_SVG); // TODO implement and uncomment
             // sub XML
             m_XML = new JMenuItem("XML");
             m_XML.addActionListener(this);
@@ -228,44 +228,38 @@ public class WindowsContentObserver extends ContentObserver {
             m_Tree.setSelected(true); // default
             m_Tree.addActionListener(this);
             viewmode.add(m_Tree);
-            viewmenu.add(m_Tree);
+//            viewmenu.add(m_Tree); // TODO implement and uncomment
 
             m_Struc = new JRadioButtonMenuItem("Structure");
             m_Struc.addActionListener(this);
             viewmode.add(m_Struc);
-            viewmenu.add(m_Struc);
-            viewmenu.addSeparator();
+//            viewmenu.add(m_Struc); // TODO implement and uncomment
+//            viewmenu.addSeparator();
 
             m_Expand = new JMenuItem("Expand");
             m_Expand.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
                     InputEvent.CTRL_DOWN_MASK));
             m_Expand.addActionListener(this);
-            viewmenu.add(m_Expand);
+//            viewmenu.add(m_Expand); // TODO implement and uncomment
 
             m_Restore = new JMenuItem("Restore");
             m_Restore.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                     InputEvent.CTRL_DOWN_MASK));
             m_Restore.addActionListener(this);
-            viewmenu.add(m_Restore);
+//            viewmenu.add(m_Restore); // TODO implement and uncomment
 
             // checkbox "Show Hidden Nodes" (shaded)
             m_Hidden = new JCheckBoxMenuItem("Show Hidden Nodes");
             m_Hidden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H,
                     InputEvent.CTRL_DOWN_MASK));
             m_Hidden.addActionListener(this);
-            viewmenu.add(m_Hidden);
+//            viewmenu.add(m_Hidden); // TODO implement and uncomment
 
-            m_Resize = new JMenuItem("Adjust window size");
-            m_Resize.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
-                    InputEvent.CTRL_DOWN_MASK));
+            m_Resize = new JCheckBoxMenuItem("Adjust window size");
+            m_Resize.setAccelerator(KeyStroke.getKeyStroke(
+                    KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
             m_Resize.addActionListener(this);
             viewmenu.add(m_Resize);
-
-            m_AutoResize = new JCheckBoxMenuItem("Auto-Adjust window size");
-            // m_AutoResize.setAccelerator(KeyStroke.getKeyStroke(
-            // KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
-            m_AutoResize.addActionListener(this);
-            viewmenu.add(m_AutoResize);
 
             m_ZoomPlus = new JMenuItem("Zoom in");
             m_ZoomPlus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS,
@@ -299,16 +293,16 @@ public class WindowsContentObserver extends ContentObserver {
             b_Save = new JButton(theme.getIcon("filefloppy"));
             b_Save.addActionListener(this);
             toolbar.add(b_Save);
+            
+            b_Print = new JButton(theme.getIcon("fileprint"));
+            b_Print.addActionListener(this);
+            b_Print.setToolTipText("Print");
+            toolbar.add(b_Print);
 
-            b_Resize = new JButton(theme.getIcon("maximize"));
+            b_Resize = new JButton(theme.getIcon("fitwindow")); // or "maximize"
             b_Resize.addActionListener(this);
-            b_Resize.setToolTipText("Resize window to fit");
+            b_Resize.setToolTipText("En-/Disable Resizing");
             toolbar.add(b_Resize);
-
-            b_AutoResize = new JButton(theme.getIcon("fitwindow"));
-            b_AutoResize.addActionListener(this);
-            b_AutoResize.setToolTipText("En-/Disable Auto-Resizing");
-            toolbar.add(b_AutoResize);
 
             toolbar.addSeparator();
 
@@ -379,8 +373,6 @@ public class WindowsContentObserver extends ContentObserver {
                 // send "restore" via content window to focus window
             } else if (source == m_Hidden || source == b_Hidden) {
                 // send "toggle hidden" via content window to focus window
-            } else if (source == m_Resize || source == b_Resize) {
-                this.pack();
             } else if (source == m_ZoomPlus || source == b_ZoomPlus) {
                 ((BlockPanel) display).increaseScaleFactor();
                 zoomfield.setText(Integer.toString((int) Math
@@ -404,11 +396,12 @@ public class WindowsContentObserver extends ContentObserver {
                             .println("Invalid zoom value. Defaulting to 100%.");
                     ((BlockPanel) display).setScaleFactor(1);
                 }
-            } else if (source == m_AutoResize || source == b_AutoResize) {
+            } else if (source == m_Resize || source == b_Resize) {
                 autoResize = !autoResize;
-                b_AutoResize.setSelected(autoResize);
-                ((JCheckBoxMenuItem) m_AutoResize).setSelected(autoResize);
+                b_Resize.setSelected(autoResize);
+                ((JCheckBoxMenuItem) m_Resize).setSelected(autoResize);
                 ((BlockPanel) display).setAutoResize(autoResize);
+                if (autoResize) this.pack();
             } else if (source == m_Find) {
                 String searchFor = JOptionPane.showInputDialog(null,
                         "Search for sorts or attributes containing:");
@@ -423,7 +416,7 @@ public class WindowsContentObserver extends ContentObserver {
         private void save(int format) {
             File f = gui.saveDialog(format);
             if (f != null) {
-                model.save(f, data, format);
+                model.save(f, data, display, format);
             } else {
                 // file could not be opened. doing nothing might be appropriate
             }

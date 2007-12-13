@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gralej.gui;
 
 import java.awt.*;
@@ -33,7 +30,7 @@ public class MainGUI implements ActionListener, ItemListener {
     // private int mode = WINDOWS;
     // private int mode = FRAMES;
 
-    private final IconTheme theme = IconThemeFactory.getIconTheme("crystal");
+    private final IconTheme theme;
 
     private String lastDir;
 
@@ -46,7 +43,7 @@ public class MainGUI implements ActionListener, ItemListener {
             m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll;
 
     // buttons (basically the same as the menu items)
-    private JButton b_Open, b_Close, b_CloseAll, b_Print, b_Save, b_SaveAll;
+    private JButton b_Open, b_Close, b_CloseAll, b_Save, b_SaveAll;
 
     private JMenuBar createMenuBar() {
         // menu
@@ -76,6 +73,8 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.add(m_CloseAll);
 
         m_Save = new JMenuItem("Save");
+        m_Save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                InputEvent.CTRL_DOWN_MASK));
         m_Save.addActionListener(this);
         filemenu.add(m_Save);
 
@@ -156,11 +155,6 @@ public class MainGUI implements ActionListener, ItemListener {
          * b_SaveAll = new JButton(theme.getIcon("filefloppy"));
          * b_SaveAll.addActionListener(this); toolbar.add(b_SaveAll);
          */
-
-        b_Print = new JButton(theme.getIcon("fileprint"));
-        b_Print.addActionListener(this);
-        b_Print.setToolTipText("Print");
-        toolbar.add(b_Print);
 
         return toolbar;
     }
@@ -243,8 +237,8 @@ public class MainGUI implements ActionListener, ItemListener {
         JFileChooser fc = new JFileChooser(lastDir);
         fc.setMultiSelectionEnabled(false);
         // fc.setAcceptAllFileFilterUsed(false);
-        fc.addChoosableFileFilter(c.getModel().getOutputFormatter().getFilter(
-                format));
+//        fc.addChoosableFileFilter(c.getModel().getOutputFormatter().getFilter(
+//                format));
         int returnVal = fc.showSaveDialog(null);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -293,6 +287,9 @@ public class MainGUI implements ActionListener, ItemListener {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        // TODO get icon theme from preferences
+        theme = IconThemeFactory.getIconTheme("crystal");
 
         // Create and set up the window.
         JFrame frame = new JFrame("GraleJ");
@@ -318,34 +315,22 @@ public class MainGUI implements ActionListener, ItemListener {
 
         /*
          * if (mode == FRAMES) {
-         * 
-         * //Create a split pane with the two scroll panes in it. JSplitPane
          * content = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-         * 
-         * content.setOneTouchExpandable(true); content.setDividerLocation(150);
-         * 
-         * //Provide a preferred size for the split pane.
+         * content.setOneTouchExpandable(true); 
+         * content.setDividerLocation(150);
          * content.setPreferredSize(new Dimension(500, 250));
-         * 
          * frame.getContentPane().add(content, BorderLayout.CENTER);
+         * content.add(list.getDisplay());
+         * ContentObserver frames = new FramesContentObserver(c.getModel());
+         * content.add(frames.getDisplay()); 
          * 
-         * content.add(list.getDisplay()); // frame observer (registers with
-         * model in its constructor) ContentObserver frames = new
-         * FramesContentObserver(c.getModel()); // add list to GUI
-         * content.add(frames.getDisplay()); } else if (mode == WINDOWS) {
+         * } else if (mode == WINDOWS) {
          */
-        // alternative: external windows. no split
-        // ContentObserver frames =
         new WindowsContentObserver(c.getModel(), theme, this);
         frame.getContentPane().add(list.getDisplay(), BorderLayout.CENTER);
-        // frame.add(frames.getDisplay());
+        // }
 
-        /*
-         * }
-         */
-
-        // bottom status line
-        // TODO implement contents
+        // TODO implement contents of the bottom status line
         JPanel statusLine = new JPanel();
         statusLine.add(new JLabel("status line"));
         // frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
@@ -369,29 +354,28 @@ public class MainGUI implements ActionListener, ItemListener {
      * Some menu items depend on a file being selected. This method is called by
      * the list whenever the selection changes.
      * 
-     * @param b
+     * @param b: whether a list item is selected
      */
     public void notifyOfSelection(boolean b) {
-        if (hasSelection == b)
-            return; // do nothing
+        if (hasSelection == b) return;
         hasSelection = b;
 
         // menu items
         m_Close.setEnabled(b);
-        // m_CloseAll.setEnabled(b);
         m_Save.setEnabled(b);
-        // m_SaveAll.setEnabled(b); // SaveAll depends on items being in the
-        // list, not on selection
 
         // buttons
         b_Close.setEnabled(b);
-        // b_CloseAll
-        b_Print.setEnabled(b);
         b_Save.setEnabled(b);
-        // b_SaveAll;
-
     }
 
+    /**
+     * Other menu items depend on the non-emptiness of the list.
+     * This method shows or hides them, and it's the list's
+     * responsibility to notify the GUI accordingly.
+     * 
+     * @param isEmpty
+     */
     public void notifyOfEmptyList(boolean isEmpty) {
         m_SaveAll.setEnabled(!isEmpty);
         m_CloseAll.setEnabled(!isEmpty);

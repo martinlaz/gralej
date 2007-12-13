@@ -3,16 +3,23 @@ package gralej.parsers;
 import gralej.gui.blocks.BlockPanel;
 import gralej.om.ITree;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import java.io.*;
+
 import javax.imageio.ImageIO;
+import javax.print.*;
+import javax.print.attribute.*;
+import javax.print.attribute.standard.*;
 import javax.swing.JComponent;
 import javax.swing.RepaintManager;
 import javax.swing.filechooser.FileFilter;
+
+import sun.print.PSStreamPrinterFactory;
+
+// import weka.gui.visualize.PostscriptGraphics; // one way for ps output
+//import sun.print.PSStreamPrinterFactory;
 
 public class OutputFormatter {
 
@@ -23,16 +30,12 @@ public class OutputFormatter {
     public final static int JPGFormat = 4;
     public final static int XMLFormat = 5;
 
-    private OutputFormatter instance;
+    private static OutputFormatter instance = null;
 
-    private OutputFormatter() {
+    private OutputFormatter() {}
 
-    }
-
-    public OutputFormatter getInstance() {
-        if (instance == null) {
-            instance = new OutputFormatter();
-        }
+    public static OutputFormatter getInstance() {
+        if (instance == null) instance = new OutputFormatter();
         return instance;
     }
 
@@ -64,44 +67,23 @@ public class OutputFormatter {
             case XMLFormat:
                 extension = "xml";
                 break;
-
             }
         }
 
         @Override
         public boolean accept(File f) {
-            // Auch Unterverzeichnisse anzeigen
-            if (f.isDirectory())
-                return true;
+            if (f.isDirectory()) return true;
             return f.getName().toLowerCase().endsWith(extension);
         }
 
         @Override
         public String getDescription() {
-            return "A format filter for either one of the file" + ""
+            return "A format filter for either one of the file" 
                     + " formats supported by GraleJ";
         }
-
     }
 
-    public void save(File file, IDataPackage data, int format) {
-        // JPGs: will get a new view, not what's on screen
-        // better call next method directly
-        if (format == JPGFormat)
-            save(file, data, format, data.createView());
-        else
-            save(file, data, format, null);
-    }
-
-    public void save(File file, BlockPanel view, int format) {
-        if (format == JPGFormat)
-            save(file, null, format, view);
-        else
-            throw new RuntimeException(
-                    "Saving failed due to a missing parameter.");
-    }
-
-    public void save(File file, IDataPackage data, int format, BlockPanel view) {
+    public void save(File file, IDataPackage data, JComponent view, int format) {
 
         try {
             PrintStream p = new PrintStream(new FileOutputStream(file));
@@ -120,6 +102,8 @@ public class OutputFormatter {
                 toPostscript(data, p);
                 break;
             case JPGFormat:
+                // catch empty views here
+                if (view == null) view = data.createView();
                 toJPG(view, p);
                 break;
             case XMLFormat:
@@ -189,21 +173,68 @@ public class OutputFormatter {
         System.err.println("SVG format ain't implemented yet.");
         // TODO implement SVG
     }
-
+    
     private void toPostscript(IDataPackage data, PrintStream p) {
-        System.err.println("Postscript format ain't implemented yet.");
-        // TODO implement Postscript
+        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
+        StreamPrintService sps = factory.getPrintService(p);
+        // sps.getName() == "Postscript output"
+        DocPrintJob pj = sps.createPrintJob();
+        BlockPanel bp = data.createView();
+        bp.setDoubleBuffered(false);
+        bp.setVisible(true);
+        Doc doc = new SimpleDoc(new DataPrinter(bp), 
+                DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
+
+        try { 
+            pj.print(doc, new HashPrintRequestAttributeSet());
+        } catch(PrintException pe){
+            System.err.println("PrintException : "+pe);
+        }
     }
 
-    private void toJPG(BlockPanel bp, PrintStream p) {
+    private void toPostscript2(IDataPackage data, PrintStream p) {
+//        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
+        
+        DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
+//        DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+        
+        DocAttributeSet das = new HashDocAttributeSet();
+        PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+        attributes.add(MediaSizeName.ISO_A4);
+        attributes.add(new Copies(1));
 
-        Dimension imgSize = bp.getScaledSize();
+        //DocFlavor.SERVICE_FORMATTED.PRINTABLE.getMimeType();
+        String psMimeType = DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType();
+        
+        StreamPrintServiceFactory[] factories = StreamPrintServiceFactory.
+            lookupStreamPrintServiceFactories(flavor, psMimeType);
+        
+        if(factories.length == 0) System.err.println("No suitable factories !");
+ 
+        StreamPrintService sps = factories[0].getPrintService(p);
+        
+        DocPrintJob pj = sps.createPrintJob();
+                
+        BlockPanel bp = data.createView();        
+        Doc doc = new SimpleDoc(new DataPrinter(bp), flavor, das);
+
+        try { 
+            pj.print(doc, attributes);
+        } catch(PrintException pe){
+            System.err.println("PrintException : "+pe);
+        }
+
+    }
+
+    private void toJPG(JComponent bp, PrintStream p) {
+
+        Dimension imgSize = ((BlockPanel) bp).getScaledSize();
         BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
                 BufferedImage.TYPE_INT_RGB);
         Graphics2D grap = img.createGraphics();
         bp.paint(grap);
         grap.dispose();
-
+        
         try {
             ImageIO.write(img, "jpg", p);
         } catch (IOException e) {
