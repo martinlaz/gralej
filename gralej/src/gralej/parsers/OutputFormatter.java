@@ -99,7 +99,8 @@ public class OutputFormatter {
                 toSVG(data, p);
                 break;
             case PostscriptFormat:
-                toPostscript(data, p);
+                //toPostscript(data, p);
+                toPostscript3(view, p);
                 break;
             case JPGFormat:
                 // catch empty views here
@@ -224,6 +225,24 @@ public class OutputFormatter {
             System.err.println("PrintException : "+pe);
         }
 
+    }
+    
+    private void toPostscript3(JComponent bp, PrintStream p) {
+        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
+        StreamPrintService sps = factory.getPrintService(p);
+        // sps.getName() == "Postscript output"
+        DocPrintJob pj = sps.createPrintJob();
+        //BlockPanel bp = data.createView();
+        //bp.setDoubleBuffered(false);
+        //bp.setVisible(true);
+        Doc doc = new SimpleDoc(new DataPrinter(bp), 
+                DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
+
+        try { 
+            pj.print(doc, new HashPrintRequestAttributeSet());
+        } catch(PrintException pe){
+            System.err.println("PrintException : "+pe);
+        }
     }
 
     private void toJPG(JComponent bp, PrintStream p) {
