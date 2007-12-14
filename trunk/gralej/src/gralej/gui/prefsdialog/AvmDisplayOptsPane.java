@@ -16,32 +16,64 @@ import javax.swing.JLabel;
  * @version $Id$
  */
 public class AvmDisplayOptsPane extends OptionsPane {
+	
+	private GridBagLayout layout;
+	private GridBagConstraints cons;
+	private GralePreferences prefs;
 
     /**
      * 
      */
     private static final long serialVersionUID = -6530235629219328411L;
 
-    public AvmDisplayOptsPane(GralePreferences prefs) {
-
-        GridBagLayout layout = new GridBagLayout();
-        setLayout(layout);
-
-        GridBagConstraints cons = new GridBagConstraints();
-        cons.fill = GridBagConstraints.NONE;
-        // cons.weightx = 1.0;
-
-        JLabel l1 = new JLabel("Font 1:");
-        OptionComponent o1 = OptionComponentFactory.getComponent(prefs,
-                "testfont1", "font");
+    private void addFontOption(String label, String fontKey, String colorKey) {
+    	
+        JLabel l1 = new JLabel(label);
+        OptionComponent f1 = OptionComponentFactory.getComponent(prefs,
+                fontKey, "font");
+        OptionComponent c1 = OptionComponentFactory.getComponent(prefs,
+                colorKey, "color");
         cons.anchor = GridBagConstraints.EAST;
-        cons.gridwidth = GridBagConstraints.RELATIVE;
+        cons.gridwidth = GridBagConstraints.BASELINE;
         layout.setConstraints(l1, cons);
         add(l1);
         cons.anchor = GridBagConstraints.WEST;
+        cons.gridwidth = GridBagConstraints.RELATIVE;
+        layout.setConstraints(f1, cons);
+        add(f1);
+        cons.anchor = GridBagConstraints.WEST;
         cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
-        layout.setConstraints(o1, cons);
-        add(o1);
+        layout.setConstraints(c1, cons);
+        add(c1);    	
+    	
+    	
+    }
+    
+    
+    public AvmDisplayOptsPane(GralePreferences prefs) {
+
+    	this.prefs = prefs;
+    	
+        layout = new GridBagLayout();
+        setLayout(layout);
+
+        cons = new GridBagConstraints();
+        cons.fill = GridBagConstraints.NONE;
+        //cons.weightx = 2.0;
+        
+        addFontOption("Sort names:", "avm-display.sortnames.font",
+        		"avm-display.sortnames.color");
+
+        addFontOption("Tree node labels:", "avm-display.tree.node.font",
+			"avm-display.tree.node.color");
+
+        addFontOption("Tree leaf labels:", "avm-display.tree.leaf.font",
+			"avm-display.tree.leaf.color");
+        
+        
+        
+        
+/*
 
         JLabel l2 = new JLabel("Font 2 blah:");
         OptionComponent o2 = OptionComponentFactory.getComponent(prefs,
@@ -77,7 +109,7 @@ public class AvmDisplayOptsPane extends OptionsPane {
         cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
         layout.setConstraints(o4, cons);
         add(o4);
-
+*/
         /*
          * // put label to (space,x) of the container
          * layout.putConstraint(SpringLayout.WEST, l1, paddingSpace,

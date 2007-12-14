@@ -92,14 +92,34 @@ public class CFontOption extends OptionComponent {
     @Override
     public void reloadPref() {
         theFont = getPrefs().getFont(getPrefKey());
+        
+        // defaul fonts
+        String defaults[] = { "Arial", "Helvetica", "SansSerif" }; 
 
         // select the right font name
-        int selIndex;
-        for (selIndex = 0; selIndex < fontNames.length; selIndex++) {
-            if (fontNames[selIndex].equals(theFont.getName())) {
-                break;
-            }
+        String fontName = theFont.getName();
+        boolean fontfound = false;
+        int selIndex = -1;
+        int alternativeIndex = 0;
+        while ( ! fontfound ) {
+        	for (selIndex = 0; selIndex < fontNames.length; selIndex++) {
+        		if (fontNames[selIndex].equals(fontName)) {
+        			fontfound = true;
+        			break;
+        		}
+        	}
+        	
+        	if (! fontfound ) {
+        		try {
+        			fontName = defaults[alternativeIndex++];
+        		}
+        		catch (IndexOutOfBoundsException e) {
+        			throw new RuntimeException("Not even the default fonts are available");
+        		}
+        	}
         }
+
+        // set the font to the combo box
         nameCombo.setSelectedIndex(selIndex);
 
         // select the right font style
