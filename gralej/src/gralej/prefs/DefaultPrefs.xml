@@ -35,6 +35,14 @@ where RR = 2byte hex value for red
 <entry key="behavior.defaultzoom.min">10</entry>
 <entry key="behavior.defaultzoom.max">1600</entry>
 
+<!-- AVM options -->
+<entry key="avm-display.sortnames.font">Arial, 0, 12</entry>
+<entry key="avm-display.sortnames.color">003399ff</entry>
+<entry key="avm-display.tree.node.font">Arial, 1, 12</entry>
+<entry key="avm-display.tree.node.color">112233ff</entry>
+<entry key="avm-display.tree.leaf.font">Arial, 1, 12</entry>
+<entry key="avm-display.tree.leaf.color">993300ff</entry>
+
 
 
 <!--
@@ -172,7 +180,7 @@ Labels
 <entry key="label.node.internal.frame.width">0</entry>
 <entry key="label.node.internal.frame.color">0</entry>
 
-<entry key="label.node.leaf.font.spec">$label.node.internal.font.spec</entry>
+<entry key="label.node.leaf.font.spec">Arial,1,12</entry>
 <entry key="label.node.leaf.text.color">993300ff</entry>
 <entry key="label.node.leaf.text.color.alt">$label.node.leaf.text.color</entry>
 <entry key="label.node.leaf.margin.horizontal">0</entry>

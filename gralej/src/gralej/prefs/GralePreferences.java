@@ -171,7 +171,7 @@ public class GralePreferences  {
     private void syncKeyBeforeGet(String key) {
 
         if (syncAvailable()) {
-            prefs.put(key, (backingprefs.get(key, defaults.get(key))));
+            prefs.putNoDeRef(key, (backingprefs.get(key, defaults.getNoDeRef(key))));
         }
 
     }
