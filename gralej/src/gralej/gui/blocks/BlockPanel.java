@@ -92,6 +92,10 @@ public class BlockPanel extends JPanel implements IBlock {
 
         setContent(content);
     }
+    
+    public JPanel getDrawingPane() {
+        return _drawingPane;
+    }
 
     public boolean getAutoResize() {
         return _autoResize;
