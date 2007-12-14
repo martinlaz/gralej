@@ -81,5 +81,15 @@ public class Toolbox {
         return res;
 
     }
+    
+    public static String unEscape(String s) {
+    	return s.replace("\\$", "$");
+    }
+    
+    public static String doEscape(String s) {
+    	return s.replace("$", "\\$");
+    }
+    
+    
 
 }

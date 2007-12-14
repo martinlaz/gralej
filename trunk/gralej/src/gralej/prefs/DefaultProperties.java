@@ -91,11 +91,37 @@ public class DefaultProperties extends Properties {
     }
 
     public String get(String key) {
-        return new String((String) super.get(key));
+    	
+    	String res = new String((String) super.get(key));
+    	if ( res.startsWith("$")) {
+    		String newkey = res.substring(1);
+    		res = new String((String) super.get(newkey));
+    	}
+    	
+        return Toolbox.unEscape(res); 
+    }
+    
+    public String getNoDeRef(String key) {
+    	try {
+    		return new String((String) super.get(key));
+    	} catch (NullPointerException e) {
+    		throw new NoDefaultPrefSettingException(key, e);
+    	}
     }
 
     public void put(String key, String value) {
-        super.put(key, new String(value));
+    	// refuse to overwrite existing references
+    	String current_value = (String)super.get(key);
+    	if ( current_value != null &&
+    			current_value.startsWith("$")) {
+    		throw new CannotOverwriteReferenceException(key + ":" + current_value);
+    	}
+    	
+        super.put(key, Toolbox.doEscape(new String(value)));
+    }
+    
+    public void putNoDeRef(String key, String value) {
+    	super.put(key, new String(value));
     }
 
     /**
