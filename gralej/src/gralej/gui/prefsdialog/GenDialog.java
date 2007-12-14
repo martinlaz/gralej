@@ -89,7 +89,7 @@ public class GenDialog extends JDialog {
      * @throws GralePrefsInitException
      */
     private void initialize() throws GralePrefsInitException {
-        this.setSize(700, 450);
+        this.setSize(750, 450);
         this.setTitle("GraleJ Preferences");
         this.setContentPane(getJContentPane());
 
