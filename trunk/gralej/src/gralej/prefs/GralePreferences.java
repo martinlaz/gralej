@@ -4,7 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.Vector;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
 /**
@@ -16,7 +21,7 @@ import java.util.prefs.Preferences;
  * @author Niels Ott
  * @version $Id$
  */
-public class GralePreferences {
+public class GralePreferences  {
 
     private static final String defaultPrefFile = "DefaultPrefs.xml";
 
@@ -29,6 +34,10 @@ public class GralePreferences {
 
     private boolean backingsynced;
     private boolean backingavailable;
+    
+    private BackingStoreListener backinglistener;
+    
+    private Vector<Entry<String, GPrefsChangeListener>> observers;
 
     /**
      * private constructor (singleton)
@@ -36,10 +45,14 @@ public class GralePreferences {
      * @throws GralePrefsInitException
      */
     private GralePreferences() throws GralePrefsInitException {
+    	
+    	observers = new Vector<Entry<String, GPrefsChangeListener>>();
 
         prefs = new DefaultProperties();
+        backinglistener = new BackingStoreListener();
 
         // load the default values int a special object
+        // FIXME: loading from jars doesn't work
         defaults = new DefaultProperties();
         URL prefsURL = GralePreferences.class.getResource(defaultPrefFile);
         FileInputStream is;
@@ -57,6 +70,8 @@ public class GralePreferences {
             backingavailable = true;
             // load settings, init empty settings with default
             reloadFromBackend();
+            // add listener to the backend
+            backingprefs.addPreferenceChangeListener(backinglistener);
         } catch (Exception e) {
             backingavailable = false;
             System.err
@@ -74,6 +89,66 @@ public class GralePreferences {
 
         setSync(true);
 
+    }
+
+    /**
+     * our private listener for Java's {@link Preferences}. 
+     * The outer class does not implement this on purpose 
+     * in order to avoid wild adding of it to some preferences.
+     */
+    private class BackingStoreListener implements PreferenceChangeListener {
+
+		private boolean active = true;
+   	
+		public void preferenceChange(PreferenceChangeEvent evt) {
+
+			if ( active ) {
+				
+				prefs.put(evt.getKey(), evt.getNewValue());
+		        notifyObservers(evt.getKey());
+				
+			}
+		}
+		
+		public void on() {
+			active = true;
+		}
+		
+		public void off() {
+			active = false;
+		}
+		
+    }
+    
+    private class Memento implements ObserverListMemento {
+    	
+    	private Vector<Entry<String, GPrefsChangeListener>> mem_observers;
+
+    	/**
+    	 * create a memento including the current state of the
+    	 * GralePreferences' observers
+    	 */
+    	public Memento() {
+    		
+    		mem_observers = new Vector<Entry<String, GPrefsChangeListener>>();
+    		
+    		// clone all but the actuall values
+    		for ( Entry<String,GPrefsChangeListener> item : observers ) {
+    			mem_observers.add(
+    					new SimpleEntry<String, GPrefsChangeListener>(
+    							item.getKey(),item.getValue()));
+    		}
+    		
+    	}
+    	
+    	/**
+    	 * Restores the state of GralePreferences' observers
+    	 * from this memento.
+    	 */
+    	public void restoreState() {
+    		observers = mem_observers;
+    	}
+    	
     }
 
     /**
@@ -110,7 +185,9 @@ public class GralePreferences {
     private void syncKeyAfterSet(String key) {
 
         if (syncAvailable()) {
+        	backinglistener.off();
             backingprefs.put(key, prefs.get(key));
+        	backinglistener.on();
         }
 
     }
@@ -145,6 +222,7 @@ public class GralePreferences {
     public void putBoolean(String key, boolean value) {
         prefs.putBoolean(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -166,6 +244,8 @@ public class GralePreferences {
     public void putInt(String key, int value) {
         prefs.putInt(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
+        
     }
 
     /**
@@ -187,6 +267,7 @@ public class GralePreferences {
     public void putLong(String key, long value) {
         prefs.putLong(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -208,6 +289,7 @@ public class GralePreferences {
     public void putDouble(String key, double value) {
         prefs.putDouble(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -229,6 +311,7 @@ public class GralePreferences {
     public void putFloat(String key, float value) {
         prefs.putFloat(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -249,6 +332,7 @@ public class GralePreferences {
     public void put(String key, String value) {
         prefs.put(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -273,6 +357,7 @@ public class GralePreferences {
         String value = Toolbox.color2RGBA(color);
         prefs.put(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -297,6 +382,7 @@ public class GralePreferences {
         String value = Toolbox.font2str(font);
         prefs.put(key, value);
         syncKeyAfterSet(key);
+        notifyObservers(key);
     }
 
     /**
@@ -376,21 +462,100 @@ public class GralePreferences {
 
     }
 
+    
     /**
-     * @see Preferences#addPreferenceChangeListener(PreferenceChangeListener)
-     * @param pcl
+     * Add a  listener to the preferences. The listener
+     * will be notified of changes of the given key prefix.
+     * Specifying "avm." will lead to notifications of the change
+     * of "avm.blah.blubb". To be notified of single events, specify
+     * the full name of the configuration key.
+     * <code>null</code> listeners (and keyPrefixes) or such already present 
+     * are ignored.
      */
-    /*
-     * public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
-     * prefs.addPreferenceChangeListener(pcl); }
+    public void addListener(GPrefsChangeListener l, String keyPrefix) {
+    	
+    	if (l == null || keyPrefix == null ) {
+    		return;
+    	}
+    	
+    	// check for already existing mappings and exit if 
+    	// one is fount
+    	for ( Entry<String,GPrefsChangeListener> item : observers ) {
+    		if ( item.getKey().equals(keyPrefix) && 
+    				item.getValue().equals(l) ) {
+    			return;
+    		}
+    	}
+    	
+    	// otherwise store new mapping
+    	SimpleEntry<String, GPrefsChangeListener> entry =
+    		new SimpleEntry<String, GPrefsChangeListener>(keyPrefix, l);
+    	
+    	observers.add(entry);
+    	
+    }
+    
+    public void removeListener(GPrefsChangeListener l) {
+    	
+    	for ( int i = 0; i < observers.size(); i++) {
+    		Entry<String,GPrefsChangeListener> item = observers.get(i);
+    		
+    		// if this matches the listener, remove it
+    		if ( item.getValue().equals(l) ) {
+    			observers.remove(i);
+    			// unless the observer list is empty, go back
+    			// one element as the remaining elements have moved 
+    			// up one position
+    			if ( observers.size() > 0 ) {
+    				i--;
+    			}
+    		}    		
+    		
+    	}
+    	
+    }
+    
+    /**
+     * This removes all listeners, which is dangerous.
+     *
      */
+    public void removeAllListeners() {
+    	observers.removeAllElements();
+    }
+    
+    /**
+     * This returns all observers of the preferences
+     * encapsulated in a memento.
+     * @return
+     */
+    public ObserverListMemento getObservers() {
+    	return new Memento();
+    }
+    
+    /**
+     * restore the obeservers list of this class
+     * from the memento
+     * @param m
+     */
+    public void setObservers(ObserverListMemento m)  {
+    	if ( m instanceof Memento ) {
+    		((Memento) m).restoreState();
+    	} else {
+    		throw new RuntimeException("Internal error: GralePreferences " +
+    				"does not accept foreign mementos");
+    	}
+    }
+    
+    private void notifyObservers(String key) {
 
-    /**
-     * @see Preferences#removePreferenceChangeListener(PreferenceChangeListener)
-     */
-    /*
-     * public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
-     * prefs.removePreferenceChangeListener(pcl); }
-     */
+    	for ( Entry<String,GPrefsChangeListener> item : observers ) {
+    		if ( key.startsWith(item.getKey()) ) {
+    			item.getValue().preferencesChange();
+    		}
+    	}
+    	
+    }
+    
+    
 
 }
