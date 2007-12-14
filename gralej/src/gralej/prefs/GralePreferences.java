@@ -437,6 +437,7 @@ public class GralePreferences  {
      */
     private void syncEverythingToBackingStore() {
 
+    	// FIXME: collect changes and notify observers
         for (Object okey : prefs.keySet()) {
             String key = (String) okey;
             syncKeyAfterSet(key);
