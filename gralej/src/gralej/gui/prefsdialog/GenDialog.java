@@ -89,7 +89,7 @@ public class GenDialog extends JDialog {
      * @throws GralePrefsInitException
      */
     private void initialize() throws GralePrefsInitException {
-        this.setSize(610, 350);
+        this.setSize(700, 450);
         this.setTitle("GraleJ Preferences");
         this.setContentPane(getJContentPane());
 
@@ -113,8 +113,8 @@ public class GenDialog extends JDialog {
         DefaultListModel lmodel = new DefaultListModel();
         tabsList.setModel(lmodel);
 
-        ImageIcon listicons[] = new ImageIcon[3];
-        String[] listlabels = new String[3];
+        ImageIcon listicons[] = new ImageIcon[4];
+        String[] listlabels = new String[4];
 
         // add one tab
         JComponent panel0 = new BehaviorOptsPane(prefs);
@@ -136,6 +136,13 @@ public class GenDialog extends JDialog {
         lmodel.addElement("2");
         tabsPanel.add("2", panel2);
         listicons[2] = icontheme.getIcon("large-l+f");
+        
+        JComponent panel3 = new JLabel("Advanced Settings");
+        listlabels[3] = "Advanced Settings";
+        lmodel.addElement("3");
+        tabsPanel.add("3", panel3);
+        listicons[3] = icontheme.getIcon("large-advanced-settings");
+        
 
         // attach the icon based cell renderer
         tabsList.setCellRenderer(new ImageListCellRenderer(listicons,
