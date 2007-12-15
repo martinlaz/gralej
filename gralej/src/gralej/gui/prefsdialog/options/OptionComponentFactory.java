@@ -1,5 +1,7 @@
 package gralej.gui.prefsdialog.options;
 
+import javax.swing.JComponent;
+
 import gralej.prefs.GralePreferences;
 
 /**
@@ -10,7 +12,7 @@ import gralej.prefs.GralePreferences;
  */
 public class OptionComponentFactory {
 
-    public static OptionComponent getComponent(GralePreferences prefs,
+    public static JComponent getComponent(GralePreferences prefs,
             String key, String type, String label) {
 
         if (type.equals("boolean")) {
@@ -26,7 +28,7 @@ public class OptionComponentFactory {
         return null;
     }
 
-    public static OptionComponent getComponent(GralePreferences prefs,
+    public static JComponent getComponent(GralePreferences prefs,
             String key, String type) {
         return getComponent(prefs, key, type, null);
     }

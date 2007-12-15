@@ -4,9 +4,9 @@ import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 import gralej.prefs.GralePreferences;
 import gralej.prefs.GralePrefsInitException;
+import gralej.prefs.ObserverListMemento;
 
 import java.awt.CardLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -14,7 +14,8 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.prefs.BackingStoreException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -29,7 +30,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -72,6 +72,8 @@ public class GenDialog extends JDialog {
     private IconTheme icontheme;
 
     private GralePreferences prefs;
+    
+    private ObserverListMemento observers;
 
     /**
      * @param owner
@@ -93,8 +95,12 @@ public class GenDialog extends JDialog {
         this.setTitle("GraleJ Preferences");
         this.setContentPane(getJContentPane());
 
-        // get preferences
+        // get preferences and initialize observer things
         prefs = GralePreferences.getInstance();
+        observers = prefs.getObservers();
+        prefs.setSync(false);
+        prefs.removeAllListeners();
+        
         // get icon theme
         icontheme = IconThemeFactory.getIconTheme(prefs
                 .get("gui.l+f.icontheme"));
@@ -159,7 +165,7 @@ public class GenDialog extends JDialog {
         DefaultsButton.addActionListener(buttonclick);
 
         // kill dialog on close
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowEventHandler());
 
     }
 
@@ -175,6 +181,34 @@ public class GenDialog extends JDialog {
 
     }
 
+    /** 
+     * An internal handler allowing to listen to 
+     * the closing of a window
+     */
+    private class WindowEventHandler extends WindowAdapter {
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
+		 */
+		@Override
+		public void windowClosing(WindowEvent e) {
+			closeWindow(false);
+		}
+    }
+    
+    private void closeWindow(Boolean doSave) {
+    	prefs.removeAllListeners();
+    	prefs.setObservers(observers);
+    	prefs.setSync(true);
+    	if ( doSave ) {
+    		prefs.syncToBackend();
+    	}
+    	this.setVisible(false);
+    	this.dispose();
+    }
+    
+
+
     /**
      * listener invoke when the user clicks on of the buttons like cancel or OK
      */
@@ -189,10 +223,9 @@ public class GenDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
 
             if (e.getSource() == OKButton) {
-                parent.saveAllPrefs();
-                parent.dispose();
+            	closeWindow(true);
             } else if (e.getSource() == CancelButton) {
-                parent.dispose();
+                closeWindow(false);
             } else if (e.getSource() == ImportButton) {
                 JOptionPane.showMessageDialog(parent,
                         "Importing preferences has not been implemented yet.",
@@ -211,44 +244,8 @@ public class GenDialog extends JDialog {
 
     }
 
-    /**
-     * saves the preferences of all panels that are instances of
-     * {@link OptionsPane}
-     */
-    void reloadAllPrefs() {
 
-        // loop over them and invoke reload
-        int count = tabsPanel.getComponentCount();
-        for (int i = 0; i < count; i++) {
-            Component c = tabsPanel.getComponent(i);
-            if (c instanceof OptionsPane) {
-                ((OptionsPane) c).reloadAllPrefs();
-            }
-        }
-    }
 
-    /**
-     * saves the preferences of all panels that are instances of
-     * {@link OptionsPane}
-     */
-    void saveAllPrefs() {
-
-        // loop over them and invoke save
-        int count = tabsPanel.getComponentCount();
-        for (int i = 0; i < count; i++) {
-            Component c = tabsPanel.getComponent(i);
-            if (c instanceof OptionsPane) {
-                ((OptionsPane) c).saveAllPrefs();
-            }
-        }
-        // save to backing store
-        try {
-            prefs.flush();
-        } catch (BackingStoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     /**
      * This method initializes jContentPane

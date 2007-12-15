@@ -1,12 +1,13 @@
 package gralej.gui.prefsdialog;
 
-import gralej.gui.prefsdialog.options.OptionComponent;
+
 import gralej.gui.prefsdialog.options.OptionComponentFactory;
 import gralej.prefs.GralePreferences;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 /**
@@ -15,7 +16,7 @@ import javax.swing.JLabel;
  * @author Niels
  * @version $Id$
  */
-public class AvmDisplayOptsPane extends OptionsPane {
+public class AvmDisplayOptsPane extends JComponent {
 	
 	private GridBagLayout layout;
 	private GridBagConstraints cons;
@@ -29,9 +30,9 @@ public class AvmDisplayOptsPane extends OptionsPane {
     private void addFontOption(String label, String fontKey, String colorKey) {
     	
         JLabel l1 = new JLabel(label);
-        OptionComponent f1 = OptionComponentFactory.getComponent(prefs,
+        JComponent f1 = OptionComponentFactory.getComponent(prefs,
                 fontKey, "font");
-        OptionComponent c1 = OptionComponentFactory.getComponent(prefs,
+        JComponent c1 = OptionComponentFactory.getComponent(prefs,
                 colorKey, "color");
         cons.anchor = GridBagConstraints.EAST;
         cons.gridwidth = GridBagConstraints.BASELINE;

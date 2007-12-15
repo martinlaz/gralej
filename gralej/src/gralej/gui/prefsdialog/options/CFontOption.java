@@ -1,34 +1,47 @@
 package gralej.gui.prefsdialog.options;
 
+import gralej.prefs.GPrefsChangeListener;
 import gralej.prefs.GralePreferences;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * 
  * @author no
  * @version $Id$
  */
-public class CFontOption extends OptionComponent {
+public class CFontOption  extends JComponent implements GPrefsChangeListener  {
 
-    private JComboBox nameCombo;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9149025415938681171L;
+	private JComboBox nameCombo;
     private JComboBox styleCombo;
     private JSpinner sizeSpinner;
-    private Font theFont;
     private String[] fontNames;
     private String[] fontStyles = { "regular", "bold", "italic", "bold+italic" };
     private static final int fontSizeMin = 6;
     private static final int fontSizeMax = 72;
+    private GralePreferences prefs;
+    private String prefkey;     
 
     public CFontOption(GralePreferences prefs, String prefkey, String label) {
-        super(prefs, prefkey);
+    	this.prefs = prefs;
+    	this.prefkey = prefkey;         
+        
 
         setLayout(new FlowLayout());
 
@@ -52,7 +65,7 @@ public class CFontOption extends OptionComponent {
                 fontSizeMin, fontSizeMax, 1));
 
         // initialize
-        reloadPref();
+        preferencesChange();
 
         if (l != null) {
             add(l);
@@ -60,38 +73,42 @@ public class CFontOption extends OptionComponent {
         add(nameCombo);
         add(styleCombo);
         add(sizeSpinner);
+        
+        // observers
+        changeListener listener = new changeListener();
+        nameCombo.addActionListener(listener);
+        styleCombo.addActionListener(listener);
+        sizeSpinner.addChangeListener(listener);
+        prefs.addListener(this, prefkey);
 
     }
 
-    private void createFont() {
-        String name = nameCombo.getModel().getSelectedItem().toString();
-        int size = ((SpinnerNumberModel) sizeSpinner.getModel()).getNumber()
-                .intValue();
-        // happy coincident: index values are the same as font style values
-        int style = styleCombo.getSelectedIndex();
-        theFont = new Font(name, style, size);
-    }
+    
+    private class changeListener implements ChangeListener, ActionListener {
+    	
+    	private void doUpdate() {
+	        String name = nameCombo.getModel().getSelectedItem().toString();
+	        int size = ((SpinnerNumberModel) sizeSpinner.getModel()).getNumber()
+	                .intValue();
+	        // happy coincident: index values are the same as font style values
+	        int style = styleCombo.getSelectedIndex();
+	        prefs.putFont(prefkey, new Font(name, style, size));
+    	}
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -2730817291126385085L;
+		public void stateChanged(ChangeEvent e) {
+			doUpdate();
+		}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see gralej.gui.prefsdialog.OptionComponent#savePref()
-     */
-    @Override
-    public void savePref() {
-        // System.err.println("Saving " + getPrefKey());
-        createFont();
-        getPrefs().putFont(getPrefKey(), theFont);
-    }
+		public void actionPerformed(ActionEvent e) {
+			doUpdate();
+		}
+    	
+    }      
 
-    @Override
-    public void reloadPref() {
-        theFont = getPrefs().getFont(getPrefKey());
+
+
+	public void preferencesChange() {
+        Font theFont = prefs.getFont(prefkey);
         
         // defaul fonts
         String defaults[] = { "Arial", "Helvetica", "SansSerif" }; 
@@ -130,7 +147,7 @@ public class CFontOption extends OptionComponent {
         // set size spinner
         ((SpinnerNumberModel) sizeSpinner.getModel()).setValue(theFont
                 .getSize());
-
-    }
+		
+	}
 
 }

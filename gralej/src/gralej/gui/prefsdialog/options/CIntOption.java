@@ -1,21 +1,28 @@
 package gralej.gui.prefsdialog.options;
 
+
+import gralej.prefs.GPrefsChangeListener;
 import gralej.prefs.GralePreferences;
 
 import java.awt.FlowLayout;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * 
  * @author no
  * @version $Id$
  */
-public class CIntOption extends OptionComponent {
+public class CIntOption  extends JComponent implements GPrefsChangeListener  {
 
     private JSpinner intSpinner;
+    private GralePreferences prefs;
+    private String prefkey;    
     /**
      * 
      */
@@ -29,7 +36,8 @@ public class CIntOption extends OptionComponent {
     protected CIntOption(GralePreferences prefs, String prefkey, String label,
             int min, int max) {
 
-        super(prefs, prefkey);
+    	this.prefs = prefs;
+    	this.prefkey = prefkey;        
 
         JLabel l = null;
         if (label != null) {
@@ -40,32 +48,35 @@ public class CIntOption extends OptionComponent {
         // create checkbox for the actual function
         setLayout(new FlowLayout());
         intSpinner = new JSpinner(new SpinnerNumberModel(min, min, max, 1));
-        reloadPref();
+        preferencesChange();
         add(intSpinner);
         if (l != null) {
             add(l);
         }
+        
+        // observers
+        intSpinner.addChangeListener(new changeListener());
+        prefs.addListener(this, prefkey);
+        
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see gralej.gui.prefsdialog.OptionComponent#savePref()
-     */
-    @Override
-    public void savePref() {
-        // System.err.println("Saving " + getPrefKey());
-        getPrefs().putInt(
-                getPrefKey(),
-                (Integer) ((SpinnerNumberModel) intSpinner.getModel())
-                        .getNumber());
-    }
+    private class changeListener implements ChangeListener {
 
-    @Override
-    public void reloadPref() {
-        ((SpinnerNumberModel) intSpinner.getModel()).setValue(getPrefs()
-                .getInt(getPrefKey()));
-    }
+		public void stateChanged(ChangeEvent e) {
+	        prefs.putInt(
+	                prefkey,
+	                (Integer) ((SpinnerNumberModel) intSpinner.getModel())
+	                        .getNumber());
+		}
+    	
+    }    
+    
+
+	public void preferencesChange() {
+        ((SpinnerNumberModel) intSpinner.getModel()).setValue(
+        		prefs.getInt(prefkey));		
+		
+	}
 
 }

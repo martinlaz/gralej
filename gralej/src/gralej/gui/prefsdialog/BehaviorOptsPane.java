@@ -1,21 +1,22 @@
 package gralej.gui.prefsdialog;
 
-import gralej.gui.prefsdialog.options.OptionComponent;
+
 import gralej.gui.prefsdialog.options.OptionComponentFactory;
 import gralej.prefs.GralePreferences;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 /**
  * the options pane general application behaviour settings
- * 
+ *  
  * @author Niels
  * @version $Id$
  */
-public class BehaviorOptsPane extends OptionsPane {
+public class BehaviorOptsPane extends JComponent {
 
     /**
      * 
@@ -32,14 +33,14 @@ public class BehaviorOptsPane extends OptionsPane {
         cons.anchor = GridBagConstraints.WEST;
         // cons.weightx = 1.0;
 
-        OptionComponent o1 = OptionComponentFactory.getComponent(prefs,
+        JComponent o1 = OptionComponentFactory.getComponent(prefs,
                 "behavior.internalframes", "boolean",
                 "Use internal windows for AVMs");
         cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
         layout.setConstraints(o1, cons);
         add(o1);
 
-        OptionComponent o2 = OptionComponentFactory.getComponent(prefs,
+        JComponent o2 = OptionComponentFactory.getComponent(prefs,
                 "behavior.alwaysfitsize", "boolean",
                 "Auto-resizing is switched on by default");
         cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
@@ -47,7 +48,7 @@ public class BehaviorOptsPane extends OptionsPane {
         add(o2);
 
         JLabel l3 = new JLabel("Default zoom factor: ");
-        OptionComponent o3 = OptionComponentFactory.getComponent(prefs,
+        JComponent o3 = OptionComponentFactory.getComponent(prefs,
                 "behavior.defaultzoom", "int", "%");
         cons.gridwidth = GridBagConstraints.RELATIVE;
         layout.setConstraints(l3, cons);
