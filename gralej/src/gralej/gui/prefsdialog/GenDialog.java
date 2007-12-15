@@ -7,6 +7,7 @@ import gralej.prefs.GralePrefsInitException;
 import gralej.prefs.ObserverListMemento;
 
 import java.awt.CardLayout;
+import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -94,6 +95,8 @@ public class GenDialog extends JDialog {
         this.setSize(750, 450);
         this.setTitle("GraleJ Preferences");
         this.setContentPane(getJContentPane());
+        this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        		//ModalExclusionType.APPLICAION_EXCLUDED);
 
         // get preferences and initialize observer things
         prefs = GralePreferences.getInstance();
@@ -164,7 +167,7 @@ public class GenDialog extends JDialog {
         ExportButton.addActionListener(buttonclick);
         DefaultsButton.addActionListener(buttonclick);
 
-        // kill dialog on close
+        // set proper close handler
         addWindowListener(new WindowEventHandler());
 
     }

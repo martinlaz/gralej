@@ -11,6 +11,7 @@ import javax.swing.*;
 import gralej.controller.*;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
+import gralej.gui.prefsdialog.GenDialog;
 import gralej.parsers.OutputFormatter;
 import gralej.prefs.GralePreferences;
 import gralej.prefs.GralePrefsInitException;
@@ -229,6 +230,7 @@ public class MainGUI implements ActionListener, ItemListener {
             c.getModel().tile();
         } else if (source == m_Pref) {
             // TODO call Niels' preferences window here
+        	new GenDialog(null).setVisible(true);
         }
     }
 
