@@ -1,5 +1,6 @@
 package gralej.gui.prefsdialog.options;
 
+import gralej.prefs.GPrefsChangeListener;
 import gralej.prefs.GralePreferences;
 
 import java.awt.Color;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 /**
@@ -17,11 +19,14 @@ import javax.swing.JLabel;
  * @author no
  * @version $Id$
  */
-public class CColorOption extends OptionComponent {
+public class CColorOption  extends JComponent implements GPrefsChangeListener  {
 
     private JButton colorButton;
     private static final int iconWidth = 30;
     private static final int iconHeight = 15;
+    
+    private GralePreferences prefs;
+    private String prefkey;    
     /**
      * 
      */
@@ -29,7 +34,8 @@ public class CColorOption extends OptionComponent {
 
     protected CColorOption(GralePreferences prefs, String prefkey, String label) {
 
-        super(prefs, prefkey);
+    	this.prefs = prefs;
+    	this.prefkey = prefkey;        
 
         JLabel l = null;
         if (label != null) {
@@ -40,14 +46,15 @@ public class CColorOption extends OptionComponent {
         // create checkbox for the actual function
         setLayout(new FlowLayout());
         colorButton = new JButton();
-        reloadPref();
+        preferencesChange();
         if (l != null) {
             add(l);
         }
         add(colorButton);
 
-        // add listener
+        // observers
         colorButton.addActionListener(new ButtonClickListener());
+        prefs.addListener(this, prefkey);
 
     }
 
@@ -55,38 +62,22 @@ public class CColorOption extends OptionComponent {
 
         public void actionPerformed(ActionEvent e) {
             Color newColor = JColorChooser.showDialog(CColorOption.this,
-                    "Color Chooser", getColor());
+                    "Color Chooser", prefs.getColor(prefkey));
 
             if (newColor != null) {
-                setColor(newColor);
+            	// store color to model
+                prefs.putColor(prefkey, newColor);
             }
 
         }
 
     }
 
-    private void setColor(Color c) {
-        colorButton.setIcon(new ColorImageIcon(c, new Dimension(iconWidth,
+	public void preferencesChange() {
+		// get newly set color from model
+		Color c = prefs.getColor(prefkey);
+		colorButton.setIcon(new ColorImageIcon(c, new Dimension(iconWidth,
                 iconHeight)));
-    }
-
-    private Color getColor() {
-        return ((ColorImageIcon) colorButton.getIcon()).getColor();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see gralej.gui.prefsdialog.OptionComponent#savePref()
-     */
-    @Override
-    public void savePref() {
-        getPrefs().putColor(getPrefKey(), getColor());
-    }
-
-    @Override
-    public void reloadPref() {
-        setColor(getPrefs().getColor(getPrefKey()));
-    }
+	}
 
 }
