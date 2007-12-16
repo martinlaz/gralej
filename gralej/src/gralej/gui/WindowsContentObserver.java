@@ -4,6 +4,7 @@ import gralej.controller.ContentModel;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.blocks.BlockPanel;
 import gralej.parsers.*;
+import gralej.prefs.GralePreferences;
 import gralej.gui.MainGUI;
 
 import java.awt.*;
@@ -110,6 +111,14 @@ public class WindowsContentObserver extends ContentObserver {
      * 
      */
     public void cascade() {
+        GralePreferences gp = GralePreferences.getInstance();
+        int xMarginOffset = gp.getInt("gui.windows.location.xmarginoffset");
+        int yMarginOffset = gp.getInt("gui.windows.location.ymarginoffset");
+        int xDiff = gp.getInt("gui.windows.location.xdiff");
+        int yDiff = gp.getInt("gui.windows.location.ydiff");
+        int xDiff2 = gp.getInt("gui.windows.location.xdiff2");
+
+        
         Rectangle size = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getMaximumWindowBounds();
         // Dimension size =
@@ -117,12 +126,12 @@ public class WindowsContentObserver extends ContentObserver {
 
         Point x = new Point(0, 0);
         for (int i = 0; i < frames.size(); i++) {
-            x.translate(30, 30);
-            if (x.y + 100 > size.height) {
-                x.move(x.x - x.y + 75, 30);
+            x.translate(xDiff, yDiff);
+            if (x.y + yMarginOffset > size.height) {
+                x.move(x.x - x.y + xDiff2, yDiff);
             }
-            if (x.x + 100 > size.width) {
-                x.move(30, 30);
+            if (x.x + xMarginOffset > size.width) {
+                x.move(xDiff, yDiff);
             }
 
             frames.get(i).setLocation(x);
@@ -137,18 +146,27 @@ public class WindowsContentObserver extends ContentObserver {
 
         JComponent display;
 
-        boolean autoResize = false;
+        boolean autoResize;
 
         Window(IDataPackage data) {
             super(data.getTitle());
             this.data = data;
             this.display = data.createView();
+            
+            GralePreferences gp = GralePreferences.getInstance();
+            
+            this.autoResize = gp.getBoolean("panel.autoResize");
+            ((BlockPanel) display).setAutoResize(autoResize);
+            ((BlockPanel) display).setScaleFactor(gp.getDouble("panel.scaleFactor"));
+
             display.setOpaque(true);
             setJMenuBar(createMenuBar());
             add(createToolBar(), BorderLayout.NORTH);
             add(display);
             setLocationByPlatform(true);
-            setMinimumSize(new Dimension(250, 150));
+            setMinimumSize(new Dimension(
+                    gp.getInt("gui.windows.size.xmin"),
+                    gp.getInt("gui.windows.size.ymin")));
             setSize(display.getSize());
             setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
             setVisible(true);
@@ -159,7 +177,7 @@ public class WindowsContentObserver extends ContentObserver {
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Hidden, m_Find,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
-                m_JPG;
+                m_JPG, m_PNG;
 
         // buttons (basically the same as the menu items)
         private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
@@ -199,7 +217,7 @@ public class WindowsContentObserver extends ContentObserver {
             // sub SVG
             m_SVG = new JMenuItem("SVG");
             m_SVG.addActionListener(this);
-//            exportSubmenu.add(m_SVG); // TODO implement and uncomment
+            exportSubmenu.add(m_SVG);
             // sub XML
             m_XML = new JMenuItem("XML");
             m_XML.addActionListener(this);
@@ -208,6 +226,10 @@ public class WindowsContentObserver extends ContentObserver {
             m_JPG = new JMenuItem("JPG");
             m_JPG.addActionListener(this);
             exportSubmenu.add(m_JPG);
+
+            m_PNG = new JMenuItem("PNG");
+            m_PNG.addActionListener(this);
+            exportSubmenu.add(m_PNG);
 
             filemenu.add(exportSubmenu);
             // menuitem Print
@@ -259,6 +281,7 @@ public class WindowsContentObserver extends ContentObserver {
             m_Resize.setAccelerator(KeyStroke.getKeyStroke(
                     KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
             m_Resize.addActionListener(this);
+            ((JCheckBoxMenuItem) m_Resize).setSelected(autoResize);
             viewmenu.add(m_Resize);
 
             m_ZoomPlus = new JMenuItem("Zoom in");
@@ -280,7 +303,7 @@ public class WindowsContentObserver extends ContentObserver {
             m_Find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
                     InputEvent.CTRL_DOWN_MASK));
             m_Find.addActionListener(this);
-            viewmenu.add(m_Find);
+//            viewmenu.add(m_Find);
 
             menubar.add(viewmenu);
             return menubar;
@@ -302,6 +325,7 @@ public class WindowsContentObserver extends ContentObserver {
             b_Resize = new JButton(theme.getIcon("fitwindow")); // or "maximize"
             b_Resize.addActionListener(this);
             b_Resize.setToolTipText("En-/Disable Resizing");
+            b_Resize.setSelected(autoResize);
             toolbar.add(b_Resize);
 
             toolbar.addSeparator();
@@ -317,6 +341,10 @@ public class WindowsContentObserver extends ContentObserver {
             // zoomfield.setPreferredSize(new Dimension(10,30));
             zoomfield.setMaximumSize(new Dimension(40, 20));
             zoomfield.setToolTipText("Zoom value");
+            zoomfield.setText(Integer
+            .toString((int) Math.floor(((BlockPanel) display)
+                    .getScaleFactor() * 100)));
+
             toolbar.add(zoomfield);
             toolbar.add(new JLabel("%"));
             b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
@@ -324,17 +352,19 @@ public class WindowsContentObserver extends ContentObserver {
             b_ZoomPlus.setToolTipText("Zoom in");
             toolbar.add(b_ZoomPlus);
 
-            toolbar.addSeparator();
+//            toolbar.addSeparator();
+            
+            // searching is disabled atm
 
             searchfield = new JTextField();
             searchfield.setMaximumSize(new Dimension(90, 20));
             searchfield.addActionListener(this);
-            toolbar.add(searchfield);
+//            toolbar.add(searchfield);
 
             b_Find = new JButton(theme.getIcon("magglass"));
             b_Find.addActionListener(this);
             b_Find.setToolTipText("Find");
-            toolbar.add(b_Find);
+//            toolbar.add(b_Find);
 
             return toolbar;
         }
@@ -359,6 +389,8 @@ public class WindowsContentObserver extends ContentObserver {
                 save(OutputFormatter.XMLFormat);
             } else if (source == m_JPG) {
                 save(OutputFormatter.JPGFormat);
+            } else if (source == m_PNG) {
+                save(OutputFormatter.PNGFormat);
             } else if (source == m_Tree) {
 
             } else if (source == m_Struc) {
@@ -403,11 +435,11 @@ public class WindowsContentObserver extends ContentObserver {
                 ((BlockPanel) display).setAutoResize(autoResize);
                 if (autoResize) this.pack();
             } else if (source == m_Find) {
-                String searchFor = JOptionPane.showInputDialog(null,
-                        "Search for sorts or attributes containing:");
+//                String searchFor = JOptionPane.showInputDialog(null,
+//                        "Search for sorts or attributes containing:");
                 // TODO send search request to content window
             } else if (source == b_Find || source == searchfield) {
-                String searchFor = searchfield.getText();
+//                String searchFor = searchfield.getText();
                 // TODO send search request to content window
 
             }

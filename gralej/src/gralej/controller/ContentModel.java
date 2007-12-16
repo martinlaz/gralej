@@ -1,7 +1,6 @@
 package gralej.controller;
 
 import gralej.gui.*;
-import gralej.gui.blocks.BlockPanel;
 import gralej.parsers.*;
 
 import java.io.File;

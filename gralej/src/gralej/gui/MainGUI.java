@@ -14,8 +14,6 @@ import gralej.gui.icons.IconThemeFactory;
 import gralej.gui.prefsdialog.GenDialog;
 import gralej.parsers.OutputFormatter;
 import gralej.prefs.GralePreferences;
-import gralej.prefs.GralePrefsInitException;
-
 import javax.swing.ImageIcon;
 
 /**
@@ -229,7 +227,8 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_Tile) {
             c.getModel().tile();
         } else if (source == m_Pref) {
-            // TODO call Niels' preferences window here
+            GenDialog frame = new GenDialog(null);
+            frame.setVisible(true);
         	new GenDialog(null).setVisible(true);
         }
     }
@@ -239,8 +238,8 @@ public class MainGUI implements ActionListener, ItemListener {
         JFileChooser fc = new JFileChooser(lastDir);
         fc.setMultiSelectionEnabled(false);
         // fc.setAcceptAllFileFilterUsed(false);
-//        fc.addChoosableFileFilter(c.getModel().getOutputFormatter().getFilter(
-//                format));
+        fc.addChoosableFileFilter(c.getModel().getOutputFormatter()
+                .getFilter(format));
         int returnVal = fc.showSaveDialog(null);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -271,6 +270,7 @@ public class MainGUI implements ActionListener, ItemListener {
      */
     public MainGUI(Controller c) {
         this.c = c;
+        GralePreferences gp = GralePreferences.getInstance();
 
         // first: style
         // TODO parameterize
@@ -338,16 +338,9 @@ public class MainGUI implements ActionListener, ItemListener {
         // frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
 
         frame.pack();
-        // TODO size from preferences
-        try {
-            GralePreferences gp = GralePreferences.getInstance();
-            frame.setSize(gp.getInt("gui.windows.main.size.width"), gp
-                    .getInt("gui.windows.main.size.height"));
-        } catch (GralePrefsInitException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            frame.setSize(400, 400);
-        }
+        frame.setSize(gp.getInt("gui.windows.main.size.width"), gp
+                .getInt("gui.windows.main.size.height"));
+
         frame.setVisible(true);
 
     }

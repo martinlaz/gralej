@@ -5,6 +5,11 @@ import java.util.TreeSet;
 
 import gralej.om.*;
 
+
+// TODO Make output dependent on the visibility of nodes (if desired).
+// Right now, the data is modelled and not what is seen on screen
+
+
 public class OM2LaTeXVisitor extends AbstractVisitor {
 
     StringBuffer _out;
@@ -31,8 +36,8 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
     }
 
     public void visit(IFeatureValuePair featVal) {
-        if (featVal.isHidden())
-            return;
+//        if (featVal.isHidden())
+//            return;
         _out.append(texify(featVal.feature()) + " & ");
         featVal.value().accept(this);
         _out.append("\\\\\n");
@@ -46,15 +51,15 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
     }
 
     public void visit(ITag tag) {
-        /*
-         * if (_reentrancies.add(tag.number())) { _out.append("\\@{" +
-         * tag.number() + "}"); tag.target().accept(this); } else {
-         * _out.append("\\@{" + tag.number() + "}"); }
-         */
-        _out.append("\\@{" + tag.number() + "}");
-        if (tag.isExpanded()) {
-            tag.target().accept(this);
-        }
+        
+         if (_reentrancies.add(tag.number())) { _out.append("\\@{" +
+         tag.number() + "}"); tag.target().accept(this); } else {
+         _out.append("\\@{" + tag.number() + "}"); }
+         
+//        _out.append("\\@{" + tag.number() + "}");
+//        if (tag.isExpanded()) {
+//            tag.target().accept(this);
+//        }
     }
 
     public void visit(IAny any) {

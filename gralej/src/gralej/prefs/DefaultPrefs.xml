@@ -26,6 +26,18 @@ where RR = 2byte hex value for red
 <entry key="gui.l+f.icontheme">crystal</entry>
 <entry key="gui.windows.main.size.width">400</entry>
 <entry key="gui.windows.main.size.height">400</entry>
+<entry key="gui.windows.location.xmarginoffset">100</entry>
+<entry key="gui.windows.location.ymarginoffset">100</entry>
+<entry key="gui.windows.location.xdiff">30</entry>
+<entry key="gui.windows.location.xdiff2">75</entry>
+<entry key="gui.windows.location.ydiff">30</entry>
+<entry key="gui.windows.size.xmin">250</entry>
+<entry key="gui.windows.size.ymin">150</entry>
+
+
+<!-- output formatting -->
+<entry key="output.latex.snippet">false</entry> 
+<!-- whether to print as snippet (as opposed to full document) -->
 
 <!-- application behavior -->
 <entry key="behavior.internalframes">false</entry>

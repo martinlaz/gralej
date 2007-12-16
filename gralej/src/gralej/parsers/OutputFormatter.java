@@ -2,25 +2,52 @@ package gralej.parsers;
 
 import gralej.gui.blocks.BlockPanel;
 import gralej.om.ITree;
+import gralej.prefs.GralePreferences;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.print.*;
-import java.io.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 import javax.imageio.ImageIO;
-import javax.print.*;
-import javax.print.attribute.*;
-import javax.print.attribute.standard.*;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.SimpleDoc;
+import javax.print.StreamPrintService;
+import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.JComponent;
 import javax.swing.RepaintManager;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.SVGGraphics2DIOException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 import sun.print.PSStreamPrinterFactory;
 
-// import weka.gui.visualize.PostscriptGraphics; // one way for ps output
-//import sun.print.PSStreamPrinterFactory;
-
+/**
+ * 
+ * 
+ * 
+ * @author Armin
+ *
+ */
 public class OutputFormatter {
 
     public final static int TRALEFormat = 0;
@@ -29,6 +56,8 @@ public class OutputFormatter {
     public final static int PostscriptFormat = 3;
     public final static int JPGFormat = 4;
     public final static int XMLFormat = 5;
+    public final static int PNGFormat = 6;
+
 
     private static OutputFormatter instance = null;
 
@@ -46,26 +75,37 @@ public class OutputFormatter {
     class FormatFilter extends javax.swing.filechooser.FileFilter {
 
         private String extension;
+        private String description;
 
         FormatFilter(int format) {
             switch (format) {
             case TRALEFormat:
                 extension = "grale";
+                description = ".grale files";
                 break;
             case LaTeXFormat:
                 extension = "tex";
+                description = ".tex files";
                 break;
             case SVGFormat:
                 extension = "svg";
+                description = ".svg files";
                 break;
             case PostscriptFormat:
                 extension = "ps";
+                description = ".ps files";
                 break;
             case JPGFormat:
                 extension = "jpg";
+                description = ".jpg files";
+                break;
+            case PNGFormat:
+                extension = "png";
+                description = ".png files";
                 break;
             case XMLFormat:
                 extension = "xml";
+                description = ".xml files";
                 break;
             }
         }
@@ -78,8 +118,7 @@ public class OutputFormatter {
 
         @Override
         public String getDescription() {
-            return "A format filter for either one of the file" 
-                    + " formats supported by GraleJ";
+            return description;
         }
     }
 
@@ -92,20 +131,28 @@ public class OutputFormatter {
             case TRALEFormat:
                 toTRALE(data, p);
                 break;
-            case LaTeXFormat:
+            case LaTeXFormat: 
                 toLaTeX(data, p);
                 break;
             case SVGFormat:
-                toSVG(data, p);
+                if (view != null) toSVG(view, p);
+                else System.out.println(
+                    "Bad function call (SVG rendering needs a Swing JComponent as input).");
                 break;
             case PostscriptFormat:
-                //toPostscript(data, p);
-                toPostscript3(view, p);
+                if (view != null) toPostscript(view, p);
+                else System.out.println(
+                    "Bad function call (postscript rendering needs a Swing JComponent as input).");
                 break;
             case JPGFormat:
-                // catch empty views here
-                if (view == null) view = data.createView();
-                toJPG(view, p);
+                if (view != null) toPixelGraphic(view, p, "jpg");
+                else System.out.println(
+                    "Bad function call (image rendering needs a Swing JComponent as input).");
+                break;
+            case PNGFormat:
+                if (view != null) toPixelGraphic(view, p, "png");
+                else System.out.println(
+                    "Bad function call (image rendering needs a Swing JComponent as input).");
                 break;
             case XMLFormat:
                 toXML(data, p);
@@ -125,12 +172,12 @@ public class OutputFormatter {
     }
 
     private void toLaTeX(IDataPackage data, PrintStream p) {
-        // if () { // TODO make dependent on a global setting
-        toLaTeXFile(data, p);
-        // } else {
-        // toLaTeXSnippet (data, p);
-        // }
-
+        GralePreferences gp = GralePreferences.getInstance();
+        if (gp.getBoolean("output.latex.snippet")) {
+            toLaTeXSnippet (data, p);
+        } else {
+            toLaTeXFile(data, p);
+        }
     }
 
     private void toLaTeXFile(IDataPackage data, PrintStream p) {
@@ -152,7 +199,7 @@ public class OutputFormatter {
 
     /**
      * Writes an AVM in LaTeX format to a file, to be used via \include. Thus it
-     * relies on correct emebdding in a document, which also has to load the
+     * relies on correct embedding in a document, which also has to load the
      * avm+ and ecltree+ packages.
      * 
      * @param data
@@ -169,20 +216,52 @@ public class OutputFormatter {
         }
         p.print(output);
     }
+    
 
-    private void toSVG(IDataPackage data, PrintStream p) {
-        System.err.println("SVG format ain't implemented yet.");
-        // TODO implement SVG
+    private void toSVG(JComponent bp, PrintStream p) {
+        
+        DOMImplementation domImpl = null;
+        try {
+            domImpl = DocumentBuilderFactory.newInstance().newDocumentBuilder().getDOMImplementation();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            return;
+        }
+
+        // Create an instance of org.w3c.dom.Document.
+        Document document = domImpl.createDocument(
+                "http://www.w3.org/2000/svg", "svg", null);
+
+        // Create an instance of the SVG Generator.
+        SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
+
+        boolean db = ((BlockPanel) bp).getDrawingPane().isDoubleBuffered();
+        ((BlockPanel) bp).getDrawingPane().setDoubleBuffered(false);
+        ((BlockPanel) bp).getDrawingPane().paint(svgGenerator);
+        
+        try {
+            Writer out = new OutputStreamWriter(p, "UTF-8");
+            boolean useCSS = true; // we want to use CSS style attributes
+            svgGenerator.stream(out, useCSS);
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SVGGraphics2DIOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // resetting
+        ((BlockPanel) bp).getDrawingPane().setDoubleBuffered(db);
+        
     }
     
-    private void toPostscript(IDataPackage data, PrintStream p) {
+    private void toPostscript(JComponent bp, PrintStream p) {
         PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
         StreamPrintService sps = factory.getPrintService(p);
         // sps.getName() == "Postscript output"
         DocPrintJob pj = sps.createPrintJob();
-        BlockPanel bp = data.createView();
-        bp.setDoubleBuffered(false);
-        bp.setVisible(true);
         Doc doc = new SimpleDoc(new DataPrinter(bp), 
                 DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
 
@@ -193,59 +272,7 @@ public class OutputFormatter {
         }
     }
 
-    private void toPostscript2(IDataPackage data, PrintStream p) {
-//        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
-        
-        DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
-//        DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-        
-        DocAttributeSet das = new HashDocAttributeSet();
-        PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-        attributes.add(MediaSizeName.ISO_A4);
-        attributes.add(new Copies(1));
-
-        //DocFlavor.SERVICE_FORMATTED.PRINTABLE.getMimeType();
-        String psMimeType = DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType();
-        
-        StreamPrintServiceFactory[] factories = StreamPrintServiceFactory.
-            lookupStreamPrintServiceFactories(flavor, psMimeType);
-        
-        if(factories.length == 0) System.err.println("No suitable factories !");
- 
-        StreamPrintService sps = factories[0].getPrintService(p);
-        
-        DocPrintJob pj = sps.createPrintJob();
-                
-        BlockPanel bp = data.createView();        
-        Doc doc = new SimpleDoc(new DataPrinter(bp), flavor, das);
-
-        try { 
-            pj.print(doc, attributes);
-        } catch(PrintException pe){
-            System.err.println("PrintException : "+pe);
-        }
-
-    }
-    
-    private void toPostscript3(JComponent bp, PrintStream p) {
-        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
-        StreamPrintService sps = factory.getPrintService(p);
-        // sps.getName() == "Postscript output"
-        DocPrintJob pj = sps.createPrintJob();
-        //BlockPanel bp = data.createView();
-        //bp.setDoubleBuffered(false);
-        //bp.setVisible(true);
-        Doc doc = new SimpleDoc(new DataPrinter(bp), 
-                DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
-
-        try { 
-            pj.print(doc, new HashPrintRequestAttributeSet());
-        } catch(PrintException pe){
-            System.err.println("PrintException : "+pe);
-        }
-    }
-
-    private void toJPG(JComponent bp, PrintStream p) {
+    private void toPixelGraphic(JComponent bp, PrintStream p, String format) {
 
         Dimension imgSize = ((BlockPanel) bp).getScaledSize();
         BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
@@ -255,9 +282,8 @@ public class OutputFormatter {
         grap.dispose();
         
         try {
-            ImageIO.write(img, "jpg", p);
+            ImageIO.write(img, format, p);
         } catch (IOException e) {
-            System.err.println("Saving to JPG failed.");
             e.printStackTrace();
         }
 
