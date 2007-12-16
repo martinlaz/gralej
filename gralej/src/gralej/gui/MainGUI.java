@@ -31,11 +31,11 @@ public class MainGUI implements ActionListener, ItemListener {
 
     private final IconTheme theme;
 
-    private String lastDir;
-
     private boolean hasSelection = true;
 
     private Controller c; // the gralej.controller
+    
+    private GralePreferences gp;
 
     // menu items
     private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_About, m_Pref,
@@ -165,7 +165,7 @@ public class MainGUI implements ActionListener, ItemListener {
         if (source == m_Exit) {
             System.exit(0);
         } else if (source == m_Open || source == b_Open) {
-            JFileChooser fc = new JFileChooser(lastDir);
+            JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
             fc.setMultiSelectionEnabled(true);
             int returnVal = fc.showOpenDialog(source);
 
@@ -175,7 +175,7 @@ public class MainGUI implements ActionListener, ItemListener {
                     c.open(f);
                 }
                 try {
-                    lastDir = files[0].getCanonicalPath();
+                    gp.put("input.lastdir", files[0].getCanonicalPath());
                 } catch (IOException e1) {
                     System.err
                             .println("Getting the directory of the (first) chosen file failed.");
@@ -194,8 +194,9 @@ public class MainGUI implements ActionListener, ItemListener {
             URL url;
             try {
                 url = new URL(JOptionPane
-                        .showInputDialog(null, "Choose server"));
+                        .showInputDialog(null, "Choose server", gp.get("input.lastserver")));
                 c.startWebTraleClient(url);
+                gp.put("input.lastserver", url.toString());
             } catch (HeadlessException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -235,7 +236,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
     public File saveDialog(int format) {
         // TODO implement filter according to format
-        JFileChooser fc = new JFileChooser(lastDir);
+        JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
         fc.setMultiSelectionEnabled(false);
         // fc.setAcceptAllFileFilterUsed(false);
         fc.addChoosableFileFilter(c.getModel().getOutputFormatter()
@@ -245,7 +246,7 @@ public class MainGUI implements ActionListener, ItemListener {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
             try {
-                lastDir = f.getCanonicalPath();
+                gp.put("input.lastdir", f.getCanonicalPath());
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -270,7 +271,7 @@ public class MainGUI implements ActionListener, ItemListener {
      */
     public MainGUI(Controller c) {
         this.c = c;
-        GralePreferences gp = GralePreferences.getInstance();
+        gp = GralePreferences.getInstance();
 
         // first: style
         // TODO parameterize
@@ -342,6 +343,7 @@ public class MainGUI implements ActionListener, ItemListener {
                 .getInt("gui.windows.main.size.height"));
 
         frame.setVisible(true);
+        
 
     }
 
