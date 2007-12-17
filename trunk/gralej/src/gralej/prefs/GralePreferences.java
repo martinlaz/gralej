@@ -2,8 +2,7 @@ package gralej.prefs;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.FileInputStream;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Vector;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
@@ -54,10 +53,9 @@ public class GralePreferences  {
         // load the default values int a special object
         // FIXME: loading from jars doesn't work
         defaults = new DefaultProperties();
-        URL prefsURL = GralePreferences.class.getResource(defaultPrefFile);
-        FileInputStream is;
+        InputStream is;
         try {
-            is = new FileInputStream(prefsURL.getFile());
+            is = GralePreferences.class.getResourceAsStream(defaultPrefFile);
             defaults.loadFromXML(is);
         } catch (Exception e) {
             throw new GralePrefsInitException(e);
