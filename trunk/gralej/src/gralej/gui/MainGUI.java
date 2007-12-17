@@ -242,8 +242,8 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_Tile) {
             c.getModel().tile();
         } else if (source == m_Pref) {
-            GenDialog frame = new GenDialog(null);
-            frame.setVisible(true);
+            //GenDialog frame = new GenDialog(null);
+            //frame.setVisible(true);
         	new GenDialog(null).setVisible(true);
         }
     }
