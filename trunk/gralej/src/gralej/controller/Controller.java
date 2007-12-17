@@ -139,6 +139,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 			e.printStackTrace();
 		}
         
+		server.removeNewStreamListener(this);
         cm.notifyOfServerConnection(false);
     }
 
