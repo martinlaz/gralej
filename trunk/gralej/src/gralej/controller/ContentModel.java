@@ -2,8 +2,12 @@ package gralej.controller;
 
 import gralej.gui.*;
 import gralej.parsers.*;
+import gralej.prefs.GralePreferences;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -29,7 +33,11 @@ public class ContentModel {
     public void open(IDataPackage parse) {
         files.add(parse);
         list.add(parse);
-        observer.add(parse);
+        
+        GralePreferences gp = GralePreferences.getInstance();
+        if (gp.getBoolean("behavior.openonload")) {
+            observer.add(parse);
+        }
     }
 
     /**
@@ -76,8 +84,21 @@ public class ContentModel {
      *            whether the format is meant to understand that.
      */
     public void saveAll(File f, int format) {
-        for (int i = 0; i < files.size(); i++) {
-            of.save(f, files.get(i), null, format);
+        try {
+            PrintStream p = new PrintStream(new FileOutputStream(f));
+            if (format == OutputFormatter.XMLFormat) {
+                p.print("<parses>");
+            }
+            for (int i = 0; i < files.size(); i++) {
+                of.save(p, files.get(i), null, format);
+            }
+            if (format == OutputFormatter.XMLFormat) {
+                p.print("</parses>");
+            }
+            p.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
     }
@@ -92,7 +113,14 @@ public class ContentModel {
      * @param format
      */
     public void save(File f, IDataPackage dataItem, JComponent display, int format) {
-        of.save(f, dataItem, display, format);
+        try {
+            PrintStream p = new PrintStream(new FileOutputStream(f));
+            of.save(p, dataItem, display, format);
+            p.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void print(JComponent view) {
@@ -138,6 +166,11 @@ public class ContentModel {
 
     public int getFocus() {
         return list.getFocus();
+    }
+
+    public void notifyOfServerConnection(boolean isConnected) {
+        ((WindowsContentObserver) observer).notifyOfServerConnection(isConnected);
+        
     }
 
 }

@@ -180,13 +180,7 @@ public class WindowsContentObserver extends ContentObserver {
             JMenuBar menubar = new JMenuBar();
             // menu "File"
             JMenu filemenu = new JMenu("File");
-            filemenu.add(new JSeparator());
-
-            m_Close = new JMenuItem("Close");
-            m_Close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
-                    InputEvent.CTRL_DOWN_MASK));
-            m_Close.addActionListener(this);
-            filemenu.add(m_Close);
+            filemenu.setMnemonic('F');
 
             m_Save = new JMenuItem("Save");
             m_Save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
@@ -229,11 +223,17 @@ public class WindowsContentObserver extends ContentObserver {
             m_Print.addActionListener(this);
             filemenu.add(m_Print);
 
+            m_Close = new JMenuItem("Close");
+            m_Close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
+                    InputEvent.CTRL_DOWN_MASK));
+            m_Close.addActionListener(this);
+            filemenu.add(m_Close);
+            
             menubar.add(filemenu);
 
             JMenu viewmenu = new JMenu("View");
-
-            viewmenu.addSeparator();
+            viewmenu.setMnemonic('V');
+            
             ButtonGroup viewmode = new ButtonGroup();
 
             m_Tree = new JRadioButtonMenuItem("Tree");
@@ -246,7 +246,6 @@ public class WindowsContentObserver extends ContentObserver {
             m_Struc.addActionListener(this);
             viewmode.add(m_Struc);
 //            viewmenu.add(m_Struc); // TODO implement and uncomment
-//            viewmenu.addSeparator();
 
             m_Expand = new JMenuItem("Expand");
             m_Expand.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
@@ -285,8 +284,6 @@ public class WindowsContentObserver extends ContentObserver {
                     KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
             m_ZoomMinus.addActionListener(this);
             viewmenu.add(m_ZoomMinus);
-
-            viewmenu.addSeparator();
 
             // menuitem "Find"
             m_Find = new JMenuItem("Find");
@@ -446,6 +443,10 @@ public class WindowsContentObserver extends ContentObserver {
 
         }
 
+    }
+
+    public void notifyOfServerConnection(boolean isConnected) {
+        gui.notifyOfServerConnection(isConnected);
     }
 
 }

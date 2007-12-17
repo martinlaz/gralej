@@ -7,10 +7,13 @@ import gralej.parsers.IGraleParser;
 import gralej.parsers.IParseResultReceiver;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.UnsupportedProtocolException;
+import gralej.prefs.GralePreferences;
 import gralej.server.IGraleServer;
+import gralej.server.SocketServer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -24,12 +27,14 @@ import java.net.URL;
  * 
  * 
  * @author Armin
- * @version $Id$
+ * @version 
  */
 
 public class Controller implements INewStreamListener, IParseResultReceiver {
 
     private ContentModel cm;
+    
+    private IGraleServer server;
 
     public void open(File file) {
 
@@ -48,13 +53,11 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
-        System.err
-                .println("-- New stream of type " + streamMeta);
+        System.err.println("-- New stream of type " + streamMeta);
 
-        IGraleParser parser;
         try {
             // ask parser factory for parser
-            parser = GraleParserFactory.createParser(streamMeta);
+            IGraleParser parser = GraleParserFactory.createParser(streamMeta);
             // plug stream into parser, and wait for results
             parser.parse(s, streamMeta, this);
         } catch (UnsupportedProtocolException e) {
@@ -103,9 +106,30 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         return cm;
     }
 
-    public Controller(IGraleServer server) {
-        server.registerNewStreamListener(this);
+    public Controller() {
         cm = new ContentModel();
+    }
+    
+    public void startServer () {
+        GralePreferences gp = GralePreferences.getInstance();
+        server = new SocketServer(gp.getInt("server.port"));
+        try {
+            server.startListening();
+            System.err.println("-- Server up and listening");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        server.registerNewStreamListener(this);
+        cm.notifyOfServerConnection(true);
+
+    }
+    
+    public void stopServer () {
+        // server.shutdown(); // TODO uncomment once implemented by Niels
+        server = null;
+        cm.notifyOfServerConnection(false);
     }
 
     public void startWebTraleClient(URL url) {
