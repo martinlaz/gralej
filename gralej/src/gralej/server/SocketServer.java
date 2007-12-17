@@ -131,7 +131,7 @@ public class SocketServer extends ServerBaseImpl {
 
         }
         
-        private void killConnection() throws IOException {
+        synchronized private void killConnection() throws IOException {
         	shutdown_state = true;
         	clientSocket.close();
         }
