@@ -2,17 +2,11 @@ package gralej;
 
 import gralej.controller.Controller;
 import gralej.gui.*;
-import gralej.server.IGraleServer;
-import gralej.server.SocketServer;
+import gralej.server.*;
 
 import java.io.IOException;
 
 /**
- * This class instantiates the GUI, controller (with data model), the server
- * (copied from Niels' ServerTestApp)
- * 
- * 
- * after this it's done.
  * 
  * @author Armin
  * @version

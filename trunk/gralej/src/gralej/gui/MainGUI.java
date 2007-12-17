@@ -19,7 +19,7 @@ import javax.swing.ImageIcon;
 /**
  * 
  * @author Armin
- * @version $Id$
+ * @version 
  */
 public class MainGUI implements ActionListener, ItemListener {
 
@@ -31,23 +31,19 @@ public class MainGUI implements ActionListener, ItemListener {
 
     private final IconTheme theme;
 
-    private boolean hasSelection = true;
-
     private Controller c; // the gralej.controller
     
     private GralePreferences gp;
 
-    // menu items
     private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_About, m_Pref,
             m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll;
 
-    // buttons (basically the same as the menu items)
     private JButton b_Open, b_Close, b_CloseAll, b_Save, b_SaveAll;
 
     private JMenuBar createMenuBar() {
         // menu
         JMenuBar menubar = new JMenuBar();
-        // menu file
+        // menu "File"
         JMenu filemenu = new JMenu("File");
         filemenu.add(new JSeparator());
 
@@ -98,7 +94,7 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.add(m_Exit);
         menubar.add(filemenu);
 
-        // menu View
+        // menu "View"
         JMenu viewmenu = new JMenu("View");
 
         m_Cascade = new JMenuItem("Cascade Windows/Frames");
@@ -111,13 +107,11 @@ public class MainGUI implements ActionListener, ItemListener {
 
         viewmenu.addSeparator();
 
-        // menuitem "Settings" (spacing, fonts, colors)
         m_Pref = new JMenuItem("Preferences");
         m_Pref.setAccelerator(KeyStroke.getKeyStroke("F2"));
         m_Pref.addActionListener(this);
         viewmenu.add(m_Pref);
 
-        // menuitem "About GRALE"
         m_About = new JMenuItem("About GRALE");
         m_About.addActionListener(this);
         viewmenu.add(m_About);
@@ -127,7 +121,6 @@ public class MainGUI implements ActionListener, ItemListener {
     }
 
     private JToolBar createToolBar() {
-        // toolbar: some example buttons
         JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
 
         b_Open = new JButton(theme.getIcon("fileopen"));
@@ -164,6 +157,9 @@ public class MainGUI implements ActionListener, ItemListener {
         JComponent source = (JComponent) (e.getSource());
         if (source == m_Exit) {
             System.exit(0);
+            
+// OPEN
+            
         } else if (source == m_Open || source == b_Open) {
             JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
             fc.setMultiSelectionEnabled(true);
@@ -172,6 +168,10 @@ public class MainGUI implements ActionListener, ItemListener {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File[] files = fc.getSelectedFiles();
                 for (File f : files) {
+                    /* TODO if more than one file contains more than one data
+                     * item, they're opened not in order by file (threading)
+                     * 
+                     */
                     c.open(f);
                 }
                 try {
@@ -184,12 +184,18 @@ public class MainGUI implements ActionListener, ItemListener {
             } else {
                 // file could not be opened. doing nothing might be appropriate
             }
+            
+// OPEN SAMPLE FILES
+            
         } else if (source == m_TestFile) {
             final String resName = "/gralej/resource/sample.GRALE";
             InputStream is = getClass().getResourceAsStream(resName);
             if (is == null) // should never happen
                 throw new RuntimeException("Internal program error");
             c.newStream(is, new StreamInfo("grisu", resName));
+            
+         // CONNECT TO WEB SERVER
+                     
         } else if (source == m_WebTrale) {
             URL url;
             try {
@@ -203,11 +209,16 @@ public class MainGUI implements ActionListener, ItemListener {
             } catch (MalformedURLException e1) {
                 System.err.println("Malformed URL");
             }
-
+            
+         // CLOSE
+                     
         } else if (source == m_Close || source == b_Close) {
             c.getModel().close();
         } else if (source == m_CloseAll || source == b_CloseAll) {
             c.getModel().closeAll();
+            
+         // SAVE
+                     
         } else if (source == m_Save || source == b_Save) {
             File f = saveDialog(OutputFormatter.TRALEFormat);
             if (f != null) {
@@ -220,6 +231,9 @@ public class MainGUI implements ActionListener, ItemListener {
             } else {
                 // file could not be opened. doing nothing might be appropriate
             }
+            
+         // VIEW MENU ITEMS
+                     
         } else if (source == m_About) {
             JOptionPane.showMessageDialog(null, "GraleJ (2007).");
             // TODO write useful text here
@@ -235,7 +249,6 @@ public class MainGUI implements ActionListener, ItemListener {
     }
 
     public File saveDialog(int format) {
-        // TODO implement filter according to format
         JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
         fc.setMultiSelectionEnabled(false);
         // fc.setAcceptAllFileFilterUsed(false);
@@ -252,16 +265,15 @@ public class MainGUI implements ActionListener, ItemListener {
                 e1.printStackTrace();
             }
 
-            if (!f.exists()
-                    || JOptionPane.showConfirmDialog(null,
-                            "File exists. Overwrite?", "Overwrite?",
-                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (!f.exists() || JOptionPane.showConfirmDialog(null,
+                    "File exists. Overwrite?", "Overwrite?",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 return f;
             }
         }
         return null;
     }
-
+    
     public void itemStateChanged(ItemEvent e) {
         // JMenuItem source = (JMenuItem)(e.getSource());
     }
@@ -291,15 +303,10 @@ public class MainGUI implements ActionListener, ItemListener {
             e.printStackTrace();
         }
         
-        // TODO get icon theme from preferences
-        theme = IconThemeFactory.getIconTheme("crystal");
+        theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
 
-        // Create and set up the window.
         JFrame frame = new JFrame("GraleJ");
-        // set program icon
-        ImageIcon icon = theme.getIcon("grale");
-        Image image = icon.getImage();
-        frame.setIconImage(image);
+        frame.setIconImage(theme.getIcon("grale").getImage());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // instantiate menus
@@ -310,10 +317,7 @@ public class MainGUI implements ActionListener, ItemListener {
         notifyOfSelection(false);
         notifyOfEmptyList(true);
 
-        // content part
-
-        // always needed: list observer (registers with model in its
-        // constructor)
+        // list observer
         ContentObserver list = new ListContentObserver(c.getModel(), this);
 
         /*
@@ -339,29 +343,22 @@ public class MainGUI implements ActionListener, ItemListener {
         // frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
 
         frame.pack();
-        frame.setSize(gp.getInt("gui.windows.main.size.width"), gp
-                .getInt("gui.windows.main.size.height"));
+        frame.setSize(gp.getInt("gui.windows.main.size.width"), 
+                      gp.getInt("gui.windows.main.size.height"));
 
         frame.setVisible(true);
-        
 
     }
 
     /**
-     * Some menu items depend on a file being selected. This method is called by
-     * the list whenever the selection changes.
+     * Some menu items and buttons depend on a file being selected.
+     * This method is called by the list whenever the selection changes.
      * 
      * @param b: whether a list item is selected
      */
     public void notifyOfSelection(boolean b) {
-        if (hasSelection == b) return;
-        hasSelection = b;
-
-        // menu items
         m_Close.setEnabled(b);
         m_Save.setEnabled(b);
-
-        // buttons
         b_Close.setEnabled(b);
         b_Save.setEnabled(b);
     }

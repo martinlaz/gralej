@@ -36,7 +36,6 @@ public abstract class ContentObserver {
      */
     public ContentObserver(ContentModel m) {
         model = m;
-        // model.attach(this); // registering with the subject
     }
 
 }
