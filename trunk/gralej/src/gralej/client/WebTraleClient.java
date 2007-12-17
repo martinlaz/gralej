@@ -34,10 +34,27 @@ public class WebTraleClient extends JPanel {
 
     private URL webtraleContextURL;
     BlockingQueue<Short> byteBlockingQueue = new LinkedBlockingQueue<Short>();
+    
+    public class InvalidServerException extends RuntimeException {
+        public InvalidServerException(URL url) {
+            super(url.toString() + " is not a WebTrale server");
+        }
+    }
 
     /** Creates new form WebTraleClient */
     public WebTraleClient(URL url) {
         webtraleContextURL = url;
+        String appInfo = null;
+        try {
+            InputStream is = getStream("__appinfo.txt");
+            if (is != null)
+                appInfo = readAll(is);
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if (appInfo == null || !appInfo.startsWith("application.name=WebTrale"))
+            throw new InvalidServerException(url);
         initComponents();
         loadWords();
     }

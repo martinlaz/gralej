@@ -25,7 +25,9 @@ class Config {
     }
 
     private static String getProp(String prop, String def) {
-        String value = _props.getProperty(prop, def);
+        String value = System.getProperty("gralej." + prop);
+        if (value == null)
+            value = _props.getProperty(prop, def);
         if (value != null) {
             if (value.startsWith("$") && value.length() > 1) {
                 if (value.charAt(1) != '$')
