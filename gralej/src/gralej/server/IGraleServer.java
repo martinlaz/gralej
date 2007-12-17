@@ -37,11 +37,33 @@ public interface IGraleServer {
      * This starts the actual server functionality. Implementations may invoke a
      * thread in the background and return immediately. Make sure to register a
      * listener before, otherwise new connections will go to nirvana.
-     * 
+     * Furthermore, implementations may ignore the request if a server
+     * is already running.
      * @throws IOException
      *             if the server cannot be started, e.g. if the port to bind to
      *             is already in use.
      */
     public void startListening() throws IOException;
+    
+    /**
+     * Determines whether a server is actually listening to
+     * a port or not.
+     * @return true if this server is up, false if it is down.
+     */
+    public boolean isListening();
+    
+    /**
+     * Stops this server from listening. Implementations must
+     * stop listening immediately, however they can keep up
+     * active connections, see {@link #killActiveConnections()}
+     * @throws IOException 
+     */
+    public void stopListening() throws IOException;
+    
+    /**
+     * kill active connections with this server
+     * @throws IOException 
+     */
+    public void killActiveConnections() throws IOException;
 
 }

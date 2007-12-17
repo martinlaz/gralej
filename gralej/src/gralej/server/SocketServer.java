@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Vector;
 
 /**
  * A multi-client (=threaded) grale server binding to a TCP/IP socket.
@@ -20,6 +21,9 @@ public class SocketServer extends ServerBaseImpl {
     private int port;
     private InetAddress bindIP;
     private ServerSocket socket;
+    private ConnectionWaiter waiter;
+    private Vector<ConnectionHandler> handlerList;
+    
 
     /**
      * A helper class that waits for incoming connections as a separate thread.
@@ -28,6 +32,8 @@ public class SocketServer extends ServerBaseImpl {
      */
     private class ConnectionWaiter extends Thread {
 
+    	private boolean shutdown_state = false;
+    	
         public ConnectionWaiter() {
             super();
             // informative thread name for debugging
@@ -45,19 +51,32 @@ public class SocketServer extends ServerBaseImpl {
 
             try {
                 // server main loop
-                while (true) {
+                while (! shutdown_state) {
                     Socket clientSocket = socket.accept();
                     new ConnectionHandler(clientSocket).start();
                 }
 
             } catch (IOException e) {
-                // TODO: hand this error up to the GUI/user somehow?
-                System.err.println(this.getName() + ": Exception "
-                        + "occured while waiting for incoming connections."
-                        + "Server thread terminates, restart the application"
-                        + "to regain networking functionality. ");
-                e.printStackTrace();
+            	if (! shutdown_state) {
+                    // TODO: hand this error up to the GUI/user somehow?
+            		System.err.println(this.getName() + ": Exception "
+            				+ "occured while waiting for incoming connections."
+            				+ "Server thread terminates, restart the application"
+            				+ "to regain networking functionality. ");
+            	} else {
+            		System.err.println("Caught exception during server shutdown, this may be OK.");
+            	}
+            	e.printStackTrace();
+
             }
+            
+            // if this was a shutdown, then it's finished now
+            shutdown_state = false;
+        }
+        
+        synchronized void shutdownWaiter() throws IOException {
+    		shutdown_state = true;
+    		socket.close();
         }
     }
 
@@ -68,6 +87,7 @@ public class SocketServer extends ServerBaseImpl {
     private class ConnectionHandler extends Thread {
 
         private Socket clientSocket;
+        private boolean shutdown_state = false;
 
         public ConnectionHandler(Socket clientSocket) {
             super();
@@ -86,6 +106,8 @@ public class SocketServer extends ServerBaseImpl {
 
             // System.err.println("- SocketServer accepted new connection!");
 
+        	registerConnHandler(this);
+        	
             try {
                 BufferedInputStream s = new BufferedInputStream(clientSocket
                         .getInputStream());
@@ -95,11 +117,23 @@ public class SocketServer extends ServerBaseImpl {
             } catch (IOException e) {
                 // the remote host closed the connection before something
                 // useful has happened, we can ignore this.
-                System.err.println(this.getName()
-                        + ": Remote closed connection "
-                        + "before sending something useful. Closing handler.");
+            	if ( ! shutdown_state) {
+            		System.err.println(this.getName()
+            				+ ": Remote closed connection "
+            				+ "before sending something useful. Closing handler.");
+            	} else {
+            		System.err.println("Exception during connection shutdown, this may be OK.");
+            	}
+            	e.printStackTrace();
             }
+            
+            removeConnHandler(this);
 
+        }
+        
+        private void killConnection() throws IOException {
+        	shutdown_state = true;
+        	clientSocket.close();
         }
 
     }
@@ -119,6 +153,17 @@ public class SocketServer extends ServerBaseImpl {
             throw new RuntimeException(e);
         }
         this.port = port;
+        handlerList = new Vector<ConnectionHandler>();
+    }
+    
+    private void registerConnHandler(ConnectionHandler c) {
+    	// vectors are synchronized, this should be thread-safe
+    	handlerList.add(c);
+    }
+    
+    private void removeConnHandler(ConnectionHandler c) {
+    	// vectors are synchronized, this should be thread-safe
+    	handlerList.removeElement(c);
     }
 
     /**
@@ -143,13 +188,44 @@ public class SocketServer extends ServerBaseImpl {
      * @see IGraleServer#startListening()
      */
     public void startListening() throws IOException {
+    	
+    	if ( waiter != null ) {
+    		return;
+    	}
 
         // open the port, this may go wrong
         socket = new ServerSocket(port, 0, bindIP);
 
         // run the server main loop thread
-        new ConnectionWaiter().start();
+        waiter = new  ConnectionWaiter();
+        waiter.start();
 
     }
+
+	public boolean isListening() {
+		return ( waiter != null );
+	}
+
+	public void stopListening() throws IOException {
+		waiter.shutdownWaiter();
+	}
+
+	public void killActiveConnections() throws IOException {
+		// copy vector because it will be modified by terminating
+		// connections
+
+		// clone manually to ensure the right outcome
+		Vector<ConnectionHandler> handlers = new Vector<ConnectionHandler>();
+		for ( ConnectionHandler c : handlerList ) {
+			handlers.add(c);
+		}
+		
+		for ( ConnectionHandler c : handlers) {
+			c.killConnection();
+		}
+		
+	}
+    
+    
 
 }
