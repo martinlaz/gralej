@@ -208,6 +208,8 @@ public class SocketServer extends ServerBaseImpl {
 
 	public void stopListening() throws IOException {
 		waiter.shutdownWaiter();
+		// hopefully the garbage collector will do its job now...
+		waiter = null;
 	}
 
 	public void killActiveConnections() throws IOException {
