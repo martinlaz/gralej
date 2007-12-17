@@ -61,10 +61,12 @@ public class SocketServer extends ServerBaseImpl {
                     // TODO: hand this error up to the GUI/user somehow?
             		System.err.println(this.getName() + ": Exception "
             				+ "occured while waiting for incoming connections."
-            				+ "Server thread terminates, restart the application"
+            				+ "Server thread terminates, restart the server"
             				+ "to regain networking functionality. ");
             	} else {
-            		System.err.println("Caught exception during server shutdown, this may be OK.");
+            		System.err.println(this.getName() + 
+            				": Caught exception during server shutdown, " +
+            				"this may be normal.");
             	}
             	e.printStackTrace();
 
@@ -122,7 +124,9 @@ public class SocketServer extends ServerBaseImpl {
             				+ ": Remote closed connection "
             				+ "before sending something useful. Closing handler.");
             	} else {
-            		System.err.println("Exception during connection shutdown, this may be OK.");
+            		System.err.println(this.getName() + ": " +
+            				"Caught exception during connection shutdown, " +
+            				"this may be normal.");
             	}
             	e.printStackTrace();
             }
