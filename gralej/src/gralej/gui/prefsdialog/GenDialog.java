@@ -226,7 +226,11 @@ public class GenDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
 
             if (e.getSource() == OKButton) {
-            	closeWindow(true);
+            	JOptionPane.showMessageDialog(parent,
+                        "As this is only a prototype, options are not being saved on clicking OK.",
+                        "Prototype Limitation", JOptionPane.INFORMATION_MESSAGE);
+            	//closeWindow(true);
+            	closeWindow(false);
             } else if (e.getSource() == CancelButton) {
                 closeWindow(false);
             } else if (e.getSource() == ImportButton) {
