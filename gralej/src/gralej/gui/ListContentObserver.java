@@ -32,9 +32,7 @@ public class ListContentObserver extends ContentObserver {
         this.gui = gui;
         listmodel = new DefaultListModel();
         list = new JList(listmodel) {
-            // the following implementation shows a tooltip with the name of a
-            // list element
-            // useful when the name is too long
+            // tooltip with name
             public String getToolTipText(MouseEvent e) {
                 int p = locationToIndex(e.getPoint());
                 if (p != -1) {
@@ -57,20 +55,15 @@ public class ListContentObserver extends ContentObserver {
         // open new window instance on ENTER
         list.addKeyListener(new KeyListener() {
 
-            // @Override
             public void keyPressed(KeyEvent arg0) {
                 if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
                     model.open();
                 }
             }
 
-            // @Override
-            public void keyReleased(KeyEvent arg0) {
-            }
+            public void keyReleased(KeyEvent arg0) {}
 
-            // @Override
-            public void keyTyped(KeyEvent arg0) {
-            }
+            public void keyTyped(KeyEvent arg0) {}
         });
 
         display = new JScrollPane(list);
@@ -86,7 +79,6 @@ public class ListContentObserver extends ContentObserver {
     public void add(IDataPackage data) {
         listmodel.addElement(data.getTitle());
         gui.notifyOfEmptyList(false);
-
     }
 
     @Override
@@ -112,8 +104,6 @@ public class ListContentObserver extends ContentObserver {
             if (!e.getValueIsAdjusting())
                 return;
             gui.notifyOfSelection(e.getFirstIndex() != -1);
-            // System.err.println("selection changed");
-            return;
         }
     }
 

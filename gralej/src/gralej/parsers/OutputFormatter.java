@@ -64,7 +64,8 @@ public class OutputFormatter {
     private OutputFormatter() {}
 
     public static OutputFormatter getInstance() {
-        if (instance == null) instance = new OutputFormatter();
+        if (instance == null) 
+            instance = new OutputFormatter();
         return instance;
     }
 
@@ -129,33 +130,36 @@ public class OutputFormatter {
 
             switch (format) {
             case TRALEFormat:
-                toTRALE(data, p);
+                if (data != null) toTRALE(data, p);
+                else System.err.println("Bad function call (no data).");
                 break;
             case LaTeXFormat: 
-                toLaTeX(data, p);
+                if (data != null) toLaTeX(data, p);
+                else System.err.println("Bad function call (no data).");
                 break;
             case SVGFormat:
                 if (view != null) toSVG(view, p);
-                else System.out.println(
+                else System.err.println(
                     "Bad function call (SVG rendering needs a Swing JComponent as input).");
                 break;
             case PostscriptFormat:
                 if (view != null) toPostscript(view, p);
-                else System.out.println(
+                else System.err.println(
                     "Bad function call (postscript rendering needs a Swing JComponent as input).");
                 break;
             case JPGFormat:
                 if (view != null) toPixelGraphic(view, p, "jpg");
-                else System.out.println(
+                else System.err.println(
                     "Bad function call (image rendering needs a Swing JComponent as input).");
                 break;
             case PNGFormat:
                 if (view != null) toPixelGraphic(view, p, "png");
-                else System.out.println(
+                else System.err.println(
                     "Bad function call (image rendering needs a Swing JComponent as input).");
                 break;
             case XMLFormat:
-                toXML(data, p);
+                if (data != null) toXML(data, p);
+                else System.err.println("Bad function call (no data).");
                 break;
             }
 
@@ -242,7 +246,7 @@ public class OutputFormatter {
         
         try {
             Writer out = new OutputStreamWriter(p, "UTF-8");
-            boolean useCSS = true; // we want to use CSS style attributes
+            boolean useCSS = true;
             svgGenerator.stream(out, useCSS);
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
@@ -260,7 +264,6 @@ public class OutputFormatter {
     private void toPostscript(JComponent bp, PrintStream p) {
         PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
         StreamPrintService sps = factory.getPrintService(p);
-        // sps.getName() == "Postscript output"
         DocPrintJob pj = sps.createPrintJob();
         Doc doc = new SimpleDoc(new DataPrinter(bp), 
                 DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
@@ -272,6 +275,14 @@ public class OutputFormatter {
         }
     }
 
+    
+    /**
+     * Saving to a pixel based graphics format. Supports PNG and JPG
+     * 
+     * @param bp
+     * @param p
+     * @param format
+     */
     private void toPixelGraphic(JComponent bp, PrintStream p, String format) {
 
         Dimension imgSize = ((BlockPanel) bp).getScaledSize();
@@ -315,7 +326,6 @@ public class OutputFormatter {
             this.view = view;
         }
 
-        //@Override
         public int print(Graphics g, PageFormat pageFormat, int pageIndex)
                 throws PrinterException {
             if (pageIndex > 0) {

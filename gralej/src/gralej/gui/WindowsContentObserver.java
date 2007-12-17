@@ -19,7 +19,7 @@ import javax.swing.*;
  * 
  * 
  * @author Armin
- * @version $id$
+ * @version
  */
 public class WindowsContentObserver extends ContentObserver {
 
@@ -29,9 +29,6 @@ public class WindowsContentObserver extends ContentObserver {
 
     private MainGUI gui;
 
-    /**
-     * @param m
-     */
     public WindowsContentObserver(ContentModel m, IconTheme theme, MainGUI gui) {
         super(m);
         this.theme = theme;
@@ -74,8 +71,6 @@ public class WindowsContentObserver extends ContentObserver {
     public void tile() {
         Rectangle size = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getMaximumWindowBounds();
-        // Dimension size =
-        // java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 
         int cols = (int) Math.sqrt(frames.size());
         int rows = (int) (Math.ceil(((double) frames.size()) / cols));
@@ -118,11 +113,8 @@ public class WindowsContentObserver extends ContentObserver {
         int yDiff = gp.getInt("gui.windows.location.ydiff");
         int xDiff2 = gp.getInt("gui.windows.location.xdiff2");
 
-        
         Rectangle size = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getMaximumWindowBounds();
-        // Dimension size =
-        // java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 
         Point x = new Point(0, 0);
         for (int i = 0; i < frames.size(); i++) {
@@ -135,12 +127,10 @@ public class WindowsContentObserver extends ContentObserver {
             }
 
             frames.get(i).setLocation(x);
-            // model.setFocused(i); // threading problems: infinite re-focus
-            // loop
         }
     }
 
-    private class Window extends JFrame implements ActionListener {
+    class Window extends JFrame implements ActionListener {
 
         IDataPackage data;
 
@@ -154,6 +144,7 @@ public class WindowsContentObserver extends ContentObserver {
             this.display = data.createView();
             
             GralePreferences gp = GralePreferences.getInstance();
+            setIconImage(theme.getIcon("grale").getImage());
             
             this.autoResize = gp.getBoolean("panel.autoResize");
             ((BlockPanel) display).setAutoResize(autoResize);
@@ -179,7 +170,6 @@ public class WindowsContentObserver extends ContentObserver {
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
                 m_JPG, m_PNG;
 
-        // buttons (basically the same as the menu items)
         private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
                 b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save;
 
@@ -188,7 +178,7 @@ public class WindowsContentObserver extends ContentObserver {
         private JMenuBar createMenuBar() {
             // menu
             JMenuBar menubar = new JMenuBar();
-            // menu file
+            // menu "File"
             JMenu filemenu = new JMenu("File");
             filemenu.add(new JSeparator());
 
@@ -310,7 +300,6 @@ public class WindowsContentObserver extends ContentObserver {
         }
 
         private JToolBar createToolBar() {
-            // toolbar: some example buttons
             JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
 
             b_Save = new JButton(theme.getIcon("filefloppy"));
@@ -381,8 +370,6 @@ public class WindowsContentObserver extends ContentObserver {
                 save(OutputFormatter.LaTeXFormat);
             } else if (source == m_Postscript) {
                 save(OutputFormatter.PostscriptFormat);
-            } else if (source == m_Print || source == b_Print) {
-                model.print(display);
             } else if (source == m_SVG) {
                 save(OutputFormatter.SVGFormat);
             } else if (source == m_XML) {
@@ -391,20 +378,22 @@ public class WindowsContentObserver extends ContentObserver {
                 save(OutputFormatter.JPGFormat);
             } else if (source == m_PNG) {
                 save(OutputFormatter.PNGFormat);
-            } else if (source == m_Tree) {
+            } else if (source == m_Print || source == b_Print) {
+                model.print(display);
 
-            } else if (source == m_Struc) {
+//            } else if (source == m_Tree) {
 
-            } else if (source == b_TreeStruc) {
+//            } else if (source == m_Struc) {
 
-                // on this occasion the button icon should change (displaying
-                // the NOW state)
-            } else if (source == m_Expand || source == b_Expand) {
+//            } else if (source == b_TreeStruc) {
+
+//            } else if (source == m_Expand || source == b_Expand) {
                 // send "expand" via content window to focus window
-            } else if (source == m_Restore || source == b_Restore) {
+//            } else if (source == m_Restore || source == b_Restore) {
                 // send "restore" via content window to focus window
-            } else if (source == m_Hidden || source == b_Hidden) {
+//            } else if (source == m_Hidden || source == b_Hidden) {
                 // send "toggle hidden" via content window to focus window
+
             } else if (source == m_ZoomPlus || source == b_ZoomPlus) {
                 ((BlockPanel) display).increaseScaleFactor();
                 zoomfield.setText(Integer.toString((int) Math
@@ -417,16 +406,18 @@ public class WindowsContentObserver extends ContentObserver {
                 try {
                     ((BlockPanel) display)
                             .setScaleFactor(Math.floor(Double
-                                    .parseDouble(((JTextField) source)
-                                            .getText())) / 100);
+                                    .parseDouble(zoomfield.getText())) / 100);
                     zoomfield.setText(Integer
                             .toString((int) Math.floor(((BlockPanel) display)
                                     .getScaleFactor() * 100)));
                 } catch (NumberFormatException e1) {
-                    zoomfield.setText("100");
+                    GralePreferences gp = GralePreferences.getInstance();
+                    zoomfield.setText(gp.get("behavior.defaultzoom"));
                     System.err
                             .println("Invalid zoom value. Defaulting to 100%.");
-                    ((BlockPanel) display).setScaleFactor(1);
+                    ((BlockPanel) display)
+                    .setScaleFactor(Math.floor(Double
+                            .parseDouble(zoomfield.getText())) / 100);
                 }
             } else if (source == m_Resize || source == b_Resize) {
                 autoResize = !autoResize;

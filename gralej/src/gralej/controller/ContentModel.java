@@ -33,7 +33,7 @@ public class ContentModel {
     }
 
     /**
-     * Opening a new window for the selected data item.
+     * Opens a new window for the selected data item.
      * 
      */
     public void open() {
@@ -66,7 +66,7 @@ public class ContentModel {
     }
 
     /**
-     * 
+     * Method to save all items in the list.
      * 
      * @param f:
      *            The file to save to
@@ -93,12 +93,6 @@ public class ContentModel {
      */
     public void save(File f, IDataPackage dataItem, JComponent display, int format) {
         of.save(f, dataItem, display, format);
-    }
-
-    public void print() {
-        // print(files.get(list.getFocus()));
-        // TODO access the windowscontentmodel to find the according view...
-        // impossible
     }
 
     public void print(JComponent view) {

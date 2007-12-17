@@ -29,7 +29,7 @@ import java.net.URL;
 
 public class Controller implements INewStreamListener, IParseResultReceiver {
 
-    private ContentModel cm; // 
+    private ContentModel cm;
 
     public void open(File file) {
 
@@ -37,19 +37,19 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         System.err.println("-- Opening File " + file.getAbsolutePath());
         FileLoader fl = new FileLoader(file, true);
         fl.registerNewStreamListener(this);
-        System.err.println("-- Starting to open");
+//        System.err.println("-- Starting to open");
         try {
             fl.loadFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        System.err.println("-- Opening should run in its thread now");
+//        System.err.println("-- Opening should run in its thread now");
 
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
         System.err
-                .println("-- Controller got new stream of type " + streamMeta);
+                .println("-- New stream of type " + streamMeta);
 
         IGraleParser parser;
         try {
@@ -71,7 +71,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void newDataPackage(IDataPackage parse) {
-        System.err.println("-- Controller got new parse");
+//        System.err.println("-- Controller got new parse");
 
         class ParseShowingRunnable implements Runnable {
             IDataPackage parse;
@@ -81,15 +81,14 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
             }
 
             public void run() {
-                // cm.open(parse.createView(), parse.getTitle());
                 cm.open(parse);
             }
 
         }
 
         try {
-            javax.swing.SwingUtilities.invokeAndWait(new ParseShowingRunnable(
-                    parse));
+            javax.swing.SwingUtilities.invokeAndWait(
+                    new ParseShowingRunnable(parse));
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -106,17 +105,15 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 
     public Controller(IGraleServer server) {
         server.registerNewStreamListener(this);
-
         cm = new ContentModel();
-
     }
 
     public void startWebTraleClient(URL url) {
         final WebTraleClient wtc = WebTraleClient.inFrame(url);
         new Thread(new Runnable() {
             public void run() {
-                newStream(wtc.getInputStream(), new StreamInfo("grisu",
-                        "WebTrale"));
+                newStream(wtc.getInputStream(), 
+                        new StreamInfo("grisu", "WebTrale"));
             }
         }).start();
     }
