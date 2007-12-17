@@ -112,7 +112,9 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     
     public void startServer () {
         GralePreferences gp = GralePreferences.getInstance();
-        server = new SocketServer(gp.getInt("server.port"));
+        if ( server == null ) {
+        	server = new SocketServer(gp.getInt("server.port"));
+        }	
         try {
             server.startListening();
             System.err.println("-- Server up and listening");
@@ -128,7 +130,15 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     
     public void stopServer () {
         // server.shutdown(); // TODO uncomment once implemented by Niels
-        server = null;
+        //server = null;
+        try {
+			server.killActiveConnections();
+			server.stopListening();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         cm.notifyOfServerConnection(false);
     }
 
