@@ -203,7 +203,7 @@ public class SocketServer extends ServerBaseImpl {
     }
 
 	public boolean isListening() {
-		return ( waiter != null );
+		return ( waiter != null && socket.isBound() );
 	}
 
 	public void stopListening() throws IOException {
