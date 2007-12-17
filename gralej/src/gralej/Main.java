@@ -2,7 +2,6 @@ package gralej;
 
 import gralej.controller.Controller;
 import gralej.gui.*;
-import gralej.server.*;
 
 import java.io.IOException;
 
@@ -16,21 +15,13 @@ public class Main {
 
     private static void createAndShowGUI() {
 
-        // initialize the server
-        IGraleServer server = new SocketServer(1080);
-        try {
-            server.startListening();
-            System.err.println("-- Server up and listening");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
         // initialize the controller
-        Controller c = new Controller(server);
+        Controller c = new Controller();
 
         // initialize the GUI
         new MainGUI(c);
+        
+        c.startServer();
 
     }
 

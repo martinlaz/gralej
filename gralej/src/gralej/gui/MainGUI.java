@@ -35,18 +35,21 @@ public class MainGUI implements ActionListener, ItemListener {
     
     private GralePreferences gp;
 
+    private JMenu saveallmenu;
+    
     private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_About, m_Pref,
-            m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll;
+            m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll,
+            m_SaveAllXML, m_Server;
 
-    private JButton b_Open, b_Close, b_CloseAll, b_Save, b_SaveAll;
+    private JButton b_Open, b_Close, b_CloseAll, b_Save;
 
     private JMenuBar createMenuBar() {
         // menu
         JMenuBar menubar = new JMenuBar();
         // menu "File"
         JMenu filemenu = new JMenu("File");
-        filemenu.add(new JSeparator());
-
+        filemenu.setMnemonic('F');
+        
         m_Open = new JMenuItem("Open");
         m_Open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 InputEvent.CTRL_DOWN_MASK));
@@ -73,19 +76,17 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Save.addActionListener(this);
         filemenu.add(m_Save);
 
-        m_SaveAll = new JMenuItem("Save All");
+        saveallmenu = new JMenu("Save All");
+        
+        m_SaveAll = new JMenuItem("TRALE format");
         m_SaveAll.addActionListener(this);
-        filemenu.add(m_SaveAll);
+        saveallmenu.add(m_SaveAll);
 
-        filemenu.add(new JSeparator());
-
-        JMenu connectSubmenu = new JMenu("Connections");
-
-        m_WebTrale = new JMenuItem("Open WebTrale client");
-        m_WebTrale.addActionListener(this);
-        connectSubmenu.add(m_WebTrale);
-
-        filemenu.add(connectSubmenu);
+        m_SaveAllXML = new JMenuItem("XML");
+        m_SaveAllXML.addActionListener(this);
+        saveallmenu.add(m_SaveAllXML);
+        
+        filemenu.add(saveallmenu);
 
         m_Exit = new JMenuItem("Exit");
         m_Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
@@ -94,9 +95,24 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.add(m_Exit);
         menubar.add(filemenu);
 
+        // menu "Connections"
+        JMenu connectmenu = new JMenu("Connections");
+        connectmenu.setMnemonic('C');
+        
+        m_Server = new JMenuItem();
+        m_Server.addActionListener(this);
+        connectmenu.add(m_Server);
+        
+        m_WebTrale = new JMenuItem("Open WebTrale client");
+        m_WebTrale.addActionListener(this);
+        connectmenu.add(m_WebTrale);
+
+        menubar.add(connectmenu);
+
         // menu "View"
         JMenu viewmenu = new JMenu("View");
-
+        viewmenu.setMnemonic('V');
+        
         m_Cascade = new JMenuItem("Cascade Windows/Frames");
         m_Cascade.addActionListener(this);
         viewmenu.add(m_Cascade);
@@ -112,11 +128,17 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Pref.addActionListener(this);
         viewmenu.add(m_Pref);
 
+        menubar.add(viewmenu);
+
+        // menu "Help"
+        JMenu helpmenu = new JMenu("Help");
+        viewmenu.setMnemonic('H');
+        
         m_About = new JMenuItem("About GRALE");
         m_About.addActionListener(this);
-        viewmenu.add(m_About);
+        helpmenu.add(m_About);
 
-        menubar.add(viewmenu);
+        menubar.add(helpmenu);
         return menubar;
     }
 
@@ -224,13 +246,21 @@ public class MainGUI implements ActionListener, ItemListener {
             if (f != null) {
                 c.getModel().save(f, OutputFormatter.TRALEFormat);
             }
-        } else if (source == m_SaveAll || source == b_SaveAll) {
+        } else if (source == m_SaveAll) {
             File f = saveDialog(OutputFormatter.TRALEFormat);
             if (f != null) {
                 c.getModel().saveAll(f, OutputFormatter.TRALEFormat);
             } else {
                 // file could not be opened. doing nothing might be appropriate
             }
+        } else if (source == m_SaveAllXML) {
+            File f = saveDialog(OutputFormatter.XMLFormat);
+            if (f != null) {
+                c.getModel().saveAll(f, OutputFormatter.XMLFormat);
+            } else {
+                // file could not be opened. doing nothing might be appropriate
+            }
+
             
          // VIEW MENU ITEMS
                      
@@ -244,8 +274,16 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_Pref) {
             //GenDialog frame = new GenDialog(null);
             //frame.setVisible(true);
-        	new GenDialog(null).setVisible(true);
+        
+        } else if (source == m_Server) {
+            // maybe not the best way to store the information
+            if (m_Server.getText() == "Start Server") {
+                c.startServer();
+            } else {
+                c.stopServer();
+            }
         }
+        
     }
 
     public File saveDialog(int format) {
@@ -371,9 +409,17 @@ public class MainGUI implements ActionListener, ItemListener {
      * @param isEmpty
      */
     public void notifyOfEmptyList(boolean isEmpty) {
-        m_SaveAll.setEnabled(!isEmpty);
+        saveallmenu.setEnabled(!isEmpty);
         m_CloseAll.setEnabled(!isEmpty);
         // b_SaveAll.setEnabled(!isEmpty);
+    }
+    
+    public void notifyOfServerConnection(boolean isConnected) {
+        if (isConnected) {
+            m_Server.setText("Stop Server");
+        } else {
+            m_Server.setText("Start Server");
+        }
     }
 
 }

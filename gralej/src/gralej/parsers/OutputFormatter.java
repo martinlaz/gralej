@@ -123,51 +123,50 @@ public class OutputFormatter {
         }
     }
 
-    public void save(File file, IDataPackage data, JComponent view, int format) {
+    public void save(PrintStream p, IDataPackage data, JComponent view, int format) {
 
-        try {
-            PrintStream p = new PrintStream(new FileOutputStream(file));
-
-            switch (format) {
-            case TRALEFormat:
-                if (data != null) toTRALE(data, p);
-                else System.err.println("Bad function call (no data).");
-                break;
-            case LaTeXFormat: 
-                if (data != null) toLaTeX(data, p);
-                else System.err.println("Bad function call (no data).");
-                break;
-            case SVGFormat:
-                if (view != null) toSVG(view, p);
-                else System.err.println(
+        switch (format) {
+        case TRALEFormat:
+            if (data != null) toTRALE(data, p);
+            else System.err.println("Bad function call (no data).");
+            break;
+        case LaTeXFormat: 
+            if (data != null) toLaTeX(data, p);
+            else System.err.println("Bad function call (no data).");
+            break;
+        case SVGFormat:
+            if (view != null) toSVG(view, p);
+            else System.err.println(
                     "Bad function call (SVG rendering needs a Swing JComponent as input).");
-                break;
-            case PostscriptFormat:
-                if (view != null) toPostscript(view, p);
-                else System.err.println(
+            break;
+        case PostscriptFormat:
+            if (view != null) toPostscript(view, p);
+            else System.err.println(
                     "Bad function call (postscript rendering needs a Swing JComponent as input).");
-                break;
-            case JPGFormat:
-                if (view != null) toPixelGraphic(view, p, "jpg");
-                else System.err.println(
-                    "Bad function call (image rendering needs a Swing JComponent as input).");
-                break;
-            case PNGFormat:
-                if (view != null) toPixelGraphic(view, p, "png");
-                else System.err.println(
-                    "Bad function call (image rendering needs a Swing JComponent as input).");
-                break;
-            case XMLFormat:
-                if (data != null) toXML(data, p);
-                else System.err.println("Bad function call (no data).");
-                break;
+            break;
+        case JPGFormat:
+            if (view != null) {
+                try {
+                    toPixelGraphic(view, p, "jpg");
+                } catch (OutOfMemoryError e) {
+                    System.err.println("The image is too large to be rendered.");
+                    // e.printStackTrace();
+                }
             }
-
-            p.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            else System.err.println(
+            "Bad function call (image rendering needs a Swing JComponent as input).");
+            break;
+        case PNGFormat:
+            if (view != null) toPixelGraphic(view, p, "png");
+            else System.err.println(
+            "Bad function call (image rendering needs a Swing JComponent as input).");
+            break;
+        case XMLFormat:
+            if (data != null) toXML(data, p);
+            else System.err.println("Bad function call (no data).");
+            break;
         }
+
 
     }
 
@@ -283,26 +282,31 @@ public class OutputFormatter {
      * @param p
      * @param format
      */
-    private void toPixelGraphic(JComponent bp, PrintStream p, String format) {
+    private void toPixelGraphic (JComponent bp, PrintStream p, String format) 
+            throws OutOfMemoryError {
 
         Dimension imgSize = ((BlockPanel) bp).getScaledSize();
-        BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D grap = img.createGraphics();
-        bp.paint(grap);
-        grap.dispose();
-        
-        try {
-            ImageIO.write(img, format, p);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BufferedImage img;
+            img = new BufferedImage(imgSize.width, imgSize.height,
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D grap = img.createGraphics();
+            bp.paint(grap);
+            grap.dispose();
+
+            try {
+                ImageIO.write(img, format, p);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
     }
 
     private void toXML(IDataPackage data, PrintStream p) {
+        p.print("<parse>\n");
         OM2XMLVisitor visitor = new OM2XMLVisitor();
         p.print(visitor.output(data.getModel()));
+        p.print("</parse>\n");
     }
 
     public void print(JComponent view) {

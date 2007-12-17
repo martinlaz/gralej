@@ -22,6 +22,9 @@ where RR = 2byte hex value for red
 <entry key="testcolor1">ffffffff</entry>
 <entry key="testcolor2">ffffffff</entry>
 
+<entry key="server.port">1080</entry>
+
+
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>
 <entry key="gui.windows.main.size.width">400</entry>
@@ -42,6 +45,7 @@ where RR = 2byte hex value for red
 <entry key="input.lastserver"></entry> 
 
 <!-- application behavior -->
+<entry key="behavior.openonload">true</entry>
 <entry key="behavior.internalframes">false</entry>
 <entry key="behavior.alwaysfitsize">false</entry>
 <entry key="behavior.defaultzoom">100</entry>
