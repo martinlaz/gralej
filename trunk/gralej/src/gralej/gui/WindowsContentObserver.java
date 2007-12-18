@@ -308,9 +308,10 @@ public class WindowsContentObserver extends ContentObserver {
             b_Print.setToolTipText("Print");
             toolbar.add(b_Print);
 
-            b_Resize = new JButton(theme.getIcon("fitwindow")); // or "maximize"
+            //b_Resize = new JButton(theme.getIcon("fitwindow")); // or "maximize"
+            b_Resize = new JButton(theme.getIcon("maximize")); // or "maximize"
             b_Resize.addActionListener(this);
-            b_Resize.setToolTipText("En-/Disable Resizing");
+            b_Resize.setToolTipText("Enable/disable auto-resizing");
             b_Resize.setSelected(autoResize);
             toolbar.add(b_Resize);
 
@@ -323,6 +324,7 @@ public class WindowsContentObserver extends ContentObserver {
 
             toolbar.add(new JLabel("Zoom:"));
             zoomfield = new JTextField("100");
+            zoomfield.setHorizontalAlignment(JTextField.RIGHT);
             zoomfield.addActionListener(this);
             // zoomfield.setPreferredSize(new Dimension(10,30));
             zoomfield.setMaximumSize(new Dimension(40, 20));

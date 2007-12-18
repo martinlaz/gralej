@@ -1,22 +1,47 @@
 package gralej.gui.blocks;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.io.InputStream;
 
 class Config {
-    static Properties _props;
+    private static Properties _props;
 
-    static // void loadProps()
+    static void loadProps()
     {
-        final String filename = "blocks.properties";
-        InputStream is = Config.class.getResourceAsStream(filename);
-        if (is == null)
-            throw new RuntimeException("Failed to load resource: " + filename);
+        if (_props != null)
+            return;
+        InputStream is;
+        final String resourceName = "blocks.properties";
+        final String userPropsFilename = "gralej." + resourceName;
+        String filename = System.getProperty(userPropsFilename);
+        if (filename == null) {
+            if (new File(userPropsFilename).exists())
+                filename = userPropsFilename;
+        }
+        if (filename != null) {
+            try {
+                is = new FileInputStream(filename);
+            }
+            catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        else {
+            is = Config.class.getResourceAsStream(resourceName);
+            if (is == null)
+                throw new RuntimeException("Failed to load resource: " + resourceName);
+        }
         try {
             _props = new Properties();
             _props.load(is);
         } catch (Exception e) {
             throw new RuntimeException("Loading of properties failed");
+        }
+        finally {
+            try { is.close(); } catch (IOException ex) {}
         }
     }
 
@@ -25,6 +50,7 @@ class Config {
     }
 
     private static String getProp(String prop, String def) {
+        loadProps();
         String value = System.getProperty("gralej." + prop);
         if (value == null)
             value = _props.getProperty(prop, def);
