@@ -42,6 +42,7 @@ public class MainGUI implements ActionListener, ItemListener {
             m_SaveAllXML, m_Server;
 
     private JButton b_Open, b_Close, b_CloseAll, b_Save;
+    private JCheckBoxMenuItem m_AutoOpenWindows;
 
     private JMenuBar createMenuBar() {
         // menu
@@ -60,16 +61,6 @@ public class MainGUI implements ActionListener, ItemListener {
         m_TestFile.addActionListener(this);
         filemenu.add(m_TestFile);
 
-        m_Close = new JMenuItem("Close");
-        m_Close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
-                InputEvent.CTRL_DOWN_MASK));
-        m_Close.addActionListener(this);
-        filemenu.add(m_Close);
-
-        m_CloseAll = new JMenuItem("Close All");
-        m_CloseAll.addActionListener(this);
-        filemenu.add(m_CloseAll);
-
         m_Save = new JMenuItem("Save");
         m_Save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 InputEvent.CTRL_DOWN_MASK));
@@ -87,6 +78,18 @@ public class MainGUI implements ActionListener, ItemListener {
         saveallmenu.add(m_SaveAllXML);
         
         filemenu.add(saveallmenu);
+        
+        m_Close = new JMenuItem("Close");
+        m_Close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
+                InputEvent.CTRL_DOWN_MASK));
+        m_Close.addActionListener(this);
+        filemenu.add(m_Close);
+
+        m_CloseAll = new JMenuItem("Close All");
+        m_CloseAll.addActionListener(this);
+        filemenu.add(m_CloseAll);
+        
+        filemenu.addSeparator();
 
         m_Exit = new JMenuItem("Exit");
         m_Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
@@ -103,7 +106,7 @@ public class MainGUI implements ActionListener, ItemListener {
         m_Server.addActionListener(this);
         connectmenu.add(m_Server);
         
-        m_WebTrale = new JMenuItem("Open WebTrale client");
+        m_WebTrale = new JMenuItem("Open WebTrale Client");
         m_WebTrale.addActionListener(this);
         connectmenu.add(m_WebTrale);
 
@@ -113,14 +116,21 @@ public class MainGUI implements ActionListener, ItemListener {
         JMenu viewmenu = new JMenu("View");
         viewmenu.setMnemonic('V');
         
-        m_Cascade = new JMenuItem("Cascade Windows/Frames");
+        m_Cascade = new JMenuItem("Cascade Windows");
         m_Cascade.addActionListener(this);
         viewmenu.add(m_Cascade);
 
-        m_Tile = new JMenuItem("Tile Windows/Frames");
+        m_Tile = new JMenuItem("Tile Windows");
         m_Tile.addActionListener(this);
         viewmenu.add(m_Tile);
 
+        viewmenu.addSeparator();
+        
+        m_AutoOpenWindows = new JCheckBoxMenuItem("Automatically Open Windows");
+        m_AutoOpenWindows.addActionListener(this);
+        m_AutoOpenWindows.setState(gp.getBoolean("behavior.openonload"));
+        viewmenu.add(m_AutoOpenWindows);
+        
         viewmenu.addSeparator();
 
         m_Pref = new JMenuItem("Preferences");
@@ -134,7 +144,7 @@ public class MainGUI implements ActionListener, ItemListener {
         JMenu helpmenu = new JMenu("Help");
         viewmenu.setMnemonic('H');
         
-        m_About = new JMenuItem("About GRALE");
+        m_About = new JMenuItem("About GraleJ");
         m_About.addActionListener(this);
         helpmenu.add(m_About);
 
@@ -219,21 +229,27 @@ public class MainGUI implements ActionListener, ItemListener {
          // CONNECT TO WEB SERVER
                      
         } else if (source == m_WebTrale) {
-            URL url;
-            try {
-                url = new URL(JOptionPane
-                        .showInputDialog(null, "Choose server", gp.get("input.lastserver")));
-                c.startWebTraleClient(url);
-                gp.put("input.lastserver", url.toString());
-            } catch (HeadlessException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (MalformedURLException e1) {
-                System.err.println("Malformed URL");
+            while (true) {
+                String surl = JOptionPane
+                        .showInputDialog(null, "Choose server", gp.get("input.lastserver"));
+                if (surl == null) 
+                    break; // cancel
+                try {
+                    c.startWebTraleClient(new URL(surl));
+                }
+                catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), ex.toString(), JOptionPane.ERROR_MESSAGE);
+                    continue; // try again
+                }
+                try {
+                    gp.put("input.lastserver", surl);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                break;
             }
-            
          // CLOSE
-                     
         } else if (source == m_Close || source == b_Close) {
             c.getModel().close();
         } else if (source == m_CloseAll || source == b_CloseAll) {
@@ -277,13 +293,14 @@ public class MainGUI implements ActionListener, ItemListener {
         
         } else if (source == m_Server) {
             // maybe not the best way to store the information
-            if (m_Server.getText() == "Start Server") {
+            if (m_Server.getText().equals("Start Server")) {
                 c.startServer();
             } else {
                 c.stopServer();
             }
+        } else if (source == m_AutoOpenWindows) {
+            gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
         }
-        
     }
 
     public File saveDialog(int format) {
@@ -327,25 +344,16 @@ public class MainGUI implements ActionListener, ItemListener {
         // TODO parameterize
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
         theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
 
-        JFrame frame = new JFrame("GraleJ");
+        final JFrame frame = new JFrame("GraleJ");
         frame.setIconImage(theme.getIcon("grale").getImage());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // instantiate menus
         frame.setJMenuBar(this.createMenuBar());
@@ -383,9 +391,24 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.pack();
         frame.setSize(gp.getInt("gui.windows.main.size.width"), 
                       gp.getInt("gui.windows.main.size.height"));
+        
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent we) {
+                try {
+                    gp.putInt("gui.windows.main.size.width", frame.getWidth());
+                    gp.putInt("gui.windows.main.size.height", frame.getHeight());
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        });
+        
+        frame.setLocationByPlatform(true);
 
         frame.setVisible(true);
-
     }
 
     /**

@@ -13,9 +13,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +27,7 @@ import javax.print.SimpleDoc;
 import javax.print.StreamPrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -145,14 +143,7 @@ public class OutputFormatter {
                     "Bad function call (postscript rendering needs a Swing JComponent as input).");
             break;
         case JPGFormat:
-            if (view != null) {
-                try {
-                    toPixelGraphic(view, p, "jpg");
-                } catch (OutOfMemoryError e) {
-                    System.err.println("The image is too large to be rendered.");
-                    // e.printStackTrace();
-                }
-            }
+            if (view != null) toPixelGraphic(view, p, "jpg");
             else System.err.println(
             "Bad function call (image rendering needs a Swing JComponent as input).");
             break;
@@ -282,24 +273,20 @@ public class OutputFormatter {
      * @param p
      * @param format
      */
-    private void toPixelGraphic (JComponent bp, PrintStream p, String format) 
-            throws OutOfMemoryError {
-
-        Dimension imgSize = ((BlockPanel) bp).getScaledSize();
-        BufferedImage img;
-            img = new BufferedImage(imgSize.width, imgSize.height,
+    private void toPixelGraphic (JComponent bp, PrintStream p, String format) {
+        try {
+            Dimension imgSize = ((BlockPanel) bp).getScaledSize();
+            BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
                     BufferedImage.TYPE_INT_RGB);
             Graphics2D grap = img.createGraphics();
-            bp.paint(grap);
+            ((BlockPanel) bp).getDrawingPane().paint(grap);
             grap.dispose();
-
-            try {
-                ImageIO.write(img, format, p);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
+            ImageIO.write(img, format, p);
+        } catch (Throwable e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), e.getClass().toString(), JOptionPane.ERROR_MESSAGE);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void toXML(IDataPackage data, PrintStream p) {

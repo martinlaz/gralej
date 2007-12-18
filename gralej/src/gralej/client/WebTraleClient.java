@@ -212,18 +212,22 @@ public class WebTraleClient extends JPanel {
         request("rec-raw?q=", s);
     }
 
-    private void request(String prefix, String suffix) {
-        try {
-            InputStream is = getStream(prefix
-                    + URLEncoder.encode(suffix, "UTF-8"));
-            if (is == null)
-                return;
-            // String content = readAll(is);
-            // System.out.println(content);
-            copyStream(is);
-        } catch (IOException ex) {
-            showError(ex);
-        }
+    private void request(final String prefix, final String suffix) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    InputStream is = getStream(prefix
+                            + URLEncoder.encode(suffix, "UTF-8"));
+                    if (is == null)
+                        return;
+                    // String content = readAll(is);
+                    // System.out.println(content);
+                    copyStream(is);
+                } catch (IOException ex) {
+                    showError(ex);
+                }
+            }
+        }).start();
     }
 
     private void showError(Exception e) {
