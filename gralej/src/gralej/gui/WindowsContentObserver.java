@@ -171,7 +171,8 @@ public class WindowsContentObserver extends ContentObserver {
                 m_JPG, m_PNG, m_Raise;
 
         private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
-                b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save;
+                b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save,
+                b_Raise;
 
         private JTextField zoomfield, searchfield;
 
@@ -359,6 +360,11 @@ public class WindowsContentObserver extends ContentObserver {
             b_Find.setToolTipText("Find");
 //            toolbar.add(b_Find);
 
+            b_Raise = new JButton(theme.getIcon("raisewindow"));
+            b_Raise.addActionListener(this);
+            b_Raise.setToolTipText("Raise main window");
+            toolbar.add(b_Raise);
+
             return toolbar;
         }
 
@@ -437,7 +443,7 @@ public class WindowsContentObserver extends ContentObserver {
 //                String searchFor = searchfield.getText();
                 // TODO send search request to content window
 
-            } else if (source == m_Raise) {
+            } else if (source == m_Raise || source == b_Raise) {
                 gui.raiseMainWindow();
             }
         }
