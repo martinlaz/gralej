@@ -168,7 +168,7 @@ public class WindowsContentObserver extends ContentObserver {
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Hidden, m_Find,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
-                m_JPG, m_PNG;
+                m_JPG, m_PNG, m_Raise;
 
         private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
                 b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save;
@@ -291,6 +291,11 @@ public class WindowsContentObserver extends ContentObserver {
                     InputEvent.CTRL_DOWN_MASK));
             m_Find.addActionListener(this);
 //            viewmenu.add(m_Find);
+
+            // menuitem "Find"
+            m_Raise = new JMenuItem("Raise Main Window");
+            m_Raise.addActionListener(this);
+            viewmenu.add(m_Raise);
 
             menubar.add(viewmenu);
             return menubar;
@@ -432,6 +437,8 @@ public class WindowsContentObserver extends ContentObserver {
 //                String searchFor = searchfield.getText();
                 // TODO send search request to content window
 
+            } else if (source == m_Raise) {
+                gui.raiseMainWindow();
             }
         }
 

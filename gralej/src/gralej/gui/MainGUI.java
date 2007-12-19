@@ -30,6 +30,8 @@ public class MainGUI implements ActionListener, ItemListener {
     // private int mode = FRAMES;
 
     private final IconTheme theme;
+    
+    private final JFrame frame;
 
     private Controller c; // the gralej.controller
     
@@ -351,7 +353,7 @@ public class MainGUI implements ActionListener, ItemListener {
         
         theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
 
-        final JFrame frame = new JFrame("GraleJ");
+        frame = new JFrame("GraleJ");
         frame.setIconImage(theme.getIcon("grale").getImage());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -443,6 +445,10 @@ public class MainGUI implements ActionListener, ItemListener {
         } else {
             m_Server.setText("Start Server");
         }
+    }
+    
+    public void raiseMainWindow () {
+        frame.requestFocus();
     }
 
 }
