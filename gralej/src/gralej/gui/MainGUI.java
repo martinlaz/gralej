@@ -283,8 +283,8 @@ public class MainGUI implements ActionListener, ItemListener {
          // VIEW MENU ITEMS
                      
         } else if (source == m_About) {
-            JOptionPane.showMessageDialog(null, "GraleJ (2007).");
-            // TODO write useful text here
+            AboutGraleJWindow w = AboutGraleJWindow.getInstance();
+            w.showWindow();
         } else if (source == m_Cascade) {
             c.getModel().cascade();
         } else if (source == m_Tile) {
@@ -303,6 +303,50 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_AutoOpenWindows) {
             gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
         }
+    }
+    
+    static class AboutGraleJWindow extends JFrame {
+        
+        private static AboutGraleJWindow instance;
+        
+        static AboutGraleJWindow getInstance () {
+            if (instance == null) instance = new AboutGraleJWindow();
+            return instance;
+        }
+        
+        private AboutGraleJWindow () {
+            super("About GraleJ");
+
+            // load info text from HTML file
+            JEditorPane editorPane = new JEditorPane();
+
+            editorPane.setEditable(false);
+            java.net.URL aboutfile = getClass().getResource(
+                    "/gralej/resource/about.html");
+            if (aboutfile != null) {
+                try {
+                    editorPane.setPage(aboutfile);
+                } catch (IOException e) {
+                    System.err.println("Attempted to read a bad URL: " + aboutfile);
+                }
+            } else {
+                System.err.println("Couldn't find about.html.");
+            }
+
+            JScrollPane editorScrollPane = new JScrollPane(editorPane);
+            editorScrollPane.setVerticalScrollBarPolicy(
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            editorScrollPane.setPreferredSize(new Dimension(250, 145));
+            editorScrollPane.setMinimumSize(new Dimension(10, 10));
+            add(editorScrollPane);
+            setLocationByPlatform(true);
+        }
+        
+        void showWindow() {
+            instance.setVisible(true);
+            instance.pack();
+        }
+        
     }
 
     public File saveDialog(int format) {
