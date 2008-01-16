@@ -11,6 +11,10 @@ class AVPairListBlock extends ContainerBlock {
 
     @Override
     public void init() {
+        if (getPanel().isAvmLayoutCompact()) {
+            super.init();
+            return;
+        }
         // max attribute width
         int maw = 0;
 

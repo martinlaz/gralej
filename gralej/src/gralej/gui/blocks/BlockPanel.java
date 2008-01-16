@@ -30,6 +30,7 @@ public class BlockPanel extends JPanel implements IBlock {
     private double _scaleFactor = 1;
     private JPanel _drawingPane;
     private boolean _autoResize;
+    private boolean _compactAvmLayout;
 
     private class DrawingPane extends JPanel {
         @Override
@@ -69,6 +70,7 @@ public class BlockPanel extends JPanel implements IBlock {
         _marginSize = Config.getInt("panel.margins.all");
         _scaleFactor = Double.parseDouble(Config.get("panel.scaleFactor"));
         _autoResize = Boolean.parseBoolean(Config.get("panel.autoResize"));
+        _compactAvmLayout = Boolean.parseBoolean(Config.get("layout.avm.compact"));
 
         _drawingPane.addMouseListener(new MouseAdapter() {
             @Override
@@ -106,6 +108,10 @@ public class BlockPanel extends JPanel implements IBlock {
     }
 
     public void init() {
+    }
+    
+    public boolean isAvmLayoutCompact() {
+        return _compactAvmLayout;
     }
 
     private void setContent(IBlock block) {
