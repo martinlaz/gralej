@@ -2,8 +2,15 @@ package gralej.prefs;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.InvalidPropertiesFormatException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -438,11 +445,22 @@ public class GralePreferences  {
      * this will sync everything back to the backing store
      */
     private void syncEverythingToBackingStore() {
+    	
+    	LinkedList<String> changes = new LinkedList<String>();
 
-    	// FIXME: collect changes and notify observers
+    	// sync back key by key to the backing store, memorizing changed values
         for (Object okey : prefs.keySet()) {
             String key = (String) okey;
+            // if the value changed, throw it on to the changes list
+            if ( ! ((String)prefs.get(key)).equals(backingprefs.get(key, null)) ) {
+            	changes.add(key);
+            }
             syncKeyAfterSet(key);
+        }
+        
+        // notify all observers from the changes list
+        for ( String key : changes ) {
+        	notifyObservers(key);
         }
 
     }
@@ -581,6 +599,46 @@ public class GralePreferences  {
     	}
     	
     	return res;
+    }
+    
+    /**
+     * only configuration keys actually used by the defaults will be loaded.
+     * if a key is not present in the file, the default value will be used.
+     */
+    public void loadFromXML(File file) throws InvalidPropertiesFormatException, FileNotFoundException, IOException {
+    	
+    	DefaultProperties filePrefs = new DefaultProperties();
+    	DefaultProperties newPrefs = new DefaultProperties();
+    	
+    	
+    	filePrefs.loadFromXML(new FileInputStream(file));
+    	
+    	// check all keys from the defaults, x-check with
+    	// new data from file and store into new prefs
+    	for ( Object okey : defaults.keySet() ) {
+    		String key = (String)okey;
+    		
+    		// if a key isn't present, set the defaults
+    		// otherwise store value from file
+    		if ( filePrefs.get(key) == null ) {
+    			newPrefs.put(key, defaults.get(key));
+    		} else {
+    			newPrefs.put(key, filePrefs.get(key));
+    		}
+    		
+    	}
+    	
+    	// save new prefs as prefs and notify observers
+    	prefs = newPrefs;
+    	notifyAllObservers();
+    	
+    }
+    
+    public void saveToXML(File file) throws FileNotFoundException, IOException {
+    	
+    	prefs.storeToXML(new FileOutputStream(file), 
+    			"GraleJ preferences stored by the Export function in the preferences dialog.");
+    	
     }
     
     
