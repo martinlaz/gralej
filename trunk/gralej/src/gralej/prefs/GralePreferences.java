@@ -429,6 +429,8 @@ public class GralePreferences  {
             prefs.clear();
             syncEverythingToBackingStore();
         }
+        
+        notifyAllObservers();
 
     }
 
@@ -556,6 +558,15 @@ public class GralePreferences  {
     	}
     	
     }
+    
+    private void notifyAllObservers() {
+    	
+    	for ( Entry<String,GPrefsChangeListener> item : observers ) {
+    			item.getValue().preferencesChange();
+    	}
+    	
+    }
+    
     
     /**
      * @return a list of all preference keys held.
