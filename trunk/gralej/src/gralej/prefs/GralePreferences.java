@@ -3,6 +3,9 @@ package gralej.prefs;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
@@ -51,7 +54,6 @@ public class GralePreferences  {
         backinglistener = new BackingStoreListener();
 
         // load the default values int a special object
-        // FIXME: loading from jars doesn't work
         defaults = new DefaultProperties();
         InputStream is;
         try {
@@ -553,6 +555,21 @@ public class GralePreferences  {
     		}
     	}
     	
+    }
+    
+    /**
+     * @return a list of all preference keys held.
+     */
+    public List<String> getKeyList() {
+    	Set<Object> keys = prefs.keySet();
+    	ArrayList<String> res = new ArrayList<String>();
+    	
+    	// create a nice list from this set
+    	for ( Object o : keys) {
+    		res.add( (String)o );
+    	}
+    	
+    	return res;
     }
     
     

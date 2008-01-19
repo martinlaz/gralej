@@ -25,12 +25,10 @@ public class PrefValueBadFormatException extends GralePrefsException {
 
     public PrefValueBadFormatException(String message) {
         super(message);
-        // TODO Auto-generated constructor stub
     }
 
     public PrefValueBadFormatException(Throwable cause) {
         super(cause);
-        // TODO Auto-generated constructor stub
     }
 
 }
