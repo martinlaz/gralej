@@ -17,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 
 import javax.swing.BorderFactory;
@@ -26,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -34,6 +37,7 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * Eclipse-generated preferences dialog with some human modifications
@@ -210,8 +214,75 @@ public class GenDialog extends JDialog {
     	this.setVisible(false);
     	this.dispose();
     }
-    
 
+    /**
+     * Simplistic file format filter used for storing/saving
+     */
+    class Filter extends FileFilter {
+
+		@Override
+		public boolean accept(File f) {
+			return f.getName().endsWith(".gralecfg");
+		}
+
+		@Override
+		public String getDescription() {
+			return "GraleJ Configuration Files";
+		}
+    }
+    
+    public File saveDialog() {
+    	JFileChooser fc = new JFileChooser(prefs.get("input.lastdir"));
+    	fc.setMultiSelectionEnabled(false);
+    	// fc.setAcceptAllFileFilterUsed(false);
+    	fc.addChoosableFileFilter(new Filter());
+    	int returnVal = fc.showSaveDialog(null);
+
+    	if (returnVal == JFileChooser.APPROVE_OPTION) {
+    		File f = fc.getSelectedFile();
+    		try{
+    			prefs.put("input.lastdir", f.getCanonicalPath());
+    		} catch (IOException e1) {
+    			JOptionPane.showMessageDialog(this,
+    					"Cannot save due to I/O error!",
+    					"Exporting Preferences", JOptionPane.ERROR_MESSAGE);
+    			e1.printStackTrace();
+    			return null;
+    		}
+
+    		if (!f.exists() || JOptionPane.showConfirmDialog(null,
+    				"File exists. Overwrite?", "Exporting Preferences",
+    				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+    			return f;
+    		}
+    	}
+    	return null;
+    }
+    
+    public File openDialog() {
+    	JFileChooser fc = new JFileChooser(prefs.get("input.lastdir"));
+    	fc.setMultiSelectionEnabled(false);
+    	// fc.setAcceptAllFileFilterUsed(false);
+    	fc.addChoosableFileFilter(new Filter());
+    	int returnVal = fc.showOpenDialog(null);
+
+    	if (returnVal == JFileChooser.APPROVE_OPTION) {
+    		File f = fc.getSelectedFile();
+    		try{
+    			prefs.put("input.lastdir", f.getCanonicalPath());
+    		} catch (IOException e1) {
+    			JOptionPane.showMessageDialog(this,
+    					"Cannot load due to I/O error!",
+    					"Importing Preferences", JOptionPane.ERROR_MESSAGE);
+    			e1.printStackTrace();
+    			return null;
+    		}
+    		
+    		return f;
+
+    	}
+    	return null;
+    }    
 
     /**
      * listener invoke when the user clicks on of the buttons like cancel or OK
@@ -223,6 +294,77 @@ public class GenDialog extends JDialog {
         public ButtonClickListener(GenDialog parent) {
             this.parent = parent;
         }
+        
+        private void loadDefaults() {
+        	// ask the user for confirmation
+        	int i = JOptionPane.showConfirmDialog(parent, 
+        		"Do you really want to load the factory settings?\n\n",
+        		"Load Defaults", 
+        		JOptionPane.YES_NO_OPTION);
+        	// if the user answers "YES", try to restore the defaults
+        	if ( i == JOptionPane.YES_OPTION ) {
+        		try {
+					prefs.restoreDefaults();
+				} catch (BackingStoreException e1) {
+	                JOptionPane.showMessageDialog(parent,
+                    "Loading the default settings failed due to an error during " +
+                    "the communication with Java's configuration registry.",
+                    "Load Defaults", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				}
+        	}        	
+        }
+        
+        private void exportSettings() {
+        	
+        	File f = saveDialog();
+        	
+        	// abort if user didn't select a file
+        	if ( f == null ) {
+        		return;
+        	}
+
+        	try {
+        		// append .gralecfg extension if necessary
+        		if (! f.getName().endsWith(".gralecfg") ) {
+        			f = new File(f.getCanonicalPath() + ".gralecfg");
+        		}
+
+        		prefs.saveToXML(f);
+        	} catch (Exception e) {
+        		JOptionPane.showMessageDialog(parent,				
+        				"An error occured while exporting preferences.\n\n" +
+        				"The system said:\n" +
+        				e.getMessage(),
+        				"Exporting Preferences", JOptionPane.ERROR_MESSAGE);
+        		e.printStackTrace();
+        	}	
+        	
+        }
+        
+        private void loadSettings() {
+        	
+        	File f = openDialog();
+
+        	// abort if user didn't select a file
+        	if ( f == null ) {
+        		return;
+        	}
+
+        	
+        	try {
+				prefs.loadFromXML(f);
+        	} catch (Exception e) {
+        		JOptionPane.showMessageDialog(parent,				
+        				"An error occured while importing preferences.\n\n" +
+        				"The system said:\n" +
+        				e.getMessage(),
+        				"Importing Preferences", JOptionPane.ERROR_MESSAGE);
+        		e.printStackTrace();
+        	}	
+        	
+        }
+        
 
         public void actionPerformed(ActionEvent e) {
 
@@ -237,31 +379,11 @@ public class GenDialog extends JDialog {
             } else if (e.getSource() == CancelButton) {
                 closeWindow(false);
             } else if (e.getSource() == ImportButton) {
-                JOptionPane.showMessageDialog(parent,
-                        "Importing preferences has not been implemented yet.",
-                        "Not implemented!", JOptionPane.ERROR_MESSAGE);
+            	loadSettings();
             } else if (e.getSource() == ExportButton) {
-                JOptionPane.showMessageDialog(parent,
-                        "Exporting preferences has not been implemented yet.",
-                        "Not implemented!", JOptionPane.ERROR_MESSAGE);
+                exportSettings();
             } else if (e.getSource() == DefaultsButton) {
-            	// ask the user for confirmation
-            	int i = JOptionPane.showConfirmDialog(parent, 
-            		"Do you really want to load the factory settings?\n\n",
-            		"Load Defaults", 
-            		JOptionPane.YES_NO_OPTION);
-            	// if the user answers "YES", try to restore the defaults
-            	if ( i == JOptionPane.YES_OPTION ) {
-            		try {
-						prefs.restoreDefaults();
-					} catch (BackingStoreException e1) {
-		                JOptionPane.showMessageDialog(parent,
-                        "Loading the default settings failed due to an error during " +
-                        "the communication with Java's configuration registry.",
-                        "Load Defaults", JOptionPane.ERROR_MESSAGE);
-						e1.printStackTrace();
-					}
-            	}
+            	loadDefaults();
             }	
 
         }
