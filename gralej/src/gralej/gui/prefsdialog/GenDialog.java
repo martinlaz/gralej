@@ -146,7 +146,7 @@ public class GenDialog extends JDialog {
         tabsPanel.add("2", panel2);
         listicons[2] = icontheme.getIcon("large-l+f");
         
-        JComponent panel3 = new JLabel("Advanced Settings");
+        JComponent panel3 = new AdvancedOptsPane(prefs);
         listlabels[3] = "Advanced Settings";
         lmodel.addElement("3");
         tabsPanel.add("3", panel3);
@@ -226,11 +226,13 @@ public class GenDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
 
             if (e.getSource() == OKButton) {
-            	JOptionPane.showMessageDialog(parent,
+            	/*JOptionPane.showMessageDialog(parent,
                         "As this is only a prototype, options are not being saved on clicking OK.",
                         "Prototype Limitation", JOptionPane.INFORMATION_MESSAGE);
-            	//closeWindow(true);
+            	
             	closeWindow(false);
+            	*/
+            	closeWindow(true);
             } else if (e.getSource() == CancelButton) {
                 closeWindow(false);
             } else if (e.getSource() == ImportButton) {
