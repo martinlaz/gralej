@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -244,10 +245,24 @@ public class GenDialog extends JDialog {
                         "Exporting preferences has not been implemented yet.",
                         "Not implemented!", JOptionPane.ERROR_MESSAGE);
             } else if (e.getSource() == DefaultsButton) {
-                JOptionPane.showMessageDialog(parent,
-                        "Loading the defaults has not been implemented yet.",
-                        "Not implemented!", JOptionPane.ERROR_MESSAGE);
-            }
+            	// ask the user for confirmation
+            	int i = JOptionPane.showConfirmDialog(parent, 
+            		"Do you really want to load the factory settings?\n\n",
+            		"Load Defaults", 
+            		JOptionPane.YES_NO_OPTION);
+            	// if the user answers "YES", try to restore the defaults
+            	if ( i == JOptionPane.YES_OPTION ) {
+            		try {
+						prefs.restoreDefaults();
+					} catch (BackingStoreException e1) {
+		                JOptionPane.showMessageDialog(parent,
+                        "Loading the default settings failed due to an error during " +
+                        "the communication with Java's configuration registry.",
+                        "Load Defaults", JOptionPane.ERROR_MESSAGE);
+						e1.printStackTrace();
+					}
+            	}
+            }	
 
         }
 
