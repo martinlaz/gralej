@@ -12,21 +12,24 @@ import gralej.prefs.GralePreferences;
  */
 public class OptionComponentFactory {
 
-    public static JComponent getComponent(GralePreferences prefs,
-            String key, String type, String label) {
+	public static JComponent getComponent(GralePreferences prefs,
+			String key, String type, Object label) {
 
-        if (type.equals("boolean")) {
-            return new CBooleanOption(prefs, key, label);
-        } else if (type.equals("font")) {
-            return new CFontOption(prefs, key, label);
-        } else if (type.equals("int")) {
-            return new CIntOption(prefs, key, label);
-        } else if (type.equals("color")) {
-            return new CColorOption(prefs, key, label);
-        }
+		if (type.equals("boolean")) {
+			return new CBooleanOption(prefs, key, (String)label);
+		} else if (type.equals("font")) {
+			return new CFontOption(prefs, key, (String)label);
+		} else if (type.equals("int")) {
+			return new CIntOption(prefs, key, (String)label);
+		} else if (type.equals("color")) {
+			return new CColorOption(prefs, key, (String)label);
+		} else if (type.equals("dropdown")) {
+			return new DropdownOption(prefs, key, (String[])label);
+		}
 
-        return null;
-    }
+
+		return null;
+	}
 
     public static JComponent getComponent(GralePreferences prefs,
             String key, String type) {

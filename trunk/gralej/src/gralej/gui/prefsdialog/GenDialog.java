@@ -29,7 +29,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -145,7 +144,7 @@ public class GenDialog extends JDialog {
         listicons[1] = icontheme.getIcon("large-showstruc");
 
         // add another tab
-        JComponent panel2 = new JLabel("Empty right now");
+        JComponent panel2 = new LookAndFeelOptsPane(prefs);
         listlabels[2] = "Look & Feel";
         lmodel.addElement("2");
         tabsPanel.add("2", panel2);
