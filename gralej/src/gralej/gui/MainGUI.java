@@ -1,20 +1,42 @@
 package gralej.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.swing.*;
-
-import gralej.controller.*;
+import gralej.controller.Controller;
+import gralej.controller.StreamInfo;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
-import gralej.gui.prefsdialog.GenDialog;
 import gralej.parsers.OutputFormatter;
 import gralej.prefs.GralePreferences;
-import javax.swing.ImageIcon;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 
 /**
  * 
@@ -387,13 +409,14 @@ public class MainGUI implements ActionListener, ItemListener {
         gp = GralePreferences.getInstance();
 
         // first: style
-        // TODO parameterize
+        /*
+        // look and feel moved to Main.java by Niels
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        }*/
         
         theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
 
