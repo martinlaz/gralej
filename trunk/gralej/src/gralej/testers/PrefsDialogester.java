@@ -14,9 +14,11 @@ import javax.swing.UIManager;
 public class PrefsDialogester {
 
     public static void main(String[] args) throws GralePrefsInitException {
-    	
+
+    	// initialize look and feel
+    	String lookandfeel = GralePreferences.getInstance().get("gui.l+f.java-l+f");
     	try {
-			UIManager.setLookAndFeel(GralePreferences.getInstance().get("gui.l+f.java-l+f"));
+			UIManager.setLookAndFeel(lookandfeel);
 		} catch (Exception e) {
 			try {
 				UIManager.setLookAndFeel(
@@ -24,7 +26,7 @@ public class PrefsDialogester {
 			} catch (Exception e1) {
 				throw new RuntimeException("Cannot set system default L&F!", e1);
 			}
-			System.err.println("Falling back to default L&F");
+			System.err.println("Cannot load " + lookandfeel + ". Falling back to system default L&F.");
 			e.printStackTrace();
 		}	
 
