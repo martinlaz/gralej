@@ -20,17 +20,23 @@ public class Main {
     	
     	// initialize look and feel
     	String lookandfeel = GralePreferences.getInstance().get("gui.l+f.java-l+f");
+    	
+    	// default is system look and feel
+    	if ("System Default".equals(lookandfeel) ) {
+    		lookandfeel = UIManager.getSystemLookAndFeelClassName();
+    	}
+    	
     	try {
 			UIManager.setLookAndFeel(lookandfeel);
 		} catch (Exception e) {
+			System.err.println("Cannot load " + lookandfeel + ". Falling back to system default L&F.");
+			e.printStackTrace();
 			try {
 				UIManager.setLookAndFeel(
 						UIManager.getSystemLookAndFeelClassName());
 			} catch (Exception e1) {
-				throw new RuntimeException("Cannot set system default L&F!", e1);
+				throw new RuntimeException("Cannot set system default L&F! Good bye.", e1);
 			}
-			System.err.println("Cannot load " + lookandfeel + ". Falling back to system default L&F.");
-			e.printStackTrace();
 		}	    	
 
         // initialize the controller
