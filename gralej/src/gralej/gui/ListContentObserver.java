@@ -58,7 +58,10 @@ public class ListContentObserver extends ContentObserver {
             public void keyPressed(KeyEvent arg0) {
                 if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
                     model.open();
+                } else if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
+                    model.close();
                 }
+
             }
 
             public void keyReleased(KeyEvent arg0) {}
@@ -78,31 +81,31 @@ public class ListContentObserver extends ContentObserver {
     @Override
     public void add(IDataPackage data) {
         listmodel.addElement(data.getTitle());
-        gui.notifyOfEmptyList(false);
+        gui.notifyOfListElements(listmodel.size());
     }
 
     @Override
     public void close() {
-        listmodel.remove(list.getSelectedIndex());
+        for (int i = list.getSelectedIndices().length - 1; i >= 0; i--) {
+            listmodel.remove(list.getSelectedIndices()[i]);
+        }
         gui.notifyOfSelection(list.getSelectedIndex() != -1);
-        gui.notifyOfEmptyList(listmodel.isEmpty());
+        gui.notifyOfListElements(listmodel.size());
     }
 
     public void clear() {
         listmodel.clear();
         gui.notifyOfSelection(false);
-        gui.notifyOfEmptyList(true);
+        gui.notifyOfListElements(0);
     }
 
-    public int getFocus() {
-        return list.getSelectedIndex();
+    public int[] getFocus() {
+        return list.getSelectedIndices();
     }
 
     // Inner class that responds to selection
     class ListUpdater implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting())
-                return;
             gui.notifyOfSelection(e.getFirstIndex() != -1);
         }
     }

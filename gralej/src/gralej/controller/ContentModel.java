@@ -45,14 +45,19 @@ public class ContentModel {
      * 
      */
     public void open() {
-        observer.add(files.get(list.getFocus()));
+        for (int i = 0; i < list.getFocus().length; i++) {
+            observer.add(files.get(list.getFocus()[i]));
+        }
     }
 
     public void close() {
         if (files.size() == 0)
             return; // don't close nothing
         observer.close();
-        files.remove(list.getFocus());
+        int[] selected = list.getFocus();
+        for (int i = selected.length - 1; i >= 0; i--) {
+            files.remove(selected[i]);
+        }
         list.close();
     }
 
@@ -70,7 +75,9 @@ public class ContentModel {
      * @param format
      */
     public void save(File f, int format) {
-        save(f, files.get(list.getFocus()), null, format);
+        for (int i = 0; i < list.getFocus().length; i++) {
+            save(f, files.get(list.getFocus()[i]), null, format);
+        }
     }
 
     /**
@@ -79,15 +86,14 @@ public class ContentModel {
      * @param f:
      *            The file to save to
      * @param format:
-     *            only TRALEFormat is supported for saving into a single file.
-     *            However this method simply appends all AVMs regardless of
-     *            whether the format is meant to understand that.
+     *            TRALEFormat: mindless append
+     *            XML: wrapped by <parses>
      */
     public void saveAll(File f, int format) {
         try {
             PrintStream p = new PrintStream(new FileOutputStream(f));
             if (format == OutputFormatter.XMLFormat) {
-                p.print("<parses>");
+                p.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<parses>\n");
             }
             for (int i = 0; i < files.size(); i++) {
                 of.save(p, files.get(i), null, format);
@@ -115,6 +121,9 @@ public class ContentModel {
     public void save(File f, IDataPackage dataItem, JComponent display, int format) {
         try {
             PrintStream p = new PrintStream(new FileOutputStream(f));
+            if (format == OutputFormatter.XMLFormat) {
+                p.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+            }
             of.save(p, dataItem, display, format);
             p.close();
         } catch (FileNotFoundException e) {
@@ -164,7 +173,7 @@ public class ContentModel {
         return files.get(i);
     }
 
-    public int getFocus() {
+    public int[] getFocus() {
         return list.getFocus();
     }
 

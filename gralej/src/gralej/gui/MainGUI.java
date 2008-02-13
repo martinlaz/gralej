@@ -34,9 +34,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 /**
  * 
@@ -65,9 +66,12 @@ public class MainGUI implements ActionListener, ItemListener {
             m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll,
             m_SaveAllXML, m_Server;
 
+    private JToolBar toolbar;
     private JButton b_Open, b_Close, b_CloseAll, b_Save;
-    private JCheckBoxMenuItem m_AutoOpenWindows;
+    private JCheckBoxMenuItem m_AutoOpenWindows, m_ShowToolBar, m_ShowStatusBar;
 
+    StatusBar statusbar;
+    
     private JMenuBar createMenuBar() {
         // menu
         JMenuBar menubar = new JMenuBar();
@@ -83,6 +87,8 @@ public class MainGUI implements ActionListener, ItemListener {
 
         m_TestFile = new JMenuItem("Open Sample");
         m_TestFile.addActionListener(this);
+//        m_TestFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
+//                InputEvent.CTRL_DOWN_MASK));
         filemenu.add(m_TestFile);
 
         m_Save = new JMenuItem("Save");
@@ -116,7 +122,7 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.addSeparator();
 
         m_Exit = new JMenuItem("Exit");
-        m_Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+        m_Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
                 InputEvent.CTRL_DOWN_MASK));
         m_Exit.addActionListener(this);
         filemenu.add(m_Exit);
@@ -157,6 +163,18 @@ public class MainGUI implements ActionListener, ItemListener {
         
         viewmenu.addSeparator();
 
+        m_ShowToolBar = new JCheckBoxMenuItem("Show toolbar");
+        m_ShowToolBar.addActionListener(this);
+        m_ShowToolBar.setState(gp.getBoolean("behavior.showtoolbar"));
+        viewmenu.add(m_ShowToolBar);
+
+        m_ShowStatusBar = new JCheckBoxMenuItem("Show status bar");
+        m_ShowStatusBar.addActionListener(this);
+        m_ShowStatusBar.setState(gp.getBoolean("behavior.showstatusbar"));
+        viewmenu.add(m_ShowStatusBar);
+
+        viewmenu.addSeparator();
+
         m_Pref = new JMenuItem("Preferences");
         m_Pref.setAccelerator(KeyStroke.getKeyStroke("F2"));
         m_Pref.addActionListener(this);
@@ -176,8 +194,8 @@ public class MainGUI implements ActionListener, ItemListener {
         return menubar;
     }
 
-    private JToolBar createToolBar() {
-        JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
+    private void createToolBar() {
+        toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
 
         b_Open = new JButton(theme.getIcon("fileopen"));
         b_Open.addActionListener(this);
@@ -204,7 +222,6 @@ public class MainGUI implements ActionListener, ItemListener {
          * b_SaveAll.addActionListener(this); toolbar.add(b_SaveAll);
          */
 
-        return toolbar;
     }
 
     // User actions broadcast Events. Depending on the source, they're
@@ -311,6 +328,14 @@ public class MainGUI implements ActionListener, ItemListener {
             c.getModel().cascade();
         } else if (source == m_Tile) {
             c.getModel().tile();
+        } else if (source == m_ShowToolBar) {
+            gp.putBoolean("behavior.showtoolbar", m_ShowToolBar.getState());
+            toolbar.setVisible(m_ShowToolBar.getState());
+            
+        } else if (source == m_ShowStatusBar) {
+            gp.putBoolean("behavior.showstatusbar", m_ShowStatusBar.getState());
+            statusbar.setVisible(m_ShowStatusBar.getState());
+            
         } else if (source == m_Pref) {
             //GenDialog frame = new GenDialog(null);
             //frame.setVisible(true);
@@ -327,7 +352,7 @@ public class MainGUI implements ActionListener, ItemListener {
         }
     }
     
-    static class AboutGraleJWindow extends JFrame {
+    static class AboutGraleJWindow extends JFrame implements HyperlinkListener {
         
         private static AboutGraleJWindow instance;
         
@@ -355,18 +380,31 @@ public class MainGUI implements ActionListener, ItemListener {
                 System.err.println("Couldn't find about.html.");
             }
 
-            JScrollPane editorScrollPane = new JScrollPane(editorPane);
-            editorScrollPane.setVerticalScrollBarPolicy(
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            editorScrollPane.setPreferredSize(new Dimension(250, 145));
-            editorScrollPane.setMinimumSize(new Dimension(10, 10));
-            add(editorScrollPane);
+            editorPane.setPreferredSize(new Dimension(250, 145));
+            editorPane.setMinimumSize(new Dimension(10, 10));
+            editorPane.addHyperlinkListener(this);
+            add(editorPane);
+            pack();
             setLocationByPlatform(true);
         }
         
         void showWindow() {
             instance.setVisible(true);
             instance.pack();
+        }
+
+        @Override
+        public void hyperlinkUpdate(HyperlinkEvent event) {
+            // TODO Auto-generated method stub
+            if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                try {
+                    Runtime.getRuntime().exec("cmd /c start "+event.getURL());
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            
         }
         
     }
@@ -387,9 +425,16 @@ public class MainGUI implements ActionListener, ItemListener {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            
+            if (!f.getName().toLowerCase().endsWith(c.getModel().getOutputFormatter()
+                    .getExtension(format))) { 
+               f = new File(f.getPath() + "." + c.getModel().getOutputFormatter()
+                       .getExtension(format));
+            } 
+
 
             if (!f.exists() || JOptionPane.showConfirmDialog(null,
-                    "File exists. Overwrite?", "Overwrite?",
+                    "File "+f.getName()+" exists. Overwrite?", "Overwrite?",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 return f;
             }
@@ -428,9 +473,9 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.setJMenuBar(this.createMenuBar());
 
         // instantiate toolbar
-        frame.getContentPane().add(this.createToolBar(), BorderLayout.NORTH);
-        notifyOfSelection(false);
-        notifyOfEmptyList(true);
+        createToolBar();
+        toolbar.setVisible(gp.getBoolean("behavior.showtoolbar"));
+        frame.getContentPane().add(toolbar, BorderLayout.NORTH);
 
         // list observer
         ContentObserver list = new ListContentObserver(c.getModel(), this);
@@ -452,10 +497,11 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.getContentPane().add(list.getDisplay(), BorderLayout.CENTER);
         // }
 
-        // TODO implement contents of the bottom status line
-        JPanel statusLine = new JPanel();
-        statusLine.add(new JLabel("status line"));
-        // frame.getContentPane().add(statusLine, BorderLayout.PAGE_END);
+        statusbar = new StatusBar();
+        frame.getContentPane().add(statusbar, BorderLayout.PAGE_END);
+
+        notifyOfSelection(false);
+        notifyOfListElements(0);
 
         frame.pack();
         frame.setSize(gp.getInt("gui.windows.main.size.width"), 
@@ -479,6 +525,33 @@ public class MainGUI implements ActionListener, ItemListener {
 
         frame.setVisible(true);
     }
+    
+    class StatusBar extends JPanel {
+        // TODO implement contents of the bottom status line
+        
+        JLabel counter;
+        JLabel connectionInfo;
+        
+        StatusBar () {
+            super();
+            counter = new JLabel("0");
+            add(counter, BorderLayout.WEST);
+            connectionInfo = new JLabel();
+            add(connectionInfo, BorderLayout.EAST);
+            setVisible(gp.getBoolean("behavior.showstatusbar"));
+        }
+        
+        void setNumberOfItems (int i) {
+            counter.setText(""+i+" data items; ");            
+        }
+        
+        void setConnectionInfo (String info) {
+            connectionInfo.setText(info);            
+        }
+
+
+
+    }
 
     /**
      * Some menu items and buttons depend on a file being selected.
@@ -500,17 +573,22 @@ public class MainGUI implements ActionListener, ItemListener {
      * 
      * @param isEmpty
      */
-    public void notifyOfEmptyList(boolean isEmpty) {
+    public void notifyOfListElements(int number) {
+        boolean isEmpty = (number == 0);
         saveallmenu.setEnabled(!isEmpty);
         m_CloseAll.setEnabled(!isEmpty);
         // b_SaveAll.setEnabled(!isEmpty);
+        
+        statusbar.setNumberOfItems(number);
     }
     
     public void notifyOfServerConnection(boolean isConnected) {
         if (isConnected) {
             m_Server.setText("Stop Server");
+            statusbar.setConnectionInfo("connected");
         } else {
             m_Server.setText("Start Server");
+            statusbar.setConnectionInfo("not connected");
         }
     }
     
