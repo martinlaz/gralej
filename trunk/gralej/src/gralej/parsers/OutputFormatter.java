@@ -70,6 +70,26 @@ public class OutputFormatter {
     public FileFilter getFilter(int format) {
         return new FormatFilter(format);
     }
+    
+    public String getExtension(int format) {
+        switch (format) {
+        case TRALEFormat:
+            return "grale";
+        case LaTeXFormat:
+            return "tex";
+        case SVGFormat:
+            return "svg";
+        case PostscriptFormat:
+            return "ps";
+        case JPGFormat:
+            return "jpg";
+        case PNGFormat:
+            return "png";
+        case XMLFormat:
+            return "xml";
+        }
+        return "";
+    }
 
     class FormatFilter extends javax.swing.filechooser.FileFilter {
 
@@ -119,6 +139,7 @@ public class OutputFormatter {
         public String getDescription() {
             return description;
         }
+        
     }
 
     public void save(PrintStream p, IDataPackage data, JComponent view, int format) {

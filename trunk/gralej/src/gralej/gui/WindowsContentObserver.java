@@ -44,10 +44,12 @@ public class WindowsContentObserver extends ContentObserver {
 
     @Override
     public void close() {
-        IDataPackage d = model.getData(model.getFocus());
-        for (int i = 0; i < frames.size(); i++) {
-            if (frames.get(i).data == d) {
-                frames.get(i).dispose();
+        for (int i = 0; i < model.getFocus().length; i++) {
+            IDataPackage d = model.getData(model.getFocus()[i]);
+            for (int j = 0; j < frames.size(); j++) {
+                if (frames.get(j).data == d) {
+                    frames.get(j).dispose();
+                }
             }
         }
     }
@@ -152,7 +154,9 @@ public class WindowsContentObserver extends ContentObserver {
 
             display.setOpaque(true);
             setJMenuBar(createMenuBar());
-            add(createToolBar(), BorderLayout.NORTH);
+            createToolBar();
+            toolbar.setVisible(gp.getBoolean("behavior.showwindowtoolbar"));
+            add(toolbar, BorderLayout.NORTH);
             add(display);
             setLocationByPlatform(true);
             setMinimumSize(new Dimension(
@@ -165,15 +169,19 @@ public class WindowsContentObserver extends ContentObserver {
             return;
         }
 
+        private GralePreferences gp = GralePreferences.getInstance();
+
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Hidden, m_Find,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
                 m_JPG, m_PNG, m_Raise;
+        
+        private JCheckBoxMenuItem m_ShowWindowToolBar;
 
         private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
                 b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save,
                 b_Raise;
-
+        private JToolBar toolbar;
         private JTextField zoomfield, searchfield;
 
         private JMenuBar createMenuBar() {
@@ -298,12 +306,17 @@ public class WindowsContentObserver extends ContentObserver {
             m_Raise.addActionListener(this);
             viewmenu.add(m_Raise);
 
+            m_ShowWindowToolBar = new JCheckBoxMenuItem("Show toolbar");
+            m_ShowWindowToolBar.addActionListener(this);
+            m_ShowWindowToolBar.setState(gp.getBoolean("behavior.showwindowtoolbar"));
+            viewmenu.add(m_ShowWindowToolBar);
+
             menubar.add(viewmenu);
             return menubar;
         }
 
-        private JToolBar createToolBar() {
-            JToolBar toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
+        private void createToolBar() {
+            toolbar = new JToolBar("Toolbar", JToolBar.HORIZONTAL);
 
             b_Save = new JButton(theme.getIcon("filefloppy"));
             b_Save.addActionListener(this);
@@ -365,7 +378,6 @@ public class WindowsContentObserver extends ContentObserver {
             b_Raise.setToolTipText("Raise main window");
             toolbar.add(b_Raise);
 
-            return toolbar;
         }
 
         // User actions broadcast Events. Depending on the source, they're
@@ -421,7 +433,6 @@ public class WindowsContentObserver extends ContentObserver {
                             .toString((int) Math.floor(((BlockPanel) display)
                                     .getScaleFactor() * 100)));
                 } catch (NumberFormatException e1) {
-                    GralePreferences gp = GralePreferences.getInstance();
                     zoomfield.setText(gp.get("behavior.defaultzoom"));
                     System.err
                             .println("Invalid zoom value. Defaulting to 100%.");
@@ -445,7 +456,11 @@ public class WindowsContentObserver extends ContentObserver {
 
             } else if (source == m_Raise || source == b_Raise) {
                 gui.raiseMainWindow();
+            } else if (source == m_ShowWindowToolBar) {
+                gp.putBoolean("behavior.showwindowtoolbar", m_ShowWindowToolBar.getState());
+                toolbar.setVisible(m_ShowWindowToolBar.getState());
             }
+
         }
 
         private void save(int format) {
