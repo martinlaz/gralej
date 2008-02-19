@@ -393,7 +393,7 @@ public class MainGUI implements ActionListener, ItemListener {
             instance.pack();
         }
 
-        @Override
+        
         public void hyperlinkUpdate(HyperlinkEvent event) {
             // TODO Auto-generated method stub
             if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
