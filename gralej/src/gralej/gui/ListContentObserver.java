@@ -10,11 +10,11 @@ import gralej.parsers.IDataPackage;
 import gralej.gui.MainGUI;
 
 /**
- * The ListContentObserver is a piece of GRALE's GUI. It displays the file list
- * to the left.
- * 
+ * The ListContentObserver displays the file list,
+ * and handles its events.
  * 
  * @author Armin
+ * @version $Id$
  * 
  */
 public class ListContentObserver extends ContentObserver {
@@ -24,7 +24,7 @@ public class ListContentObserver extends ContentObserver {
     private MainGUI gui;
 
     /**
-     * @param m
+     * @param m: the content model
      */
     public ListContentObserver(ContentModel m, MainGUI gui) {
         super(m);
@@ -61,7 +61,6 @@ public class ListContentObserver extends ContentObserver {
                 } else if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
                     model.close();
                 }
-
             }
 
             public void keyReleased(KeyEvent arg0) {}
@@ -103,11 +102,12 @@ public class ListContentObserver extends ContentObserver {
         return list.getSelectedIndices();
     }
 
-    // Inner class that responds to selection
+    /**
+     * Inner class that responds to selection
+     */ 
     class ListUpdater implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
-            gui.notifyOfSelection(e.getFirstIndex() != -1);
+            gui.notifyOfSelection(list.getSelectedIndex() != -1);
         }
     }
-
 }

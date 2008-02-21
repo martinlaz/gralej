@@ -4,10 +4,15 @@ import gralej.gui.*;
 import gralej.parsers.*;
 import gralej.prefs.GralePreferences;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -50,6 +55,9 @@ public class ContentModel {
         }
     }
 
+    /**
+     * Close all windows belonging to data items selected
+     */
     public void close() {
         if (files.size() == 0)
             return; // don't close nothing
@@ -61,6 +69,9 @@ public class ContentModel {
         list.close();
     }
 
+    /**
+     * Clear the list, close all windows.
+     */
     public void closeAll() {
         files.clear();
         list.clear();
@@ -81,7 +92,8 @@ public class ContentModel {
     }
 
     /**
-     * Method to save all items in the list.
+     * Method to save all items in the list. Accepts all formats, but only
+     * TRALE and XML are treated meaningfully.
      * 
      * @param f:
      *            The file to save to
@@ -121,12 +133,22 @@ public class ContentModel {
     public void save(File f, IDataPackage dataItem, JComponent display, int format) {
         try {
             PrintStream p = new PrintStream(new FileOutputStream(f));
+
             if (format == OutputFormatter.XMLFormat) {
-                p.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+                Writer out = new BufferedWriter(new OutputStreamWriter(
+                        p, "UTF8"));
+                out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                out.close();
             }
             of.save(p, dataItem, display, format);
             p.close();
         } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

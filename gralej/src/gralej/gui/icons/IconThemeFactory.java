@@ -1,5 +1,7 @@
 package gralej.gui.icons;
 
+import gralej.error.ErrorHandler;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,8 +30,9 @@ public class IconThemeFactory {
         }
 
         // "traditional" is the default for now
-        System.err.println("IconThemeFactory: " + name
-                + " not found, using 'traditional'");
+        ErrorHandler.getInstance().report(
+                "IconThemeFactory: " + name + " not found, using 'traditional'",
+                ErrorHandler.WARNING);
         return GenericIconTheme.getInstance("traditional");
 
     }

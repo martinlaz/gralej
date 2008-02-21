@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gralej.gui;
 
 import javax.swing.*;
@@ -8,12 +5,10 @@ import gralej.controller.*;
 import gralej.parsers.IDataPackage;
 
 /**
- * The observer class needs subclasses for lists and frame desktop (and probably
- * more) their instantiations register with a subject (an instance of
- * GRALEContentWindow)
+ * Superclass for observers.
  * 
  * @author Armin
- * 
+ * @version $Id$
  */
 public abstract class ContentObserver {
 
@@ -31,9 +26,6 @@ public abstract class ContentObserver {
 
     public abstract void clear();
 
-    /**
-     * 
-     */
     public ContentObserver(ContentModel m) {
         model = m;
     }

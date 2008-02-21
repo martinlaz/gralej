@@ -1,6 +1,7 @@
 package gralej.gui;
 
 import gralej.controller.ContentModel;
+import gralej.error.ErrorHandler;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.blocks.BlockPanel;
 import gralej.parsers.*;
@@ -15,7 +16,9 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * 
+ * A WindowContentObserver is that type of ContentObserver showing
+ * AVMs in single JFrames. These frames are modelled as an inner
+ * class.
  * 
  * 
  * @author Armin
@@ -104,8 +107,7 @@ public class WindowsContentObserver extends ContentObserver {
     }
 
     /**
-     * cascade windows as if newly generated
-     * 
+     * Cascade windows. Offsets are taken from the general preferences.
      */
     public void cascade() {
         GralePreferences gp = GralePreferences.getInstance();
@@ -178,14 +180,13 @@ public class WindowsContentObserver extends ContentObserver {
         
         private JCheckBoxMenuItem m_ShowWindowToolBar;
 
-        private JButton b_Close, b_TreeStruc, b_Print, b_Expand, b_Hidden, 
-                b_Restore, b_Find, b_Resize, b_ZoomPlus, b_ZoomMinus, b_Save,
-                b_Raise;
+        private JButton b_Close, b_Print, b_Find, b_Resize, b_ZoomPlus, 
+                b_ZoomMinus, b_Save, b_Raise;
         private JToolBar toolbar;
         private JTextField zoomfield, searchfield;
 
         private JMenuBar createMenuBar() {
-            // menu
+
             JMenuBar menubar = new JMenuBar();
             // menu "File"
             JMenu filemenu = new JMenu("File");
@@ -327,8 +328,7 @@ public class WindowsContentObserver extends ContentObserver {
             b_Print.setToolTipText("Print");
             toolbar.add(b_Print);
 
-            //b_Resize = new JButton(theme.getIcon("fitwindow")); // or "maximize"
-            b_Resize = new JButton(theme.getIcon("maximize")); // or "maximize"
+            b_Resize = new JButton(theme.getIcon("maximize"));
             b_Resize.addActionListener(this);
             b_Resize.setToolTipText("Enable/disable auto-resizing");
             b_Resize.setSelected(autoResize);
@@ -359,10 +359,6 @@ public class WindowsContentObserver extends ContentObserver {
             b_ZoomPlus.setToolTipText("Zoom in");
             toolbar.add(b_ZoomPlus);
 
-//            toolbar.addSeparator();
-            
-            // searching is disabled atm
-
             searchfield = new JTextField();
             searchfield.setMaximumSize(new Dimension(90, 20));
             searchfield.addActionListener(this);
@@ -380,8 +376,11 @@ public class WindowsContentObserver extends ContentObserver {
 
         }
 
-        // User actions broadcast Events. Depending on the source, they're
-        // ActionEvents (menu item) or ItemEvents (checkbox)
+        /**
+         * This method listens to user actions and calls the appropriate
+         * handlers.
+         * 
+         */
         public void actionPerformed(ActionEvent e) {
             JComponent source = (JComponent) (e.getSource());
             if (source == m_Close || source == b_Close) {
@@ -403,19 +402,6 @@ public class WindowsContentObserver extends ContentObserver {
             } else if (source == m_Print || source == b_Print) {
                 model.print(display);
 
-//            } else if (source == m_Tree) {
-
-//            } else if (source == m_Struc) {
-
-//            } else if (source == b_TreeStruc) {
-
-//            } else if (source == m_Expand || source == b_Expand) {
-                // send "expand" via content window to focus window
-//            } else if (source == m_Restore || source == b_Restore) {
-                // send "restore" via content window to focus window
-//            } else if (source == m_Hidden || source == b_Hidden) {
-                // send "toggle hidden" via content window to focus window
-
             } else if (source == m_ZoomPlus || source == b_ZoomPlus) {
                 ((BlockPanel) display).increaseScaleFactor();
                 zoomfield.setText(Integer.toString((int) Math
@@ -434,8 +420,9 @@ public class WindowsContentObserver extends ContentObserver {
                                     .getScaleFactor() * 100)));
                 } catch (NumberFormatException e1) {
                     zoomfield.setText(gp.get("behavior.defaultzoom"));
-                    System.err
-                            .println("Invalid zoom value. Defaulting to 100%.");
+                    ErrorHandler.getInstance().report(
+                            "Invalid zoom value. Defaulting to 100%.",
+                            ErrorHandler.WARNING);
                     ((BlockPanel) display)
                     .setScaleFactor(Math.floor(Double
                             .parseDouble(zoomfield.getText())) / 100);
@@ -449,10 +436,8 @@ public class WindowsContentObserver extends ContentObserver {
             } else if (source == m_Find) {
 //                String searchFor = JOptionPane.showInputDialog(null,
 //                        "Search for sorts or attributes containing:");
-                // TODO send search request to content window
             } else if (source == b_Find || source == searchfield) {
 //                String searchFor = searchfield.getText();
-                // TODO send search request to content window
 
             } else if (source == m_Raise || source == b_Raise) {
                 gui.raiseMainWindow();

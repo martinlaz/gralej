@@ -1,6 +1,7 @@
 package gralej.controller;
 
 import gralej.client.WebTraleClient;
+import gralej.error.ErrorHandler;
 import gralej.fileIO.FileLoader;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
@@ -27,7 +28,7 @@ import java.net.URL;
  * 
  * 
  * @author Armin
- * @version 
+ * @version $Id$
  */
 
 public class Controller implements INewStreamListener, IParseResultReceiver {
@@ -39,21 +40,29 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     public void open(File file) {
 
         // instantiate a new file handler
-        System.err.println("-- Opening File " + file.getAbsolutePath());
+        ErrorHandler.getInstance().report(
+                "-- Opening File " + file.getAbsolutePath(),
+                ErrorHandler.NOTE);
         FileLoader fl = new FileLoader(file, true);
         fl.registerNewStreamListener(this);
-//        System.err.println("-- Starting to open");
+        ErrorHandler.getInstance().report(
+                "-- Starting to open",
+                ErrorHandler.DEBUG);
         try {
             fl.loadFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-//        System.err.println("-- Opening should run in its thread now");
+        ErrorHandler.getInstance().report(
+                "-- Opening should run in its thread now",
+                ErrorHandler.DEBUG);
 
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
-        System.err.println("-- New stream of type " + streamMeta);
+        ErrorHandler.getInstance().report(
+                "-- New stream of type " + streamMeta,
+                ErrorHandler.NOTE);
 
         try {
             // ask parser factory for parser
@@ -68,13 +77,17 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void streamClosed(StreamInfo meta, Exception ex) {
-        System.err.println("-- Stream closed: " + meta);
+        ErrorHandler.getInstance().report(
+                "-- Stream closed: " + meta, ErrorHandler.NOTE);
         if (ex != null)
-            System.err.println("------ Exception: " + ex);
+            ErrorHandler.getInstance().report(
+                    "------ Exception: " + ex, ErrorHandler.ERROR);
     }
 
     public void newDataPackage(IDataPackage parse) {
-//        System.err.println("-- Controller got new parse");
+        ErrorHandler.getInstance().report(
+                "-- Controller got new parse", 
+                ErrorHandler.DEBUG);
 
         class ParseShowingRunnable implements Runnable {
             IDataPackage parse;
@@ -117,7 +130,8 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         }	
         try {
             server.startListening();
-            System.err.println("-- Server up and listening");
+            ErrorHandler.getInstance().report(
+                    "-- Server up and listening", ErrorHandler.NOTE);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -129,7 +143,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
     
     public void stopServer () {
-        // server.shutdown(); // TODO uncomment once implemented by Niels
+        // server.shutdown(); // TODO uncomment once implemented
         //server = null;
         try {
 			server.killActiveConnections();

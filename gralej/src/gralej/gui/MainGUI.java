@@ -2,12 +2,14 @@ package gralej.gui;
 
 import gralej.controller.Controller;
 import gralej.controller.StreamInfo;
+import gralej.error.ErrorHandler;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 import gralej.parsers.OutputFormatter;
 import gralej.prefs.GralePreferences;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.JButton;
@@ -42,43 +45,38 @@ import javax.swing.event.HyperlinkListener;
 /**
  * 
  * @author Armin
- * @version 
+ * @version $Id$
  */
 public class MainGUI implements ActionListener, ItemListener {
 
-    // display mode
-    static int FRAMES = 0;
-    static int WINDOWS = 1;
-    // private int mode = WINDOWS;
-    // private int mode = FRAMES;
-
     private final IconTheme theme;
-    
+
     private final JFrame frame;
 
-    private Controller c; // the gralej.controller
-    
+    private Controller c;
+
     private GralePreferences gp;
 
     private JMenu saveallmenu;
-    
-    private JMenuItem m_Exit, m_Close, m_CloseAll, m_Open, m_About, m_Pref,
+
+    private JMenuItem m_Quit, m_Close, m_CloseAll, m_Open, m_About, m_Pref,
             m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll,
             m_SaveAllXML, m_Server;
 
     private JToolBar toolbar;
     private JButton b_Open, b_Close, b_CloseAll, b_Save;
-    private JCheckBoxMenuItem m_AutoOpenWindows, m_ShowToolBar, m_ShowStatusBar;
+    private JCheckBoxMenuItem m_AutoOpenWindows, m_ShowToolBar,
+            m_ShowStatusBar;
 
     StatusBar statusbar;
-    
+
     private JMenuBar createMenuBar() {
-        // menu
+
         JMenuBar menubar = new JMenuBar();
         // menu "File"
         JMenu filemenu = new JMenu("File");
         filemenu.setMnemonic('F');
-        
+
         m_Open = new JMenuItem("Open");
         m_Open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 InputEvent.CTRL_DOWN_MASK));
@@ -87,8 +85,6 @@ public class MainGUI implements ActionListener, ItemListener {
 
         m_TestFile = new JMenuItem("Open Sample");
         m_TestFile.addActionListener(this);
-//        m_TestFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-//                InputEvent.CTRL_DOWN_MASK));
         filemenu.add(m_TestFile);
 
         m_Save = new JMenuItem("Save");
@@ -98,7 +94,7 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.add(m_Save);
 
         saveallmenu = new JMenu("Save All");
-        
+
         m_SaveAll = new JMenuItem("TRALE format");
         m_SaveAll.addActionListener(this);
         saveallmenu.add(m_SaveAll);
@@ -106,9 +102,9 @@ public class MainGUI implements ActionListener, ItemListener {
         m_SaveAllXML = new JMenuItem("XML");
         m_SaveAllXML.addActionListener(this);
         saveallmenu.add(m_SaveAllXML);
-        
+
         filemenu.add(saveallmenu);
-        
+
         m_Close = new JMenuItem("Close");
         m_Close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
                 InputEvent.CTRL_DOWN_MASK));
@@ -118,24 +114,26 @@ public class MainGUI implements ActionListener, ItemListener {
         m_CloseAll = new JMenuItem("Close All");
         m_CloseAll.addActionListener(this);
         filemenu.add(m_CloseAll);
-        
+
         filemenu.addSeparator();
 
-        m_Exit = new JMenuItem("Exit");
-        m_Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+        m_Quit = new JMenuItem("Quit");
+        // NB: CTRL-X is caught by the system to mean "cut"
+        // (with focus on certain elements)
+        m_Quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
                 InputEvent.CTRL_DOWN_MASK));
-        m_Exit.addActionListener(this);
-        filemenu.add(m_Exit);
+        m_Quit.addActionListener(this);
+        filemenu.add(m_Quit);
         menubar.add(filemenu);
 
         // menu "Connections"
         JMenu connectmenu = new JMenu("Connections");
         connectmenu.setMnemonic('C');
-        
+
         m_Server = new JMenuItem();
         m_Server.addActionListener(this);
         connectmenu.add(m_Server);
-        
+
         m_WebTrale = new JMenuItem("Open WebTrale Client");
         m_WebTrale.addActionListener(this);
         connectmenu.add(m_WebTrale);
@@ -145,7 +143,7 @@ public class MainGUI implements ActionListener, ItemListener {
         // menu "View"
         JMenu viewmenu = new JMenu("View");
         viewmenu.setMnemonic('V');
-        
+
         m_Cascade = new JMenuItem("Cascade Windows");
         m_Cascade.addActionListener(this);
         viewmenu.add(m_Cascade);
@@ -155,12 +153,12 @@ public class MainGUI implements ActionListener, ItemListener {
         viewmenu.add(m_Tile);
 
         viewmenu.addSeparator();
-        
+
         m_AutoOpenWindows = new JCheckBoxMenuItem("Automatically Open Windows");
         m_AutoOpenWindows.addActionListener(this);
         m_AutoOpenWindows.setState(gp.getBoolean("behavior.openonload"));
         viewmenu.add(m_AutoOpenWindows);
-        
+
         viewmenu.addSeparator();
 
         m_ShowToolBar = new JCheckBoxMenuItem("Show toolbar");
@@ -185,7 +183,7 @@ public class MainGUI implements ActionListener, ItemListener {
         // menu "Help"
         JMenu helpmenu = new JMenu("Help");
         viewmenu.setMnemonic('H');
-        
+
         m_About = new JMenuItem("About GraleJ");
         m_About.addActionListener(this);
         helpmenu.add(m_About);
@@ -217,22 +215,15 @@ public class MainGUI implements ActionListener, ItemListener {
         b_CloseAll.setToolTipText("Close All");
         toolbar.add(b_CloseAll);
 
-        /*
-         * b_SaveAll = new JButton(theme.getIcon("filefloppy"));
-         * b_SaveAll.addActionListener(this); toolbar.add(b_SaveAll);
-         */
-
     }
 
-    // User actions broadcast Events. Depending on the source, they're
-    // ActionEvents (menu item) or ItemEvents (checkbox)
     public void actionPerformed(ActionEvent e) {
         JComponent source = (JComponent) (e.getSource());
-        if (source == m_Exit) {
+        if (source == m_Quit) {
             System.exit(0);
-            
-// OPEN
-            
+
+            // OPEN
+
         } else if (source == m_Open || source == b_Open) {
             JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
             fc.setMultiSelectionEnabled(true);
@@ -241,63 +232,70 @@ public class MainGUI implements ActionListener, ItemListener {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File[] files = fc.getSelectedFiles();
                 for (File f : files) {
-                    /* TODO if more than one file contains more than one data
-                     * item, they're opened not in order by file (threading)
-                     * 
+                    /*
+                     * if more than one file contains more than one data item,
+                     * they're opened not in order by file (threading)
                      */
                     c.open(f);
                 }
                 try {
                     gp.put("input.lastdir", files[0].getCanonicalPath());
                 } catch (IOException e1) {
-                    System.err
-                            .println("Getting the directory of the (first) chosen file failed.");
+                    ErrorHandler
+                            .getInstance()
+                            .report(
+                                    "Getting the directory of the (first) chosen file failed.",
+                                    ErrorHandler.WARNING);
                     e1.printStackTrace();
                 }
             } else {
                 // file could not be opened. doing nothing might be appropriate
             }
-            
-// OPEN SAMPLE FILES
-            
+
+            // OPEN SAMPLE FILES
+
         } else if (source == m_TestFile) {
             final String resName = "/gralej/resource/sample.GRALE";
             InputStream is = getClass().getResourceAsStream(resName);
-            if (is == null) // should never happen
+            if (is == null) {// should never happen
+                ErrorHandler.getInstance().report(
+                        "Initializing InputStream failed.",
+                        ErrorHandler.CRITICAL);
                 throw new RuntimeException("Internal program error");
+            }
             c.newStream(is, new StreamInfo("grisu", resName));
-            
-         // CONNECT TO WEB SERVER
-                     
+
+            // CONNECT TO WEB SERVER
+
         } else if (source == m_WebTrale) {
             while (true) {
-                String surl = JOptionPane
-                        .showInputDialog(null, "Choose server", gp.get("input.lastserver"));
-                if (surl == null) 
+                String surl = JOptionPane.showInputDialog(null,
+                        "Choose server", gp.get("input.lastserver"));
+                if (surl == null)
                     break; // cancel
                 try {
                     c.startWebTraleClient(new URL(surl));
-                }
-                catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), ex.toString(), JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    ErrorHandler.getInstance().report(ex.getMessage(),
+                            ErrorHandler.ERROR);
                     continue; // try again
                 }
                 try {
                     gp.put("input.lastserver", surl);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
                 break;
             }
-         // CLOSE
+
+            // CLOSE
         } else if (source == m_Close || source == b_Close) {
             c.getModel().close();
         } else if (source == m_CloseAll || source == b_CloseAll) {
             c.getModel().closeAll();
-            
-         // SAVE
-                     
+
+            // SAVE
+
         } else if (source == m_Save || source == b_Save) {
             File f = saveDialog(OutputFormatter.TRALEFormat);
             if (f != null) {
@@ -307,20 +305,15 @@ public class MainGUI implements ActionListener, ItemListener {
             File f = saveDialog(OutputFormatter.TRALEFormat);
             if (f != null) {
                 c.getModel().saveAll(f, OutputFormatter.TRALEFormat);
-            } else {
-                // file could not be opened. doing nothing might be appropriate
             }
         } else if (source == m_SaveAllXML) {
             File f = saveDialog(OutputFormatter.XMLFormat);
             if (f != null) {
                 c.getModel().saveAll(f, OutputFormatter.XMLFormat);
-            } else {
-                // file could not be opened. doing nothing might be appropriate
             }
 
-            
-         // VIEW MENU ITEMS
-                     
+            // VIEW MENU ITEMS
+
         } else if (source == m_About) {
             AboutGraleJWindow w = AboutGraleJWindow.getInstance();
             w.showWindow();
@@ -331,15 +324,16 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_ShowToolBar) {
             gp.putBoolean("behavior.showtoolbar", m_ShowToolBar.getState());
             toolbar.setVisible(m_ShowToolBar.getState());
-            
+
         } else if (source == m_ShowStatusBar) {
             gp.putBoolean("behavior.showstatusbar", m_ShowStatusBar.getState());
             statusbar.setVisible(m_ShowStatusBar.getState());
-            
+
         } else if (source == m_Pref) {
-            //GenDialog frame = new GenDialog(null);
-            //frame.setVisible(true);
-        
+            // TODO tie preferences window in here
+            // GenDialog frame = new GenDialog(null);
+            // frame.setVisible(true);
+
         } else if (source == m_Server) {
             // maybe not the best way to store the information
             if (m_Server.getText().equals("Start Server")) {
@@ -351,20 +345,23 @@ public class MainGUI implements ActionListener, ItemListener {
             gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
         }
     }
-    
+
+    /**
+     * Inner class for the About window, singleton instance
+     */
     static class AboutGraleJWindow extends JFrame implements HyperlinkListener {
-        
+
         private static AboutGraleJWindow instance;
-        
-        static AboutGraleJWindow getInstance () {
-            if (instance == null) instance = new AboutGraleJWindow();
+
+        static AboutGraleJWindow getInstance() {
+            if (instance == null)
+                instance = new AboutGraleJWindow();
             return instance;
         }
-        
-        private AboutGraleJWindow () {
+
+        private AboutGraleJWindow() {
             super("About GraleJ");
 
-            // load info text from HTML file
             JEditorPane editorPane = new JEditorPane();
 
             editorPane.setEditable(false);
@@ -374,10 +371,13 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     editorPane.setPage(aboutfile);
                 } catch (IOException e) {
-                    System.err.println("Attempted to read a bad URL: " + aboutfile);
+                    ErrorHandler.getInstance().report(
+                            "Attempted to read a bad URL: " + aboutfile,
+                            ErrorHandler.WARNING);
                 }
             } else {
-                System.err.println("Couldn't find about.html.");
+                ErrorHandler.getInstance().report("Couldn't find about.html.",
+                        ErrorHandler.WARNING);
             }
 
             editorPane.setPreferredSize(new Dimension(250, 145));
@@ -387,7 +387,7 @@ public class MainGUI implements ActionListener, ItemListener {
             pack();
             setLocationByPlatform(true);
         }
-        
+
         void showWindow() {
             instance.setVisible(true);
             instance.pack();
@@ -395,26 +395,32 @@ public class MainGUI implements ActionListener, ItemListener {
 
         
         public void hyperlinkUpdate(HyperlinkEvent event) {
-            // TODO Auto-generated method stub
             if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 try {
-                    Runtime.getRuntime().exec("cmd /c start "+event.getURL());
-                } catch (IOException e) {
+                    Desktop.getDesktop().browse(event.getURL().toURI());
+                } catch (IOException e1) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    e1.printStackTrace();
+                } catch (URISyntaxException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
             }
-            
         }
-        
     }
 
+    /**
+     * A standard saving dialog with convenient file extension handling
+     * 
+     * @param format
+     * @return the chosen file
+     */
     public File saveDialog(int format) {
         JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
         fc.setMultiSelectionEnabled(false);
         // fc.setAcceptAllFileFilterUsed(false);
-        fc.addChoosableFileFilter(c.getModel().getOutputFormatter()
-                .getFilter(format));
+        fc.addChoosableFileFilter(c.getModel().getOutputFormatter().getFilter(
+                format));
         int returnVal = fc.showSaveDialog(null);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -425,23 +431,26 @@ public class MainGUI implements ActionListener, ItemListener {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            
-            if (!f.getName().toLowerCase().endsWith(c.getModel().getOutputFormatter()
-                    .getExtension(format))) { 
-               f = new File(f.getPath() + "." + c.getModel().getOutputFormatter()
-                       .getExtension(format));
-            } 
 
+            if (!f.getName().toLowerCase().endsWith(
+                    c.getModel().getOutputFormatter().getExtension(format))) {
+                f = new File(f.getPath()
+                        + "."
+                        + c.getModel().getOutputFormatter()
+                                .getExtension(format));
+            }
 
-            if (!f.exists() || JOptionPane.showConfirmDialog(null,
-                    "File "+f.getName()+" exists. Overwrite?", "Overwrite?",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (!f.exists()
+                    || JOptionPane.showConfirmDialog(null, "File "
+                            + f.getName() + " exists. Overwrite?",
+                            "Overwrite?", 
+                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 return f;
             }
         }
         return null;
     }
-    
+
     public void itemStateChanged(ItemEvent e) {
         // JMenuItem source = (JMenuItem)(e.getSource());
     }
@@ -453,16 +462,6 @@ public class MainGUI implements ActionListener, ItemListener {
         this.c = c;
         gp = GralePreferences.getInstance();
 
-        // first: style
-        /*
-        // look and feel moved to Main.java by Niels
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
-        
         theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
 
         frame = new JFrame("GraleJ");
@@ -477,25 +476,10 @@ public class MainGUI implements ActionListener, ItemListener {
         toolbar.setVisible(gp.getBoolean("behavior.showtoolbar"));
         frame.getContentPane().add(toolbar, BorderLayout.NORTH);
 
-        // list observer
+        // observers
         ContentObserver list = new ListContentObserver(c.getModel(), this);
-
-        /*
-         * if (mode == FRAMES) {
-         * content = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-         * content.setOneTouchExpandable(true); 
-         * content.setDividerLocation(150);
-         * content.setPreferredSize(new Dimension(500, 250));
-         * frame.getContentPane().add(content, BorderLayout.CENTER);
-         * content.add(list.getDisplay());
-         * ContentObserver frames = new FramesContentObserver(c.getModel());
-         * content.add(frames.getDisplay()); 
-         * 
-         * } else if (mode == WINDOWS) {
-         */
         new WindowsContentObserver(c.getModel(), theme, this);
         frame.getContentPane().add(list.getDisplay(), BorderLayout.CENTER);
-        // }
 
         statusbar = new StatusBar();
         frame.getContentPane().add(statusbar, BorderLayout.PAGE_END);
@@ -506,33 +490,39 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.pack();
         frame.setSize(gp.getInt("gui.windows.main.size.width"), 
                       gp.getInt("gui.windows.main.size.height"));
-        
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent we) {
                 try {
                     gp.putInt("gui.windows.main.size.width", frame.getWidth());
                     gp.putInt("gui.windows.main.size.height", frame.getHeight());
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 System.exit(0);
             }
         });
-        
+
         frame.setLocationByPlatform(true);
 
         frame.setVisible(true);
     }
-    
+
+    /**
+     * Inner class for the status bar.
+     * Rudimentary functionality: Number of items in the list; connection
+     * status
+     * 
+     * @author Armin
+     *
+     */
     class StatusBar extends JPanel {
-        // TODO implement contents of the bottom status line
-        
+
         JLabel counter;
         JLabel connectionInfo;
-        
-        StatusBar () {
+
+        StatusBar() {
             super();
             counter = new JLabel("0");
             add(counter, BorderLayout.WEST);
@@ -540,24 +530,23 @@ public class MainGUI implements ActionListener, ItemListener {
             add(connectionInfo, BorderLayout.EAST);
             setVisible(gp.getBoolean("behavior.showstatusbar"));
         }
-        
-        void setNumberOfItems (int i) {
-            counter.setText(""+i+" data items; ");            
-        }
-        
-        void setConnectionInfo (String info) {
-            connectionInfo.setText(info);            
+
+        void setNumberOfItems(int i) {
+            counter.setText("" + i + " data items; ");
         }
 
-
+        void setConnectionInfo(String info) {
+            connectionInfo.setText(info);
+        }
 
     }
 
     /**
-     * Some menu items and buttons depend on a file being selected.
-     * This method is called by the list whenever the selection changes.
+     * Some menu items and buttons depend on a file being selected. This method
+     * is called by the list whenever the selection changes.
      * 
-     * @param b: whether a list item is selected
+     * @param b:
+     *            whether a list item is selected
      */
     public void notifyOfSelection(boolean b) {
         m_Close.setEnabled(b);
@@ -567,21 +556,19 @@ public class MainGUI implements ActionListener, ItemListener {
     }
 
     /**
-     * Other menu items depend on the non-emptiness of the list.
-     * This method shows or hides them, and it's the list's
-     * responsibility to notify the GUI accordingly.
+     * Other menu items depend on the non-emptiness of the list. This method
+     * shows or hides them, and it's the list's responsibility to notify the GUI
+     * accordingly.
      * 
-     * @param isEmpty
+     * @param number of elements in the list
      */
     public void notifyOfListElements(int number) {
         boolean isEmpty = (number == 0);
         saveallmenu.setEnabled(!isEmpty);
         m_CloseAll.setEnabled(!isEmpty);
-        // b_SaveAll.setEnabled(!isEmpty);
-        
         statusbar.setNumberOfItems(number);
     }
-    
+
     public void notifyOfServerConnection(boolean isConnected) {
         if (isConnected) {
             m_Server.setText("Stop Server");
@@ -591,8 +578,12 @@ public class MainGUI implements ActionListener, ItemListener {
             statusbar.setConnectionInfo("not connected");
         }
     }
-    
-    public void raiseMainWindow () {
+
+    /**
+     * Get main window into the foreground.
+     * Called from any data window.
+     */
+    public void raiseMainWindow() {
         frame.requestFocus();
     }
 

@@ -1,5 +1,6 @@
 package gralej.parsers;
 
+import gralej.error.ErrorHandler;
 import gralej.gui.blocks.BlockPanel;
 import gralej.om.ITree;
 import gralej.prefs.GralePreferences;
@@ -12,7 +13,9 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -27,7 +30,6 @@ import javax.print.SimpleDoc;
 import javax.print.StreamPrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,11 +42,12 @@ import org.w3c.dom.Document;
 import sun.print.PSStreamPrinterFactory;
 
 /**
- * 
+ * A singleton instance of the OutputFormatter handles the different output
+ * formats, each identified by an int.
  * 
  * 
  * @author Armin
- *
+ * @version $Id$
  */
 public class OutputFormatter {
 
@@ -56,21 +59,19 @@ public class OutputFormatter {
     public final static int XMLFormat = 5;
     public final static int PNGFormat = 6;
 
-
+    // instantiation
     private static OutputFormatter instance = null;
 
-    private OutputFormatter() {}
-
     public static OutputFormatter getInstance() {
-        if (instance == null) 
+        if (instance == null)
             instance = new OutputFormatter();
         return instance;
     }
 
-    public FileFilter getFilter(int format) {
-        return new FormatFilter(format);
-    }
-    
+    /**
+     * @param a format
+     * @return the file extension (without ".")
+     */
     public String getExtension(int format) {
         switch (format) {
         case TRALEFormat:
@@ -89,6 +90,14 @@ public class OutputFormatter {
             return "xml";
         }
         return "";
+    }
+
+    /**
+     * @param format
+     * @return a file filter for swing.filechooser
+     */
+    public FileFilter getFilter(int format) {
+        return new FormatFilter(format);
     }
 
     class FormatFilter extends javax.swing.filechooser.FileFilter {
@@ -131,7 +140,8 @@ public class OutputFormatter {
 
         @Override
         public boolean accept(File f) {
-            if (f.isDirectory()) return true;
+            if (f.isDirectory())
+                return true;
             return f.getName().toLowerCase().endsWith(extension);
         }
 
@@ -139,47 +149,87 @@ public class OutputFormatter {
         public String getDescription() {
             return description;
         }
-        
+
     }
 
-    public void save(PrintStream p, IDataPackage data, JComponent view, int format) {
+    /**
+     * General saving method. Takes:
+     * 
+     * @param a
+     *            stream p to print to
+     * @param an
+     *            IDataPackage data
+     * @param and
+     *            also its view
+     * @param and
+     *            finally the format to save to
+     */
+    public void save(PrintStream p, IDataPackage data, JComponent view,
+            int format) {
 
         switch (format) {
         case TRALEFormat:
-            if (data != null) toTRALE(data, p);
-            else System.err.println("Bad function call (no data).");
+            if (data != null)
+                toTRALE(data, p);
+            else
+                ErrorHandler.getInstance().report(
+                        "Bad function call (no data).", ErrorHandler.ERROR);
             break;
-        case LaTeXFormat: 
-            if (data != null) toLaTeX(data, p);
-            else System.err.println("Bad function call (no data).");
+        case LaTeXFormat:
+            if (data != null)
+                toLaTeX(data, p);
+            else
+                ErrorHandler.getInstance().report(
+                        "Bad function call (no data).", ErrorHandler.ERROR);
             break;
         case SVGFormat:
-            if (view != null) toSVG(view, p);
-            else System.err.println(
-                    "Bad function call (SVG rendering needs a Swing JComponent as input).");
+            if (view != null)
+                toSVG(view, p);
+            else
+                ErrorHandler
+                        .getInstance()
+                        .report(
+                                "Bad function call (SVG rendering needs a Swing JComponent as input).",
+                                ErrorHandler.ERROR);
             break;
         case PostscriptFormat:
-            if (view != null) toPostscript(view, p);
-            else System.err.println(
-                    "Bad function call (postscript rendering needs a Swing JComponent as input).");
+            if (view != null)
+                toPostscript(view, p);
+            else
+                ErrorHandler
+                        .getInstance()
+                        .report(
+                                "Bad function call (postscript rendering needs a Swing JComponent as input).",
+                                ErrorHandler.ERROR);
             break;
         case JPGFormat:
-            if (view != null) toPixelGraphic(view, p, "jpg");
-            else System.err.println(
-            "Bad function call (image rendering needs a Swing JComponent as input).");
+            if (view != null)
+                toPixelGraphic(view, p, "jpg");
+            else
+                ErrorHandler
+                        .getInstance()
+                        .report(
+                                "Bad function call (image rendering needs a Swing JComponent as input).",
+                                ErrorHandler.ERROR);
             break;
         case PNGFormat:
-            if (view != null) toPixelGraphic(view, p, "png");
-            else System.err.println(
-            "Bad function call (image rendering needs a Swing JComponent as input).");
+            if (view != null)
+                toPixelGraphic(view, p, "png");
+            else
+                ErrorHandler
+                        .getInstance()
+                        .report(
+                                "Bad function call (image rendering needs a Swing JComponent as input).",
+                                ErrorHandler.ERROR);
             break;
         case XMLFormat:
-            if (data != null) toXML(data, p);
-            else System.err.println("Bad function call (no data).");
+            if (data != null)
+                toXML(data, p);
+            else
+                ErrorHandler.getInstance().report(
+                        "Bad function call (no data).", ErrorHandler.ERROR);
             break;
         }
-
-
     }
 
     private void toTRALE(IDataPackage data, PrintStream p) {
@@ -189,7 +239,7 @@ public class OutputFormatter {
     private void toLaTeX(IDataPackage data, PrintStream p) {
         GralePreferences gp = GralePreferences.getInstance();
         if (gp.getBoolean("output.latex.snippet")) {
-            toLaTeXSnippet (data, p);
+            toLaTeXSnippet(data, p);
         } else {
             toLaTeXFile(data, p);
         }
@@ -231,15 +281,14 @@ public class OutputFormatter {
         }
         p.print(output);
     }
-    
 
     private void toSVG(JComponent bp, PrintStream p) {
-        
+
         DOMImplementation domImpl = null;
         try {
-            domImpl = DocumentBuilderFactory.newInstance().newDocumentBuilder().getDOMImplementation();
-        }
-        catch (Exception ex) {
+            domImpl = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .getDOMImplementation();
+        } catch (Exception ex) {
             ex.printStackTrace();
             return;
         }
@@ -254,7 +303,7 @@ public class OutputFormatter {
         boolean db = ((BlockPanel) bp).getDrawingPane().isDoubleBuffered();
         ((BlockPanel) bp).getDrawingPane().setDoubleBuffered(false);
         ((BlockPanel) bp).getDrawingPane().paint(svgGenerator);
-        
+
         try {
             Writer out = new OutputStreamWriter(p, "UTF-8");
             boolean useCSS = true;
@@ -269,52 +318,61 @@ public class OutputFormatter {
 
         // resetting
         ((BlockPanel) bp).getDrawingPane().setDoubleBuffered(db);
-        
+
     }
-    
+
     private void toPostscript(JComponent bp, PrintStream p) {
         PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
         StreamPrintService sps = factory.getPrintService(p);
         DocPrintJob pj = sps.createPrintJob();
-        Doc doc = new SimpleDoc(new DataPrinter(bp), 
+        Doc doc = new SimpleDoc(new DataPrinter(bp),
                 DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
 
-        try { 
+        try {
             pj.print(doc, new HashPrintRequestAttributeSet());
-        } catch(PrintException pe){
-            System.err.println("PrintException : "+pe);
+        } catch (PrintException pe) {
+            ErrorHandler.getInstance().report("PrintException : " + pe,
+                    ErrorHandler.ERROR);
         }
     }
 
-    
     /**
      * Saving to a pixel based graphics format. Supports PNG and JPG
      * 
-     * @param bp
-     * @param p
+     * @param bp: JComponent to print
+     * @param p: PrintStream
      * @param format
      */
-    private void toPixelGraphic (JComponent bp, PrintStream p, String format) {
+    private void toPixelGraphic(JComponent bp, PrintStream p, String format) {
         try {
             Dimension imgSize = ((BlockPanel) bp).getScaledSize();
-            BufferedImage img = new BufferedImage(imgSize.width, imgSize.height,
-                    BufferedImage.TYPE_INT_RGB);
+            BufferedImage img = new BufferedImage(imgSize.width,
+                    imgSize.height, BufferedImage.TYPE_INT_RGB);
             Graphics2D grap = img.createGraphics();
             ((BlockPanel) bp).getDrawingPane().paint(grap);
             grap.dispose();
             ImageIO.write(img, format, p);
         } catch (Throwable e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), e.getClass().toString(), JOptionPane.ERROR_MESSAGE);
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ErrorHandler.getInstance().report(e.getMessage(),
+                    ErrorHandler.ERROR);
         }
     }
 
     private void toXML(IDataPackage data, PrintStream p) {
-        p.print("<parse>\n");
-        OM2XMLVisitor visitor = new OM2XMLVisitor();
-        p.print(visitor.output(data.getModel()));
-        p.print("</parse>\n");
+        try {
+            Writer out = new BufferedWriter(new OutputStreamWriter(p, "UTF8"));
+            out.write("<parse>\n");
+            OM2XMLVisitor visitor = new OM2XMLVisitor();
+            out.write(visitor.output(data.getModel()));
+            out.write("</parse>\n");
+            out.close();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void print(JComponent view) {
@@ -325,7 +383,8 @@ public class OutputFormatter {
             try {
                 printJob.print();
             } catch (PrinterException pe) {
-                System.out.println("Error printing: " + pe);
+                ErrorHandler.getInstance().report("Error printing: " + pe,
+                        ErrorHandler.ERROR);
             }
         }
     }
@@ -346,20 +405,18 @@ public class OutputFormatter {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.translate(pageFormat.getImageableX(), pageFormat
                         .getImageableY());
-                // Turn off double buffering
                 RepaintManager currentManager = RepaintManager
                         .currentManager(view);
+                // Turn off double buffering
                 currentManager.setDoubleBufferingEnabled(false);
 
                 view.paint(g2d);
+
                 // Turn double buffering back on
                 currentManager.setDoubleBufferingEnabled(true);
 
                 return (PAGE_EXISTS);
             }
-
         }
-
     }
-
 }
