@@ -1,5 +1,7 @@
 package gralej.gui.icons;
 
+import gralej.error.ErrorHandler;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,8 +91,9 @@ public class GenericIconTheme implements IconTheme {
         }
 
         if (icon == null) {
-            System.err.println("GenericIconTheme: Failed to load icon: "
-                    + filename);
+            ErrorHandler.getInstance().report(
+                    "GenericIconTheme: Failed to load icon: " + filename,
+                    ErrorHandler.WARNING);
         }
 
         return icon;
