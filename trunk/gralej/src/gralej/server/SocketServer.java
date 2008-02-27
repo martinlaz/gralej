@@ -58,6 +58,7 @@ public class SocketServer extends ServerBaseImpl {
                 }
 
             } catch (IOException e) {
+            	e.printStackTrace();
             	if (! shutdown_state) {
             		ErrorHandler.getInstance().report("An exception "
             				+ "occured while waiting for incoming connections."
@@ -70,7 +71,6 @@ public class SocketServer extends ServerBaseImpl {
             				"this may be normal.",
             				ErrorHandler.WARNING);
             	}
-            	e.printStackTrace();
 
             }
             
