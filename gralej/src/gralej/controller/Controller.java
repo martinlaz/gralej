@@ -133,8 +133,12 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
             ErrorHandler.getInstance().report(
                     "-- Server up and listening", ErrorHandler.NOTE);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	e.printStackTrace();
+        	ErrorHandler.getInstance().report(
+        			"Cannot bind server to network port "
+        			+ gp.getInt("server.port")
+        			+ ", perhaps another GraleJ is running?"
+        			, ErrorHandler.ERROR);
         }
 
         server.registerNewStreamListener(this);

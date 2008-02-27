@@ -1,6 +1,7 @@
 package gralej.server;
 
 import gralej.controller.StreamInfo;
+import gralej.error.ErrorHandler;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -58,15 +59,16 @@ public class SocketServer extends ServerBaseImpl {
 
             } catch (IOException e) {
             	if (! shutdown_state) {
-                    // TODO: hand this error up to the GUI/user somehow?
-            		System.err.println(this.getName() + ": Exception "
+            		ErrorHandler.getInstance().report("An exception "
             				+ "occured while waiting for incoming connections."
-            				+ "Server thread terminates, restart the server"
-            				+ "to regain networking functionality. ");
+            				+ "Server thread terminates now, restart the server"
+            				+ "to regain networking functionality. ",
+            				ErrorHandler.ERROR);
             	} else {
-            		System.err.println(this.getName() + 
+            		ErrorHandler.getInstance().report(this.getName() + 
             				": Caught exception during server shutdown, " +
-            				"this may be normal.");
+            				"this may be normal.",
+            				ErrorHandler.WARNING);
             	}
             	e.printStackTrace();
 
@@ -119,16 +121,19 @@ public class SocketServer extends ServerBaseImpl {
             } catch (IOException e) {
                 // the remote host closed the connection before something
                 // useful has happened, we can ignore this.
-            	if ( ! shutdown_state) {
-            		System.err.println(this.getName()
-            				+ ": Remote closed connection "
-            				+ "before sending something useful. Closing handler.");
-            	} else {
-            		System.err.println(this.getName() + ": " +
-            				"Caught exception during connection shutdown, " +
-            				"this may be normal.");
-            	}
             	e.printStackTrace();
+            	if ( ! shutdown_state) {
+            		ErrorHandler.getInstance().report(this.getName()
+            				+ ": Remote closed connection "
+            				+ "before sending something useful. Closing handler.",
+            				ErrorHandler.WARNING);
+            	} else {
+            		ErrorHandler.getInstance().report(this.getName() + ": " +
+            				"Caught exception during connection shutdown, " +
+            				"this may be normal.",
+            				ErrorHandler.WARNING);
+            	}
+            	
             }
             
             removeConnHandler(this);

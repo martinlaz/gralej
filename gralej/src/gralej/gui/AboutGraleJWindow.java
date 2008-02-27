@@ -1,15 +1,11 @@
 package gralej.gui;
 
 import gralej.error.ErrorHandler;
-import gralej.gui.icons.IconTheme;
-import gralej.gui.icons.IconThemeFactory;
-import gralej.prefs.GralePreferences;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.io.IOException;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
