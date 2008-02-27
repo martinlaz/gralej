@@ -97,6 +97,7 @@ public class GenDialog extends JDialog {
      */
     private void initialize() throws GralePrefsInitException {
         this.setSize(750, 450);
+        this.setLocationRelativeTo(getParent());
         this.setTitle("GraleJ Preferences");
         this.setContentPane(getJContentPane());
         this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);

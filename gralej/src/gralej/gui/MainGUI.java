@@ -5,6 +5,7 @@ import gralej.controller.StreamInfo;
 import gralej.error.ErrorHandler;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
+import gralej.gui.prefsdialog.GenDialog;
 import gralej.parsers.OutputFormatter;
 import gralej.prefs.GralePreferences;
 
@@ -28,6 +29,7 @@ import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -315,7 +317,7 @@ public class MainGUI implements ActionListener, ItemListener {
             // VIEW MENU ITEMS
 
         } else if (source == m_About) {
-            AboutGraleJWindow w = AboutGraleJWindow.getInstance();
+            AboutGraleJWindow w = new AboutGraleJWindow(frame);
             w.showWindow();
         } else if (source == m_Cascade) {
             c.getModel().cascade();
@@ -331,8 +333,8 @@ public class MainGUI implements ActionListener, ItemListener {
 
         } else if (source == m_Pref) {
             // TODO tie preferences window in here
-            // GenDialog frame = new GenDialog(null);
-            // frame.setVisible(true);
+            GenDialog prefFrame = new GenDialog(frame);
+            prefFrame.setVisible(true);
 
         } else if (source == m_Server) {
             // maybe not the best way to store the information
@@ -343,69 +345,6 @@ public class MainGUI implements ActionListener, ItemListener {
             }
         } else if (source == m_AutoOpenWindows) {
             gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
-        }
-    }
-
-    /**
-     * Inner class for the About window, singleton instance
-     */
-    static class AboutGraleJWindow extends JFrame implements HyperlinkListener {
-
-        private static AboutGraleJWindow instance;
-
-        static AboutGraleJWindow getInstance() {
-            if (instance == null)
-                instance = new AboutGraleJWindow();
-            return instance;
-        }
-
-        private AboutGraleJWindow() {
-            super("About GraleJ");
-
-            JEditorPane editorPane = new JEditorPane();
-
-            editorPane.setEditable(false);
-            java.net.URL aboutfile = getClass().getResource(
-                    "/gralej/resource/about.html");
-            if (aboutfile != null) {
-                try {
-                    editorPane.setPage(aboutfile);
-                } catch (IOException e) {
-                    ErrorHandler.getInstance().report(
-                            "Attempted to read a bad URL: " + aboutfile,
-                            ErrorHandler.WARNING);
-                }
-            } else {
-                ErrorHandler.getInstance().report("Couldn't find about.html.",
-                        ErrorHandler.WARNING);
-            }
-
-            editorPane.setPreferredSize(new Dimension(250, 145));
-            editorPane.setMinimumSize(new Dimension(10, 10));
-            editorPane.addHyperlinkListener(this);
-            add(editorPane);
-            pack();
-            setLocationByPlatform(true);
-        }
-
-        void showWindow() {
-            instance.setVisible(true);
-            instance.pack();
-        }
-
-        
-        public void hyperlinkUpdate(HyperlinkEvent event) {
-            if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                try {
-                    Desktop.getDesktop().browse(event.getURL().toURI());
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (URISyntaxException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-            }
         }
     }
 
