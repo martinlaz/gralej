@@ -1,18 +1,17 @@
 package gralej.controller;
 
-import gralej.gui.*;
-import gralej.parsers.*;
+import gralej.gui.ContentObserver;
+import gralej.gui.ListContentObserver;
+import gralej.gui.WindowsContentObserver;
+import gralej.parsers.IDataPackage;
+import gralej.parsers.OutputFormatter;
 import gralej.prefs.GralePreferences;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -103,10 +102,16 @@ public class ContentModel {
      */
     public void saveAll(File f, int format) {
         try {
-            PrintStream p = new PrintStream(new FileOutputStream(f));
+            PrintStream p ;
             if (format == OutputFormatter.XMLFormat) {
-                p.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<parses>\n");
-            }
+            	// for XML, enforce UTF8 encoding
+            	p = new PrintStream(new FileOutputStream(f), false, "UTF8");
+                p.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            } else {
+            	// not XML, use system encoding
+            	p = new PrintStream(new FileOutputStream(f));
+            }            
+            
             for (int i = 0; i < files.size(); i++) {
                 of.save(p, files.get(i), null, format);
             }
@@ -117,7 +122,10 @@ public class ContentModel {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        } catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
     }
 
@@ -132,13 +140,15 @@ public class ContentModel {
      */
     public void save(File f, IDataPackage dataItem, JComponent display, int format) {
         try {
-            PrintStream p = new PrintStream(new FileOutputStream(f));
-
+            PrintStream p;
+            
             if (format == OutputFormatter.XMLFormat) {
-                Writer out = new BufferedWriter(new OutputStreamWriter(
-                        p, "UTF8"));
-                out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-                out.close();
+            	// for XML, enforce UTF8 encoding
+            	p = new PrintStream(new FileOutputStream(f), false, "UTF8");
+                p.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            } else {
+            	// not XML, use system encoding
+            	p = new PrintStream(new FileOutputStream(f));
             }
             of.save(p, dataItem, display, format);
             p.close();
@@ -146,9 +156,6 @@ public class ContentModel {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
