@@ -34,7 +34,7 @@ public class ErrorHandler {
     public final static int CRITICAL = 3; // probably too late then
     public final static int DEBUG = 4; // debug messages
 
-    private int[] mapping;
+    private int[] mapping = new int[5];
 
     private String file;
 
@@ -100,8 +100,10 @@ public class ErrorHandler {
             try {
                 p = new PrintStream(new FileOutputStream(file));
                 p.print(error);
+                p.close();
             } catch (FileNotFoundException e) {
-                report("Logfile " + file + " cannot be accessed", ERROR);
+//                report("Logfile " + file + " cannot be accessed", ERROR);
+                System.err.println("Logfile " + file + " cannot be accessed.");
             }
             break;
         }
