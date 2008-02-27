@@ -1,15 +1,19 @@
 package gralej.gui;
 
 import gralej.error.ErrorHandler;
+import gralej.gui.icons.IconTheme;
+import gralej.gui.icons.IconThemeFactory;
+import gralej.prefs.GralePreferences;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -18,13 +22,26 @@ import javax.swing.event.HyperlinkListener;
  */
 class AboutGraleJWindow extends JDialog implements HyperlinkListener {
 
-    public AboutGraleJWindow(JFrame parent) {
+	private static final long serialVersionUID = 2993718642470952363L;
+
+
+	public AboutGraleJWindow(JFrame parent) {
         super(parent, true);
         setTitle("About GraleJ");
         setLocationRelativeTo(parent);
+        
+        // get icon theme
+        /*GralePreferences prefs = GralePreferences.getInstance();
+        IconTheme icontheme = IconThemeFactory.getIconTheme(prefs
+                .get("gui.l+f.icontheme"));
+
+        JButton OKbtn = new JButton(
+        		"OK", icontheme.getIcon("ok"));*/
 
         JEditorPane editorPane = new JEditorPane();
-
+        JScrollPane scrollPane = new JScrollPane(editorPane);
+        
+        
         editorPane.setEditable(false);
         java.net.URL aboutfile = getClass().getResource(
                 "/gralej/resource/about.html");
@@ -41,10 +58,11 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
                     ErrorHandler.WARNING);
         }
 
-        editorPane.setPreferredSize(new Dimension(250, 145));
+        editorPane.setPreferredSize(new Dimension(350, 350));
         editorPane.setMinimumSize(new Dimension(10, 10));
         editorPane.addHyperlinkListener(this);
-        add(editorPane);
+        add(scrollPane);
+        //add(OKbtn);
         pack();
     }
 
@@ -57,12 +75,11 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
         if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             try {
                 Desktop.getDesktop().browse(event.getURL().toURI());
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            } catch (Exception e) {
+            	// throw any exception to console and at the user.
+                e.printStackTrace();
+                ErrorHandler.getInstance().report(e.getMessage(), 
+                		ErrorHandler.ERROR);
             }
         }
     }
