@@ -33,12 +33,12 @@ public class BehaviorOptsPane extends JComponent {
         cons.anchor = GridBagConstraints.WEST;
         // cons.weightx = 1.0;
 
-        JComponent o1 = OptionComponentFactory.getComponent(prefs,
+        /*JComponent o1 = OptionComponentFactory.getComponent(prefs,
                 "behavior.internalframes", "boolean",
                 "Use internal windows for AVMs");
         cons.gridwidth = GridBagConstraints.REMAINDER; // GUI-"\n"
         layout.setConstraints(o1, cons);
-        add(o1);
+        add(o1);*/
 
         JComponent o2 = OptionComponentFactory.getComponent(prefs,
                 "behavior.alwaysfitsize", "boolean",
