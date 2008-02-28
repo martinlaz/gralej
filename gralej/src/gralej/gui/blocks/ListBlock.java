@@ -2,17 +2,30 @@ package gralej.gui.blocks;
 
 class ListBlock extends ContentOwningBlock {
     ListBlock(ListContentBlock content) {
-        setLayout(LayoutFactory.getListLayout());
-
-        LabelFactory labfac = LabelFactory.getInstance();
-
-        addChild(labfac.createListLBracketLabel());
-
-        if (!content.isEmpty()) {
+        if (!content.isEmpty())
+            _children.add(content);
+    }
+    
+    @Override
+    public void init() {
+        setLayout(getPanel().getLayoutFactory().getListLayout());
+        
+        LabelFactory labfac = getPanel().getLabelFactory();
+        
+        if (isEmpty()) {
+            addChild(labfac.createListLBracketLabel());
+            addChild(labfac.createListRBracketLabel());
+        }
+        else {
+            ListContentBlock content = (ListContentBlock) _children.get(0);
+            _children.clear();
+            
+            addChild(labfac.createListLBracketLabel());
             addChild(content);
             setContent(content);
+            addChild(labfac.createListRBracketLabel());
         }
 
-        addChild(labfac.createListRBracketLabel());
+        super.init();
     }
 }

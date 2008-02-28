@@ -1,7 +1,6 @@
 package gralej.gui.blocks;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -12,6 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
@@ -22,15 +23,25 @@ public class BlockPanel extends JPanel implements IBlock {
 
     private static final long serialVersionUID = -2434960385455011813L;
     private static final double SCALE_DELTA = 1.2; // scaling factor
+    
+    // AVM bracket info
+    // stored here to reduce the memory footprint
+    // of the AVMBlock class
+    final private AVMBlock.BracketInfo _avmBracketInfo
+            = new AVMBlock.BracketInfo();
+    
+    private LabelFactory _labfac;
+    private LayoutFactory _layfac;
 
     private IBlock _content;
     private int _marginSize;
-    private LabelFactory _labfac;
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private double _scaleFactor = 1;
     private JPanel _drawingPane;
     private boolean _autoResize;
     private boolean _compactAvmLayout;
+    private boolean _autoExpandTags;
+    private Set<Integer> _expandedTags = new TreeSet<Integer>();
 
     private class DrawingPane extends JPanel {
         @Override
@@ -56,10 +67,13 @@ public class BlockPanel extends JPanel implements IBlock {
 
     public BlockPanel(IBlock content) {
         super(new BorderLayout());
+        
+        _labfac = LabelFactory.getInstance();
+        _layfac = LayoutFactory.getInstance();
 
         _drawingPane = new DrawingPane();
         _drawingPane
-                .setBackground(Color.decode(Config.get("panel.background")));
+                .setBackground(Config.getColor("panel.background"));
 
         JScrollPane scrollPane = new JScrollPane(_drawingPane);
         int vUnitIncrement = Config
@@ -70,11 +84,16 @@ public class BlockPanel extends JPanel implements IBlock {
         _marginSize = Config.getInt("panel.margins.all");
         _scaleFactor = Double.parseDouble(Config.get("panel.scaleFactor"));
         _autoResize = Boolean.parseBoolean(Config.get("panel.autoResize"));
+        _autoExpandTags = Boolean.parseBoolean(Config.get("panel.autoExpandTags"));
         _compactAvmLayout = Boolean.parseBoolean(Config.get("layout.avm.compact"));
+        
+        final BlockPanel thisPanel = this;
 
         _drawingPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                if (!thisPanel.hasFocus())
+                    thisPanel.requestFocus(true);
                 onMousePressed(e);
             }
 
@@ -108,6 +127,8 @@ public class BlockPanel extends JPanel implements IBlock {
     }
 
     public void init() {
+        if (_content != null)
+            _content.init();
     }
     
     public boolean isAvmLayoutCompact() {
@@ -119,6 +140,7 @@ public class BlockPanel extends JPanel implements IBlock {
         ((Block) block).setParentBlock(this);
         _content = block;
         _content.init();
+        _expandedTags.clear(); // needed only during init
     }
 
     IBlock getContent() {
@@ -126,9 +148,15 @@ public class BlockPanel extends JPanel implements IBlock {
     }
 
     LabelFactory getLabelFactory() {
-        if (_labfac == null)
-            _labfac = LabelFactory.getInstance();
         return _labfac;
+    }
+    
+    LayoutFactory getLayoutFactory() {
+        return _layfac;
+    }
+    
+    AVMBlock.BracketInfo getBracketInfo() {
+        return _avmBracketInfo;
     }
 
     public BlockPanel getPanel() {
@@ -220,6 +248,15 @@ public class BlockPanel extends JPanel implements IBlock {
     private int unscale(int n) {
         return (int) (n / _scaleFactor);
     }
+    
+    boolean _isShowingCollapsedFeatures = true;
+    //Set<IBlock> _collapsedFeatures = new HashSet<IBlock>();
+    
+    public void showCollapsedFeatures(boolean doShow) {
+        if (_isShowingCollapsedFeatures == doShow)
+            return;
+        _isShowingCollapsedFeatures = doShow;
+    }
 
     private void onMousePressed(MouseEvent e) {
         // log(e);
@@ -228,6 +265,11 @@ public class BlockPanel extends JPanel implements IBlock {
         ContentLabel target = findContainingContentLabel(x, y);
         if (target != null) {
             target.flipContentVisibility();
+            // feature hiding
+            if (!_isShowingCollapsedFeatures) {
+                if (target.getParentBlock() instanceof AVPairBlock)
+                    target.getParentBlock().setVisible(false);
+            }
             updateCursorForPoint(x, y);
         }
     }
@@ -283,10 +325,18 @@ public class BlockPanel extends JPanel implements IBlock {
             updateCursor(_handCursor);
     }
 
-    public void updateCursor(Cursor newCursor) {
+    void updateCursor(Cursor newCursor) {
         if (newCursor == _currentCursor)
             return;
         _drawingPane.setCursor(newCursor);
         _currentCursor = newCursor;
+    }
+    
+    public boolean getAutoExpandTags() {
+        return _autoExpandTags;
+    }
+    
+    Set<Integer> getExpandedTags() {
+        return _expandedTags;
     }
 }

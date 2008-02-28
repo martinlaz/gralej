@@ -5,23 +5,29 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
 class AVMBlock extends ContentOwningBlock {
-
-    final static int BRACKET_EDGE_SIZE = Config
-            .getInt("avm.bracket.edge.length");
-    final static Color BRACKET_COLOR = Color.decode(Config
-            .get("avm.bracket.color"));
-    final static boolean BRACKET_ALT_STYLE = Boolean.parseBoolean(Config
-            .get("avm.bracket.alt.style"));
+    
+    static class BracketInfo {
+        final int EDGE_SIZE =
+                Config.getInt("avm.bracket.edge.length");
+        final Color COLOR =
+                Config.getColor("avm.bracket.color");
+        final boolean ROUNDED =
+                Boolean.parseBoolean(Config.get("avm.bracket.style.rounded"));
+    }
 
     AVMBlock(Label sort, AVPairListBlock avPairs) {
-        setLayout(LayoutFactory.getAVMLayout());
-
         addChild(sort);
 
         if (!avPairs.isEmpty()) {
             addChild(avPairs);
             setContent(avPairs);
         }
+    }
+    
+    @Override
+    public void init() {
+        setLayout(getPanel().getLayoutFactory().getAVMLayout());
+        super.init();
     }
 
     Label getTypeLabel() {
@@ -35,13 +41,15 @@ class AVMBlock extends ContentOwningBlock {
     @Override
     public void paint(Graphics2D g) {
         super.paint(g);
-
+        
+        BracketInfo bi = getPanel().getBracketInfo();
+        
         // paint the brackets
-        g.setColor(BRACKET_COLOR);
+        g.setColor(bi.COLOR);
         final int x = getX(), y = getY(), w = getWidth(), h = getHeight();
-        final int e = BRACKET_EDGE_SIZE;
+        final int e = bi.EDGE_SIZE;
 
-        if (BRACKET_ALT_STYLE) {
+        if (bi.ROUNDED) {
             Path2D path = new Path2D.Float();
 
             // left bracket

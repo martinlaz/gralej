@@ -150,7 +150,7 @@ public class WindowsContentObserver extends ContentObserver {
             GralePreferences gp = GralePreferences.getInstance();
             setIconImage(theme.getIcon("grale").getImage());
             
-            this.autoResize = gp.getBoolean("panel.autoResize");
+            this.autoResize = gp.getBoolean("behavior.alwaysfitsize");
             ((BlockPanel) display).setAutoResize(autoResize);
             ((BlockPanel) display).setScaleFactor(gp.getDouble("panel.scaleFactor"));
 
@@ -166,9 +166,10 @@ public class WindowsContentObserver extends ContentObserver {
                     gp.getInt("gui.windows.size.ymin")));
             setSize(display.getSize());
             setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-            setVisible(true);
+            
             pack();
-            return;
+            display.requestFocus();
+            setVisible(true);
         }
 
         private GralePreferences gp = GralePreferences.getInstance();

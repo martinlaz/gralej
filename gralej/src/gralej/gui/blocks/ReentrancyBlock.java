@@ -1,16 +1,30 @@
 package gralej.gui.blocks;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 class ReentrancyBlock extends ContentOwningBlock {
     IContentCreator _contentCreator;
+    int _tag;
 
     ReentrancyBlock(int tag, IContentCreator contentCreator) {
-        setLayout(LayoutFactory.getReentrancyLayout());
-
-        Label tagLabel = LabelFactory.getInstance().createTagLabel(
-                Integer.toString(tag));
-        addChild(tagLabel);
-
+        _tag = tag;
         _contentCreator = contentCreator;
+    }
+    
+    @Override
+    public void init() {
+        setLayout(getPanel().getLayoutFactory().getReentrancyLayout());
+        Label tagLabel = getPanel().getLabelFactory().createTagLabel(
+                Integer.toString(_tag));
+        addChild(tagLabel);
+        
+        super.init();
+        
+        if (!getPanel().getAutoExpandTags())
+            return;
+        if (getPanel().getExpandedTags().add(_tag))
+            getContent().setVisible(true);
     }
 
     Label getTagLabel() {

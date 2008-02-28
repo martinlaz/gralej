@@ -335,6 +335,18 @@ public class GralePreferences  {
 
         return res;
     }
+    
+    public String get(String key, String defaultValue) {
+        String res;
+
+        syncKeyBeforeGet(key);
+        res = prefs.get(key);
+        if (res == null) {
+            res = defaultValue;
+        }
+
+        return res;
+    }
 
     public void put(String key, String value) {
         prefs.put(key, value);
@@ -372,17 +384,25 @@ public class GralePreferences  {
      */
     public Font getFont(String key) {
 
-        Font res;
         syncKeyBeforeGet(key);
         String fontstr = get(key);
-
+        
+        return Toolbox.str2font(fontstr);
+        
+    }
+    
+    /**
+     * @throws NoDefaultPrefSettingException
+     */
+    public Font getFont(String key, String defaultFontSpec) {
+        
         try {
-            res = Toolbox.str2font(fontstr);
-        } catch (Exception e) {
-            throw new NoDefaultPrefSettingException(key, e);
+            return getFont(key);
+        }
+        catch (NoDefaultPrefSettingException e) {
+            return Toolbox.str2font(defaultFontSpec);
         }
 
-        return res;
     }
 
     public void putFont(String key, Font font) {
@@ -462,7 +482,6 @@ public class GralePreferences  {
         for ( String key : changes ) {
         	notifyObservers(key);
         }
-
     }
 
     /**
@@ -500,7 +519,7 @@ public class GralePreferences  {
     	}
     	
     	// check for already existing mappings and exit if 
-    	// one is fount
+    	// one is found
     	for ( Entry<String,GPrefsChangeListener> item : observers ) {
     		if ( item.getKey().equals(keyPrefix) && 
     				item.getValue().equals(l) ) {

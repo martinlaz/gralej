@@ -39,8 +39,8 @@ public class BlockCreator extends AbstractVisitor {
 
     @Override
     public void visit(ITag tag) {
-        _result = new ReentrancyBlock(tag.number(), getContentCreator(tag
-                .target()));
+        _result = new ReentrancyBlock(
+                tag.number(), getContentCreator(tag.target()));
     }
 
     @Override
@@ -58,8 +58,8 @@ public class BlockCreator extends AbstractVisitor {
         List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
 
         for (IFeatureValuePair featVal : tfs.featureValuePairs()) {
-            Label alab = _labfac.createAttributeLabel(featVal.feature()
-                    .toUpperCase());
+            Label alab = _labfac.createAttributeLabel(
+                    featVal.feature().toUpperCase());
             featVal.value().accept(this);
             ll.add(new AVPairBlock(alab, _result));
         }

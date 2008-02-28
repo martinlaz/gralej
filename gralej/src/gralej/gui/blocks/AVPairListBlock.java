@@ -3,14 +3,14 @@ package gralej.gui.blocks;
 class AVPairListBlock extends ContainerBlock {
 
     AVPairListBlock(Iterable<AVPairBlock> avPairs) {
-        setLayout(LayoutFactory.getAVPairListLayout());
-
         for (AVPairBlock av : avPairs)
             addChild(av);
     }
 
     @Override
     public void init() {
+        setLayout(getPanel().getLayoutFactory().getAVPairListLayout());
+        
         if (getPanel().isAvmLayoutCompact()) {
             super.init();
             return;

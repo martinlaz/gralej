@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionListener;
 import gralej.controller.*;
 import gralej.parsers.IDataPackage;
 import gralej.gui.MainGUI;
+import java.awt.Cursor;
 
 /**
  * The ListContentObserver displays the file list,
@@ -46,8 +47,8 @@ public class ListContentObserver extends ContentObserver {
         // open new window instance on double-click
         list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    model.open();
+                if (e.getClickCount() > 1) {
+                    open();
                 }
             }
         });
@@ -57,7 +58,7 @@ public class ListContentObserver extends ContentObserver {
 
             public void keyPressed(KeyEvent arg0) {
                 if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-                    model.open();
+                    open();
                 } else if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
                     model.close();
                 }
@@ -75,6 +76,16 @@ public class ListContentObserver extends ContentObserver {
 
         display.setVisible(true);
 
+    }
+    
+    private void open() {
+        list.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try {
+            model.open();
+        }
+        finally {
+            list.setCursor(Cursor.getDefaultCursor());
+        }
     }
 
     @Override

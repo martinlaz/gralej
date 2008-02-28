@@ -60,8 +60,9 @@ public class MainGUI implements ActionListener, ItemListener {
 
     private JToolBar toolbar;
     private JButton b_Open, b_Close, b_CloseAll, b_Save;
-    private JCheckBoxMenuItem m_AutoOpenWindows, m_ShowToolBar,
-            m_ShowStatusBar;
+    private JButton b_Pref;
+    private JCheckBoxMenuItem m_AutoOpenWindows, m_AutoExpandTags,
+            m_ShowToolBar, m_ShowStatusBar;
 
     StatusBar statusbar;
 
@@ -153,6 +154,11 @@ public class MainGUI implements ActionListener, ItemListener {
         m_AutoOpenWindows.addActionListener(this);
         m_AutoOpenWindows.setState(gp.getBoolean("behavior.openonload"));
         viewmenu.add(m_AutoOpenWindows);
+        
+        m_AutoExpandTags = new JCheckBoxMenuItem("Automatically Expand Tags");
+        m_AutoExpandTags.addActionListener(this);
+        m_AutoExpandTags.setState(gp.getBoolean("panel.autoExpandTags"));
+        viewmenu.add(m_AutoExpandTags);
 
         viewmenu.addSeparator();
 
@@ -209,6 +215,11 @@ public class MainGUI implements ActionListener, ItemListener {
         b_CloseAll.addActionListener(this);
         b_CloseAll.setToolTipText("Close All");
         toolbar.add(b_CloseAll);
+        
+        b_Pref = new JButton(theme.getIcon("configure"));
+        b_Pref.addActionListener(this);
+        b_Pref.setToolTipText("Preferences");
+        toolbar.add(b_Pref);
 
     }
 
@@ -264,7 +275,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
         } else if (source == m_WebTrale) {
             while (true) {
-                String surl = JOptionPane.showInputDialog(null,
+                String surl = JOptionPane.showInputDialog(frame,
                         "Choose server", gp.get("input.lastserver"));
                 if (surl == null)
                     break; // cancel
@@ -324,7 +335,7 @@ public class MainGUI implements ActionListener, ItemListener {
             gp.putBoolean("behavior.showstatusbar", m_ShowStatusBar.getState());
             statusbar.setVisible(m_ShowStatusBar.getState());
 
-        } else if (source == m_Pref) {
+        } else if (source == m_Pref || source == b_Pref) {
             // TODO tie preferences window in here
             GenDialog prefFrame = new GenDialog(frame);
             prefFrame.setVisible(true);
@@ -338,6 +349,8 @@ public class MainGUI implements ActionListener, ItemListener {
             }
         } else if (source == m_AutoOpenWindows) {
             gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
+        } else if (source == m_AutoExpandTags) {
+            gp.putBoolean("panel.autoExpandTags", m_AutoExpandTags.getState());
         }
     }
 
@@ -435,9 +448,10 @@ public class MainGUI implements ActionListener, ItemListener {
                 System.exit(0);
             }
         });
+        
+        list.getDisplay().requestFocus();
 
         frame.setLocationByPlatform(true);
-
         frame.setVisible(true);
     }
 
