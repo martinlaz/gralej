@@ -1,11 +1,14 @@
 package gralej.gui.blocks;
 
+import gralej.prefs.GPrefsChangeListener;
+import gralej.prefs.GralePreferences;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Map;
 import java.util.TreeMap;
 
-class LabelFactory {
+final class LabelFactory {
+    
     class LabelParams {
         Font font;
         Color textColor;
@@ -33,10 +36,23 @@ class LabelFactory {
 
     Map<String, LabelParams> _cachedLabelParams = new TreeMap<String, LabelParams>();
 
-    static private LabelFactory _globalFactory = new LabelFactory();
+    static private LabelFactory _instance;
+    
+    private LabelFactory() {}
 
     static LabelFactory getInstance() {
-        return _globalFactory;
+        if (_instance == null)
+            _instance = new LabelFactory();
+        return _instance;
+    }
+    
+    static {
+        GPrefsChangeListener l = new GPrefsChangeListener() {
+            public void preferencesChange() {
+                _instance = null;
+            }
+        };
+        GralePreferences.getInstance().addListener(l, "label.");
     }
 
     synchronized void clearCache() {
@@ -47,18 +63,18 @@ class LabelFactory {
         LabelParams lp = _cachedLabelParams.get(type);
         if (lp == null) {
             lp = new LabelParams();
-            lp.font = Font.decode(Config.get(type + ".font.spec",
-                    DEFAULT_FONT_SPEC));
-            lp.textColor = Color.decode(Config.get(type + ".text.color",
-                    DEFAULT_TEXT_COLOR));
-            lp.textAltColor = Color.decode(Config.get(type + ".text.color.alt",
-                    DEFAULT_TEXT_ALT_COLOR));
+            lp.font = Config.getFont(type + ".font.spec",
+                    DEFAULT_FONT_SPEC);
+            lp.textColor = Config.getColor(type + ".text.color",
+                    DEFAULT_TEXT_COLOR);
+            lp.textAltColor = Config.getColor(type + ".text.color.alt",
+                    DEFAULT_TEXT_ALT_COLOR);
             lp.hm = Config.getInt(type + ".margin.horizontal", DEFAULT_HM);
             lp.vm = Config.getInt(type + ".margin.vertical", DEFAULT_VM);
             lp.frameWidth = Config.getInt(type + ".frame.width",
                     DEFAULT_FRAME_WIDTH);
-            lp.frameColor = Color.decode(Config.get(type + ".frame.color",
-                    DEFAULT_FRAME_COLOR));
+            lp.frameColor = Config.getColor(type + ".frame.color",
+                    DEFAULT_FRAME_COLOR);
             _cachedLabelParams.put(type, lp);
         }
         return lp;

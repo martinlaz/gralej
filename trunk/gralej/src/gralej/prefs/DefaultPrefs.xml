@@ -82,6 +82,7 @@ Block panel
 <entry key="panel.scrollbar.vertical.unitIncrement">20</entry>
 <entry key="panel.scaleFactor">1</entry>
 <entry key="panel.autoResize">false</entry>
+<entry key="panel.autoExpandTags">false</entry>
 
 <!--
 Tree
@@ -105,6 +106,7 @@ Layouts
 <entry key="layout.avm.space.leading">3</entry>
 <entry key="layout.avm.space.intra">5</entry>
 <entry key="layout.avm.space.trailing">5</entry>
+<entry key="layout.avm.compact">true</entry>
 
 <entry key="layout.avpairlist.space.leading">0</entry>
 <entry key="layout.avpairlist.space.intra">6</entry>
@@ -135,7 +137,7 @@ AVM Blocks
 -->
 <entry key="avm.bracket.color">003333ff</entry>
 <entry key="avm.bracket.edge.length">4</entry>
-<entry key="avm.bracket.alt.style">true</entry>
+<entry key="avm.bracket.style.rounded">true</entry>
 <!-- <entry key="avm.bracket.line.width">1</entry> -->
 
 <!--
@@ -172,7 +174,7 @@ Labels
 <entry key="label.tag.frame.color">0</entry>
 
 <!-- AVM sort labels -->
-<entry key="label.sort.font.spec">Times,1,12</entry>
+<entry key="label.sort.font.spec">Times,2,12</entry>
 <entry key="label.sort.text.color">003399ff</entry>
 <entry key="label.sort.margin.horizontal">5</entry>
 <entry key="label.sort.margin.vertical">0</entry>
@@ -180,8 +182,8 @@ Labels
 <entry key="label.sort.frame.color">0</entry>
 
 <!-- Species labels -->
-<entry key="label.species.font.spec">$label.sort.font.spec</entry>
-<entry key="label.species.text.color">$label.sort.text.color</entry>
+<entry key="label.species.font.spec">Times,2,12</entry>
+<entry key="label.species.text.color">003399ff</entry>
 <entry key="label.species.margin.horizontal">0</entry>
 
 <!-- Any labels -->
@@ -203,7 +205,7 @@ Labels
 <!-- Node labels -->
 <entry key="label.node.internal.font.spec">Arial,1,12</entry>
 <entry key="label.node.internal.text.color">112233ff</entry>
-<entry key="label.node.internal.text.color.alt">$label.node.internal.text.color</entry>
+<entry key="label.node.internal.text.color.alt">112233ff</entry>
 <entry key="label.node.internal.margin.horizontal">0</entry>
 <entry key="label.node.internal.margin.vertical">0</entry>
 <entry key="label.node.internal.frame.width">0</entry>
@@ -211,7 +213,7 @@ Labels
 
 <entry key="label.node.leaf.font.spec">Arial,1,12</entry>
 <entry key="label.node.leaf.text.color">993300ff</entry>
-<entry key="label.node.leaf.text.color.alt">$label.node.leaf.text.color</entry>
+<entry key="label.node.leaf.text.color.alt">993300ff</entry>
 <entry key="label.node.leaf.margin.horizontal">0</entry>
 <entry key="label.node.leaf.margin.vertical">0</entry>
 <entry key="label.node.leaf.frame.width">0</entry>

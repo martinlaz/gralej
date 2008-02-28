@@ -1,5 +1,9 @@
 package gralej.gui.blocks;
 
+import gralej.prefs.GralePreferences;
+import gralej.prefs.NoDefaultPrefSettingException;
+import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -65,10 +69,18 @@ class Config {
     }
 
     static String get(String name, String defaultValue) {
-        return getProp(name, defaultValue);
+        //return getProp(name, defaultValue);
+        try {
+            return get(name);
+        }
+        catch (NoDefaultPrefSettingException e) {
+            return defaultValue;
+        }
     }
 
     static String get(String name) {
+        return GralePreferences.getInstance().get(name);
+        /*
         String value = getProp(name);
         if (value == null)
             throw new RuntimeException("Unknown property: " + name);
@@ -78,6 +90,25 @@ class Config {
                 value = get(value.substring(1));
         }
         return value;
+         */
+    }
+    
+    static Color getColor(String key, String defaultColorSpec) {
+        int rgba = (int) Long.parseLong(get(key, defaultColorSpec), 16);
+        return new Color(rgba >> 8);
+    }
+    
+    static Color getColor(String key) {
+        int rgba = (int) Long.parseLong(get(key), 16);
+        return new Color(rgba >> 8);
+    }
+    
+    static Font getFont(String key) {
+        return GralePreferences.getInstance().getFont(key);
+    }
+    
+    static Font getFont(String key, String defaultFontSpec) {
+        return GralePreferences.getInstance().getFont(key, defaultFontSpec);
     }
 
     static int _getInt(String name, int radix) {

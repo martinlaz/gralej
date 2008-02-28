@@ -5,11 +5,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 class TreeBlock extends ContainerBlock {
-    final static int MIN_HDIST = Config.getInt("tree.minDistance.horizontal");
-    final static int MIN_VDIST = Config.getInt("tree.minDistance.vertical");
-    final static Color EDGE_COLOR = Color.decode(Config.get("tree.edge.color"));
-    final static boolean IS_NODE_CONTENT_INITIALLY_VISIBLE = Boolean
-            .parseBoolean(Config.get("tree.node.content.isInitiallyVisible"));
+    final int MIN_HDIST = Config.getInt("tree.minDistance.horizontal");
+    final int MIN_VDIST = Config.getInt("tree.minDistance.vertical");
+    final Color EDGE_COLOR = Config.getColor("tree.edge.color");
+    final boolean IS_NODE_CONTENT_INITIALLY_VISIBLE = Boolean.parseBoolean(
+            Config.get("tree.node.content.isInitiallyVisible"));
 
     private NodeBlock _root;
 

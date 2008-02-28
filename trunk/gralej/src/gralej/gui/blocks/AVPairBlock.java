@@ -3,11 +3,15 @@ package gralej.gui.blocks;
 class AVPairBlock extends ContentOwningBlock {
 
     AVPairBlock(Label a, Block v) {
-        setLayout(LayoutFactory.getAVPairLayout());
-
         addChild(a);
         addChild(v);
         setContent(v);
+    }
+    
+    @Override
+    public void init() {
+        setLayout(getPanel().getLayoutFactory().getAVPairLayout());
+        super.init();
     }
 
     public IBlock getAttribute() {

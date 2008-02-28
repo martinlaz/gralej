@@ -1,9 +1,30 @@
 package gralej.gui.blocks;
 
+import gralej.prefs.GPrefsChangeListener;
+import gralej.prefs.GralePreferences;
 import java.util.Map;
 import java.util.TreeMap;
 
 final class LayoutFactory {
+    
+    private LayoutFactory() {}
+    
+    static LayoutFactory _instance;
+    
+    static LayoutFactory getInstance() {
+        if (_instance == null)
+            _instance = new LayoutFactory();
+        return _instance;
+    }
+    
+    static {
+        GPrefsChangeListener l = new GPrefsChangeListener() {
+            public void preferencesChange() {
+                _instance = null;
+            }
+        };
+        GralePreferences.getInstance().addListener(l, "layout.");
+    }
 
     static class LayoutParams {
         int lead, intra, trail;
@@ -15,10 +36,10 @@ final class LayoutFactory {
         }
     }
 
-    private static Map<String, LayoutParams> _layoutParamMap = new TreeMap<String, LayoutParams>();
-    private static Map<String, ILayout> _layoutCache = new TreeMap<String, ILayout>();
+    private Map<String, LayoutParams> _layoutParamMap = new TreeMap<String, LayoutParams>();
+    private Map<String, ILayout> _layoutCache = new TreeMap<String, ILayout>();
 
-    synchronized private static LayoutParams getLayoutParams(String id) {
+    synchronized private LayoutParams getLayoutParams(String id) {
         LayoutParams params = _layoutParamMap.get(id);
         if (params == null) {
             params = new LayoutParams(Config.getInt(id + ".space.leading"),
@@ -59,7 +80,7 @@ final class LayoutFactory {
         }
     };
 
-    private static ILayout getLayout(String id, LayoutCreator creator) {
+    private ILayout getLayout(String id, LayoutCreator creator) {
         LayoutParams params = getLayoutParams("layout." + id);
         String cacheId = makeCacheId("v!" + id, params.lead, params.intra,
                 params.trail);
@@ -76,31 +97,31 @@ final class LayoutFactory {
         return layout;
     }
 
-    static ILayout getAVMLayout() {
+    ILayout getAVMLayout() {
         return getLayout("avm", VLC);
     }
 
-    static ILayout getAVPairListLayout() {
+    ILayout getAVPairListLayout() {
         return getLayout("avpairlist", VLC);
     }
 
-    static ILayout getAVPairLayout() {
+    ILayout getAVPairLayout() {
         return getLayout("avpair", HLC);
     }
 
-    static ILayout getListLayout() {
+    ILayout getListLayout() {
         return getLayout("list", HLC);
     }
 
-    static ILayout getListContentLayout() {
+    ILayout getListContentLayout() {
         return getLayout("listcontent", HLC);
     }
 
-    static ILayout getReentrancyLayout() {
+    ILayout getReentrancyLayout() {
         return getLayout("reentrancy", HLC);
     }
 
-    static ILayout getNodeLayout() {
+    ILayout getNodeLayout() {
         return getLayout("node", VCLC);
     }
 }
