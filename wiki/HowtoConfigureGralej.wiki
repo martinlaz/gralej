@@ -38,8 +38,8 @@ Labels are configured by the following keys:
 || label.<label-type>.font.spec || The font of the label ||
 || label.<label-type>.text.color   || Its color ||
 || label.<label-type>.text.color.alt         || Alternative color; see "Content Labels" ||
-|| label.<label-type>.text.margin.horizontal || Space above/below the text ||
-|| label.<label-type>.text.margin.vertical   || Space to the left/right of the text ||
+|| label.<label-type>.text.margin.horizontal || Space to the left/right of the text ||
+|| label.<label-type>.text.margin.vertical   || Space above/below the text ||
 || label.<label-type>.text.frame.width       || No frame when 0 ||
 || label.<label-type>.text.frame.color       || Frame's color ||
 
