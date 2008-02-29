@@ -87,5 +87,13 @@ layout.<container-type>._space.intra_
 layout.<container-type>._space.trailing_
     * similarly to _space.leading_, specifies the space below or to the right of the block
 
+==Other Interesting Keys==
+ * layout.avm.compact
+    * switches between compact and table-like representation of AVMs
+ * server.port
+    * the port on which Gralej expects TRALE to connect
+ * tree.minDistance...
+    * the minimum distance between the nodes of the tree
+
 
 ==To Be Continued...==
