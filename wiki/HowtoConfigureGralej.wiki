@@ -1,0 +1,91 @@
+=How to configure Gralej=
+
+Until we come up with a more friendly configuration interface, the only way for a user to control the appearance and the behavior of Gralej is through the Advanced tab of the Preferences dialog. The following explanations are meant to assist the brave users dared to go there.
+
+==Fonts==
+
+A font spec has the format
+{{{        
+        <name>,<style>,<size>
+}}}
+where
+    * <name> is a font name, e.g. Times New Roman
+    * <style> is an int between 0 and 3, meaning
+        * 0 - plain
+        * 1 - bold
+        * 2 - italic
+        * 3 - bold and italic
+    * <size> is a positive int representing the size of the font in points
+    
+Example:
+{{{
+        Times New Roman,1,12
+}}}
+
+==Colors==
+A color spec is a string of 8 hexadecimal digits encoding the RGBA representation of a color. RGBA has four components: Red, Green, Blue, and Alpha, each an int in the range 0-255 (00-FF in hex). Red, Green, and Blue give the intensity of the respective color; Alpha specifies the transparency (00 meaning completely transparent, FF - completely opaque).
+
+Examples:
+{{{
+    01ED12FF   // an opaque greenish color
+    99ABFFB0   // something dark and somewhat transparent
+}}}
+
+==Labels==
+
+Labels are configured by the following keys:
+    
+|| label.<label-type>.font.spec || The font of the label ||
+|| label.<label-type>.text.color   || Its color ||
+|| label.<label-type>.text.color.alt         || Alternative color; see "Content Labels" ||
+|| label.<label-type>.text.margin.horizontal || Space above/below the text ||
+|| label.<label-type>.text.margin.vertical   || Space to the left/right of the text ||
+|| label.<label-type>.text.frame.width       || No frame when 0 ||
+|| label.<label-type>.text.frame.color       || Frame's color ||
+
+    
+<label-type> is one of:
+    
+ * _tag_
+ * _sort_
+ * _attribute_
+   * {{{ // i.e. feature }}}
+ * _list_
+   * {{{ // the font of the brackets and the separator}}}
+ * _any_ 
+   * {{{ // not sure what this is; see the constant "kim" in the lex:kim sample}}}
+ * _species_
+   * {{{ // maximally specific types; here just a TFS without features}}}
+ * _node.internal_
+ * _node.leaf_
+ * {{{_default}}}
+   * {{{ // used when part of a label spec is omitted }}}
+
+==Content Labels==
+Certain labels have associated content whose visibility they control. The content is shown or hidden when the label is clicked on. In fact, most labels are such -- the only non-content labels are _any_ and _species_.
+
+When the content of a label is hidden, the label is painted in its alternative color.
+
+==Container Block Layouts==
+AVMs consist of nested container blocks of the following types:
+    
+|| *Container block type* || *Parts*         || *Layout* ||
+||_avm_        ||type _label_ and _avpairlist_ block                                         || Vertical   ||
+||_avpairlist_ ||list of _avpair_ blocks                                                     || Vertical   ||
+||_avpair_     ||attribute _label_ and a _block_ or (non-content) _label_                    || Horizontal ||
+||_reentrancy_ ||tag _label_ and and a _block_ or (non-content) _label_                      || Horizontal ||
+||_list_       ||opening bracket _label_, _listcontent_ and closing bracked _label_          || Horizontal ||
+||_listcontent_||_blocks_ or (non-content) _labels_ and the _separator_ labels between them  || Horizontal ||
+||_node_       ||node _label_ and _avm_ block                                                || Vertical centered ||
+
+The layout of a container block is controlled by the following keys:
+
+layout.<container-type>._space.leading_
+    * specifies the space above the block, for blocks with vertical layout, or the space to the left of the block, for those with horizontal layout
+layout.<container-type>._space.intra_
+    * specifies the space between the parts of the block
+layout.<container-type>._space.trailing_
+    * similarly to _space.leading_, specifies the space below or to the right of the block
+
+
+==To Be Continued...==
