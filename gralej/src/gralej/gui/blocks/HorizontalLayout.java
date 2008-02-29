@@ -1,18 +1,9 @@
 package gralej.gui.blocks;
 
 class HorizontalLayout extends AbstractLayout {
-    static int DEFAULT_LEADING_SPACE = Config
-            .getInt("layout.default.horizontal.space.leading");
-    static int DEFAULT_INTRA_SPACE = Config
-            .getInt("layout.default.horizontal.space.intra");
-    static int DEFAULT_TRAILING_SPACE = Config
-            .getInt("layout.default.horizontal.space.trailing");
-
-    HorizontalLayout() {
-        super(DEFAULT_LEADING_SPACE, DEFAULT_INTRA_SPACE,
-                DEFAULT_TRAILING_SPACE);
-    }
-
+    
+    HorizontalLayout() {}
+    
     HorizontalLayout(int lead, int intra, int trail) {
         super(lead, intra, trail);
     }

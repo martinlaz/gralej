@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -71,7 +72,17 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
         if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             try {
                 Desktop.getDesktop().browse(event.getURL().toURI());
-            } catch (Exception e) {
+            }
+            catch (UnsupportedOperationException e) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Browsing is not supported on the current platform.\n" +
+                            "The URL of the clicked link is:\n" + event.getURL(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                        );
+            }
+            catch (Exception e) {
             	// throw any exception to console and at the user.
                 e.printStackTrace();
                 ErrorHandler.getInstance().report(e.getMessage(), 

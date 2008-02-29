@@ -1,18 +1,9 @@
 package gralej.gui.blocks;
 
 class VerticalLayout extends AbstractLayout {
-    static int DEFAULT_LEADING_SPACE = Config
-            .getInt("layout.default.vertical.space.leading");
-    static int DEFAULT_INTRA_SPACE = Config
-            .getInt("layout.default.vertical.space.intra");
-    static int DEFAULT_TRAILING_SPACE = Config
-            .getInt("layout.default.vertical.space.trailing");
-
-    VerticalLayout() {
-        super(DEFAULT_LEADING_SPACE, DEFAULT_INTRA_SPACE,
-                DEFAULT_TRAILING_SPACE);
-    }
-
+    
+    VerticalLayout() {}
+    
     VerticalLayout(int lead, int intra, int trail) {
         super(lead, intra, trail);
     }

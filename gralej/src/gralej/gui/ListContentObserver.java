@@ -7,7 +7,6 @@ import javax.swing.event.ListSelectionListener;
 
 import gralej.controller.*;
 import gralej.parsers.IDataPackage;
-import gralej.gui.MainGUI;
 import java.awt.Cursor;
 
 /**
@@ -57,10 +56,14 @@ public class ListContentObserver extends ContentObserver {
         list.addKeyListener(new KeyListener() {
 
             public void keyPressed(KeyEvent arg0) {
-                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-                    open();
-                } else if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
-                    model.close();
+                switch (arg0.getKeyCode()) {
+                    case KeyEvent.VK_ENTER:
+                        open();
+                        break;
+                    case KeyEvent.VK_DELETE:
+                    case KeyEvent.VK_BACK_SPACE:
+                        model.deleteSelected();
+                        break;
                 }
             }
 
