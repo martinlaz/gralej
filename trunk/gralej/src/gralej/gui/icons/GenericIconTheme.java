@@ -46,7 +46,7 @@ public class GenericIconTheme implements IconTheme {
         map.put("filefloppy", loadIcon("filesaveas.png"));
         map.put("fileopen", loadIcon("fileopen.png"));
         map.put("fileprint", loadIcon("fileprint.png"));
-        map.put("gralelogo", loadIcon("grale-LOGO.png"));
+        //map.put("gralelogo", loadIcon("grale-LOGO.png"));
         map.put("grale", loadIcon("grale-GRALE.png"));
         map.put("magglass", loadIcon("viewmag.png"));
         map.put("maximize", loadIcon("window_fullscreen.png"));
@@ -56,7 +56,7 @@ public class GenericIconTheme implements IconTheme {
         map.put("showstruc", loadIcon("grale-showstruc.png"));
         map.put("large-showstruc", loadIcon("grale-large-showstruc.png"));
         map.put("showtree", loadIcon("grale-showtree.png"));
-        map.put("unexpand", loadIcon("grale-unexpand.png"));
+        //map.put("unexpand", loadIcon("grale-unexpand.png"));
         map.put("zoomin", loadIcon("viewmag+.png"));
         map.put("zoomout", loadIcon("viewmag-.png"));
         map.put("cancel", loadIcon("button_cancel.png"));
@@ -76,7 +76,7 @@ public class GenericIconTheme implements IconTheme {
     /**
      * 
      * @param name
-     * @return my return null if it doesn't work out.
+     * @return may return null if it doesn't work out.
      */
     private ImageIcon loadIcon(String filename) {
 

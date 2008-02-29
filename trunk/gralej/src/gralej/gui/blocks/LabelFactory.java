@@ -19,19 +19,19 @@ final class LabelFactory {
         Color frameColor;
     }
 
-    final static String DEFAULT_FONT_SPEC = Config.get("label.font.spec");
-    final static String DEFAULT_TEXT_COLOR = Config.get("label.text.color");
-    final static String DEFAULT_TEXT_ALT_COLOR = Config
-            .get("label.text.color.alt");
-    final static int DEFAULT_HM = Config.getInt("label.margin.horizontal");
-    final static int DEFAULT_VM = Config.getInt("label.margin.vertical");
-    final static int DEFAULT_FRAME_WIDTH = Config.getInt("label.frame.width");
-    final static String DEFAULT_FRAME_COLOR = Config.get("label.frame.color");
+    final String DEFAULT_FONT_SPEC = Config.get("label._default.font.spec");
+    final String DEFAULT_TEXT_COLOR = Config.get("label._default.text.color");
+    final String DEFAULT_TEXT_ALT_COLOR = Config
+            .get("label._default.text.color.alt");
+    final int DEFAULT_HM = Config.getInt("label._default.margin.horizontal");
+    final int DEFAULT_VM = Config.getInt("label._default.margin.vertical");
+    final int DEFAULT_FRAME_WIDTH = Config.getInt("label._default.frame.width");
+    final String DEFAULT_FRAME_COLOR = Config.get("label._default.frame.color");
 
-    final static String LIST_LBRACKET_TEXT = Config.get("label.list.text.left");
-    final static String LIST_RBRACKET_TEXT = Config
+    final String LIST_LBRACKET_TEXT = Config.get("label.list.text.left");
+    final String LIST_RBRACKET_TEXT = Config
             .get("label.list.text.right");
-    final static String LIST_SEPARATOR_TEXT = Config
+    final String LIST_SEPARATOR_TEXT = Config
             .get("label.list.text.separator");
 
     Map<String, LabelParams> _cachedLabelParams = new TreeMap<String, LabelParams>();

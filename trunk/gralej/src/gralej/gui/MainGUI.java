@@ -299,9 +299,8 @@ public class MainGUI implements ActionListener, ItemListener {
             c.getModel().close();
         } else if (source == m_CloseAll || source == b_CloseAll) {
             c.getModel().closeAll();
-
+            
             // SAVE
-
         } else if (source == m_Save || source == b_Save) {
             File f = saveDialog(OutputFormatter.TRALEFormat);
             if (f != null) {
@@ -530,7 +529,7 @@ public class MainGUI implements ActionListener, ItemListener {
      * Called from any data window.
      */
     public void raiseMainWindow() {
-        frame.requestFocus();
+        frame.toFront();
     }
 
 }

@@ -61,20 +61,32 @@ public class ContentModel {
         if (files.size() == 0)
             return; // don't close nothing
         observer.close();
-        int[] selected = list.getFocus();
-        for (int i = selected.length - 1; i >= 0; i--) {
-            files.remove(selected[i]);
-        }
-        list.close();
+        //int[] selected = list.getFocus();
+        //for (int i = selected.length - 1; i >= 0; i--) {
+        //    files.remove(selected[i]);
+        //}
+        //list.close();
     }
 
     /**
      * Clear the list, close all windows.
      */
     public void closeAll() {
-        files.clear();
-        list.clear();
+        //files.clear();
+        //list.clear();
         observer.clear();
+    }
+    
+    // used to be "close"
+    public void deleteSelected() {
+        if (files.size() == 0)
+            return; // don't close nothing
+        observer.close();
+        int[] selected = list.getFocus();
+        for (int i = selected.length - 1; i >= 0; i--) {
+            files.remove(selected[i]);
+        }
+        list.close();
     }
 
     /**
