@@ -1,8 +1,7 @@
 package gralej.parsers;
 
 import gralej.controller.StreamInfo;
-import gralej.gui.blocks.BlockCreator;
-import gralej.gui.blocks.BlockPanel;
+import gralej.blocks.BlockPanel;
 import gralej.om.IVisitable;
 
 class TraleMsgHandlerHelper {
@@ -65,7 +64,7 @@ class TraleMsgHandlerHelper {
         }
 
         public BlockPanel createView() {
-            return new BlockPanel(new BlockCreator().createBlock(_model));
+            return new BlockPanel(_model);
         }
     }
 }

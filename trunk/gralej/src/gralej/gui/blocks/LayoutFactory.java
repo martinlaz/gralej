@@ -59,24 +59,24 @@ final class LayoutFactory {
     }
 
     static abstract class LayoutCreator {
-        abstract AbstractLayout newInstance();
+        abstract AbstractLayout newInstance(String name);
     }
 
     final static LayoutCreator HLC = new LayoutCreator() {
-        AbstractLayout newInstance() {
-            return new HorizontalLayout();
+        AbstractLayout newInstance(String name) {
+            return new HorizontalLayout(name);
         }
     };
 
     final static LayoutCreator VLC = new LayoutCreator() {
-        AbstractLayout newInstance() {
-            return new VerticalLayout();
+        AbstractLayout newInstance(String name) {
+            return new VerticalLayout(name);
         }
     };
 
     final static LayoutCreator VCLC = new LayoutCreator() {
-        AbstractLayout newInstance() {
-            return new VerticalCenteredLayout();
+        AbstractLayout newInstance(String name) {
+            return new VerticalCenteredLayout(name);
         }
     };
 
@@ -88,7 +88,7 @@ final class LayoutFactory {
         synchronized (_layoutCache) {
             layout = _layoutCache.get(cacheId);
             if (layout == null) {
-                AbstractLayout alayout = creator.newInstance();
+                AbstractLayout alayout = creator.newInstance(id);
                 alayout.setAll(params.lead, params.intra, params.trail);
                 layout = alayout;
                 _layoutCache.put(cacheId, layout);

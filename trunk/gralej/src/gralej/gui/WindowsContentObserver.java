@@ -3,10 +3,9 @@ package gralej.gui;
 import gralej.controller.ContentModel;
 import gralej.error.ErrorHandler;
 import gralej.gui.icons.IconTheme;
-import gralej.gui.blocks.BlockPanel;
+import gralej.blocks.BlockPanel;
 import gralej.parsers.*;
 import gralej.prefs.GralePreferences;
-import gralej.gui.MainGUI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -138,7 +137,7 @@ public class WindowsContentObserver extends ContentObserver {
 
         IDataPackage data;
 
-        JComponent display;
+        BlockPanel display;
 
         boolean autoResize;
 
@@ -147,28 +146,25 @@ public class WindowsContentObserver extends ContentObserver {
             this.data = data;
             this.display = data.createView();
             
-            GralePreferences gp = GralePreferences.getInstance();
             setIconImage(theme.getIcon("grale").getImage());
             
             this.autoResize = gp.getBoolean("behavior.alwaysfitsize");
-            ((BlockPanel) display).setAutoResize(autoResize);
-            ((BlockPanel) display).setScaleFactor(gp.getDouble("panel.scaleFactor"));
+            display.setAutoResize(autoResize);
 
-            display.setOpaque(true);
             setJMenuBar(createMenuBar());
             createToolBar();
             toolbar.setVisible(gp.getBoolean("behavior.showwindowtoolbar"));
             add(toolbar, BorderLayout.NORTH);
-            add(display);
+            add(display.getUI());
             setLocationByPlatform(true);
             setMinimumSize(new Dimension(
                     gp.getInt("gui.windows.size.xmin"),
                     gp.getInt("gui.windows.size.ymin")));
-            setSize(display.getSize());
+            setSize(display.getUI().getSize());
             setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
             
             pack();
-            display.requestFocus();
+            display.getUI().requestFocus();
             setVisible(true);
         }
 
@@ -349,9 +345,7 @@ public class WindowsContentObserver extends ContentObserver {
             // zoomfield.setPreferredSize(new Dimension(10,30));
             zoomfield.setMaximumSize(new Dimension(40, 20));
             zoomfield.setToolTipText("Zoom value");
-            zoomfield.setText(Integer
-            .toString((int) Math.floor(((BlockPanel) display)
-                    .getScaleFactor() * 100)));
+            zoomfield.setText(Integer.toString(display.getZoom()));
 
             toolbar.add(zoomfield);
             toolbar.add(new JLabel("%"));
@@ -404,29 +398,23 @@ public class WindowsContentObserver extends ContentObserver {
                 model.print(display);
 
             } else if (source == m_ZoomPlus || source == b_ZoomPlus) {
-                ((BlockPanel) display).increaseScaleFactor();
-                zoomfield.setText(Integer.toString((int) Math
-                        .floor(((BlockPanel) display).getScaleFactor() * 100)));
+                ((BlockPanel) display).zoomIn();
+                zoomfield.setText(Integer.toString(display.getZoom()));
             } else if (source == m_ZoomMinus || source == b_ZoomMinus) {
-                ((BlockPanel) display).decreaseScaleFactor();
-                zoomfield.setText(Integer.toString((int) Math
-                        .floor(((BlockPanel) display).getScaleFactor() * 100)));
+                ((BlockPanel) display).zoomOut();
+                zoomfield.setText(Integer.toString(display.getZoom()));
             } else if (source == zoomfield) {
                 try {
-                    ((BlockPanel) display)
-                            .setScaleFactor(Math.floor(Double
-                                    .parseDouble(zoomfield.getText())) / 100);
-                    zoomfield.setText(Integer
-                            .toString((int) Math.floor(((BlockPanel) display)
-                                    .getScaleFactor() * 100)));
+                    display.setZoom(
+                            Integer.parseInt(zoomfield.getText().trim()));
+                    zoomfield.setText(
+                            Integer.toString(display.getZoom()));
                 } catch (NumberFormatException e1) {
                     zoomfield.setText(gp.get("behavior.defaultzoom"));
                     ErrorHandler.getInstance().report(
                             "Invalid zoom value. Defaulting to 100%.",
                             ErrorHandler.WARNING);
-                    ((BlockPanel) display)
-                    .setScaleFactor(Math.floor(Double
-                            .parseDouble(zoomfield.getText())) / 100);
+                    display.setZoom(Integer.parseInt(zoomfield.getText()));
                 }
             } else if (source == m_Resize || source == b_Resize) {
                 autoResize = !autoResize;

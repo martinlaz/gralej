@@ -140,7 +140,6 @@ public class BlockPanel extends JPanel implements IBlock {
         ((Block) block).setParentBlock(this);
         _content = block;
         _content.init();
-        _expandedTags.clear(); // needed only during init
     }
 
     IBlock getContent() {

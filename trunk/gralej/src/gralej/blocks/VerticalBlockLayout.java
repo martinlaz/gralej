@@ -1,36 +1,31 @@
-package gralej.gui.blocks;
+package gralej.blocks;
 
-class VerticalLayout extends AbstractLayout {
-    
-    VerticalLayout(String name) {
-        super(name);
-    }
+class VerticalBlockLayout extends BlockLayout {
     
     // default child alignment: left
-    protected int computeChildX(IBlock parent, IBlock child) {
+    protected int computeChildX(ContainerBlock parent, Block child) {
         return parent.getX();
     }
-
-    public void layoutBlockChildren(IBlock block) {
+    
+    @Override
+    void layoutChildrenOfBlock(ContainerBlock block) {
         int y = block.getY() + getLeadingSpace();
 
-        for (IBlock child : block.getChildren()) {
+        for (Block child : block.getChildren()) {
             child.setPosition(computeChildX(block, child), y);
             y += child.getHeight();
             if (child.isVisible())
                 y += getIntraSpace();
         }
     }
-
-    public void updateBlockSize(IBlock block) {
-        if (!block.isVisible())
-            return;
-
+    
+    @Override
+    void updateBlockSize(ContainerBlock block) {
         int w = 0;
         int h = getLeadingSpace();
         int numChildren = 0;
 
-        for (IBlock child : block.getChildren()) {
+        for (Block child : block.getChildren()) {
             if (!child.isVisible())
                 continue;
             w = Math.max(w, child.getWidth());

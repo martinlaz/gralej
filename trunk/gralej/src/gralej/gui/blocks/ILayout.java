@@ -16,4 +16,6 @@ interface ILayout {
     int getTrailingSpace();
 
     void setTrailingSpace(int newTrailingSpace);
+    
+    String getName();
 }

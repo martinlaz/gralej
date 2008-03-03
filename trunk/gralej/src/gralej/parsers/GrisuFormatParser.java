@@ -43,40 +43,43 @@ class GrisuFormatParser implements IGraleParser {
         return LRTable.newInstance(new InputStreamReader(is));
     }
 
-    public List<IDataPackage> getParses(InputStream s, StreamInfo meta)
+    public List<IDataPackage> parseAll(InputStream s, StreamInfo meta)
             throws ParseException {
         final List<IDataPackage> parses = new LinkedList<IDataPackage>();
-        _grammarHandler.setResultReceiver(new IParseResultReceiver() {
-
+        final Exception[] ex = new Exception[1];
+        final IParseResultReceiver receiver = new IParseResultReceiver() {
             public void newDataPackage(IDataPackage data) {
                 parses.add(data);
             }
-
             public void streamClosed(StreamInfo meta, Exception exception) {
+                ex[0] = exception;
             }
-        });
-        _lexer.reset(new InputStreamReader(s));
+        };
+        
+        Thread parseThread = parseImpl(s, meta, receiver);
+        
         try {
-            _parser.parse(_lexer);
-        } catch (Exception e) {
-            throw new ParseException(e);
-        } finally {
-            try {
-                s.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            parseThread.join();
         }
+        catch (InterruptedException e) {
+        }
+        if (ex[0] != null)
+            throw new ParseException(ex[0]);
         return parses;
     }
 
     public void parse(final InputStream s, final StreamInfo meta,
             final IParseResultReceiver receiver) {
+        parseImpl(s, meta, receiver);
+    }
+    
+    private Thread parseImpl(final InputStream s, final StreamInfo meta,
+            final IParseResultReceiver receiver) {
         _grammarHandler._helper.setResultReceiver(receiver);
         _grammarHandler._helper.setCharBuffer(_lexer.getCharBuffer());
         _grammarHandler._helper.setStreamInfo(meta);
         _lexer.reset(new InputStreamReader(s));
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
 
             public void run() {
                 Exception exception = null;
@@ -92,6 +95,8 @@ class GrisuFormatParser implements IGraleParser {
                 }
                 receiver.streamClosed(meta, exception);
             }
-        }).start();
+        });
+        t.start();
+        return t;
     }
 }

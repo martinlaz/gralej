@@ -1,7 +1,7 @@
 package gralej.parsers;
 
 import gralej.error.ErrorHandler;
-import gralej.gui.blocks.BlockPanel;
+import gralej.blocks.BlockPanel;
 import gralej.om.ITree;
 import gralej.prefs.GralePreferences;
 
@@ -164,7 +164,7 @@ public class OutputFormatter {
      * @param and
      *            finally the format to save to
      */
-    public void save(PrintStream p, IDataPackage data, JComponent view,
+    public void save(PrintStream p, IDataPackage data, BlockPanel view,
             int format) {
 
         switch (format) {
@@ -282,7 +282,7 @@ public class OutputFormatter {
         p.print(output);
     }
 
-    private void toSVG(JComponent bp, PrintStream p) {
+    private void toSVG(BlockPanel bp, PrintStream p) {
 
         DOMImplementation domImpl = null;
         try {
@@ -300,9 +300,9 @@ public class OutputFormatter {
         // Create an instance of the SVG Generator.
         SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
 
-        boolean db = ((BlockPanel) bp).getDrawingPane().isDoubleBuffered();
-        ((BlockPanel) bp).getDrawingPane().setDoubleBuffered(false);
-        ((BlockPanel) bp).getDrawingPane().paint(svgGenerator);
+        boolean db = bp.getCanvas().isDoubleBuffered();
+        bp.getCanvas().setDoubleBuffered(false);
+        bp.getCanvas().paint(svgGenerator);
 
         try {
             Writer out = new OutputStreamWriter(p, "UTF-8");
@@ -317,15 +317,15 @@ public class OutputFormatter {
         }
 
         // resetting
-        ((BlockPanel) bp).getDrawingPane().setDoubleBuffered(db);
+        bp.getCanvas().setDoubleBuffered(db);
 
     }
 
-    private void toPostscript(JComponent bp, PrintStream p) {
+    private void toPostscript(BlockPanel bp, PrintStream p) {
         PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
         StreamPrintService sps = factory.getPrintService(p);
         DocPrintJob pj = sps.createPrintJob();
-        Doc doc = new SimpleDoc(new DataPrinter(bp),
+        Doc doc = new SimpleDoc(new DataPrinter(bp.getCanvas()),
                 DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
 
         try {
@@ -343,13 +343,13 @@ public class OutputFormatter {
      * @param p: PrintStream
      * @param format
      */
-    private void toPixelGraphic(JComponent bp, PrintStream p, String format) {
+    private void toPixelGraphic(BlockPanel bp, PrintStream p, String format) {
         try {
-            Dimension imgSize = ((BlockPanel) bp).getScaledSize();
+            Dimension imgSize = bp.getScaledSize();
             BufferedImage img = new BufferedImage(imgSize.width,
                     imgSize.height, BufferedImage.TYPE_INT_RGB);
             Graphics2D grap = img.createGraphics();
-            ((BlockPanel) bp).getDrawingPane().paint(grap);
+            bp.getCanvas().paint(grap);
             grap.dispose();
             ImageIO.write(img, format, p);
         } catch (Throwable e) {
@@ -375,9 +375,9 @@ public class OutputFormatter {
         }
     }
 
-    public void print(JComponent view) {
+    public void print(BlockPanel view) {
         PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(new DataPrinter(view));
+        printJob.setPrintable(new DataPrinter(view.getCanvas()));
 
         if (printJob.printDialog()) {
             try {

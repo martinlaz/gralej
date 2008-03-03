@@ -1,5 +1,6 @@
 package gralej.controller;
 
+import gralej.blocks.BlockPanel;
 import gralej.gui.ContentObserver;
 import gralej.gui.ListContentObserver;
 import gralej.gui.WindowsContentObserver;
@@ -13,8 +14,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import javax.swing.JComponent;
 
 /**
  * The content model stores the semantics. it keeps track of open files, which
@@ -150,7 +149,7 @@ public class ContentModel {
      * @param display
      * @param format
      */
-    public void save(File f, IDataPackage dataItem, JComponent display, int format) {
+    public void save(File f, IDataPackage dataItem, BlockPanel display, int format) {
         try {
             PrintStream p;
             
@@ -173,7 +172,7 @@ public class ContentModel {
         }
     }
 
-    public void print(JComponent view) {
+    public void print(BlockPanel view) {
         of.print(view);
     }
 

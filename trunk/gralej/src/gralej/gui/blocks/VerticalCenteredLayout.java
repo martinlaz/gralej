@@ -2,10 +2,8 @@ package gralej.gui.blocks;
 
 class VerticalCenteredLayout extends VerticalLayout {
     
-    VerticalCenteredLayout() {}
-
-    VerticalCenteredLayout(int lead, int intra, int trail) {
-        super(lead, intra, trail);
+    VerticalCenteredLayout(String name) {
+        super(name);
     }
 
     @Override
