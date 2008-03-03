@@ -1,17 +1,14 @@
-package gralej.gui.blocks;
+package gralej.blocks;
 
-class HorizontalLayout extends AbstractLayout {
+class HorizontalBlockLayout extends BlockLayout {
     
-    HorizontalLayout(String name) {
-        super(name);
-    }
-    
-    public void layoutBlockChildren(IBlock block) {
+    @Override
+    void layoutChildrenOfBlock(ContainerBlock block) {
         int x = block.getX() + getLeadingSpace();
         int y = block.getY();
         int h = block.getHeight();
 
-        for (IBlock child : block.getChildren()) {
+        for (Block child : block.getChildren()) {
             if (!child.isVisible())
                 continue;
 
@@ -21,7 +18,8 @@ class HorizontalLayout extends AbstractLayout {
         }
     }
 
-    public void updateBlockSize(IBlock block) {
+    @Override
+    void updateBlockSize(ContainerBlock block) {
         if (!block.isVisible())
             return;
 
@@ -29,7 +27,7 @@ class HorizontalLayout extends AbstractLayout {
         int h = 0;
         int numChildren = 0;
 
-        for (IBlock child : block.getChildren()) {
+        for (Block child : block.getChildren()) {
             if (!child.isVisible())
                 continue;
             w += child.getWidth();

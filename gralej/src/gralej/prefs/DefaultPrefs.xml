@@ -81,9 +81,9 @@ Block panel
 <entry key="panel.background">ffffffff</entry>
 <entry key="panel.margins.all">20</entry>
 <entry key="panel.scrollbar.vertical.unitIncrement">20</entry>
-<entry key="panel.scaleFactor">1</entry>
 <entry key="panel.autoResize">false</entry>
 <entry key="panel.autoExpandTags">false</entry>
+<entry key="panel.displayModelHiddenFeatures">true</entry>
 
 <!--
 Tree
@@ -99,7 +99,7 @@ Layouts
 <entry key="layout.avm.space.leading">3</entry>
 <entry key="layout.avm.space.intra">5</entry>
 <entry key="layout.avm.space.trailing">5</entry>
-<entry key="layout.avm.compact">true</entry>
+<entry key="layout.avm.compact">false</entry>
 
 <entry key="layout.avpairlist.space.leading">0</entry>
 <entry key="layout.avpairlist.space.intra">6</entry>

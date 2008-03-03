@@ -6,7 +6,7 @@
 package gralej.parsers;
 
 import gralej.controller.StreamInfo;
-import gralej.gui.blocks.BlockPanel;
+import gralej.blocks.BlockPanel;
 import gralej.om.IVisitable;
 
 /**

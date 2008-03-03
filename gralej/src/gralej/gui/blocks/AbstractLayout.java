@@ -2,12 +2,14 @@ package gralej.gui.blocks;
 
 abstract class AbstractLayout implements ILayout {
     private int _leadingSpace, _intraSpace, _trailingSpace;
+    private String _name;
 
-    AbstractLayout() {
+    AbstractLayout(String name) {
+        _name = name;
     }
 
-    AbstractLayout(int lead, int intra, int trail) {
-        setAll(lead, intra, trail);
+    public String getName() {
+        return _name;
     }
 
     void setAll(int lead, int intra, int trail) {
