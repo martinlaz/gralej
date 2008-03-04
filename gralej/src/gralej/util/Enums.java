@@ -5,38 +5,28 @@
 
 package gralej.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
 
 /**
  *
  * @author Martin
  */
 public class Enums {
-    public Enums(String... constants) {
-        _enum = new ArrayList<String>(constants.length);
-        for (String s : constants)
-            _enum.add(s);
+    public static <T extends Enum<T>> T valueOf(Class<T> enumType, int ordinal) {
+        for (Field f : enumType.getFields()) {
+            if (f.isEnumConstant()) {
+                T e;
+                try {
+                    e = (T) f.get(null);
+                }
+                catch (IllegalAccessException ex) {
+                    continue;
+                }
+                if (e.ordinal() == ordinal)
+                    return e;
+            }
+        }
+        throw new IllegalArgumentException(
+            "Cannot find an enum with ordinal " + ordinal + " in " + enumType);
     }
-    
-    public int decode(String s) {
-        int i = _enum.indexOf(s);
-        if (i == -1)
-            throw new Exception(s);
-        return i;
-    }
-    
-    public String toString(int code) {
-        return _enum.get(code);
-    }
-    
-    public boolean contains(String s) {
-        return _enum.indexOf(s) != -1;
-    }
-    
-    static public class Exception extends RuntimeException {
-        Exception(String s) { super(s); }
-    }
-    
-    List<String> _enum;
 }
