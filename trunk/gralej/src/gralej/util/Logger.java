@@ -72,13 +72,13 @@ public class Logger {
             }
         }
     }
-
+    
+    
     /**
-     * 
      * @param error message
      * @param severity
      */
-    public void report(String error, Severity severity) {
+    public void log(String error, Severity severity) {
         switch (mapping[severity.ordinal()]) {
         case POPUP:
             int message_type = JOptionPane.PLAIN_MESSAGE;
@@ -117,22 +117,22 @@ public class Logger {
     }
     
     public static void critical(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), Severity.CRITICAL);
+        getInstance().log(Arrays.concat(" ", msgs), Severity.CRITICAL);
     }
     
     public static void error(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), Severity.ERROR);
+        getInstance().log(Arrays.concat(" ", msgs), Severity.ERROR);
     }
     
     public static void warning(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), Severity.WARNING);
+        getInstance().log(Arrays.concat(" ", msgs), Severity.WARNING);
     }
     
     public static void info(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), Severity.INFO);
+        getInstance().log(Arrays.concat(" ", msgs), Severity.INFO);
     }
     
     public static void debug(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), Severity.DEBUG);
+        getInstance().log(Arrays.concat(" ", msgs), Severity.DEBUG);
     }
 }
