@@ -1,7 +1,7 @@
 package gralej.controller;
 
 import gralej.client.WebTraleClient;
-import gralej.error.ErrorHandler;
+import gralej.util.Logger;
 import gralej.fileIO.FileLoader;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
@@ -40,29 +40,29 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     public void open(File file) {
 
         // instantiate a new file handler
-        ErrorHandler.getInstance().report(
+        Logger.getInstance().report(
                 "-- Opening File " + file.getAbsolutePath(),
-                ErrorHandler.NOTE);
+                Logger.NOTE);
         FileLoader fl = new FileLoader(file, true);
         fl.registerNewStreamListener(this);
-        ErrorHandler.getInstance().report(
+        Logger.getInstance().report(
                 "-- Starting to open",
-                ErrorHandler.DEBUG);
+                Logger.DEBUG);
         try {
             fl.loadFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ErrorHandler.getInstance().report(
+        Logger.getInstance().report(
                 "-- Opening should run in its thread now",
-                ErrorHandler.DEBUG);
+                Logger.DEBUG);
 
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
-        ErrorHandler.getInstance().report(
+        Logger.getInstance().report(
                 "-- New stream of type " + streamMeta,
-                ErrorHandler.NOTE);
+                Logger.NOTE);
 
         try {
             // ask parser factory for parser
@@ -77,17 +77,17 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void streamClosed(StreamInfo meta, Exception ex) {
-        ErrorHandler.getInstance().report(
-                "-- Stream closed: " + meta, ErrorHandler.NOTE);
+        Logger.getInstance().report(
+                "-- Stream closed: " + meta, Logger.NOTE);
         if (ex != null)
-            ErrorHandler.getInstance().report(
-                    "------ Exception: " + ex, ErrorHandler.ERROR);
+            Logger.getInstance().report(
+                    "------ Exception: " + ex, Logger.ERROR);
     }
 
     public void newDataPackage(IDataPackage parse) {
-        ErrorHandler.getInstance().report(
+        Logger.getInstance().report(
                 "-- Controller got new parse", 
-                ErrorHandler.DEBUG);
+                Logger.DEBUG);
 
         class ParseShowingRunnable implements Runnable {
             IDataPackage parse;
@@ -130,15 +130,15 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         }	
         try {
             server.startListening();
-            ErrorHandler.getInstance().report(
-                    "-- Server up and listening", ErrorHandler.NOTE);
+            Logger.getInstance().report(
+                    "-- Server up and listening", Logger.NOTE);
         } catch (IOException e) {
         	e.printStackTrace();
-        	ErrorHandler.getInstance().report(
+        	Logger.getInstance().report(
         			"Cannot bind server to network port "
         			+ gp.getInt("server.port")
         			+ ", perhaps another GraleJ is running?"
-        			, ErrorHandler.ERROR);
+        			, Logger.ERROR);
         }
 
         server.registerNewStreamListener(this);

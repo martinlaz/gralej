@@ -3,6 +3,7 @@ package gralej.gui.prefsdialog.options;
 import gralej.prefs.GPrefsChangeListener;
 import gralej.prefs.GralePreferences;
 
+import gralej.util.Logger;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -83,7 +84,7 @@ public class DropdownOption extends JComponent implements GPrefsChangeListener  
 
 		// if the value can't be found, introduce it and re-initialize the combo box
 		if (! found ) {
-			System.err.println("Not found: " + newval);
+			Logger.warning("Not found:", newval);
 			String[] newoptions = new String[options.length+1];
 			System.arraycopy(options, 0, newoptions, 1, options.length);
 			newoptions[0] = newval;

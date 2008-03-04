@@ -1,6 +1,6 @@
 package gralej.gui.icons;
 
-import gralej.error.ErrorHandler;
+import gralej.util.Logger;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -91,9 +91,9 @@ public class GenericIconTheme implements IconTheme {
         }
 
         if (icon == null) {
-            ErrorHandler.getInstance().report(
+            Logger.getInstance().report(
                     "GenericIconTheme: Failed to load icon: " + filename,
-                    ErrorHandler.WARNING);
+                    Logger.WARNING);
         }
 
         return icon;
