@@ -247,11 +247,8 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     gp.put("input.lastdir", files[0].getCanonicalPath());
                 } catch (IOException e1) {
-                    Logger
-                            .getInstance()
-                            .report(
-                                    "Getting the directory of the (first) chosen file failed.",
-                                    Logger.WARNING);
+                    Logger.warning(
+                            "Getting the directory of the (first) chosen file failed.");
                     e1.printStackTrace();
                 }
             } else {
@@ -264,9 +261,7 @@ public class MainGUI implements ActionListener, ItemListener {
             final String resName = "/gralej/resource/sample.GRALE";
             InputStream is = getClass().getResourceAsStream(resName);
             if (is == null) {// should never happen
-                Logger.getInstance().report(
-                        "Initializing InputStream failed.",
-                        Logger.CRITICAL);
+                Logger.critical("Initializing InputStream failed.");
                 throw new RuntimeException("Internal program error");
             }
             c.newStream(is, new StreamInfo("grisu", resName));
@@ -282,8 +277,7 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     c.startWebTraleClient(new URL(surl));
                 } catch (Exception ex) {
-                    Logger.getInstance().report(ex.getMessage(),
-                            Logger.ERROR);
+                    Logger.error(ex.getMessage());
                     continue; // try again
                 }
                 try {

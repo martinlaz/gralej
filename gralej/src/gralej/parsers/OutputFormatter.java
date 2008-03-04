@@ -172,62 +172,44 @@ public class OutputFormatter {
             if (data != null)
                 toTRALE(data, p);
             else
-                Logger.getInstance().report(
-                        "Bad function call (no data).", Logger.ERROR);
+                Logger.error("Bad function call (no data).");
             break;
         case LaTeXFormat:
             if (data != null)
                 toLaTeX(data, p);
             else
-                Logger.getInstance().report(
-                        "Bad function call (no data).", Logger.ERROR);
+                Logger.error("Bad function call (no data).");
             break;
         case SVGFormat:
             if (view != null)
                 toSVG(view, p);
             else
-                Logger
-                        .getInstance()
-                        .report(
-                                "Bad function call (SVG rendering needs a Swing JComponent as input).",
-                                Logger.ERROR);
+                Logger.error(
+                        "Bad function call (SVG rendering needs a Swing JComponent as input).");
             break;
         case PostscriptFormat:
             if (view != null)
                 toPostscript(view, p);
             else
-                Logger
-                        .getInstance()
-                        .report(
-                                "Bad function call (postscript rendering needs a Swing JComponent as input).",
-                                Logger.ERROR);
+                Logger.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
             break;
         case JPGFormat:
             if (view != null)
                 toPixelGraphic(view, p, "jpg");
             else
-                Logger
-                        .getInstance()
-                        .report(
-                                "Bad function call (image rendering needs a Swing JComponent as input).",
-                                Logger.ERROR);
+                Logger.error("Bad function call (image rendering needs a Swing JComponent as input).");
             break;
         case PNGFormat:
             if (view != null)
                 toPixelGraphic(view, p, "png");
             else
-                Logger
-                        .getInstance()
-                        .report(
-                                "Bad function call (image rendering needs a Swing JComponent as input).",
-                                Logger.ERROR);
+                Logger.error("Bad function call (image rendering needs a Swing JComponent as input).");
             break;
         case XMLFormat:
             if (data != null)
                 toXML(data, p);
             else
-                Logger.getInstance().report(
-                        "Bad function call (no data).", Logger.ERROR);
+                Logger.error("Bad function call (no data).");
             break;
         }
     }
@@ -331,8 +313,7 @@ public class OutputFormatter {
         try {
             pj.print(doc, new HashPrintRequestAttributeSet());
         } catch (PrintException pe) {
-            Logger.getInstance().report("PrintException : " + pe,
-                    Logger.ERROR);
+            Logger.error("PrintException:", pe);
         }
     }
 
@@ -353,8 +334,7 @@ public class OutputFormatter {
             grap.dispose();
             ImageIO.write(img, format, p);
         } catch (Throwable e) {
-            Logger.getInstance().report(e.getMessage(),
-                    Logger.ERROR);
+            Logger.error(e.getMessage());
         }
     }
 
@@ -383,8 +363,7 @@ public class OutputFormatter {
             try {
                 printJob.print();
             } catch (PrinterException pe) {
-                Logger.getInstance().report("Error printing: " + pe,
-                        Logger.ERROR);
+                Logger.error("Error printing:", pe);
             }
         }
     }

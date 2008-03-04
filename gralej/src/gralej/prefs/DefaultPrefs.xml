@@ -45,13 +45,13 @@ where RR = 2byte hex value for red
 <entry key="input.lastdir"></entry> 
 <entry key="input.lastserver"></entry> 
 
-<!-- error output methods (0: popup, 1: stdout, 2: file, 3: ignore) -->
-<entry key="error.note">stderr</entry> 
-<entry key="error.warning">stderr</entry> 
-<entry key="error.error">popup</entry> 
-<entry key="error.critical">popup</entry> 
-<entry key="error.debug">stderr</entry>
-<entry key="error.file">grale.log</entry>
+<!-- message output methods (popup, stderr, file, ignore) -->
+<entry key="message.info">stderr</entry> 
+<entry key="message.warning">stderr</entry> 
+<entry key="message.error">popup</entry> 
+<entry key="message.critical">popup</entry> 
+<entry key="message.debug">stderr</entry>
+<entry key="logger.file">gralej.log</entry>
 
 <!-- application behavior -->
 <entry key="behavior.openonload">false</entry>

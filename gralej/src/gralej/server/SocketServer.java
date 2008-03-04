@@ -1,8 +1,8 @@
 package gralej.server;
 
 import gralej.controller.StreamInfo;
-import gralej.error.ErrorHandler;
 
+import gralej.util.Logger;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -60,16 +60,14 @@ public class SocketServer extends ServerBaseImpl {
             } catch (IOException e) {
             	e.printStackTrace();
             	if (! shutdown_state) {
-            		ErrorHandler.getInstance().report("An exception "
-            				+ "occured while waiting for incoming connections."
-            				+ "Server thread terminates now, restart the server"
-            				+ "to regain networking functionality. ",
-            				ErrorHandler.ERROR);
+            		Logger.error("An exception "
+            				+ "occured while waiting for incoming connections. "
+            				+ "Server thread terminates now, restart the server "
+            				+ "to regain networking functionality. ");
             	} else {
-            		ErrorHandler.getInstance().report(this.getName() + 
+            		Logger.warning(this.getName() + 
             				": Caught exception during server shutdown, " +
-            				"this may be normal.",
-            				ErrorHandler.WARNING);
+            				"this may be normal.");
             	}
 
             }
@@ -123,15 +121,13 @@ public class SocketServer extends ServerBaseImpl {
                 // useful has happened, we can ignore this.
             	e.printStackTrace();
             	if ( ! shutdown_state) {
-            		ErrorHandler.getInstance().report(this.getName()
+            		Logger.warning(this.getName()
             				+ ": Remote closed connection "
-            				+ "before sending something useful. Closing handler.",
-            				ErrorHandler.WARNING);
+            				+ "before sending something useful. Closing handler.");
             	} else {
-            		ErrorHandler.getInstance().report(this.getName() + ": " +
+            		Logger.warning(this.getName() + ": " +
             				"Caught exception during connection shutdown, " +
-            				"this may be normal.",
-            				ErrorHandler.WARNING);
+            				"this may be normal.");
             	}
             	
             }

@@ -6,8 +6,6 @@ import java.io.PrintStream;
 import javax.swing.JOptionPane;
 
 import gralej.prefs.GralePreferences;
-import gralej.util.Arrays;
-import gralej.util.Enums;
 import java.io.IOException;
 
 /**
@@ -25,22 +23,22 @@ import java.io.IOException;
 public class Logger {
 
     // ways of reporting
-    public final static int AsPopUp = 0;
-    public final static int ToSTDERR = 1;
-    public final static int ToFile = 2;
-    public final static int Ignore = 3;
+    public static enum Method {
+        POPUP, STDERR, FILE, IGNORE
+    }
 
-    public final static int NOTE = 0; // such as "Stream closed"
-    public final static int WARNING = 1; // failed loads etc.
-    public final static int ERROR = 2; // wrong formats
-    public final static int CRITICAL = 3; // probably too late then
-    public final static int DEBUG = 4; // debug messages
+    public static enum Severity {
+        INFO,       // such as "Stream closed"
+        WARNING,    // failed loads etc.
+        ERROR,      // wrong formats
+        CRITICAL,   // probably too late then
+        DEBUG       // debug messages
+           // debug messages
+    }
 
-    private int[] mapping = new int[5];
-    private Enums errorType =
-            new Enums("INFO", "WARNING", "ERROR", "CRITICAL", "DEBUG");
-
-    private String file;
+    // Severity -> Method
+    private Method[] mapping = new Method[5];
+    private PrintStream out;
 
     private static Logger instance = null;
 
@@ -53,14 +51,26 @@ public class Logger {
     private Logger() {
         // read way from prefs
         GralePreferences gp = GralePreferences.getInstance();
-        Enums method = new Enums("popup", "stderr", "file", "ignore");
-        mapping[NOTE]       = method.decode(gp.get("error.note"));
-        mapping[WARNING]    = method.decode(gp.get("error.warning"));
-        mapping[ERROR]      = method.decode(gp.get("error.error"));
-        mapping[CRITICAL]   = method.decode(gp.get("error.critical"));
-        mapping[DEBUG]      = method.decode(gp.get("error.debug"));
+        mapping[Severity.INFO.ordinal()] = Enum.valueOf(Method.class, gp.get("message.info").toUpperCase());
+        mapping[Severity.WARNING.ordinal()] = Enum.valueOf(Method.class, gp.get("message.warning").toUpperCase());
+        mapping[Severity.ERROR.ordinal()] = Enum.valueOf(Method.class, gp.get("message.error").toUpperCase());
+        mapping[Severity.CRITICAL.ordinal()] = Enum.valueOf(Method.class, gp.get("message.critical").toUpperCase());
+        mapping[Severity.DEBUG.ordinal()] = Enum.valueOf(Method.class, gp.get("message.debug").toUpperCase());
+        
+        String filename = gp.get("logger.file");
 
-        file = gp.get("error.file");
+        for (Method m : mapping) {
+            if (m == Method.FILE) {
+                try {
+                    out = new PrintStream(new FileOutputStream(filename), true);
+                } catch (IOException e) {
+                    System.err.println("WARNING: logfile " + filename + " cannot be opened. " +
+                            "Will log to STDERR instead.");
+                    out = System.err;
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -68,13 +78,13 @@ public class Logger {
      * @param error message
      * @param severity
      */
-    public void report(String error, int severity) {
-        switch (mapping[severity]) {
-        case AsPopUp:
+    public void report(String error, Severity severity) {
+        switch (mapping[severity.ordinal()]) {
+        case POPUP:
             int message_type = JOptionPane.PLAIN_MESSAGE;
             String title = "";
             switch (severity) {
-            case NOTE:
+            case INFO:
                 message_type = JOptionPane.INFORMATION_MESSAGE;
                 title = "Notification";
                 break;
@@ -97,41 +107,32 @@ public class Logger {
             }
             JOptionPane.showMessageDialog(null, error, title, message_type);
             break;
-        case ToSTDERR:
-            System.err.println(errorType.toString(severity) + ": " + error);
+        case STDERR:
+            System.err.println(severity.name() + ": " + error);
             break;
-        // what about System.out.? another case destinction?
-        case ToFile:
-            PrintStream p;
-            try {
-                p = new PrintStream(new FileOutputStream(file));
-                p.print(errorType.toString(severity) + ": " + error);
-                p.close();
-            } catch (IOException e) {
-                System.err.println("WARNING: logfile " + file + " cannot be accessed.");
-                System.err.println(errorType.toString(severity) + ": " + error);
-            }
+        case FILE:
+            out.println(severity.name() + ": " + error);
             break;
         }
     }
     
     public static void critical(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), CRITICAL);
+        getInstance().report(Arrays.concat(" ", msgs), Severity.CRITICAL);
     }
     
     public static void error(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), ERROR);
+        getInstance().report(Arrays.concat(" ", msgs), Severity.ERROR);
     }
     
     public static void warning(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), WARNING);
+        getInstance().report(Arrays.concat(" ", msgs), Severity.WARNING);
     }
     
     public static void info(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), NOTE);
+        getInstance().report(Arrays.concat(" ", msgs), Severity.INFO);
     }
     
     public static void debug(Object... msgs) {
-        getInstance().report(Arrays.concat(" ", msgs), DEBUG);
+        getInstance().report(Arrays.concat(" ", msgs), Severity.DEBUG);
     }
 }
