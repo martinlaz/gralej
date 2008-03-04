@@ -1,7 +1,7 @@
 package gralej;
 
 import gralej.controller.Controller;
-import gralej.error.ErrorHandler;
+import gralej.util.Logger;
 import gralej.gui.*;
 import gralej.prefs.GralePreferences;
 
@@ -31,10 +31,10 @@ public class Main {
         try {
             UIManager.setLookAndFeel(lookandfeel);
         } catch (Exception e) {
-            ErrorHandler.getInstance().report(
+            Logger.getInstance().report(
                     "Cannot load " + lookandfeel
                             + ". Falling back to system default L&F.",
-                    ErrorHandler.ERROR);
+                    Logger.ERROR);
             e.printStackTrace();
             try {
                 UIManager.setLookAndFeel(UIManager

@@ -46,12 +46,12 @@ where RR = 2byte hex value for red
 <entry key="input.lastserver"></entry> 
 
 <!-- error output methods (0: popup, 1: stdout, 2: file, 3: ignore) -->
-<entry key="error.note">1</entry> 
-<entry key="error.warning">1</entry> 
-<entry key="error.error">0</entry> 
-<entry key="error.critical">0</entry> 
-<entry key="error.debug">3</entry> 
-<entry key="error.file">"grale.log"</entry> 
+<entry key="error.note">stderr</entry> 
+<entry key="error.warning">stderr</entry> 
+<entry key="error.error">popup</entry> 
+<entry key="error.critical">popup</entry> 
+<entry key="error.debug">stderr</entry>
+<entry key="error.file">grale.log</entry>
 
 <!-- application behavior -->
 <entry key="behavior.openonload">false</entry>

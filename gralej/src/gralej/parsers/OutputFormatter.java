@@ -1,6 +1,6 @@
 package gralej.parsers;
 
-import gralej.error.ErrorHandler;
+import gralej.util.Logger;
 import gralej.blocks.BlockPanel;
 import gralej.om.ITree;
 import gralej.prefs.GralePreferences;
@@ -172,62 +172,62 @@ public class OutputFormatter {
             if (data != null)
                 toTRALE(data, p);
             else
-                ErrorHandler.getInstance().report(
-                        "Bad function call (no data).", ErrorHandler.ERROR);
+                Logger.getInstance().report(
+                        "Bad function call (no data).", Logger.ERROR);
             break;
         case LaTeXFormat:
             if (data != null)
                 toLaTeX(data, p);
             else
-                ErrorHandler.getInstance().report(
-                        "Bad function call (no data).", ErrorHandler.ERROR);
+                Logger.getInstance().report(
+                        "Bad function call (no data).", Logger.ERROR);
             break;
         case SVGFormat:
             if (view != null)
                 toSVG(view, p);
             else
-                ErrorHandler
+                Logger
                         .getInstance()
                         .report(
                                 "Bad function call (SVG rendering needs a Swing JComponent as input).",
-                                ErrorHandler.ERROR);
+                                Logger.ERROR);
             break;
         case PostscriptFormat:
             if (view != null)
                 toPostscript(view, p);
             else
-                ErrorHandler
+                Logger
                         .getInstance()
                         .report(
                                 "Bad function call (postscript rendering needs a Swing JComponent as input).",
-                                ErrorHandler.ERROR);
+                                Logger.ERROR);
             break;
         case JPGFormat:
             if (view != null)
                 toPixelGraphic(view, p, "jpg");
             else
-                ErrorHandler
+                Logger
                         .getInstance()
                         .report(
                                 "Bad function call (image rendering needs a Swing JComponent as input).",
-                                ErrorHandler.ERROR);
+                                Logger.ERROR);
             break;
         case PNGFormat:
             if (view != null)
                 toPixelGraphic(view, p, "png");
             else
-                ErrorHandler
+                Logger
                         .getInstance()
                         .report(
                                 "Bad function call (image rendering needs a Swing JComponent as input).",
-                                ErrorHandler.ERROR);
+                                Logger.ERROR);
             break;
         case XMLFormat:
             if (data != null)
                 toXML(data, p);
             else
-                ErrorHandler.getInstance().report(
-                        "Bad function call (no data).", ErrorHandler.ERROR);
+                Logger.getInstance().report(
+                        "Bad function call (no data).", Logger.ERROR);
             break;
         }
     }
@@ -331,8 +331,8 @@ public class OutputFormatter {
         try {
             pj.print(doc, new HashPrintRequestAttributeSet());
         } catch (PrintException pe) {
-            ErrorHandler.getInstance().report("PrintException : " + pe,
-                    ErrorHandler.ERROR);
+            Logger.getInstance().report("PrintException : " + pe,
+                    Logger.ERROR);
         }
     }
 
@@ -353,8 +353,8 @@ public class OutputFormatter {
             grap.dispose();
             ImageIO.write(img, format, p);
         } catch (Throwable e) {
-            ErrorHandler.getInstance().report(e.getMessage(),
-                    ErrorHandler.ERROR);
+            Logger.getInstance().report(e.getMessage(),
+                    Logger.ERROR);
         }
     }
 
@@ -383,8 +383,8 @@ public class OutputFormatter {
             try {
                 printJob.print();
             } catch (PrinterException pe) {
-                ErrorHandler.getInstance().report("Error printing: " + pe,
-                        ErrorHandler.ERROR);
+                Logger.getInstance().report("Error printing: " + pe,
+                        Logger.ERROR);
             }
         }
     }

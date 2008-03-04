@@ -1,6 +1,6 @@
 package gralej.gui;
 
-import gralej.error.ErrorHandler;
+import gralej.util.Logger;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -46,13 +46,13 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
             try {
                 editorPane.setPage(aboutfile);
             } catch (IOException e) {
-                ErrorHandler.getInstance().report(
+                Logger.getInstance().report(
                         "Attempted to read a bad URL: " + aboutfile,
-                        ErrorHandler.WARNING);
+                        Logger.WARNING);
             }
         } else {
-            ErrorHandler.getInstance().report("Couldn't find about.html.",
-                    ErrorHandler.WARNING);
+            Logger.getInstance().report("Couldn't find about.html.",
+                    Logger.WARNING);
         }
 
         editorPane.setPreferredSize(new Dimension(350, 350));
@@ -85,8 +85,8 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
             catch (Exception e) {
             	// throw any exception to console and at the user.
                 e.printStackTrace();
-                ErrorHandler.getInstance().report(e.getMessage(), 
-                		ErrorHandler.ERROR);
+                Logger.getInstance().report(e.getMessage(), 
+                		Logger.ERROR);
             }
         }
     }

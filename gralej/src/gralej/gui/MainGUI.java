@@ -2,7 +2,7 @@ package gralej.gui;
 
 import gralej.controller.Controller;
 import gralej.controller.StreamInfo;
-import gralej.error.ErrorHandler;
+import gralej.util.Logger;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 import gralej.gui.prefsdialog.GenDialog;
@@ -247,11 +247,11 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     gp.put("input.lastdir", files[0].getCanonicalPath());
                 } catch (IOException e1) {
-                    ErrorHandler
+                    Logger
                             .getInstance()
                             .report(
                                     "Getting the directory of the (first) chosen file failed.",
-                                    ErrorHandler.WARNING);
+                                    Logger.WARNING);
                     e1.printStackTrace();
                 }
             } else {
@@ -264,9 +264,9 @@ public class MainGUI implements ActionListener, ItemListener {
             final String resName = "/gralej/resource/sample.GRALE";
             InputStream is = getClass().getResourceAsStream(resName);
             if (is == null) {// should never happen
-                ErrorHandler.getInstance().report(
+                Logger.getInstance().report(
                         "Initializing InputStream failed.",
-                        ErrorHandler.CRITICAL);
+                        Logger.CRITICAL);
                 throw new RuntimeException("Internal program error");
             }
             c.newStream(is, new StreamInfo("grisu", resName));
@@ -282,8 +282,8 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     c.startWebTraleClient(new URL(surl));
                 } catch (Exception ex) {
-                    ErrorHandler.getInstance().report(ex.getMessage(),
-                            ErrorHandler.ERROR);
+                    Logger.getInstance().report(ex.getMessage(),
+                            Logger.ERROR);
                     continue; // try again
                 }
                 try {
