@@ -91,9 +91,7 @@ public class GenericIconTheme implements IconTheme {
         }
 
         if (icon == null) {
-            Logger.getInstance().report(
-                    "GenericIconTheme: Failed to load icon: " + filename,
-                    Logger.WARNING);
+            Logger.warning("GenericIconTheme: Failed to load icon:" + filename);
         }
 
         return icon;

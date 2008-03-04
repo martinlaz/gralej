@@ -31,10 +31,9 @@ public class Main {
         try {
             UIManager.setLookAndFeel(lookandfeel);
         } catch (Exception e) {
-            Logger.getInstance().report(
+            Logger.error(
                     "Cannot load " + lookandfeel
-                            + ". Falling back to system default L&F.",
-                    Logger.ERROR);
+                            + ". Falling back to system default L&F.");
             e.printStackTrace();
             try {
                 UIManager.setLookAndFeel(UIManager

@@ -46,13 +46,11 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
             try {
                 editorPane.setPage(aboutfile);
             } catch (IOException e) {
-                Logger.getInstance().report(
-                        "Attempted to read a bad URL: " + aboutfile,
-                        Logger.WARNING);
+                Logger.warning(
+                        "Attempted to read a bad URL: " + aboutfile);
             }
         } else {
-            Logger.getInstance().report("Couldn't find about.html.",
-                    Logger.WARNING);
+            Logger.warning("Couldn't find about.html.");
         }
 
         editorPane.setPreferredSize(new Dimension(350, 350));
@@ -85,8 +83,7 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
             catch (Exception e) {
             	// throw any exception to console and at the user.
                 e.printStackTrace();
-                Logger.getInstance().report(e.getMessage(), 
-                		Logger.ERROR);
+                Logger.error(e.getMessage());
             }
         }
     }

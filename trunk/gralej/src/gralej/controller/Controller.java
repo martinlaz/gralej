@@ -40,29 +40,22 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     public void open(File file) {
 
         // instantiate a new file handler
-        Logger.getInstance().report(
-                "-- Opening File " + file.getAbsolutePath(),
-                Logger.NOTE);
+        Logger.info(
+                "Opening File " + file.getAbsolutePath());
         FileLoader fl = new FileLoader(file, true);
         fl.registerNewStreamListener(this);
-        Logger.getInstance().report(
-                "-- Starting to open",
-                Logger.DEBUG);
+        Logger.debug("Starting to open");
         try {
             fl.loadFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Logger.getInstance().report(
-                "-- Opening should run in its thread now",
-                Logger.DEBUG);
+        Logger.debug("Opening should run in its thread now");
 
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
-        Logger.getInstance().report(
-                "-- New stream of type " + streamMeta,
-                Logger.NOTE);
+        Logger.info("New stream of type " + streamMeta);
 
         try {
             // ask parser factory for parser
@@ -77,17 +70,13 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void streamClosed(StreamInfo meta, Exception ex) {
-        Logger.getInstance().report(
-                "-- Stream closed: " + meta, Logger.NOTE);
+        Logger.info("Stream closed: " + meta);
         if (ex != null)
-            Logger.getInstance().report(
-                    "------ Exception: " + ex, Logger.ERROR);
+            Logger.error("Exception:", ex);
     }
 
     public void newDataPackage(IDataPackage parse) {
-        Logger.getInstance().report(
-                "-- Controller got new parse", 
-                Logger.DEBUG);
+        Logger.debug("Controller got new parse");
 
         class ParseShowingRunnable implements Runnable {
             IDataPackage parse;
@@ -125,20 +114,20 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     
     public void startServer () {
         GralePreferences gp = GralePreferences.getInstance();
+        int port = gp.getInt("server.port");
         if ( server == null ) {
-        	server = new SocketServer(gp.getInt("server.port"));
+        	server = new SocketServer(port);
         }	
         try {
             server.startListening();
-            Logger.getInstance().report(
-                    "-- Server up and listening", Logger.NOTE);
+            Logger.info("Server up and listening");
         } catch (IOException e) {
         	e.printStackTrace();
-        	Logger.getInstance().report(
-        			"Cannot bind server to network port "
-        			+ gp.getInt("server.port")
+        	Logger.error(
+        			"Cannot bind server to network port"
+        			+ port
         			+ ", perhaps another GraleJ is running?"
-        			, Logger.ERROR);
+                                );
         }
 
         server.registerNewStreamListener(this);
