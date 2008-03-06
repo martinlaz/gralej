@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 
 public class Label extends Block {
     LabelStyle _style;
@@ -51,6 +52,7 @@ public class Label extends Block {
     
     @Override
     protected void updateSelf() {
+        _style = getPanelStyle().getLabelFactory().getLabelStyle(_style.getName());
         updateTextMetrics();
         int w = _tw + _style.getMarginLeft() + _style.getMarginRight();
         int h = _th + _style.getMarginTop() + _style.getMarginBottom();
@@ -71,11 +73,14 @@ public class Label extends Block {
         int w = getWidth();
         int h = getHeight();
 
-        if (_style.getFrameWidth() > 0) {
+        if (_style.getFrameThickness() > 0) {
             // draw frame
+            Stroke oldStroke = g.getStroke();
+            g.setStroke(_style.getStroke());
             Rectangle frame = new Rectangle(x, y, w, h);
             g.setColor(_style.getFrameColor());
             g.draw(frame);
+            g.setStroke(oldStroke);
         }
         
         Color color = _useTextAltColor ? _style.getTextAltColor() : _style.getTextColor();

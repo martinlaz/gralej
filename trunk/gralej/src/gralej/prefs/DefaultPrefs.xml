@@ -15,14 +15,8 @@ where RR = 2byte hex value for red
       AA = 2byte hex value for the alpha channel (ff=no transparency)
 -->
 <properties>
-<!-- for testing, remove later! -->
 <comment>GraleJ factory properties</comment>
-<!--
-<entry key="testfont1">Times New Roman, 0, 16</entry>
-<entry key="testfont2">Times New Roman, 1, 16</entry>
-<entry key="testcolor1">ffffffff</entry>
-<entry key="testcolor2">ffffffff</entry>
--->
+
 <entry key="server.port">1080</entry>
 
 
@@ -46,21 +40,24 @@ where RR = 2byte hex value for red
 <entry key="input.lastserver"></entry> 
 
 <!-- message output methods (popup, stderr, file, ignore) -->
-<entry key="message.info">stderr</entry> 
-<entry key="message.warning">stderr</entry> 
-<entry key="message.error">popup</entry> 
-<entry key="message.critical">popup</entry> 
-<entry key="message.debug">stderr</entry>
-<entry key="logger.file">gralej.log</entry>
+<entry key="log.message.info">stderr</entry> 
+<entry key="log.message.warning">stderr</entry> 
+<entry key="log.message.error">popup</entry> 
+<entry key="log.message.critical">popup</entry> 
+<entry key="log.message.debug">stderr</entry>
+<entry key="log.file">gralej.log</entry>
 
 <!-- application behavior -->
 <entry key="behavior.openonload">false</entry>
 <entry key="behavior.showstatusbar">true</entry>
 <entry key="behavior.showtoolbar">true</entry>
 <entry key="behavior.showwindowtoolbar">true</entry>
-<entry key="behavior.internalframes">false</entry>
 <entry key="behavior.alwaysfitsize">false</entry>
+<entry key="behavior.autoexpandtags">false</entry>
+<entry key="behavior.displayModelHiddenFeatures">false</entry>
+<entry key="behavior.nodeContentInitiallyVisible">false</entry>
 <entry key="behavior.defaultzoom">100</entry>
+
 <!--those are required! -->
 <entry key="behavior.defaultzoom.min">10</entry>
 <entry key="behavior.defaultzoom.max">1600</entry>
@@ -78,141 +75,122 @@ where RR = 2byte hex value for red
 <!--
 Block panel
 -->
-<entry key="panel.background">ffffffff</entry>
-<entry key="panel.margins.all">20</entry>
-<entry key="panel.scrollbar.vertical.unitIncrement">20</entry>
-<entry key="panel.autoResize">false</entry>
-<entry key="panel.autoExpandTags">false</entry>
-<entry key="panel.displayModelHiddenFeatures">true</entry>
+<entry key="block.panel.background">ffffffff</entry>
+<entry key="block.panel.selectedBlockColor">ffffffff</entry>
+<entry key="block.panel.margins.all">20</entry>
+<entry key="block.panel.scrollbar.vertical.unitIncrement">20</entry>
 
 <!--
 Tree
 -->
-<entry key="tree.minDistance.horizontal">25</entry>
-<entry key="tree.minDistance.vertical">40</entry>
-<entry key="tree.edge.color">A7A7A7ff</entry>
-<entry key="tree.node.content.isInitiallyVisible">false</entry>
+<entry key="block.tree.minDistance.horizontal">25</entry>
+<entry key="block.tree.minDistance.vertical">40</entry>
+<entry key="block.tree.edge.color">A7A7A7ff</entry>
 
 <!--
 Layouts
 -->
-<entry key="layout.avm.space.leading">3</entry>
-<entry key="layout.avm.space.intra">5</entry>
-<entry key="layout.avm.space.trailing">5</entry>
-<entry key="layout.avm.compact">false</entry>
+<entry key="block.layout.avm.space.leading">3</entry>
+<entry key="block.layout.avm.space.intra">5</entry>
+<entry key="block.layout.avm.space.trailing">5</entry>
+<entry key="block.layout.avm.compact">false</entry>
 
-<entry key="layout.avpairlist.space.leading">0</entry>
-<entry key="layout.avpairlist.space.intra">6</entry>
-<entry key="layout.avpairlist.space.trailing">0</entry>
+<entry key="block.layout.avpairlist.space.leading">0</entry>
+<entry key="block.layout.avpairlist.space.intra">6</entry>
+<entry key="block.layout.avpairlist.space.trailing">0</entry>
 
-<entry key="layout.avpair.space.leading">10</entry>
-<entry key="layout.avpair.space.intra">5</entry>
-<entry key="layout.avpair.space.trailing">10</entry>
+<entry key="block.layout.avpair.space.leading">10</entry>
+<entry key="block.layout.avpair.space.intra">5</entry>
+<entry key="block.layout.avpair.space.trailing">10</entry>
 
-<entry key="layout.reentrancy.space.leading">0</entry>
-<entry key="layout.reentrancy.space.intra">5</entry>
-<entry key="layout.reentrancy.space.trailing">0</entry>
+<entry key="block.layout.reentrancy.space.leading">0</entry>
+<entry key="block.layout.reentrancy.space.intra">5</entry>
+<entry key="block.layout.reentrancy.space.trailing">0</entry>
 
-<entry key="layout.list.space.leading">0</entry>
-<entry key="layout.list.space.intra">0</entry>
-<entry key="layout.list.space.trailing">0</entry>
+<entry key="block.layout.list.space.leading">0</entry>
+<entry key="block.layout.list.space.intra">0</entry>
+<entry key="block.layout.list.space.trailing">0</entry>
 
-<entry key="layout.listcontent.space.leading">3</entry>
-<entry key="layout.listcontent.space.intra">3</entry>
-<entry key="layout.listcontent.space.trailing">3</entry>
+<entry key="block.layout.listcontent.space.leading">3</entry>
+<entry key="block.layout.listcontent.space.intra">3</entry>
+<entry key="block.layout.listcontent.space.trailing">3</entry>
 
-<entry key="layout.node.space.leading">5</entry>
-<entry key="layout.node.space.intra">2</entry>
-<entry key="layout.node.space.trailing">5</entry>
+<entry key="block.layout.node.space.leading">5</entry>
+<entry key="block.layout.node.space.intra">2</entry>
+<entry key="block.layout.node.space.trailing">5</entry>
 
 <!--
 AVM Blocks
 -->
-<entry key="avm.bracket.color">003333ff</entry>
-<entry key="avm.bracket.edge.length">4</entry>
-<entry key="avm.bracket.style.rounded">true</entry>
+<entry key="block.avm.bracket.color">003333ff</entry>
+<entry key="block.avm.bracket.edge.length">4</entry>
+<entry key="block.avm.bracket.style.rounded">true</entry>
 <!-- <entry key="avm.bracket.line.width">1</entry> -->
 
 <!--
 Labels
 -->
 <!-- defaults -->
-<entry key="label._default.font.spec">Times,0,12</entry>
-<entry key="label._default.text.color">0</entry>
-<entry key="label._default.text.color.alt">C0C0C0ff</entry>
-<entry key="label._default.margin.horizontal">0</entry>
-<entry key="label._default.margin.vertical">0</entry>
-<entry key="label._default.frame.width">0</entry>
-<entry key="label._default.frame.color">0</entry>
+<entry key="block.label._default.fontSpec">Times,0,12</entry>
+<entry key="block.label._default.text.color">0</entry>
+<entry key="block.label._default.text.colorAlt">C0C0C0ff</entry>
+<entry key="block.label._default.margin.top">0</entry>
+<entry key="block.label._default.margin.left">0</entry>
+<entry key="block.label._default.margin.right">0</entry>
+<entry key="block.label._default.margin.bottom">0</entry>
+<entry key="block.label._default.frame.thickness">0</entry>
+<entry key="block.label._default.frame.color">0</entry>
+<entry key="block.label._default.frame.isDashed">false</entry>
 
 <!-- general -->
 <!-- if a label's contents is too long -->
-<entry key="label.text.maxLength">70</entry>
-<entry key="label.continuation.text">...</entry>
+<entry key="block.label.text.maxLength">70</entry>
+<entry key="block.label.continuation.text">...</entry>
 
 <!-- List labels -->
-<!-- <entry key="label.list.font.spec">Lucida Sans Unicode</entry> -->
-<!-- <entry key="label.list.text.left">&#x27e8;</entry> -->
-<!-- <entry key="label.list.text.right">&#x27e9;</entry> -->
-<entry key="label.list.text.left">&lt;</entry>
-<entry key="label.list.text.right">&gt;</entry>
-<entry key="label.list.text.separator">,</entry>
+<!-- <entry key="block.label.list.fontSpec">Lucida Sans Unicode</entry> -->
+<!-- <entry key="block.label.list.text.left">&#x27e8;</entry> -->
+<!-- <entry key="block.label.list.text.right">&#x27e9;</entry> -->
+<entry key="block.label.list.text.left">&lt;</entry>
+<entry key="block.label.list.text.right">&gt;</entry>
+<entry key="block.label.list.text.separator">,</entry>
 
 <!-- Tag labels -->
-<entry key="label.tag.font.spec">Courier,1,12</entry>
-<entry key="label.tag.text.color">0</entry>
-<entry key="label.tag.text.color.alt">0</entry>
-<entry key="label.tag.margin.horizontal">3</entry>
-<entry key="label.tag.margin.vertical">0</entry>
-<!-- the actual value is ignored, must be > 0 for a frame to appear -->
-<entry key="label.tag.frame.width">1</entry>
-<entry key="label.tag.frame.color">0</entry>
+<entry key="block.label.tag.fontSpec">Courier,1,12</entry>
+<entry key="block.label.tag.text.colorAlt">0</entry>
+<entry key="block.label.tag.margin.left">3</entry>
+<entry key="block.label.tag.margin.right">3</entry>
+<entry key="block.label.tag.frame.thickness">1</entry>
 
 <!-- AVM sort labels -->
-<entry key="label.sort.font.spec">Times,2,12</entry>
-<entry key="label.sort.text.color">003399ff</entry>
-<entry key="label.sort.margin.horizontal">5</entry>
-<entry key="label.sort.margin.vertical">0</entry>
-<entry key="label.sort.frame.width">0</entry>
-<entry key="label.sort.frame.color">0</entry>
+<entry key="block.label.sort.fontSpec">Times,2,12</entry>
+<entry key="block.label.sort.text.color">003399ff</entry>
+<entry key="block.label.sort.margin.left">5</entry>
+<entry key="block.label.sort.margin.right">5</entry>
 
 <!-- Species labels -->
-<entry key="label.species.font.spec">Times,2,12</entry>
-<entry key="label.species.text.color">003399ff</entry>
-<entry key="label.species.margin.horizontal">0</entry>
+<entry key="block.label.species.fontSpec">Times,2,12</entry>
+<entry key="block.label.species.text.color">003399ff</entry>
 
 <!-- Any labels -->
-<entry key="label.any.font.spec">Times,2,12</entry>
-<entry key="label.any.text.color">006600ff</entry>
-<entry key="label.any.margin.horizontal">0</entry>
-<entry key="label.any.margin.vertical">0</entry>
-<entry key="label.any.frame.width">0</entry>
-<entry key="label.any.frame.color">0</entry>
+<entry key="block.label.any.fontSpec">Times,2,12</entry>
+<entry key="block.label.any.text.color">006600ff</entry>
 
 <!-- Attribute labels -->
-<!--<entry key="label.attribute.font.spec"></entry>-->
-<!--<entry key="label.attribute.text.color"></entry>-->
-<entry key="label.attribute.margin.horizontal">0</entry>
-<entry key="label.attribute.margin.vertical">0</entry>
-<!--<entry key="label.attribute.frame.width"></entry>-->
-<!--<entry key="label.attribute.frame.color"></entry>-->
+<!--<entry key="block.label.attribute.fontSpec"></entry>-->
+<!--<entry key="block.label.attribute.text.color"></entry>-->
+<!--<entry key="block.label.attribute.margin.horizontal">0</entry>-->
+<!--<entry key="block.label.attribute.margin.vertical">0</entry>-->
+<!--<entry key="block.label.attribute.frame.thickness"></entry>-->
+<!--<entry key="block.label.attribute.frame.color"></entry>-->
 
 <!-- Node labels -->
-<entry key="label.node.internal.font.spec">Arial,1,12</entry>
-<entry key="label.node.internal.text.color">112233ff</entry>
-<entry key="label.node.internal.text.color.alt">112233ff</entry>
-<entry key="label.node.internal.margin.horizontal">0</entry>
-<entry key="label.node.internal.margin.vertical">0</entry>
-<entry key="label.node.internal.frame.width">0</entry>
-<entry key="label.node.internal.frame.color">0</entry>
+<entry key="block.label.node.internal.fontSpec">Arial,1,12</entry>
+<entry key="block.label.node.internal.text.color">112233ff</entry>
+<entry key="block.label.node.internal.text.colorAlt">112233ff</entry>
 
-<entry key="label.node.leaf.font.spec">Arial,1,12</entry>
-<entry key="label.node.leaf.text.color">993300ff</entry>
-<entry key="label.node.leaf.text.color.alt">993300ff</entry>
-<entry key="label.node.leaf.margin.horizontal">0</entry>
-<entry key="label.node.leaf.margin.vertical">0</entry>
-<entry key="label.node.leaf.frame.width">0</entry>
-<entry key="label.node.leaf.frame.color">0</entry>
-
+<entry key="block.label.node.leaf.fontSpec">Arial,1,12</entry>
+<entry key="block.label.node.leaf.text.color">993300ff</entry>
+<entry key="block.label.node.leaf.text.colorAlt">993300ff</entry>
 
 </properties>

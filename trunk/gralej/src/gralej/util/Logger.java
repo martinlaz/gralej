@@ -51,13 +51,13 @@ public class Logger {
     private Logger() {
         // read way from prefs
         GralePreferences gp = GralePreferences.getInstance();
-        mapping[Severity.INFO.ordinal()] = Enum.valueOf(Method.class, gp.get("message.info").toUpperCase());
-        mapping[Severity.WARNING.ordinal()] = Enum.valueOf(Method.class, gp.get("message.warning").toUpperCase());
-        mapping[Severity.ERROR.ordinal()] = Enum.valueOf(Method.class, gp.get("message.error").toUpperCase());
-        mapping[Severity.CRITICAL.ordinal()] = Enum.valueOf(Method.class, gp.get("message.critical").toUpperCase());
-        mapping[Severity.DEBUG.ordinal()] = Enum.valueOf(Method.class, gp.get("message.debug").toUpperCase());
+        mapping[Severity.INFO.ordinal()] = Method.valueOf(gp.get("log.message.info").toUpperCase());
+        mapping[Severity.WARNING.ordinal()] = Method.valueOf(gp.get("log.message.warning").toUpperCase());
+        mapping[Severity.ERROR.ordinal()] = Method.valueOf(gp.get("log.message.error").toUpperCase());
+        mapping[Severity.CRITICAL.ordinal()] = Method.valueOf(gp.get("log.message.critical").toUpperCase());
+        mapping[Severity.DEBUG.ordinal()] = Method.valueOf(gp.get("log.message.debug").toUpperCase());
         
-        String filename = gp.get("logger.file");
+        String filename = gp.get("log.file");
 
         for (Method m : mapping) {
             if (m == Method.FILE) {

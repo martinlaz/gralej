@@ -12,10 +12,13 @@ public class AVPairListBlock extends ContainerBlock {
 
     @Override
     public void update() {
+        
         if (getPanelStyle().isAVMLayoutCompact()) {
             super.update();
             return;
         }
+        
+        updateLayoutManager();
         
         _isUpdatingChildren = true;
         try {

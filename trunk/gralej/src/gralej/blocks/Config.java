@@ -4,13 +4,28 @@ import gralej.prefs.GralePreferences;
 import gralej.prefs.NoDefaultPrefSettingException;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-import java.io.InputStream;
 
 class Config {
+    
+    static void set(String key, String value) {
+        GralePreferences.getInstance().put(key, value);
+    }
+    
+    static void set(String key, Boolean value) {
+        GralePreferences.getInstance().putBoolean(key, value);
+    }
+    
+    static void set(String key, int value) {
+        GralePreferences.getInstance().putInt(key, value);
+    }
+    
+    static void set(String key, Font value) {
+        GralePreferences.getInstance().putFont(key, value);
+    }
+    
+    static void set(String key, Color value) {
+        GralePreferences.getInstance().putColor(key, value);
+    }
 
     static String get(String name, String defaultValue) {
         //return getProp(name, defaultValue);
