@@ -1,15 +1,16 @@
 package gralej.blocks;
 
-import gralej.prefs.GPrefsChangeListener;
-import gralej.prefs.GralePreferences;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class LayoutFactory {
     
-    public LayoutFactory() {}
+    private Map<String, BlockLayout> _layoutCache = new TreeMap<String, BlockLayout>();
+    private static LayoutFactory _instance;
     
-    static LayoutFactory _instance;
+    public LayoutFactory() {
+        init();
+    }
     
     public static LayoutFactory getInstance() {
         if (_instance == null)
@@ -17,47 +18,38 @@ public class LayoutFactory {
         return _instance;
     }
     
-    static {
-        GPrefsChangeListener l = new GPrefsChangeListener() {
-            public void preferencesChange() {
-                _instance = null;
-            }
-        };
-        GralePreferences.getInstance().addListener(l, "layout.");
+    private void init() {
+        getAVMLayout();
+        getAVPairLayout();
+        getAVPairListLayout();
+        getListLayout();
+        getListContentLayout();
+        getReentrancyLayout();
+        getNodeLayout();
     }
-
-    static class LayoutParams {
-        int lead, intra, trail;
-
-        LayoutParams(int lead, int intra, int trail) {
-            this.lead = lead;
-            this.intra = intra;
-            this.trail = trail;
+    
+    BlockLayout getLayout(String type) {
+        return _layoutCache.get("block.layout." + type);
+    }
+    
+    void updatePreferences() {
+        for (BlockLayout x : _layoutCache.values()) {
+            Config.set("block.layout." + x.getName() + ".space.leading",  x.getLeadingSpace());
+            Config.set("block.layout." + x.getName() + ".space.intra",    x.getIntraSpace());
+            Config.set("block.layout." + x.getName() + ".space.trailing", x.getTrailingSpace());
         }
     }
-
-    private Map<String, LayoutParams> _layoutParamMap = new TreeMap<String, LayoutParams>();
-    private Map<String, BlockLayout> _layoutCache = new TreeMap<String, BlockLayout>();
-
-    synchronized private LayoutParams getLayoutParams(String id) {
-        LayoutParams params = _layoutParamMap.get(id);
-        if (params == null) {
-            params = new LayoutParams(Config.getInt(id + ".space.leading"),
-                    Config.getInt(id + ".space.intra"), Config.getInt(id
-                            + ".space.trailing"));
-            _layoutParamMap.put(id, params);
+    
+    void updateSelf() {
+        for (BlockLayout x : _layoutCache.values()) {
+            x.setAll(
+                    Config.getInt("block.layout." + x.getName() + ".space.leading"),
+                    Config.getInt("block.layout." + x.getName() + ".space.intra"),
+                    Config.getInt("block.layout." + x.getName() + ".space.trailing")
+                    );
         }
-        return params;
     }
-
-    private static String makeCacheId(String s) {
-        return s;
-    }
-
-    private static String makeCacheId(String s, int i, int j, int k) {
-        return makeCacheId(s) + ":" + i + ":" + j + ":" + k;
-    }
-
+    
     static abstract class LayoutCreator {
         abstract BlockLayout newInstance();
     }
@@ -81,19 +73,18 @@ public class LayoutFactory {
     };
 
     private BlockLayout getLayout(String id, LayoutCreator creator) {
-        LayoutParams params = getLayoutParams("layout." + id);
-        String cacheId = makeCacheId("v!" + id, params.lead, params.intra,
-                params.trail);
-        BlockLayout layout;
-        synchronized (_layoutCache) {
-            layout = _layoutCache.get(cacheId);
-            if (layout == null) {
-                BlockLayout alayout = creator.newInstance();
-                alayout.setName(id);
-                alayout.setAll(params.lead, params.intra, params.trail);
-                layout = alayout;
-                _layoutCache.put(cacheId, layout);
-            }
+        String id_ = "block.layout." + id;
+        BlockLayout layout = _layoutCache.get(id_);
+        if (layout == null) {
+            int leading     = Config.getInt(id_ + ".space.leading");
+            int intra       = Config.getInt(id_ + ".space.intra");
+            int trailing    = Config.getInt(id_ + ".space.trailing");
+            
+            BlockLayout alayout = creator.newInstance();
+            alayout.setName(id);
+            alayout.setAll(leading, intra, trailing);
+            layout = alayout;
+            _layoutCache.put(id_, layout);
         }
         return layout;
     }

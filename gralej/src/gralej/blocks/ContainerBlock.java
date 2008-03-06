@@ -50,8 +50,15 @@ public abstract class ContainerBlock extends Block {
         _children.add(block);
     }
     
+    protected void updateLayoutManager() {
+        if (_layout != null && _layout.getName() != null)
+            _layout = getPanelStyle().getLayoutFactory().getLayout(_layout.getName());
+    }
+    
     @Override
     public void update() {
+        updateLayoutManager();
+        
         _isUpdatingChildren = true;
         try {
             for (Block child : getChildren())

@@ -33,10 +33,33 @@ public class BlockPanelStyle {
         
         initFields();
     }
-    
+
     public void updatePreferences() {
-        javax.swing.JOptionPane.showMessageDialog(
-                null, "BlockPanelStyle.updatePreferences() is not implemented yet!");
+        _labfac.updatePreferences();
+        _layfac.updatePreferences();
+        
+        for (Field f : getClass().getDeclaredFields()) {
+            Key k = (Key) f.getAnnotation(Key.class);
+            if (k == null)
+                continue;
+            String s = k.value();
+            try {
+                if (f.getType() == String.class)
+                    Config.set(s, (String) f.get(this));
+                else if (f.getType() == int.class)
+                    Config.set(s, (Integer) f.get(this));
+                else if (f.getType() == boolean.class)
+                    Config.set(s, (Boolean) f.get(this));
+                else if (f.getType() == Color.class)
+                    Config.set(s, (Color) f.get(this));
+                else
+                    throw new Exception(
+                            "Unsupported field type: [" + f.getType() + "] for field: " + f);
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     
     private void initFields() {
@@ -78,42 +101,44 @@ public class BlockPanelStyle {
     }
     
     // avm related stuff
-    @Key("avm.bracket.color")
+    @Key("block.avm.bracket.color")
     Color avmBracketColor;
-    @Key("avm.bracket.edge.length")
+    @Key("block.avm.bracket.edge.length")
     int avmBracketEdgeLength;
-    @Key("avm.bracket.style.rounded")
+    @Key("block.avm.bracket.style.rounded")
     boolean avmBracketRounded;
-    @Key("layout.avm.compact")
+    @Key("block.layout.avm.compact")
     boolean avmLayoutCompact;
     
-    //
-    @Key("panel.displayModelHiddenFeatures")
-    boolean displayingModelHiddenFeatures;
-    @Key("panel.autoExpandTags")
-    boolean autoExpandingTags;
-    
     // long labels
-    @Key("label.continuation.text")
+    @Key("block.label.continuation.text")
     String longLabelTextContinuation;
-    @Key("label.text.maxLength")
+    @Key("block.label.text.maxLength")
     int maxLabelTextLength;
     
     // tree layout
-    @Key("tree.minDistance.horizontal")
+    @Key("block.tree.minDistance.horizontal")
     int minTreeNodesHorizontalDistance;
-    @Key("tree.minDistance.vertical")
+    @Key("block.tree.minDistance.vertical")
     int minTreeNodesVerticalDistance;
-    @Key("tree.node.content.isInitiallyVisible")
-    boolean nodeContentInitiallyVisible;    // don't update on that
-    @Key("tree.edge.color")
+    @Key("block.tree.edge.color")
     Color treeEdgeColor;
     
     // panel
-    @Key("panel.margins.all")
+    @Key("block.panel.margins.all")
     int margin;
-    @Key("panel.background")
+    @Key("block.panel.background")
     Color backgroundColor;
+    @Key("block.panel.selectedBlockColor")
+    Color selectedBlockColor;
+
+    public Color getSelectedBlockColor() {
+        return selectedBlockColor;
+    }
+
+    public void setSelectedBlockColor(Color selectedBlockColor) {
+        this.selectedBlockColor = selectedBlockColor;
+    }
 
     public Color getAVMBracketColor() {
         return avmBracketColor;
@@ -147,10 +172,6 @@ public class BlockPanelStyle {
         this.avmLayoutCompact = avmLayoutCompact;
     }
 
-    public boolean isAutoExpandingTags() {
-        return autoExpandingTags;
-    }
-
     public LabelFactory getLabelFactory() {
         return _labfac;
     }
@@ -159,24 +180,12 @@ public class BlockPanelStyle {
         return _layfac;
     }
 
-    public boolean isNodeContentInitiallyVisible() {
-        return nodeContentInitiallyVisible;
-    }
-
     public Color getBackgroundColor() {
         return backgroundColor;
     }
 
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
-    }
-
-    public boolean isDisplayingModelHiddenFeatures() {
-        return displayingModelHiddenFeatures;
-    }
-
-    public void setDisplayingModelHiddenFeatures(boolean displayingModelHiddenFeatures) {
-        this.displayingModelHiddenFeatures = displayingModelHiddenFeatures;
     }
 
     public String getLongLabelTextContinuation() {

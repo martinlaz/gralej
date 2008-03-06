@@ -15,7 +15,7 @@ class ReentrancyBlock extends ContentOwningBlock {
         _tag = tag;
         _contentCreator = contentCreator;
         
-        if (getPanelStyle().isAutoExpandingTags())
+        if (getPanel().isAutoExpandingTags())
             if (getPanel().getExpandedTags().add(_tag))
                 getContent().setVisible(true);
     }

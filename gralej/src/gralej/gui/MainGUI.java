@@ -157,7 +157,7 @@ public class MainGUI implements ActionListener, ItemListener {
         
         m_AutoExpandTags = new JCheckBoxMenuItem("Automatically Expand Tags");
         m_AutoExpandTags.addActionListener(this);
-        m_AutoExpandTags.setState(gp.getBoolean("panel.autoExpandTags"));
+        m_AutoExpandTags.setState(gp.getBoolean("behavior.autoexpandtags"));
         viewmenu.add(m_AutoExpandTags);
 
         viewmenu.addSeparator();
@@ -343,7 +343,7 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_AutoOpenWindows) {
             gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
         } else if (source == m_AutoExpandTags) {
-            gp.putBoolean("panel.autoExpandTags", m_AutoExpandTags.getState());
+            gp.putBoolean("behavior.autoexpandtags", m_AutoExpandTags.getState());
         }
     }
 

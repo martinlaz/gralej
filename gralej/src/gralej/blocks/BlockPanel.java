@@ -40,10 +40,11 @@ public class BlockPanel implements StyleChangeListener {
     DrawingPane _canvas;
     JPanel _ui;
     boolean _autoResize;
+    boolean _autoExpandTags;
+    boolean _displayHiddenFeatures;
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private ContentLabel _lastHit;
     private Block _selectedBlock;
-    private Color _selectedBlockColor = new Color(100,50,230,35);
     private Stroke _dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, 
                             BasicStroke.JOIN_ROUND, 0,  new float[]{2}, 0);
 
@@ -63,17 +64,24 @@ public class BlockPanel implements StyleChangeListener {
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             // g.drawRect(getX(), getY(), getWidth()-1, getHeight()-1);
-            _content.paint(g);
+            
+            final int N = 2;
+            
             if (_selectedBlock != null) {
-                final int N = 2;
-                g.setColor(_selectedBlockColor);
+                // fill background
+                g.setColor(_style.getSelectedBlockColor());
                 g.fillRect(
                         _selectedBlock.getX() - N,
                         _selectedBlock.getY() - N,
                         _selectedBlock.getWidth() + N * 2,
                         _selectedBlock.getHeight() + N * 2
                         );
-                
+            }
+            
+            _content.paint(g);
+            
+            if (_selectedBlock != null) {
+                // draw the frame
                 g.setColor(Color.BLACK);
                 g.setStroke(_dashedStroke);
                 g.drawRect(
@@ -83,6 +91,7 @@ public class BlockPanel implements StyleChangeListener {
                         _selectedBlock.getHeight() + N * 2
                         );
             }
+            
             if (savedTransform != null)
                 g.setTransform(savedTransform);
         }
@@ -93,9 +102,10 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style) {
-        _style = style;
-        _style.addStyleChangeListener(this);
-        
+        this(contentModel, style, Boolean.parseBoolean(Config.get("behavior.autoexpandtags")));
+    }
+    
+    public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style, boolean autoExpandTags) {
         final BlockPanel thisPanel = this;
         
         _ui = new JPanel() {
@@ -108,15 +118,16 @@ public class BlockPanel implements StyleChangeListener {
         _ui.setLayout(new BorderLayout());
         
         _canvas = new DrawingPane();
-        _canvas.setBackground(_style.getBackgroundColor());
         
         JScrollPane scrollPane = new JScrollPane(_canvas);
         int vUnitIncrement = Config.getInt(
-                "panel.scrollbar.vertical.unitIncrement");
+                "block.panel.scrollbar.vertical.unitIncrement");
         scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
         _ui.add(scrollPane, BorderLayout.CENTER);
         
         _autoResize = Boolean.parseBoolean(Config.get("behavior.alwaysfitsize"));
+        _autoExpandTags = autoExpandTags;
+        _displayHiddenFeatures = Boolean.parseBoolean(Config.get("behavior.displayModelHiddenFeatures"));
         
         _canvas.addMouseListener(new MouseAdapter() {
             @Override
@@ -125,6 +136,11 @@ public class BlockPanel implements StyleChangeListener {
                     _ui.requestFocus(true);
                 onMousePressed(e);
             }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                onMouseExited(e);
+            }
+            
         });
         _canvas.addMouseMotionListener(new MouseAdapter() {
             @Override
@@ -133,11 +149,33 @@ public class BlockPanel implements StyleChangeListener {
             }
         });
         
+        setStyle(style);
+        
         _content = new RootBlock(
                 this,
                 new BlockCreator(this).createBlock(contentModel)
                 );
         _content.update();
+        if (Boolean.parseBoolean(Config.get("behavior.nodeContentInitiallyVisible"))) {
+            showNodeContents(true);
+        }
+    }
+    
+    public void setStyle(BlockPanelStyle newStyle) {
+        if (_style == newStyle) return;
+        if (_style != null) _style.removeStyleChangeListener(this);
+        _style = newStyle;
+        _style.addStyleChangeListener(this);
+        styleChanged(null);
+    }
+    
+    public void showNodeContents(boolean visible) {
+        if (!(_content.getContent() instanceof TreeBlock))
+            return;
+        for (Block b : ((TreeBlock)_content.getContent()).getChildren()) {
+            NodeBlock node = (NodeBlock) b;
+            node.getContent().setVisible(visible);
+        }
     }
     
     void updateSelf() {
@@ -176,6 +214,21 @@ public class BlockPanel implements StyleChangeListener {
         _autoResize = autoResize;
     }
     
+    boolean isAutoExpandingTags() {
+        return _autoExpandTags;
+    }
+    
+    public boolean isDisplayingModelHiddenFeatures() {
+        return _displayHiddenFeatures;
+    }
+    
+    public void setDisplayingModelHiddenFeatures(boolean b) {
+        if (_displayHiddenFeatures == b)
+            return;
+        _displayHiddenFeatures = b;
+        _content.update();
+    }
+    
     public void setZoom(int zoom) {
         if (zoom <= 0 || zoom == _zoom)
             return;
@@ -212,7 +265,9 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     public void styleChanged(Object sender) {
-        _content.update();
+        _canvas.setBackground(_style.getBackgroundColor());
+        if (_content != null)
+            _content.update();
         _canvas.repaint();
     }
 
@@ -248,9 +303,13 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     protected void onMouseMoved(MouseEvent ev) {
-        if (ev.getID() != MouseEvent.MOUSE_MOVED)
+        if (ev.getID() != MouseEvent.MOUSE_MOVED) {
             return;
+        }
         updateCursorForPoint(unscale(ev.getX()), unscale(ev.getY()));
+    }
+    
+    protected void onMouseExited(MouseEvent ev) {
     }
 
     private static boolean blockContainsPoint(Block block, int x, int y) {

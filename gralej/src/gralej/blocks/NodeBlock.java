@@ -10,8 +10,6 @@ public class NodeBlock extends ContentOwningBlock {
         setLayout(getPanelStyle().getLayoutFactory().getNodeLayout());
         
         addChild(label);
-        if (!getPanelStyle().isNodeContentInitiallyVisible())
-            content.setVisible(false);
         addChild(content);
 
         setContent(content);

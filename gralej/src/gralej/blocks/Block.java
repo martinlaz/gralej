@@ -47,7 +47,7 @@ public abstract class Block {
         return _isVisible
             && (
                 !isModelHidden() 
-            || getPanelStyle().isDisplayingModelHiddenFeatures());
+            || getPanel().isDisplayingModelHiddenFeatures());
     }
     
     // TODO: override in AVPairBlock

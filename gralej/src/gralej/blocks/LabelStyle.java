@@ -1,7 +1,9 @@
 package gralej.blocks;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Stroke;
 
 public class LabelStyle {
     String name;
@@ -9,8 +11,10 @@ public class LabelStyle {
     Color textColor;
     Color textAltColor;
     int marginTop, marginRight, marginBottom, marginLeft;
-    int frameWidth;
+    int frameThickness;
     Color frameColor;
+    boolean frameDashed;
+    Stroke _stroke;
     
     LabelStyle(String name) {
         this.name = name;
@@ -36,12 +40,40 @@ public class LabelStyle {
         this.frameColor = frameColor;
     }
 
-    public int getFrameWidth() {
-        return frameWidth;
+    public int getFrameThickness() {
+        return frameThickness;
     }
 
-    public void setFrameWidth(int frameWidth) {
-        this.frameWidth = frameWidth;
+    public void setFrameThickness(int n) {
+        if (frameThickness == n)
+            return;
+        frameThickness = n;
+        updateStroke();
+    }
+    
+    public boolean isFrameDashed() {
+        return frameDashed;
+    }
+    
+    public void setFrameDashed(boolean b) {
+        if (frameDashed == b)
+            return;
+        frameDashed = b;
+        updateStroke();
+    }
+    
+    Stroke getStroke() {
+        return _stroke;
+    }
+    
+    private void updateStroke() {
+        if (frameThickness <= 0)
+            _stroke = null;
+        else if (!frameDashed)
+            _stroke = new BasicStroke(frameThickness);
+        else
+            _stroke = new BasicStroke(frameThickness, BasicStroke.CAP_BUTT,
+                            BasicStroke.JOIN_ROUND, 0,  new float[]{2}, 0);
     }
 
     public int getMarginBottom() {
