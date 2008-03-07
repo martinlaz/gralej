@@ -2,7 +2,7 @@ package gralej.server;
 
 import gralej.controller.StreamInfo;
 
-import gralej.util.Logger;
+import gralej.util.Log;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -60,12 +60,12 @@ public class SocketServer extends ServerBaseImpl {
             } catch (IOException e) {
             	e.printStackTrace();
             	if (! shutdown_state) {
-            		Logger.error("An exception "
+            		Log.error("An exception "
             				+ "occured while waiting for incoming connections. "
             				+ "Server thread terminates now, restart the server "
             				+ "to regain networking functionality. ");
             	} else {
-            		Logger.warning(this.getName() + 
+            		Log.warning(this.getName() + 
             				": Caught exception during server shutdown, " +
             				"this may be normal.");
             	}
@@ -121,11 +121,11 @@ public class SocketServer extends ServerBaseImpl {
                 // useful has happened, we can ignore this.
             	e.printStackTrace();
             	if ( ! shutdown_state) {
-            		Logger.warning(this.getName()
+            		Log.warning(this.getName()
             				+ ": Remote closed connection "
             				+ "before sending something useful. Closing handler.");
             	} else {
-            		Logger.warning(this.getName() + ": " +
+            		Log.warning(this.getName() + ": " +
             				"Caught exception during connection shutdown, " +
             				"this may be normal.");
             	}

@@ -1,6 +1,6 @@
 package gralej.parsers;
 
-import gralej.util.Logger;
+import gralej.util.Log;
 import gralej.blocks.BlockPanel;
 import gralej.om.ITree;
 import gralej.prefs.GralePreferences;
@@ -172,44 +172,44 @@ public class OutputFormatter {
             if (data != null)
                 toTRALE(data, p);
             else
-                Logger.error("Bad function call (no data).");
+                Log.error("Bad function call (no data).");
             break;
         case LaTeXFormat:
             if (data != null)
                 toLaTeX(data, p);
             else
-                Logger.error("Bad function call (no data).");
+                Log.error("Bad function call (no data).");
             break;
         case SVGFormat:
             if (view != null)
                 toSVG(view, p);
             else
-                Logger.error(
+                Log.error(
                         "Bad function call (SVG rendering needs a Swing JComponent as input).");
             break;
         case PostscriptFormat:
             if (view != null)
                 toPostscript(view, p);
             else
-                Logger.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
+                Log.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
             break;
         case JPGFormat:
             if (view != null)
                 toPixelGraphic(view, p, "jpg");
             else
-                Logger.error("Bad function call (image rendering needs a Swing JComponent as input).");
+                Log.error("Bad function call (image rendering needs a Swing JComponent as input).");
             break;
         case PNGFormat:
             if (view != null)
                 toPixelGraphic(view, p, "png");
             else
-                Logger.error("Bad function call (image rendering needs a Swing JComponent as input).");
+                Log.error("Bad function call (image rendering needs a Swing JComponent as input).");
             break;
         case XMLFormat:
             if (data != null)
                 toXML(data, p);
             else
-                Logger.error("Bad function call (no data).");
+                Log.error("Bad function call (no data).");
             break;
         }
     }
@@ -313,7 +313,7 @@ public class OutputFormatter {
         try {
             pj.print(doc, new HashPrintRequestAttributeSet());
         } catch (PrintException pe) {
-            Logger.error("PrintException:", pe);
+            Log.error("PrintException:", pe);
         }
     }
 
@@ -334,7 +334,7 @@ public class OutputFormatter {
             grap.dispose();
             ImageIO.write(img, format, p);
         } catch (Throwable e) {
-            Logger.error(e.getMessage());
+            Log.error(e.getMessage());
         }
     }
 
@@ -363,7 +363,7 @@ public class OutputFormatter {
             try {
                 printJob.print();
             } catch (PrinterException pe) {
-                Logger.error("Error printing:", pe);
+                Log.error("Error printing:", pe);
             }
         }
     }

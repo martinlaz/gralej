@@ -123,7 +123,7 @@ featvals
         }
   .
 flags
-  ->  { _flags = new OM.Flags(); return null; } | flags flag 
+  ->  { return _flags = new OM.Flags(); } | flags flag { return _flags; }
   .
 ########################
 ## Structures ##########
@@ -179,7 +179,7 @@ struc
   ->  _BEGIN_STRUC flags id type featvals _RPAR
         {
             OM.TFS tfs = new OM.TFS(
-                _flags,
+                (OM.Flags)_[1],
                 S(_[3]),        // type name
                 (L<IFeatureValuePair>)_[4]
                 );
@@ -197,7 +197,7 @@ featval
   ->  _BEGIN_FEATVAL flags id feature struct _RPAR
         {
             return new OM.FeatVal(
-                _flags,
+                (OM.Flags)_[1],
                 S(_[3]),        // feature
                 (IEntity)_[4]   // value
                 );
@@ -221,7 +221,7 @@ list
             if (tail != null)
                 structs.add(tail);
             
-            IList ls = new OM.List(_flags, structs);
+            IList ls = new OM.List((OM.Flags)_[1], structs);
             _id2ent.put(N(_[2]), ls);
             return ls;
         }
@@ -253,7 +253,7 @@ ref
   ->  _BEGIN_REF flags id target _RPAR
         {
             OM.Tag tag = new OM.Tag(
-                _flags,
+                (OM.Flags)_[1],
                 N(_[3])     // tag number
                 );
             _tags.add(tag);
@@ -265,7 +265,7 @@ any
   ->  _BEGIN_ANY flags id value _RPAR
         {
             IAny any = new OM.Any(
-                _flags,
+                (OM.Flags)_[1],
                 S(_[3])
                 );
             _id2ent.put(N(_[2]), any);

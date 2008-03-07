@@ -44,14 +44,22 @@ public abstract class Block {
     }
     
     public boolean isVisible() {
-        return _isVisible
-            && (
-                !isModelHidden() 
-            || getPanel().isDisplayingModelHiddenFeatures());
+        if (!_isVisible)
+            return false;
+        if (isModelHidden())
+            return getPanel().isDisplayingModelHiddenFeatures();
+        return true;
     }
     
     // TODO: override in AVPairBlock
     boolean isModelHidden() {
+        return false;
+    }
+    
+    public boolean isHiddenByAncestor() {
+        for (ContainerBlock b = getParent(); b != null; b = b.getParent())
+            if (!b.isVisible())
+                return true;
         return false;
     }
     

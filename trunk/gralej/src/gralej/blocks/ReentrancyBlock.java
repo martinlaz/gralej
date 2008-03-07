@@ -4,24 +4,26 @@ class ReentrancyBlock extends ContentOwningBlock {
     int _tag;
     ContentCreator _contentCreator;
 
-    ReentrancyBlock(BlockPanel panel, int tag, ContentCreator contentCreator) {
+    ReentrancyBlock(BlockPanel panel, ContentLabel tagLabel, int tag, ContentCreator contentCreator) {
         setPanel(panel);
         setLayout(getPanelStyle().getLayoutFactory().getReentrancyLayout());
         
-        Label tagLabel = getPanelStyle().getLabelFactory().createTagLabel(
-                Integer.toString(tag), panel);
         addChild(tagLabel);
         
         _tag = tag;
         _contentCreator = contentCreator;
-        
-        if (getPanel().isAutoExpandingTags())
-            if (getPanel().getExpandedTags().add(_tag))
-                getContent().setVisible(true);
     }
     
-    public Label getTagLabel() {
-        return (Label) _children.get(0);
+    @Override
+    public void update() {
+        if (getPanel().isAutoExpandingTags() && !isHiddenByAncestor())
+            if (getPanel().getExpandedTags(getOutermostAVMBlock()).add(_tag))
+                addChild(_content = _contentCreator.createContent());
+        super.update();
+    }
+    
+    public ContentLabel getTagLabel() {
+        return (ContentLabel) _children.get(0);
     }
     
     public int getTag() {
@@ -39,5 +41,15 @@ class ReentrancyBlock extends ContentOwningBlock {
             addChild(_content);
         }
         return _content;
+    }
+    
+    private ContainerBlock getOutermostAVMBlock() {
+        ContainerBlock b = getParent();
+        ContainerBlock p = b.getParent();
+        while (p != null && !(p instanceof NodeBlock || p instanceof RootBlock)) {
+            b = p;
+            p = p.getParent();
+        }
+        return b;
     }
 }

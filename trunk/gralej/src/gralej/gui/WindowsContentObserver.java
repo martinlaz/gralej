@@ -1,7 +1,7 @@
 package gralej.gui;
 
 import gralej.controller.ContentModel;
-import gralej.util.Logger;
+import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
 import gralej.blocks.BlockPanel;
 import gralej.parsers.*;
@@ -171,9 +171,10 @@ public class WindowsContentObserver extends ContentObserver {
         private GralePreferences gp = GralePreferences.getInstance();
 
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
-                m_Tree, m_Struc, m_Expand, m_Restore, m_Hidden, m_Find,
+                m_Tree, m_Struc, m_Expand, m_Restore, m_Find,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
-                m_JPG, m_PNG, m_Raise;
+                m_JPG, m_PNG, m_Raise, m_ShowHideNodeContents;
+        private JCheckBoxMenuItem m_Hidden;
         
         private JCheckBoxMenuItem m_ShowWindowToolBar;
 
@@ -267,11 +268,24 @@ public class WindowsContentObserver extends ContentObserver {
 //            viewmenu.add(m_Restore); // TODO implement and uncomment
 
             // checkbox "Show Hidden Nodes" (shaded)
-            m_Hidden = new JCheckBoxMenuItem("Show Hidden Nodes");
+            m_Hidden = new JCheckBoxMenuItem("Display Model Hidden Nodes");
             m_Hidden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H,
                     InputEvent.CTRL_DOWN_MASK));
             m_Hidden.addActionListener(this);
-//            viewmenu.add(m_Hidden); // TODO implement and uncomment
+            m_Hidden.setState(gp.getBoolean("behavior.displayModelHiddenFeatures"));
+            viewmenu.add(m_Hidden); // TODO implement and uncomment
+            
+            if (data.getModel() instanceof gralej.om.ITree) {
+                m_ShowHideNodeContents = new JMenuItem();
+                if (gp.getBoolean("behavior.nodeContentInitiallyVisible"))
+                    m_ShowHideNodeContents.setText("Hide All Nodes Contents");
+                else
+                    m_ShowHideNodeContents.setText("Show All Nodes Contents");
+                m_ShowHideNodeContents.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
+                    InputEvent.CTRL_DOWN_MASK));
+                m_ShowHideNodeContents.addActionListener(this);
+                viewmenu.add(m_ShowHideNodeContents);
+            }
 
             m_Resize = new JCheckBoxMenuItem("Adjust window size");
             m_Resize.setAccelerator(KeyStroke.getKeyStroke(
@@ -303,6 +317,8 @@ public class WindowsContentObserver extends ContentObserver {
             m_Raise = new JMenuItem("Raise Main Window");
             m_Raise.addActionListener(this);
             viewmenu.add(m_Raise);
+            
+            viewmenu.addSeparator();
 
             m_ShowWindowToolBar = new JCheckBoxMenuItem("Show toolbar");
             m_ShowWindowToolBar.addActionListener(this);
@@ -411,7 +427,7 @@ public class WindowsContentObserver extends ContentObserver {
                             Integer.toString(display.getZoom()));
                 } catch (NumberFormatException e1) {
                     zoomfield.setText(gp.get("behavior.defaultzoom"));
-                    Logger.warning("Invalid zoom value. Defaulting to 100%.");
+                    Log.warning("Invalid zoom value. Defaulting to 100%.");
                     display.setZoom(Integer.parseInt(zoomfield.getText()));
                 }
             } else if (source == m_Resize || source == b_Resize) {
@@ -431,6 +447,17 @@ public class WindowsContentObserver extends ContentObserver {
             } else if (source == m_ShowWindowToolBar) {
                 gp.putBoolean("behavior.showwindowtoolbar", m_ShowWindowToolBar.getState());
                 toolbar.setVisible(m_ShowWindowToolBar.getState());
+            }
+            else if (source == m_Hidden) {
+                display.setDisplayingModelHiddenFeatures(m_Hidden.getState());
+            }
+            else if (source == m_ShowHideNodeContents) {
+                boolean b = m_ShowHideNodeContents.getText().startsWith("Show");
+                display.showNodeContents(b);
+                if (b)
+                    m_ShowHideNodeContents.setText("Hide All Nodes Contents");
+                else
+                    m_ShowHideNodeContents.setText("Show All Nodes Contents");
             }
 
         }

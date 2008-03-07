@@ -2,6 +2,8 @@ package gralej.blocks;
 
 import gralej.prefs.GralePreferences;
 import gralej.prefs.NoDefaultPrefSettingException;
+import gralej.prefs.Toolbox;
+import gralej.util.Log;
 import java.awt.Color;
 import java.awt.Font;
 
@@ -42,13 +44,22 @@ class Config {
     }
     
     static Color getColor(String key, String defaultColorSpec) {
-        int rgba = (int) Long.parseLong(get(key, defaultColorSpec), 16);
-        return new Color(rgba >> 8);
+        try {
+            return getColor(key);
+        }
+        catch (NoDefaultPrefSettingException e) {
+            try {
+                return Toolbox.parseRGBA(get(key));
+            }
+            catch (Exception e2) {
+                Log.debug("gralej.blocks.Config.getColor()", key, e);
+                return Toolbox.parseRGBA(defaultColorSpec);
+            }
+        }
     }
     
     static Color getColor(String key) {
-        int rgba = (int) Long.parseLong(get(key), 16);
-        return new Color(rgba >> 8);
+        return GralePreferences.getInstance().getColor(key);
     }
     
     static Font getFont(String key) {

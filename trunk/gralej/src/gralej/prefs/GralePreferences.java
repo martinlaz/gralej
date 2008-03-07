@@ -1,6 +1,6 @@
 package gralej.prefs;
 
-import gralej.util.Logger;
+import gralej.util.Log;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
@@ -82,7 +82,7 @@ public class GralePreferences  {
             backingprefs.addPreferenceChangeListener(backinglistener);
         } catch (Exception e) {
             backingavailable = false;
-            Logger.warning(
+            Log.warning(
                     "GralePreferences: Java Preferences not available, will not save anything.");
             e.printStackTrace();
             // use the default settings as settings

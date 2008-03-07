@@ -1,8 +1,9 @@
 package gralej.gui;
 
+import gralej.blocks.configurator.BlockConfiguratorFrame;
 import gralej.controller.Controller;
 import gralej.controller.StreamInfo;
-import gralej.util.Logger;
+import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 import gralej.gui.prefsdialog.GenDialog;
@@ -122,20 +123,6 @@ public class MainGUI implements ActionListener, ItemListener {
         filemenu.add(m_Quit);
         menubar.add(filemenu);
 
-        // menu "Connections"
-        JMenu connectmenu = new JMenu("Connections");
-        connectmenu.setMnemonic('C');
-
-        m_Server = new JMenuItem();
-        m_Server.addActionListener(this);
-        connectmenu.add(m_Server);
-
-        m_WebTrale = new JMenuItem("Open WebTrale Client");
-        m_WebTrale.addActionListener(this);
-        connectmenu.add(m_WebTrale);
-
-        menubar.add(connectmenu);
-
         // menu "View"
         JMenu viewmenu = new JMenu("View");
         viewmenu.setMnemonic('V');
@@ -162,24 +149,51 @@ public class MainGUI implements ActionListener, ItemListener {
 
         viewmenu.addSeparator();
 
-        m_ShowToolBar = new JCheckBoxMenuItem("Show toolbar");
+        m_ShowToolBar = new JCheckBoxMenuItem("Show Toolbar");
         m_ShowToolBar.addActionListener(this);
         m_ShowToolBar.setState(gp.getBoolean("behavior.showtoolbar"));
         viewmenu.add(m_ShowToolBar);
 
-        m_ShowStatusBar = new JCheckBoxMenuItem("Show status bar");
+        m_ShowStatusBar = new JCheckBoxMenuItem("Show Statusbar");
         m_ShowStatusBar.addActionListener(this);
         m_ShowStatusBar.setState(gp.getBoolean("behavior.showstatusbar"));
         viewmenu.add(m_ShowStatusBar);
 
-        viewmenu.addSeparator();
+        menubar.add(viewmenu);
+        
+        // menu "Tools"
+        JMenu toolsmenu = new JMenu("Tools");
+        toolsmenu.setMnemonic('T');
 
-        m_Pref = new JMenuItem("Preferences");
+        m_Server = new JMenuItem();
+        m_Server.addActionListener(this);
+        toolsmenu.add(m_Server);
+
+        m_WebTrale = new JMenuItem("Open WebTrale Client");
+        m_WebTrale.addActionListener(this);
+        toolsmenu.add(m_WebTrale);
+        
+        toolsmenu.addSeparator();
+        
+        JMenuItem bcm = new JMenuItem("AVM Tree View Configurator");
+        bcm.addActionListener(new ActionListener() {
+            private BlockConfiguratorFrame bc;
+            public void actionPerformed(ActionEvent e) {
+                if (bc == null)
+                    bc = new BlockConfiguratorFrame();
+                bc.setVisible(true);
+                bc.toFront();
+            }
+        });
+        
+        toolsmenu.add(bcm);
+        
+        m_Pref = new JMenuItem("Preferences...");
         m_Pref.setAccelerator(KeyStroke.getKeyStroke("F2"));
         m_Pref.addActionListener(this);
-        viewmenu.add(m_Pref);
+        toolsmenu.add(m_Pref);
 
-        menubar.add(viewmenu);
+        menubar.add(toolsmenu);
 
         // menu "Help"
         JMenu helpmenu = new JMenu("Help");
@@ -247,7 +261,7 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     gp.put("input.lastdir", files[0].getCanonicalPath());
                 } catch (IOException e1) {
-                    Logger.warning(
+                    Log.warning(
                             "Getting the directory of the (first) chosen file failed.");
                     e1.printStackTrace();
                 }
@@ -261,7 +275,7 @@ public class MainGUI implements ActionListener, ItemListener {
             final String resName = "/gralej/resource/sample.GRALE";
             InputStream is = getClass().getResourceAsStream(resName);
             if (is == null) {// should never happen
-                Logger.critical("Initializing InputStream failed.");
+                Log.critical("Initializing InputStream failed.");
                 throw new RuntimeException("Internal program error");
             }
             c.newStream(is, new StreamInfo("grisu", resName));
@@ -277,7 +291,7 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     c.startWebTraleClient(new URL(surl));
                 } catch (Exception ex) {
-                    Logger.error(ex.getMessage());
+                    Log.error(ex.getMessage());
                     continue; // try again
                 }
                 try {

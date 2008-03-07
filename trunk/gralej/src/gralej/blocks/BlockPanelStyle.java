@@ -1,5 +1,7 @@
 package gralej.blocks;
 
+import gralej.prefs.GPrefsChangeListener;
+import gralej.util.Log;
 import java.awt.Color;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,16 +11,22 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BlockPanelStyle {
+public class BlockPanelStyle implements GPrefsChangeListener {
     
     static private BlockPanelStyle _instance;
     
     public static BlockPanelStyle getInstance() {
-        if (_instance == null)
+        if (_instance == null) {
             _instance = new BlockPanelStyle(
                     LabelFactory.getInstance(),
                     LayoutFactory.getInstance()
                     );
+            _instance.addStyleChangeListener(new StyleChangeListener() {
+                public void styleChanged(Object sender) {
+                    // just to keep the singleton alive
+                }
+            });
+        }
         return _instance;
     }
     
@@ -32,9 +40,13 @@ public class BlockPanelStyle {
         _layfac = layfac;
         
         initFields();
+        
+        //GralePreferences.getInstance().addListener(this, "block.");
     }
 
     public void updatePreferences() {
+        //GralePreferences.getInstance().removeListener(this);
+        //Log.debug("removing", this, "as prefs change listener. thread:", Thread.currentThread());
         _labfac.updatePreferences();
         _layfac.updatePreferences();
         
@@ -60,6 +72,12 @@ public class BlockPanelStyle {
                 throw new RuntimeException(e);
             }
         }
+        
+        getInstance().preferencesChange();
+        
+        //Log.debug("adding", this, "as prefs change listener");
+        //GralePreferences.getInstance().addListener(this, "block.");
+        //Log.debug("done adding", this, "as prefs change listener");
     }
     
     private void initFields() {
@@ -131,6 +149,12 @@ public class BlockPanelStyle {
     Color backgroundColor;
     @Key("block.panel.selectedBlockColor")
     Color selectedBlockColor;
+    
+    // different labels
+    @Key("block.label._diff.text.color")
+    Color differentTextColor;
+    @Key("block.label._diff.strikethroughline.color")
+    Color strikethroughLineColor;
 
     public Color getSelectedBlockColor() {
         return selectedBlockColor;
@@ -235,6 +259,22 @@ public class BlockPanelStyle {
     public void setTreeEdgeColor(Color treeEdgeColor) {
         this.treeEdgeColor = treeEdgeColor;
     }
+
+    public Color getDifferentTextColor() {
+        return differentTextColor;
+    }
+
+    public void setDifferentTextColor(Color differentTextColor) {
+        this.differentTextColor = differentTextColor;
+    }
+
+    public Color getStrikethroughLineColor() {
+        return strikethroughLineColor;
+    }
+
+    public void setStrikethroughLineColor(Color strikethroughLineColor) {
+        this.strikethroughLineColor = strikethroughLineColor;
+    }
     
     public void addStyleChangeListener(StyleChangeListener l) {
         _changeListeners.add(l);
@@ -242,10 +282,20 @@ public class BlockPanelStyle {
     
     public void removeStyleChangeListener(StyleChangeListener l) {
         _changeListeners.remove(l);
+        //if (_changeListeners.isEmpty())
+          //  GralePreferences.getInstance().removeListener(this);
     }
     
     public void fireStyleChanged() {
         for (StyleChangeListener l : _changeListeners)
             l.styleChanged(this);
+    }
+
+    public void preferencesChange() {
+        //Log.debug("updating blockpanelstyle", this, "from prefs. thread:", Thread.currentThread());
+        _labfac.updateSelf();
+        _layfac.updateSelf();
+        initFields();
+        fireStyleChanged();
     }
 }

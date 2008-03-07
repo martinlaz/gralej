@@ -23,8 +23,8 @@ where RR = 2byte hex value for red
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>
 <entry key="gui.l+f.java-l+f">System Default</entry>
-<entry key="gui.windows.main.size.width">400</entry>
-<entry key="gui.windows.main.size.height">400</entry>
+<entry key="gui.windows.main.size.width">200</entry>
+<entry key="gui.windows.main.size.height">300</entry>
 <entry key="gui.windows.location.xmarginoffset">100</entry>
 <entry key="gui.windows.location.ymarginoffset">100</entry>
 <entry key="gui.windows.location.xdiff">30</entry>
@@ -49,7 +49,7 @@ where RR = 2byte hex value for red
 
 <!-- application behavior -->
 <entry key="behavior.openonload">false</entry>
-<entry key="behavior.showstatusbar">true</entry>
+<entry key="behavior.showstatusbar">false</entry>
 <entry key="behavior.showtoolbar">true</entry>
 <entry key="behavior.showwindowtoolbar">true</entry>
 <entry key="behavior.alwaysfitsize">false</entry>
@@ -69,8 +69,6 @@ where RR = 2byte hex value for red
 <entry key="avm-display.tree.node.color">112233ff</entry>
 <entry key="avm-display.tree.leaf.font">Arial, 1, 12</entry>
 <entry key="avm-display.tree.leaf.color">993300ff</entry>
-
-
 
 <!--
 Block panel
@@ -132,14 +130,14 @@ Labels
 -->
 <!-- defaults -->
 <entry key="block.label._default.fontSpec">Times,0,12</entry>
-<entry key="block.label._default.text.color">0</entry>
+<entry key="block.label._default.text.color">000000ff</entry>
 <entry key="block.label._default.text.colorAlt">C0C0C0ff</entry>
 <entry key="block.label._default.margin.top">0</entry>
 <entry key="block.label._default.margin.left">0</entry>
 <entry key="block.label._default.margin.right">0</entry>
 <entry key="block.label._default.margin.bottom">0</entry>
 <entry key="block.label._default.frame.thickness">0</entry>
-<entry key="block.label._default.frame.color">0</entry>
+<entry key="block.label._default.frame.color">000000ff</entry>
 <entry key="block.label._default.frame.isDashed">false</entry>
 
 <!-- general -->
@@ -157,7 +155,7 @@ Labels
 
 <!-- Tag labels -->
 <entry key="block.label.tag.fontSpec">Courier,1,12</entry>
-<entry key="block.label.tag.text.colorAlt">0</entry>
+<entry key="block.label.tag.text.colorAlt">000000ff</entry>
 <entry key="block.label.tag.margin.left">3</entry>
 <entry key="block.label.tag.margin.right">3</entry>
 <entry key="block.label.tag.frame.thickness">1</entry>
@@ -192,5 +190,12 @@ Labels
 <entry key="block.label.node.leaf.fontSpec">Arial,1,12</entry>
 <entry key="block.label.node.leaf.text.color">993300ff</entry>
 <entry key="block.label.node.leaf.text.colorAlt">993300ff</entry>
+
+<!--
+Different labels
+-->
+
+<entry key="block.label._diff.text.color">FF0000FF</entry>
+<entry key="block.label._diff.strikethroughline.color">000000FF</entry>
 
 </properties>
