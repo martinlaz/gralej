@@ -12,10 +12,11 @@ class VerticalBlockLayout extends BlockLayout {
         int y = block.getY() + getLeadingSpace();
 
         for (Block child : block.getChildren()) {
+            if (!child.isVisible())
+                continue;
             child.setPosition(computeChildX(block, child), y);
             y += child.getHeight();
-            if (child.isVisible())
-                y += getIntraSpace();
+            y += getIntraSpace();
         }
     }
     

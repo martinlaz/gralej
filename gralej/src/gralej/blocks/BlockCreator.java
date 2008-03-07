@@ -46,34 +46,37 @@ public class BlockCreator extends AbstractVisitor {
 
     @Override
     public void visit(ITag tag) {
-        _result = new ReentrancyBlock(_panel,
-                tag.number(), getContentCreator(tag.target()));
+        _result = new ReentrancyBlock(
+                _panel,
+                filterLabel(_labfac.createTagLabel(tag.number() + "", _panel), tag),
+                tag.number(),
+                getContentCreator(tag.target()));
     }
 
     @Override
     public void visit(IAny any) {
-        _result = _labfac.createAnyLabel(any.value(), _panel);
+        _result = filterLabel(_labfac.createAnyLabel(any.value(), _panel), any);
     }
 
     @Override
     public void visit(ITypedFeatureStructure tfs) {
         if (tfs.isSpecies()) {
-            _result = _labfac.createSpeciesLabel(tfs.typeName(), _panel);
+            _result = filterLabel(_labfac.createSpeciesLabel(tfs.typeName(), _panel), tfs);
             return;
         }
 
         List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
 
         for (IFeatureValuePair featVal : tfs.featureValuePairs()) {
-            Label alab = _labfac.createAttributeLabel(
-                    featVal.feature().toUpperCase(), _panel);
+            Label alab = filterLabel(_labfac.createAttributeLabel(
+                    featVal.feature().toUpperCase(), _panel), featVal);
             featVal.value().accept(this);
             ll.add(new AVPairBlock(_panel, alab, _result, featVal.isHidden()));
         }
 
         _result = new AVMBlock(
                 _panel,
-                _labfac.createSortLabel(tfs.typeName(), _panel),
+                filterLabel(_labfac.createSortLabel(tfs.typeName(), _panel), tfs),
                 new AVPairListBlock(_panel, ll)
                 );
     }
@@ -117,5 +120,16 @@ public class BlockCreator extends AbstractVisitor {
             _contentCreatorCache.put(entity, cc);
         }
         return cc;
+    }
+    
+    private static Label filterLabel(Label l, IEntity e) {
+        l.setDifferent(e.isDifferent());
+        l.setStrikeThrough(e.isStruckout());
+        return l;
+    }
+    
+    private static ContentLabel filterLabel(ContentLabel l, IEntity e) {
+        filterLabel((Label)l, e);
+        return l;
     }
 }

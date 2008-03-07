@@ -9,7 +9,7 @@ import gralej.prefs.GralePreferences;
 import java.io.IOException;
 
 /**
- * The Logger offers a single instance (much like the GralePreferences).
+ * The Log offers a single instance (much like the GralePreferences).
  * It reports errors depending on their badness to STDOUT, a pop-up or to a
  * logfile.
  * 
@@ -20,7 +20,7 @@ import java.io.IOException;
  * 
  */
 
-public class Logger {
+public class Log {
 
     // ways of reporting
     public static enum Method {
@@ -40,15 +40,15 @@ public class Logger {
     private Method[] mapping = new Method[5];
     private PrintStream out;
 
-    private static Logger instance = null;
+    private static Log instance = null;
 
-    public static Logger getInstance() {
+    public static Log getInstance() {
         if (instance == null)
-            instance = new Logger();
+            instance = new Log();
         return instance;
     }
 
-    private Logger() {
+    private Log() {
         // read way from prefs
         GralePreferences gp = GralePreferences.getInstance();
         mapping[Severity.INFO.ordinal()] = Method.valueOf(gp.get("log.message.info").toUpperCase());
@@ -78,8 +78,14 @@ public class Logger {
      * @param error message
      * @param severity
      */
-    public void log(String error, Severity severity) {
-        switch (mapping[severity.ordinal()]) {
+    public void log(Severity severity, Object... msgs) {
+        Method method = mapping[severity.ordinal()];
+        if (method == Method.IGNORE)
+            return;
+        
+        String error = Arrays.concat(" ", msgs);
+        
+        switch (method) {
         case POPUP:
             int message_type = JOptionPane.PLAIN_MESSAGE;
             String title = "";
@@ -117,22 +123,22 @@ public class Logger {
     }
     
     public static void critical(Object... msgs) {
-        getInstance().log(Arrays.concat(" ", msgs), Severity.CRITICAL);
+        getInstance().log(Severity.CRITICAL, msgs);
     }
     
     public static void error(Object... msgs) {
-        getInstance().log(Arrays.concat(" ", msgs), Severity.ERROR);
+        getInstance().log(Severity.ERROR, msgs);
     }
     
     public static void warning(Object... msgs) {
-        getInstance().log(Arrays.concat(" ", msgs), Severity.WARNING);
+        getInstance().log(Severity.WARNING, msgs);
     }
     
     public static void info(Object... msgs) {
-        getInstance().log(Arrays.concat(" ", msgs), Severity.INFO);
+        getInstance().log(Severity.INFO, msgs);
     }
     
     public static void debug(Object... msgs) {
-        getInstance().log(Arrays.concat(" ", msgs), Severity.DEBUG);
+        getInstance().log(Severity.DEBUG, msgs);
     }
 }

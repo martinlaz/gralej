@@ -19,6 +19,10 @@ public class Label extends Block {
     
     protected boolean _useTextAltColor;
     
+    // diff
+    boolean _different;
+    boolean _strikeThrough;
+    
     Label(BlockPanel panel, LabelStyle style, String text) {
         _style = style;
         setPanel(panel);
@@ -65,6 +69,22 @@ public class Label extends Block {
         _th = fm.getHeight();
         _ascent = fm.getAscent();
     }
+
+    public boolean isDifferent() {
+        return _different;
+    }
+
+    public void setDifferent(boolean different) {
+        _different = different;
+    }
+
+    public boolean isStrikeThrough() {
+        return _strikeThrough;
+    }
+
+    public void setStrikeThrough(boolean strikeThrough) {
+        _strikeThrough = strikeThrough;
+    }
     
     @Override
     public void paint(Graphics2D g) {
@@ -83,12 +103,24 @@ public class Label extends Block {
             g.setStroke(oldStroke);
         }
         
-        Color color = _useTextAltColor ? _style.getTextAltColor() : _style.getTextColor();
+        Color color;
+        if (_different)
+            color = getPanelStyle().getDifferentTextColor();
+        else if (_useTextAltColor)
+            color =_style.getTextAltColor();
+        else
+            color = _style.getTextColor();
 
         g.setColor(color);
         g.setFont(_style.getFont());
         x += _style.getMarginLeft();
         y += _style.getMarginTop() + _ascent;
         g.drawString(_visibleText, x, y);
+        
+        if (_strikeThrough) {
+            g.setColor(getPanelStyle().getStrikethroughLineColor());
+            y = getY();
+            g.drawLine(x, y + h / 2, x + w, y + h / 2);
+        }
     }
 }

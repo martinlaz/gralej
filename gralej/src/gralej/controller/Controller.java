@@ -1,7 +1,7 @@
 package gralej.controller;
 
 import gralej.client.WebTraleClient;
-import gralej.util.Logger;
+import gralej.util.Log;
 import gralej.fileIO.FileLoader;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
@@ -40,22 +40,22 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     public void open(File file) {
 
         // instantiate a new file handler
-        Logger.info(
+        Log.info(
                 "Opening File " + file.getAbsolutePath());
         FileLoader fl = new FileLoader(file, true);
         fl.registerNewStreamListener(this);
-        Logger.debug("Starting to open");
+        Log.debug("Starting to open");
         try {
             fl.loadFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Logger.debug("Opening should run in its thread now");
+        Log.debug("Opening should run in its thread now");
 
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
-        Logger.info("New stream of type " + streamMeta);
+        Log.info("New stream of type " + streamMeta);
 
         try {
             // ask parser factory for parser
@@ -70,13 +70,13 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void streamClosed(StreamInfo meta, Exception ex) {
-        Logger.info("Stream closed: " + meta);
+        Log.info("Stream closed: " + meta);
         if (ex != null)
-            Logger.error("Exception:", ex);
+            Log.error("Exception:", ex);
     }
 
     public void newDataPackage(IDataPackage parse) {
-        Logger.debug("Controller got new parse");
+        Log.debug("Controller got new parse");
 
         class ParseShowingRunnable implements Runnable {
             IDataPackage parse;
@@ -120,12 +120,12 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         }	
         try {
             server.startListening();
-            Logger.info("Server up and listening");
+            Log.info("Server up and listening");
         } catch (IOException e) {
         	e.printStackTrace();
-        	Logger.error(
-        			"Cannot bind server to network port"
-        			+ port
+        	Log.error(
+        			"Cannot bind server to network port",
+        			port
         			+ ", perhaps another GraleJ is running?"
                                 );
         }

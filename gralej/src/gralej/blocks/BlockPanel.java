@@ -18,6 +18,8 @@ import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.JFrame;
@@ -32,7 +34,7 @@ import javax.swing.JScrollPane;
 public class BlockPanel implements StyleChangeListener {
     final static int ZOOM_DELTA = 20;
     
-    Set<Integer> _expandedTags = new TreeSet<Integer>();
+    Map<ContainerBlock,Set<Integer>> _expandedTags;
     RootBlock _content;
     BlockPanelStyle _style;
     int _zoom = 100;
@@ -156,8 +158,8 @@ public class BlockPanel implements StyleChangeListener {
                 new BlockCreator(this).createBlock(contentModel)
                 );
         _content.update();
-        if (Boolean.parseBoolean(Config.get("behavior.nodeContentInitiallyVisible"))) {
-            showNodeContents(true);
+        if (!Boolean.parseBoolean(Config.get("behavior.nodeContentInitiallyVisible"))) {
+            showNodeContents(false);
         }
     }
     
@@ -287,8 +289,15 @@ public class BlockPanel implements StyleChangeListener {
         return _content;
     }
     
-    Set<Integer> getExpandedTags() {
-        return _expandedTags;
+    Set<Integer> getExpandedTags(ContainerBlock block) {
+        if (_expandedTags == null)
+            _expandedTags = new HashMap<ContainerBlock,Set<Integer>>();
+        Set<Integer> tags = _expandedTags.get(block);
+        if (tags == null) {
+            tags = new TreeSet<Integer>();
+            _expandedTags.put(block, tags);
+        }
+        return tags;
     }
     
     protected void onMousePressed(MouseEvent e) {

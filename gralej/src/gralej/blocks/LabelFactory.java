@@ -72,26 +72,30 @@ public class LabelFactory {
 
     LabelStyle getLabelStyle(String type_) {
         String type = "block.label." + type_;
-        LabelStyle lp = _labelStyles.get(type);
-        if (lp == null) {
-            lp = new LabelStyle(type_);
-            lp.setFont(Config.getFont(type + ".fontSpec",
-                    DEFAULT_FONT_SPEC));
-            lp.setTextColor(Config.getColor(type + ".text.color",
-                    DEFAULT_TEXT_COLOR));
-            lp.setTextAltColor(Config.getColor(type + ".text.colorAlt",
-                    DEFAULT_TEXT_ALT_COLOR));
-            lp.setMarginTop(Config.getInt(type + ".margin.top", DEFAULT_MARGIN_TOP));
-            lp.setMarginLeft(Config.getInt(type + ".margin.left", DEFAULT_MARGIN_LEFT));
-            lp.setMarginRight(Config.getInt(type + ".margin.right", DEFAULT_MARGIN_RIGHT));
-            lp.setMarginBottom(Config.getInt(type + ".margin.bottom", DEFAULT_MARGIN_BOTTOM));
-            lp.setFrameThickness(Config.getInt(type + ".frame.thickness", DEFAULT_FRAME_THICKNESS));
-            lp.setFrameColor(Config.getColor(type + ".frame.color", DEFAULT_FRAME_COLOR));
-            lp.setFrameDashed(Boolean.parseBoolean(Config.get(type + ".frame.isDashed", DEFAULT_FRAME_IS_DASHED)));
-            
-            _labelStyles.put(type, lp);
+        LabelStyle ls = _labelStyles.get(type);
+        if (ls == null) {
+            ls = new LabelStyle(type_);
+            initLabelStyle(ls);
+            _labelStyles.put(type, ls);
         }
-        return lp;
+        return ls;
+    }
+    
+    private void initLabelStyle(LabelStyle ls) {
+        String type = "block.label." + ls.getName();
+        ls.setFont(Config.getFont(type + ".fontSpec",
+                    DEFAULT_FONT_SPEC));
+        ls.setTextColor(Config.getColor(type + ".text.color",
+                DEFAULT_TEXT_COLOR));
+        ls.setTextAltColor(Config.getColor(type + ".text.colorAlt",
+                DEFAULT_TEXT_ALT_COLOR));
+        ls.setMarginTop(Config.getInt(type + ".margin.top", DEFAULT_MARGIN_TOP));
+        ls.setMarginLeft(Config.getInt(type + ".margin.left", DEFAULT_MARGIN_LEFT));
+        ls.setMarginRight(Config.getInt(type + ".margin.right", DEFAULT_MARGIN_RIGHT));
+        ls.setMarginBottom(Config.getInt(type + ".margin.bottom", DEFAULT_MARGIN_BOTTOM));
+        ls.setFrameThickness(Config.getInt(type + ".frame.thickness", DEFAULT_FRAME_THICKNESS));
+        ls.setFrameColor(Config.getColor(type + ".frame.color", DEFAULT_FRAME_COLOR));
+        ls.setFrameDashed(Boolean.parseBoolean(Config.get(type + ".frame.isDashed", DEFAULT_FRAME_IS_DASHED)));
     }
     
     void updatePreferences() {
@@ -110,7 +114,9 @@ public class LabelFactory {
     }
     
     void updateSelf() {
-        
+        init();
+        for (LabelStyle ls : _labelStyles.values())
+            initLabelStyle(ls);
     }
 
     public ContentLabel createContentLabel(String text, LabelStyle style, BlockPanel panel) {
