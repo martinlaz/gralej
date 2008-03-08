@@ -43,11 +43,11 @@ where RR = 2byte hex value for red
 <entry key="input.lastserver"></entry> 
 
 <!-- message output methods (popup, stderr, file, ignore) -->
-<entry key="log.message.info">stderr</entry> 
+<entry key="log.message.info">ignore</entry> 
 <entry key="log.message.warning">stderr</entry> 
 <entry key="log.message.error">popup</entry> 
 <entry key="log.message.critical">popup</entry> 
-<entry key="log.message.debug">stderr</entry>
+<entry key="log.message.debug">ignore</entry>
 <entry key="log.file">gralej.log</entry>
 
 <!-- application behavior -->
@@ -94,7 +94,7 @@ Layouts
 <entry key="block.layout.avm.space.leading">3</entry>
 <entry key="block.layout.avm.space.intra">5</entry>
 <entry key="block.layout.avm.space.trailing">5</entry>
-<entry key="block.layout.avm.compact">false</entry>
+<entry key="block.layout.avm.compact">true</entry>
 
 <entry key="block.layout.avpairlist.space.leading">0</entry>
 <entry key="block.layout.avpairlist.space.intra">6</entry>
