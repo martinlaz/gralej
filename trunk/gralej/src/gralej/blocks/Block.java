@@ -52,7 +52,7 @@ public abstract class Block {
     }
     
     // TODO: override in AVPairBlock
-    boolean isModelHidden() {
+    public boolean isModelHidden() {
         return false;
     }
     

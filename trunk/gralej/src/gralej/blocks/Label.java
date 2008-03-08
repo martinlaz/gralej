@@ -120,7 +120,11 @@ public class Label extends Block {
         if (_strikeThrough) {
             g.setColor(getPanelStyle().getStrikethroughLineColor());
             y = getY();
-            g.drawLine(x, y + h / 2, x + w, y + h / 2);
+            g.drawLine(
+                    x,
+                    y + h / 2,
+                    x + _tw,
+                    y + h / 2);
         }
     }
 }

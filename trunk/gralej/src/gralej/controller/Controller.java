@@ -114,20 +114,42 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     
     public void startServer () {
         GralePreferences gp = GralePreferences.getInstance();
-        int port = gp.getInt("server.port");
-        if ( server == null ) {
-        	server = new SocketServer(port);
-        }	
-        try {
-            server.startListening();
-            Log.info("Server up and listening");
-        } catch (IOException e) {
-        	e.printStackTrace();
-        	Log.error(
-        			"Cannot bind server to network port",
-        			port
-        			+ ", perhaps another GraleJ is running?"
-                                );
+        if (gp.getBoolean("mode.grale")) {
+            final int portlo = gp.getInt("server.portrange.lo");
+            final int porthi = gp.getInt("server.portrange.hi");
+            boolean ok = false;
+            for (int port = portlo; port <= porthi; ++port) {
+                try {
+                    server = new SocketServer(port);
+                    server.startListening();
+                    System.out.println("@|@| 127.0.0.1 " + port);
+                    ok = true;
+                    break;
+                }
+                catch (IOException ex) {
+                }
+            }
+            if (!ok) {
+                Log.error("Failed to find a port to bind in the range between",
+                        portlo, "and", porthi, "-- the server won't start");
+            }
+        }
+        else {
+            int port = gp.getInt("server.port");
+            if ( server == null ) {
+                    server = new SocketServer(port);
+            }	
+            try {
+                server.startListening();
+                Log.info("Server up and listening");
+            } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.error(
+                                    "Cannot bind server to network port",
+                                    port
+                                    + ", perhaps another GraleJ is running?"
+                                    );
+            }
         }
 
         server.registerNewStreamListener(this);

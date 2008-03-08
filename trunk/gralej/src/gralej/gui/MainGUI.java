@@ -137,12 +137,12 @@ public class MainGUI implements ActionListener, ItemListener {
 
         viewmenu.addSeparator();
 
-        m_AutoOpenWindows = new JCheckBoxMenuItem("Automatically Open Windows");
+        m_AutoOpenWindows = new JCheckBoxMenuItem("Auto-Open Windows");
         m_AutoOpenWindows.addActionListener(this);
         m_AutoOpenWindows.setState(gp.getBoolean("behavior.openonload"));
         viewmenu.add(m_AutoOpenWindows);
         
-        m_AutoExpandTags = new JCheckBoxMenuItem("Automatically Expand Tags");
+        m_AutoExpandTags = new JCheckBoxMenuItem("Auto-Expand Tags");
         m_AutoExpandTags.addActionListener(this);
         m_AutoExpandTags.setState(gp.getBoolean("behavior.autoexpandtags"));
         viewmenu.add(m_AutoExpandTags);

@@ -400,7 +400,7 @@ public class GralePreferences  {
         try {
             return getFont(key);
         }
-        catch (NoDefaultPrefSettingException e) {
+        catch (Exception e) {
             return Toolbox.str2font(defaultFontSpec);
         }
 

@@ -1,6 +1,6 @@
 package gralej.blocks;
 
-class ReentrancyBlock extends ContentOwningBlock {
+public class ReentrancyBlock extends ContentOwningBlock {
     int _tag;
     ContentCreator _contentCreator;
 
@@ -16,9 +16,13 @@ class ReentrancyBlock extends ContentOwningBlock {
     
     @Override
     public void update() {
-        if (getPanel().isAutoExpandingTags() && !isHiddenByAncestor())
-            if (getPanel().getExpandedTags(getOutermostAVMBlock()).add(_tag))
+        if (!isHiddenByAncestor()) {
+            if (getPanel().getExpandedTags(getOutermostAVMBlock()).add(_tag)) {
                 addChild(_content = _contentCreator.createContent());
+                if (!getPanel().isAutoExpandingTags())
+                    _content.setVisible(false);
+            }
+        }
         super.update();
     }
     

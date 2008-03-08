@@ -4,6 +4,8 @@ import gralej.controller.ContentModel;
 import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
 import gralej.blocks.BlockPanel;
+import gralej.blocks.finder.Finder;
+import gralej.blocks.finder.FinderDialog;
 import gralej.parsers.*;
 import gralej.prefs.GralePreferences;
 
@@ -165,13 +167,25 @@ public class WindowsContentObserver extends ContentObserver {
             
             pack();
             display.getUI().requestFocus();
+            
+            JComponent c = (JComponent) getContentPane();
+            c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                    KeyStroke.getKeyStroke("ESCAPE"), "CancelFinder");
+            c.getActionMap().put("CancelFinder",
+                new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        finder = null;
+                        display.setSelectedBlock(null);
+                        m_FindNext.setEnabled(false);
+                    }
+            });
             setVisible(true);
         }
 
         private GralePreferences gp = GralePreferences.getInstance();
 
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
-                m_Tree, m_Struc, m_Expand, m_Restore, m_Find,
+                m_Tree, m_Struc, m_Expand, m_Restore, m_Find, m_FindNext,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
                 m_JPG, m_PNG, m_Raise, m_ShowHideNodeContents;
         private JCheckBoxMenuItem m_Hidden;
@@ -182,6 +196,8 @@ public class WindowsContentObserver extends ContentObserver {
                 b_ZoomMinus, b_Save, b_Raise;
         private JToolBar toolbar;
         private JTextField zoomfield, searchfield;
+        
+        private Finder finder;
 
         private JMenuBar createMenuBar() {
 
@@ -230,6 +246,8 @@ public class WindowsContentObserver extends ContentObserver {
                     InputEvent.CTRL_DOWN_MASK));
             m_Print.addActionListener(this);
             filemenu.add(m_Print);
+            
+            filemenu.addSeparator();
 
             m_Close = new JMenuItem("Close");
             m_Close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
@@ -266,35 +284,37 @@ public class WindowsContentObserver extends ContentObserver {
                     InputEvent.CTRL_DOWN_MASK));
             m_Restore.addActionListener(this);
 //            viewmenu.add(m_Restore); // TODO implement and uncomment
+            
+            if (data.getModel() instanceof gralej.om.ITree) {
+                m_ShowHideNodeContents = new JMenuItem();
+                if (gp.getBoolean("behavior.nodeContentInitiallyVisible"))
+                    m_ShowHideNodeContents.setText("Hide Contents of All Nodes");
+                else
+                    m_ShowHideNodeContents.setText("Show Contents of All Nodes");
+                m_ShowHideNodeContents.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+                    InputEvent.CTRL_DOWN_MASK));
+                m_ShowHideNodeContents.addActionListener(this);
+                viewmenu.add(m_ShowHideNodeContents);
+            }
 
             // checkbox "Show Hidden Nodes" (shaded)
-            m_Hidden = new JCheckBoxMenuItem("Display Model Hidden Nodes");
+            m_Hidden = new JCheckBoxMenuItem("Display Hidden Nodes");
             m_Hidden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H,
                     InputEvent.CTRL_DOWN_MASK));
             m_Hidden.addActionListener(this);
             m_Hidden.setState(gp.getBoolean("behavior.displayModelHiddenFeatures"));
             viewmenu.add(m_Hidden); // TODO implement and uncomment
             
-            if (data.getModel() instanceof gralej.om.ITree) {
-                m_ShowHideNodeContents = new JMenuItem();
-                if (gp.getBoolean("behavior.nodeContentInitiallyVisible"))
-                    m_ShowHideNodeContents.setText("Hide All Nodes Contents");
-                else
-                    m_ShowHideNodeContents.setText("Show All Nodes Contents");
-                m_ShowHideNodeContents.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
-                    InputEvent.CTRL_DOWN_MASK));
-                m_ShowHideNodeContents.addActionListener(this);
-                viewmenu.add(m_ShowHideNodeContents);
-            }
-
-            m_Resize = new JCheckBoxMenuItem("Adjust window size");
+            m_Resize = new JCheckBoxMenuItem("Auto-Adjust Window Size");
             m_Resize.setAccelerator(KeyStroke.getKeyStroke(
                     KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
             m_Resize.addActionListener(this);
             ((JCheckBoxMenuItem) m_Resize).setSelected(autoResize);
             viewmenu.add(m_Resize);
+            
+            viewmenu.addSeparator();
 
-            m_ZoomPlus = new JMenuItem("Zoom in");
+            m_ZoomPlus = new JMenuItem("Zoom In");
             m_ZoomPlus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS,
                     InputEvent.CTRL_DOWN_MASK));
             m_ZoomPlus.addActionListener(this);
@@ -305,18 +325,6 @@ public class WindowsContentObserver extends ContentObserver {
                     KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
             m_ZoomMinus.addActionListener(this);
             viewmenu.add(m_ZoomMinus);
-
-            // menuitem "Find"
-            m_Find = new JMenuItem("Find");
-            m_Find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
-                    InputEvent.CTRL_DOWN_MASK));
-            m_Find.addActionListener(this);
-//            viewmenu.add(m_Find);
-
-            // menuitem "Find"
-            m_Raise = new JMenuItem("Raise Main Window");
-            m_Raise.addActionListener(this);
-            viewmenu.add(m_Raise);
             
             viewmenu.addSeparator();
 
@@ -326,6 +334,34 @@ public class WindowsContentObserver extends ContentObserver {
             viewmenu.add(m_ShowWindowToolBar);
 
             menubar.add(viewmenu);
+            
+            JMenu toolsMenu = new JMenu("Tools");
+            toolsMenu.setMnemonic('T');
+            
+            // menuitem "Find"
+            m_Find = new JMenuItem("Find...");
+            m_Find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
+                    InputEvent.CTRL_DOWN_MASK));
+            m_Find.addActionListener(this);
+            toolsMenu.add(m_Find);
+            
+            m_FindNext = new JMenuItem("Find Next");
+            m_FindNext.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+            m_FindNext.addActionListener(this);
+            m_FindNext.setEnabled(false);
+            toolsMenu.add(m_FindNext);
+            
+            toolsMenu.addSeparator();
+
+            // menuitem "Find"
+            m_Raise = new JMenuItem("Raise Main Window");
+            m_Raise.setAccelerator(KeyStroke.getKeyStroke(
+                    KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
+            m_Raise.addActionListener(this);
+            toolsMenu.add(m_Raise);
+            
+            menubar.add(toolsMenu);
+            
             return menubar;
         }
 
@@ -435,13 +471,8 @@ public class WindowsContentObserver extends ContentObserver {
                 b_Resize.setSelected(autoResize);
                 ((JCheckBoxMenuItem) m_Resize).setSelected(autoResize);
                 ((BlockPanel) display).setAutoResize(autoResize);
-                if (autoResize) this.pack();
-            } else if (source == m_Find) {
-//                String searchFor = JOptionPane.showInputDialog(null,
-//                        "Search for sorts or attributes containing:");
-            } else if (source == b_Find || source == searchfield) {
-//                String searchFor = searchfield.getText();
-
+                if (autoResize)
+                    pack();
             } else if (source == m_Raise || source == b_Raise) {
                 gui.raiseMainWindow();
             } else if (source == m_ShowWindowToolBar) {
@@ -455,11 +486,32 @@ public class WindowsContentObserver extends ContentObserver {
                 boolean b = m_ShowHideNodeContents.getText().startsWith("Show");
                 display.showNodeContents(b);
                 if (b)
-                    m_ShowHideNodeContents.setText("Hide All Nodes Contents");
+                    m_ShowHideNodeContents.setText("Hide Contents of All Nodes");
                 else
-                    m_ShowHideNodeContents.setText("Show All Nodes Contents");
+                    m_ShowHideNodeContents.setText("Show Contents of All Nodes");
             }
-
+            else if (source == m_Find) {
+                boolean finderActivated = false;
+                finder = FinderDialog.getFinder(this, display);
+                if (finder != null) {
+                    if (finder.find()) {
+                        m_FindNext.setEnabled(true);
+                        finderActivated = true;
+                    }
+                    else
+                        JOptionPane.showMessageDialog(this, "No matches were found.");
+                }
+                if (!finderActivated) {
+                    display.setSelectedBlock(null);
+                    m_FindNext.setEnabled(false);
+                }
+            }
+            else if (source == m_FindNext) {
+                if (!finder.findNext()) {
+                    JOptionPane.showMessageDialog(this, "No more matches were found.");
+                    m_FindNext.setEnabled(false);
+                }
+            }
         }
 
         private void save(int format) {

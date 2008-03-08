@@ -7,6 +7,7 @@ import gralej.prefs.GralePreferences;
 
 import java.io.IOException;
 
+import java.util.prefs.Preferences;
 import javax.swing.UIManager;
 
 /**
@@ -55,6 +56,19 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
+        
+        for (String arg : args) {
+            if (arg.equals("--reset")) {
+                try {
+                    Preferences userRoot = Preferences.userRoot();
+                    if (userRoot != null && userRoot.nodeExists("gralej"))
+                        userRoot.node("gralej").removeNode();
+                }
+                catch (Exception e) {
+                    System.err.println(e);
+                }
+            }
+        }
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

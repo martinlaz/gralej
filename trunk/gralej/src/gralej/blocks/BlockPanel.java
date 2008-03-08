@@ -205,7 +205,7 @@ public class BlockPanel implements StyleChangeListener {
             pack(c.getParent());
     }
     
-    protected void setSelectedBlock(Block b) {
+    public void setSelectedBlock(Block b) {
         if (_selectedBlock == b)
             return;
         _selectedBlock = b;
