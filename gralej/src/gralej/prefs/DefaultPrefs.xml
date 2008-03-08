@@ -18,6 +18,9 @@ where RR = 2byte hex value for red
 <comment>GraleJ factory properties</comment>
 
 <entry key="server.port">1080</entry>
+<entry key="server.portrange.lo">5001</entry>
+<entry key="server.portrange.hi">5050</entry>
+<entry key="mode.grale">true</entry>
 
 
 <!-- generic look and feel -->
@@ -128,6 +131,88 @@ AVM Blocks
 <!--
 Labels
 -->
+<!-- allocate these keys so that they can later be set from within the app -->
+<entry key="block.label.any.fontSpec"/>
+<entry key="block.label.any.text.color"/>
+<entry key="block.label.any.text.colorAlt"/>
+<entry key="block.label.any.margin.top"/>
+<entry key="block.label.any.margin.left"/>
+<entry key="block.label.any.margin.right"/>
+<entry key="block.label.any.margin.bottom"/>
+<entry key="block.label.any.frame.thickness"/>
+<entry key="block.label.any.frame.color"/>
+<entry key="block.label.any.frame.isDashed"/>
+<entry key="block.label.attribute.fontSpec"/>
+<entry key="block.label.attribute.text.color"/>
+<entry key="block.label.attribute.text.colorAlt"/>
+<entry key="block.label.attribute.margin.top"/>
+<entry key="block.label.attribute.margin.left"/>
+<entry key="block.label.attribute.margin.right"/>
+<entry key="block.label.attribute.margin.bottom"/>
+<entry key="block.label.attribute.frame.thickness"/>
+<entry key="block.label.attribute.frame.color"/>
+<entry key="block.label.attribute.frame.isDashed"/>
+<entry key="block.label.list.fontSpec"/>
+<entry key="block.label.list.text.color"/>
+<entry key="block.label.list.text.colorAlt"/>
+<entry key="block.label.list.margin.top"/>
+<entry key="block.label.list.margin.left"/>
+<entry key="block.label.list.margin.right"/>
+<entry key="block.label.list.margin.bottom"/>
+<entry key="block.label.list.frame.thickness"/>
+<entry key="block.label.list.frame.color"/>
+<entry key="block.label.list.frame.isDashed"/>
+<entry key="block.label.node.internal.fontSpec"/>
+<entry key="block.label.node.internal.text.color"/>
+<entry key="block.label.node.internal.text.colorAlt"/>
+<entry key="block.label.node.internal.margin.top"/>
+<entry key="block.label.node.internal.margin.left"/>
+<entry key="block.label.node.internal.margin.right"/>
+<entry key="block.label.node.internal.margin.bottom"/>
+<entry key="block.label.node.internal.frame.thickness"/>
+<entry key="block.label.node.internal.frame.color"/>
+<entry key="block.label.node.internal.frame.isDashed"/>
+<entry key="block.label.node.leaf.fontSpec"/>
+<entry key="block.label.node.leaf.text.color"/>
+<entry key="block.label.node.leaf.text.colorAlt"/>
+<entry key="block.label.node.leaf.margin.top"/>
+<entry key="block.label.node.leaf.margin.left"/>
+<entry key="block.label.node.leaf.margin.right"/>
+<entry key="block.label.node.leaf.margin.bottom"/>
+<entry key="block.label.node.leaf.frame.thickness"/>
+<entry key="block.label.node.leaf.frame.color"/>
+<entry key="block.label.node.leaf.frame.isDashed"/>
+<entry key="block.label.sort.fontSpec"/>
+<entry key="block.label.sort.text.color"/>
+<entry key="block.label.sort.text.colorAlt"/>
+<entry key="block.label.sort.margin.top"/>
+<entry key="block.label.sort.margin.left"/>
+<entry key="block.label.sort.margin.right"/>
+<entry key="block.label.sort.margin.bottom"/>
+<entry key="block.label.sort.frame.thickness"/>
+<entry key="block.label.sort.frame.color"/>
+<entry key="block.label.sort.frame.isDashed"/>
+<entry key="block.label.species.fontSpec"/>
+<entry key="block.label.species.text.color"/>
+<entry key="block.label.species.text.colorAlt"/>
+<entry key="block.label.species.margin.top"/>
+<entry key="block.label.species.margin.left"/>
+<entry key="block.label.species.margin.right"/>
+<entry key="block.label.species.margin.bottom"/>
+<entry key="block.label.species.frame.thickness"/>
+<entry key="block.label.species.frame.color"/>
+<entry key="block.label.species.frame.isDashed"/>
+<entry key="block.label.tag.fontSpec"/>
+<entry key="block.label.tag.text.color"/>
+<entry key="block.label.tag.text.colorAlt"/>
+<entry key="block.label.tag.margin.top"/>
+<entry key="block.label.tag.margin.left"/>
+<entry key="block.label.tag.margin.right"/>
+<entry key="block.label.tag.margin.bottom"/>
+<entry key="block.label.tag.frame.thickness"/>
+<entry key="block.label.tag.frame.color"/>
+<entry key="block.label.tag.frame.isDashed"/>
+
 <!-- defaults -->
 <entry key="block.label._default.fontSpec">Times,0,12</entry>
 <entry key="block.label._default.text.color">000000ff</entry>

@@ -48,13 +48,7 @@ class Config {
             return getColor(key);
         }
         catch (NoDefaultPrefSettingException e) {
-            try {
-                return Toolbox.parseRGBA(get(key));
-            }
-            catch (Exception e2) {
-                Log.debug("gralej.blocks.Config.getColor()", key, e);
-                return Toolbox.parseRGBA(defaultColorSpec);
-            }
+            return Toolbox.parseRGBA(defaultColorSpec);
         }
     }
     

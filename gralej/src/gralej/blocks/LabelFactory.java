@@ -100,6 +100,19 @@ public class LabelFactory {
     
     void updatePreferences() {
         for (LabelStyle s : _labelStyles.values()) {
+            //<entry key="log.message.info"/>
+            /*
+            System.err.println("<entry key=\"block.label." + s.getName() + ".fontSpec\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".text.color\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".text.colorAlt\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.top\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.left\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.right\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.bottom\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".frame.thickness\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".frame.color\"/>");
+            System.err.println("<entry key=\"block.label." + s.getName() + ".frame.isDashed\"/>");
+            */
             Config.set("block.label." + s.getName() + ".fontSpec",      s.getFont());
             Config.set("block.label." + s.getName() + ".text.color",    s.getTextColor());
             Config.set("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());

@@ -15,7 +15,7 @@ public class AVPairBlock extends ContentOwningBlock {
     }
     
     @Override
-    boolean isModelHidden() {
+    public boolean isModelHidden() {
         return _isModelHidden;
     }
     
