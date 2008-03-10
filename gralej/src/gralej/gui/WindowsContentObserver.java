@@ -187,7 +187,7 @@ public class WindowsContentObserver extends ContentObserver {
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Find, m_FindNext,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
-                m_JPG, m_PNG, m_Raise, m_ShowHideNodeContents;
+                m_JPG, m_PNG, m_Raise, m_ShowHideNodeContents, m_CloseAllWindows;
         private JCheckBoxMenuItem m_Hidden;
         
         private JCheckBoxMenuItem m_ShowWindowToolBar;
@@ -360,6 +360,12 @@ public class WindowsContentObserver extends ContentObserver {
             m_Raise.addActionListener(this);
             toolsMenu.add(m_Raise);
             
+            m_CloseAllWindows = new JMenuItem("Close All Windows");
+            m_CloseAllWindows.setAccelerator(KeyStroke.getKeyStroke(
+                    KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
+            m_CloseAllWindows.addActionListener(this);
+            toolsMenu.add(m_CloseAllWindows);
+            
             menubar.add(toolsMenu);
             
             return menubar;
@@ -492,17 +498,16 @@ public class WindowsContentObserver extends ContentObserver {
                     m_ShowHideNodeContents.setText("Show Contents of All Nodes");
             }
             else if (source == m_Find) {
-                boolean finderActivated = false;
                 finder = FinderDialog.getFinder(this, display);
                 if (finder != null) {
-                    if (finder.find()) {
+                    if (finder.find())
                         m_FindNext.setEnabled(true);
-                        finderActivated = true;
-                    }
-                    else
+                    else {
                         JOptionPane.showMessageDialog(this, "No matches were found.");
+                        finder = null;
+                    }
                 }
-                if (!finderActivated) {
+                if (finder == null) {
                     display.setSelectedBlock(null);
                     m_FindNext.setEnabled(false);
                 }
@@ -511,7 +516,11 @@ public class WindowsContentObserver extends ContentObserver {
                 if (!finder.findNext()) {
                     JOptionPane.showMessageDialog(this, "No more matches were found.");
                     m_FindNext.setEnabled(false);
+                    finder = null;
                 }
+            }
+            else if (source == m_CloseAllWindows) {
+                model.closeAll();
             }
         }
 
