@@ -116,9 +116,9 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Brackets"));
 
         _chkAVMBracketsRounded.setText("Rounded");
-        _chkAVMBracketsRounded.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                _chkAVMBracketsRoundedStateChanged(evt);
+        _chkAVMBracketsRounded.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _chkAVMBracketsRoundedActionPerformed(evt);
             }
         });
 
@@ -176,9 +176,9 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         );
 
         _chkAVMLayoutCompact.setText("Compact Layout");
-        _chkAVMLayoutCompact.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                _chkAVMLayoutCompactStateChanged(evt);
+        _chkAVMLayoutCompact.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _chkAVMLayoutCompactActionPerformed(evt);
             }
         });
 
@@ -411,18 +411,6 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         _style.fireStyleChanged();
 }//GEN-LAST:event__colSelectedBlockMouseClicked
 
-    private void _chkAVMBracketsRoundedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event__chkAVMBracketsRoundedStateChanged
-        if (!_isInitializing) return;
-        _style.setAVMBracketRounded(_chkAVMBracketsRounded.isSelected());
-        _style.fireStyleChanged();
-    }//GEN-LAST:event__chkAVMBracketsRoundedStateChanged
-
-    private void _chkAVMLayoutCompactStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event__chkAVMLayoutCompactStateChanged
-        if (!_isInitializing) return;
-        _style.setAVMLayoutCompact(_chkAVMLayoutCompact.isSelected());
-        _style.fireStyleChanged();
-    }//GEN-LAST:event__chkAVMLayoutCompactStateChanged
-
     private void _spAVMEdgeLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event__spAVMEdgeLengthStateChanged
         if (!_isInitializing) return;
         _style.setAVMBracketEdgeLength((Integer)_spAVMEdgeLength.getValue());
@@ -446,6 +434,18 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         _style.setMargin((Integer)_spMargins.getValue());
         _style.fireStyleChanged();
     }//GEN-LAST:event__spMarginsStateChanged
+
+    private void _chkAVMBracketsRoundedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__chkAVMBracketsRoundedActionPerformed
+        if (!_isInitializing) return;
+        _style.setAVMBracketRounded(_chkAVMBracketsRounded.isSelected());
+        _style.fireStyleChanged();
+    }//GEN-LAST:event__chkAVMBracketsRoundedActionPerformed
+
+    private void _chkAVMLayoutCompactActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__chkAVMLayoutCompactActionPerformed
+        if (!_isInitializing) return;
+        _style.setAVMLayoutCompact(_chkAVMLayoutCompact.isSelected());
+        _style.fireStyleChanged();
+    }//GEN-LAST:event__chkAVMLayoutCompactActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox _chkAVMBracketsRounded;

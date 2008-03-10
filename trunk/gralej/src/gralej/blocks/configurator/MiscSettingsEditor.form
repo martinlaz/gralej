@@ -135,7 +135,7 @@
                     <Property name="text" type="java.lang.String" value="Rounded"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="_chkAVMBracketsRoundedStateChanged"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_chkAVMBracketsRoundedActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel1">
@@ -177,7 +177,7 @@
                 <Property name="text" type="java.lang.String" value="Compact Layout"/>
               </Properties>
               <Events>
-                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="_chkAVMLayoutCompactStateChanged"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_chkAVMLayoutCompactActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

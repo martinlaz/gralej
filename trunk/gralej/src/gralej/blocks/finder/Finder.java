@@ -9,13 +9,10 @@ import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.blocks.ContentLabel;
 import gralej.blocks.Label;
-import gralej.blocks.ReentrancyBlock;
 import gralej.util.Log;
 import java.awt.Rectangle;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Stack;
-import java.util.TreeSet;
 
 /**
  *
@@ -61,13 +58,7 @@ public abstract class Finder {
                 if (matches(lab)) {
                     // ensure the label is visible
                     ensureVisible(b);
-                    final int N = 30;
-                    Rectangle brect = new Rectangle(
-                            b.getX() - N,
-                            b.getY() - N,
-                            b.getWidth()  + 2 * N,
-                            b.getHeight() + 2 * N);
-                    _panel.getCanvas().scrollRectToVisible(brect);
+                    _panel.scrollTo(b);
                     _panel.setSelectedBlock(b);
                     return true;
                 }
@@ -79,19 +70,8 @@ public abstract class Finder {
         return false;
     }
     
-    private static void prepareReentrancies(Block b, Set<Integer> processed) {
-        if (b instanceof ReentrancyBlock) {
-            ReentrancyBlock r = (ReentrancyBlock) b;
-            if (!processed.contains(r.getTag())) {
-                r.getContent();
-                processed.add(r.getTag());
-            }
-        }
-        for (Block c : b.getChildren())
-            prepareReentrancies(c, processed);
-    }
-    
     private static void ensureVisible(Block b) {
+        b.setVisible(true);
         for (Block p = b.getParent(); p != null; p = p.getParent()) {
             if (p.isVisible())
                 continue;
@@ -106,7 +86,6 @@ public abstract class Finder {
                 }
             }
             if (cl != null) {
-                Log.debug(cl, cl.getText());
                 cl.flip();
             }
             else {
