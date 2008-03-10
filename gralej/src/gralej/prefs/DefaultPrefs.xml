@@ -57,7 +57,7 @@ where RR = 2byte hex value for red
 <entry key="behavior.showwindowtoolbar">true</entry>
 <entry key="behavior.alwaysfitsize">false</entry>
 <entry key="behavior.autoexpandtags">false</entry>
-<entry key="behavior.displayModelHiddenFeatures">false</entry>
+<entry key="behavior.displayModelHiddenFeatures">true</entry>
 <entry key="behavior.nodeContentInitiallyVisible">false</entry>
 <entry key="behavior.defaultzoom">100</entry>
 
