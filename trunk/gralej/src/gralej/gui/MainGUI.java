@@ -179,8 +179,15 @@ public class MainGUI implements ActionListener, ItemListener {
         bcm.addActionListener(new ActionListener() {
             private BlockConfiguratorFrame bc;
             public void actionPerformed(ActionEvent e) {
-                if (bc == null)
+                if (bc == null) {
                     bc = new BlockConfiguratorFrame();
+                    bc.addWindowListener(new WindowAdapter() {
+                        @Override public void windowClosed(WindowEvent evt) {
+                            bc.removeWindowListener(this);
+                            bc = null;
+                        }
+                    });
+                }
                 bc.setVisible(true);
                 bc.toFront();
             }
