@@ -68,10 +68,12 @@ public class BlockCreator extends AbstractVisitor {
         List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
 
         for (IFeatureValuePair featVal : tfs.featureValuePairs()) {
-            Label alab = filterLabel(_labfac.createAttributeLabel(
+            ContentLabel alab = filterLabel(_labfac.createAttributeLabel(
                     featVal.feature().toUpperCase(), _panel), featVal);
             featVal.value().accept(this);
             ll.add(new AVPairBlock(_panel, alab, _result, featVal.isHidden()));
+            if (featVal.isHidden())
+                alab.flip();
         }
 
         _result = new AVMBlock(
