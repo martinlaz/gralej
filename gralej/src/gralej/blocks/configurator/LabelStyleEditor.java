@@ -382,9 +382,9 @@ public class LabelStyleEditor extends javax.swing.JDialog {
         _rdStrokeSolid.setText("Solid");
 
         _rdStrokeDashed.setText("Dashed");
-        _rdStrokeDashed.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                _rdStrokeDashedStateChanged(evt);
+        _rdStrokeDashed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _rdStrokeDashedActionPerformed(evt);
             }
         });
 
@@ -524,18 +524,18 @@ public class LabelStyleEditor extends javax.swing.JDialog {
         _panelStyle.fireStyleChanged();
     }//GEN-LAST:event__spFrameWidthStateChanged
 
-    private void _rdStrokeDashedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event__rdStrokeDashedStateChanged
-        if (_isInitializing) return;
-        _style.setFrameDashed(_rdStrokeDashed.isSelected());
-        _panelStyle.fireStyleChanged();
-    }//GEN-LAST:event__rdStrokeDashedStateChanged
-
     private void _colTextAltMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__colTextAltMouseClicked
         if (!setColor(_colTextAlt))
             return;
         _style.setTextColor(_colTextAlt.getBackground());
         _panelStyle.fireStyleChanged();
     }//GEN-LAST:event__colTextAltMouseClicked
+
+    private void _rdStrokeDashedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__rdStrokeDashedActionPerformed
+        if (_isInitializing) return;
+        _style.setFrameDashed(_rdStrokeDashed.isSelected());
+        _panelStyle.fireStyleChanged();
+    }//GEN-LAST:event__rdStrokeDashedActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup _buttonGroupFrameStroke;

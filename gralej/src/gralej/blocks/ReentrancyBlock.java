@@ -16,14 +16,18 @@ public class ReentrancyBlock extends ContentOwningBlock {
     
     @Override
     public void update() {
+        if (_content != null) {
+            super.update();
+            return;
+        }
         if (!isHiddenByAncestor()) {
             if (getPanel().getExpandedTags(getOutermostAVMBlock()).add(_tag)) {
                 addChild(_content = _contentCreator.createContent());
-                if (!getPanel().isAutoExpandingTags())
-                    _content.setVisible(false);
             }
         }
         super.update();
+        if (_content != null && !getPanel().isAutoExpandingTags())
+            _content.setVisible(false);
     }
     
     public ContentLabel getTagLabel() {

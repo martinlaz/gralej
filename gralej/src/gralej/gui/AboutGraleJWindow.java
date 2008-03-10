@@ -25,7 +25,6 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
 	public AboutGraleJWindow(JFrame parent) {
         super(parent, true);
         setTitle("About GraleJ");
-        setLocationRelativeTo(parent);
         
         // get icon theme
         /*GralePreferences prefs = GralePreferences.getInstance();
@@ -59,6 +58,7 @@ class AboutGraleJWindow extends JDialog implements HyperlinkListener {
         add(scrollPane);
         //add(OKbtn);
         pack();
+        setLocationRelativeTo(parent);
     }
 
     void showWindow() {

@@ -466,6 +466,7 @@ public class WindowsContentObserver extends ContentObserver {
                     Log.warning("Invalid zoom value. Defaulting to 100%.");
                     display.setZoom(Integer.parseInt(zoomfield.getText()));
                 }
+                display.getUI().requestFocus();
             } else if (source == m_Resize || source == b_Resize) {
                 autoResize = !autoResize;
                 b_Resize.setSelected(autoResize);

@@ -127,4 +127,8 @@ public class Label extends Block {
                     y + h / 2);
         }
     }
+    
+    public String toString() {
+        return "[" + getClass().toString() + "@" + hashCode() + ":" + _text + "]";
+    }
 }

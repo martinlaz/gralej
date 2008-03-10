@@ -13,6 +13,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
@@ -32,7 +33,7 @@ import javax.swing.JScrollPane;
  * @author Martin
  */
 public class BlockPanel implements StyleChangeListener {
-    final static int ZOOM_DELTA = 20;
+    final static int ZOOM_DELTA = 10;
     
     Map<ContainerBlock,Set<Integer>> _expandedTags;
     RootBlock _content;
@@ -374,5 +375,15 @@ public class BlockPanel implements StyleChangeListener {
             return;
         _canvas.setCursor(newCursor);
         _currentCursor = newCursor;
+    }
+    
+    public void scrollTo(Block b) {
+        final int N = 30;
+        Rectangle brect = new Rectangle(
+                scale(b.getX() - N),
+                scale(b.getY() - N),
+                scale(b.getWidth()  + 2 * N),
+                scale(b.getHeight() + 2 * N));
+        _canvas.scrollRectToVisible(brect);
     }
 }

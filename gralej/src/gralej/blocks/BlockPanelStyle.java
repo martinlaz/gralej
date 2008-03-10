@@ -1,7 +1,6 @@
 package gralej.blocks;
 
 import gralej.prefs.GPrefsChangeListener;
-import gralej.util.Log;
 import java.awt.Color;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
