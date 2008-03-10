@@ -124,7 +124,7 @@ public class BlockCreator extends AbstractVisitor {
     
     private static Label filterLabel(Label l, IEntity e) {
         l.setDifferent(e.isDifferent());
-        l.setStrikeThrough(e.isStruckout());
+        l.setStruckOut(e.isStruckout());
         return l;
     }
     

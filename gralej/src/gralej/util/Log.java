@@ -1,5 +1,6 @@
 package gralej.util;
 
+import gralej.prefs.GPrefsChangeListener;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
@@ -46,6 +47,16 @@ public class Log {
         if (instance == null)
             instance = new Log();
         return instance;
+    }
+    
+    static {
+        final String keyPrefix = "log.";
+        GralePreferences.getInstance().addListener(new GPrefsChangeListener() {
+                public void preferencesChange() {
+                    instance = null;
+                }
+            },
+            keyPrefix);
     }
 
     private Log() {

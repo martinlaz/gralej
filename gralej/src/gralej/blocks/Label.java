@@ -21,7 +21,7 @@ public class Label extends Block {
     
     // diff
     boolean _different;
-    boolean _strikeThrough;
+    boolean _struckOut;
     
     Label(BlockPanel panel, LabelStyle style, String text) {
         _style = style;
@@ -78,12 +78,12 @@ public class Label extends Block {
         _different = different;
     }
 
-    public boolean isStrikeThrough() {
-        return _strikeThrough;
+    public boolean isStruckOut() {
+        return _struckOut;
     }
 
-    public void setStrikeThrough(boolean strikeThrough) {
-        _strikeThrough = strikeThrough;
+    public void setStruckOut(boolean strikeThrough) {
+        _struckOut = strikeThrough;
     }
     
     @Override
@@ -117,7 +117,7 @@ public class Label extends Block {
         y += _style.getMarginTop() + _ascent;
         g.drawString(_visibleText, x, y);
         
-        if (_strikeThrough) {
+        if (_struckOut) {
             g.setColor(getPanelStyle().getStrikethroughLineColor());
             y = getY();
             g.drawLine(
