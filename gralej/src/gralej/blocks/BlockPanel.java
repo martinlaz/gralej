@@ -70,7 +70,11 @@ public class BlockPanel implements StyleChangeListener {
             
             final int N = 2;
             
-            if (_selectedBlock != null) {
+            boolean hasSelection = _selectedBlock != null
+                    && _selectedBlock.isVisible()
+                    && !_selectedBlock.isHiddenByAncestor();
+            
+            if (hasSelection) {
                 // fill background
                 g.setColor(_style.getSelectedBlockColor());
                 g.fillRect(
@@ -83,7 +87,7 @@ public class BlockPanel implements StyleChangeListener {
             
             _content.paint(g);
             
-            if (_selectedBlock != null) {
+            if (hasSelection) {
                 // draw the frame
                 g.setColor(Color.BLACK);
                 g.setStroke(_dashedStroke);

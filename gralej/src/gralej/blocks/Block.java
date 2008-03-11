@@ -86,6 +86,8 @@ public abstract class Block {
     
     void setSize(int w, int h) {
         _width = w; _height = h;
+        if (!isVisible())
+            return;
         updateParent();
     }
     
