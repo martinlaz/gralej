@@ -20,9 +20,6 @@ class HorizontalBlockLayout extends BlockLayout {
 
     @Override
     void updateBlockSize(ContainerBlock block) {
-        if (!block.isVisible())
-            return;
-
         int w = 0;
         int h = 0;
         int numChildren = 0;

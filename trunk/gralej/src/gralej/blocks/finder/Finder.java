@@ -5,12 +5,12 @@
 
 package gralej.blocks.finder;
 
+import gralej.blocks.AVPairBlock;
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.blocks.ContentLabel;
 import gralej.blocks.Label;
 import gralej.util.Log;
-import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -71,7 +71,6 @@ public abstract class Finder {
     }
     
     private static void ensureVisible(Block b) {
-        b.setVisible(true);
         for (Block p = b.getParent(); p != null; p = p.getParent()) {
             if (p.isVisible())
                 continue;
@@ -92,6 +91,12 @@ public abstract class Finder {
                 Log.warning("FINDER: Invisible block not controlled by a content label???", p);
                 p.setVisible(true);
             }
+        }
+        if (!b.isVisible()) {
+            if (b.getParent() != null && b.getParent() instanceof AVPairBlock)
+                ((AVPairBlock)b.getParent()).getAttribute().flip();
+            else
+                b.setVisible(true);
         }
     }
 }

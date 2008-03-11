@@ -261,7 +261,7 @@ public class WindowsContentObserver extends ContentObserver {
             viewmenu.setMnemonic('V');
             
             ButtonGroup viewmode = new ButtonGroup();
-
+            
             m_Tree = new JRadioButtonMenuItem("Tree");
             m_Tree.setSelected(true); // default
             m_Tree.addActionListener(this);
