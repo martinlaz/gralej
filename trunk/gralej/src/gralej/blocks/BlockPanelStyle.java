@@ -146,8 +146,10 @@ public class BlockPanelStyle implements GPrefsChangeListener {
     int margin;
     @Key("block.panel.background")
     Color backgroundColor;
-    @Key("block.panel.selectedBlockColor")
-    Color selectedBlockColor;
+    @Key("block.panel.selection.background.color")
+    Color selectionBackgroundColor;
+    @Key("block.panel.selection.frame.color")
+    Color selectionFrameColor;
     
     // different labels
     @Key("block.label._diff.text.color")
@@ -155,12 +157,20 @@ public class BlockPanelStyle implements GPrefsChangeListener {
     @Key("block.label._diff.strikethroughline.color")
     Color strikethroughLineColor;
 
-    public Color getSelectedBlockColor() {
-        return selectedBlockColor;
+    public Color getSelectionBackgroundColor() {
+        return selectionBackgroundColor;
     }
 
-    public void setSelectedBlockColor(Color selectedBlockColor) {
-        this.selectedBlockColor = selectedBlockColor;
+    public void setSelectionBackgroundColor(Color selectedBlockColor) {
+        this.selectionBackgroundColor = selectedBlockColor;
+    }
+
+    public Color getSelectionFrameColor() {
+        return selectionFrameColor;
+    }
+
+    public void setSelectionFrameColor(Color selectionFrameColor) {
+        this.selectionFrameColor = selectionFrameColor;
     }
 
     public Color getAVMBracketColor() {

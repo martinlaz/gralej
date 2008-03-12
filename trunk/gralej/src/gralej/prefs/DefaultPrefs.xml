@@ -59,6 +59,7 @@ where RR = 2byte hex value for red
 <entry key="behavior.autoexpandtags">false</entry>
 <entry key="behavior.displayModelHiddenFeatures">true</entry>
 <entry key="behavior.nodeContentInitiallyVisible">false</entry>
+<entry key="behavior.selectOnClick">false</entry>
 <entry key="behavior.defaultzoom">100</entry>
 
 <!--those are required! -->
@@ -77,7 +78,8 @@ where RR = 2byte hex value for red
 Block panel
 -->
 <entry key="block.panel.background">ffffffff</entry>
-<entry key="block.panel.selectedBlockColor">ffffffff</entry>
+<entry key="block.panel.selection.background.color">f5f5f5ff</entry>
+<entry key="block.panel.selection.frame.color">999999ff</entry>
 <entry key="block.panel.margins.all">20</entry>
 <entry key="block.panel.scrollbar.vertical.unitIncrement">20</entry>
 

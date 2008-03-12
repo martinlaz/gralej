@@ -45,6 +45,7 @@ public class BlockPanel implements StyleChangeListener {
     boolean _autoResize;
     boolean _autoExpandTags;
     boolean _displayHiddenFeatures;
+    boolean _selectOnClick;
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private ContentLabel _lastHit;
     private Block _selectedBlock;
@@ -76,7 +77,7 @@ public class BlockPanel implements StyleChangeListener {
             
             if (hasSelection) {
                 // fill background
-                g.setColor(_style.getSelectedBlockColor());
+                g.setColor(_style.getSelectionBackgroundColor());
                 g.fillRect(
                         _selectedBlock.getX() - N,
                         _selectedBlock.getY() - N,
@@ -89,7 +90,7 @@ public class BlockPanel implements StyleChangeListener {
             
             if (hasSelection) {
                 // draw the frame
-                g.setColor(Color.BLACK);
+                g.setColor(_style.getSelectionFrameColor());
                 g.setStroke(_dashedStroke);
                 g.drawRect(
                         _selectedBlock.getX() - N,
@@ -135,6 +136,7 @@ public class BlockPanel implements StyleChangeListener {
         _autoResize = Boolean.parseBoolean(Config.get("behavior.alwaysfitsize"));
         _autoExpandTags = autoExpandTags;
         _displayHiddenFeatures = Boolean.parseBoolean(Config.get("behavior.displayModelHiddenFeatures"));
+        _selectOnClick = Boolean.parseBoolean(Config.get("behavior.selectOnClick"));
         
         _canvas.addMouseListener(new MouseAdapter() {
             @Override
@@ -306,13 +308,18 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     protected void onMousePressed(MouseEvent e) {
-        // log(e);
         int x = unscale(e.getX());
         int y = unscale(e.getY());
         ContentLabel target = findContainingContentLabel(x, y);
         if (target != null) {
             target.flipContentVisibility();
+            scrollTo(target); // ensure it remains in the visible area
+            if (_selectOnClick)
+                setSelectedBlock(target);
             updateCursorForPoint(x, y);
+        }
+        else {
+            setSelectedBlock(null);
         }
     }
     
