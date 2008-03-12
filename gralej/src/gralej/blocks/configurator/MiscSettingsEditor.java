@@ -59,7 +59,8 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         
         // Panel tab
         setColor(_colBlockPanel, _style.getBackgroundColor());
-        setColor(_colSelectedBlock, _style.getSelectedBlockColor());
+        setColor(_colSelectionBackground, _style.getSelectionBackgroundColor());
+        setColor(_colSelectionFrame, _style.getSelectionFrameColor());
         _spMargins.setValue(_style.getMargin());
         
         _isInitializing = true;
@@ -107,9 +108,12 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         _colBlockPanel = new javax.swing.JLabel();
-        _colSelectedBlock = new javax.swing.JLabel();
+        _colSelectionBackground = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         _spMargins = new javax.swing.JSpinner();
+        jLabel9 = new javax.swing.JLabel();
+        _colSelectionFrame = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setTitle("Miscellaneaus Settings");
 
@@ -158,7 +162,7 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(_spAVMEdgeLength, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(_colAVMEdge, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +242,7 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(_spTreeMinHDist, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_spTreeMinVDist, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,7 +298,7 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
 
         jLabel6.setText("Background Color:");
 
-        jLabel7.setText("Selected Block Color:");
+        jLabel7.setText("Selection Background Color:");
 
         _colBlockPanel.setBackground(new java.awt.Color(51, 204, 0));
         _colBlockPanel.setText(".");
@@ -305,12 +309,12 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
             }
         });
 
-        _colSelectedBlock.setBackground(new java.awt.Color(51, 204, 0));
-        _colSelectedBlock.setText(".");
-        _colSelectedBlock.setOpaque(true);
-        _colSelectedBlock.addMouseListener(new java.awt.event.MouseAdapter() {
+        _colSelectionBackground.setBackground(new java.awt.Color(51, 204, 0));
+        _colSelectionBackground.setText(".");
+        _colSelectionBackground.setOpaque(true);
+        _colSelectionBackground.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                _colSelectedBlockMouseClicked(evt);
+                _colSelectionBackgroundMouseClicked(evt);
             }
         });
 
@@ -323,6 +327,17 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
             }
         });
 
+        jLabel9.setText("Selection Frame Color:");
+
+        _colSelectionFrame.setBackground(new java.awt.Color(51, 204, 0));
+        _colSelectionFrame.setText(".");
+        _colSelectionFrame.setOpaque(true);
+        _colSelectionFrame.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _colSelectionFrameMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -330,18 +345,23 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel7)
-                        .addComponent(jLabel6))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(_colSelectionFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(_colBlockPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(_colSelectionBackground, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(_spMargins, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_colBlockPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(_colSelectedBlock, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,12 +373,18 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(_colSelectedBlock, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_colSelectionBackground, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
+                    .addComponent(jLabel9)
+                    .addComponent(_colSelectionFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_spMargins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Panel", jPanel3);
@@ -369,7 +395,7 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -404,12 +430,12 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         _style.fireStyleChanged();
 }//GEN-LAST:event__colBlockPanelMouseClicked
 
-    private void _colSelectedBlockMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__colSelectedBlockMouseClicked
+    private void _colSelectionBackgroundMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__colSelectionBackgroundMouseClicked
         if (!_isInitializing) return;
-        if (!setColor(_colSelectedBlock)) return;
-        _style.setSelectedBlockColor(_colSelectedBlock.getBackground());
+        if (!setColor(_colSelectionBackground)) return;
+        _style.setSelectionBackgroundColor(_colSelectionBackground.getBackground());
         _style.fireStyleChanged();
-}//GEN-LAST:event__colSelectedBlockMouseClicked
+}//GEN-LAST:event__colSelectionBackgroundMouseClicked
 
     private void _spAVMEdgeLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event__spAVMEdgeLengthStateChanged
         if (!_isInitializing) return;
@@ -446,13 +472,21 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         _style.setAVMLayoutCompact(_chkAVMLayoutCompact.isSelected());
         _style.fireStyleChanged();
     }//GEN-LAST:event__chkAVMLayoutCompactActionPerformed
+
+    private void _colSelectionFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__colSelectionFrameMouseClicked
+        if (!_isInitializing) return;
+        if (!setColor(_colSelectionFrame)) return;
+        _style.setSelectionFrameColor(_colSelectionFrame.getBackground());
+        _style.fireStyleChanged();
+}//GEN-LAST:event__colSelectionFrameMouseClicked
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox _chkAVMBracketsRounded;
     private javax.swing.JCheckBox _chkAVMLayoutCompact;
     private javax.swing.JLabel _colAVMEdge;
     private javax.swing.JLabel _colBlockPanel;
-    private javax.swing.JLabel _colSelectedBlock;
+    private javax.swing.JLabel _colSelectionBackground;
+    private javax.swing.JLabel _colSelectionFrame;
     private javax.swing.JLabel _colTreeEdge;
     private javax.swing.JSpinner _spAVMEdgeLength;
     private javax.swing.JSpinner _spMargins;
@@ -466,11 +500,13 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
     
