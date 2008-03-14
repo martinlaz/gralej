@@ -7,6 +7,7 @@ package gralej.blocks;
 
 import java.util.Collections;
 import java.awt.Graphics2D;
+import java.util.List;
 
 /**
  *
@@ -107,7 +108,7 @@ public abstract class Block {
     
     // hierarchy
     // 
-    public Iterable<Block> getChildren() {
+    public List<Block> getChildren() {
         return Collections.emptyList();
     }
 
