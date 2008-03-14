@@ -19,6 +19,15 @@ public class AVPairBlock extends ContentOwningBlock {
         return _isModelHidden;
     }
     
+    void setModelHidden(boolean b) {
+        if (_isModelHidden == b)
+            return;
+        b = isVisible();
+        _isModelHidden = !_isModelHidden;
+        if (b != isVisible())
+            updateParent();
+    }
+    
     public ContentLabel getAttribute() {
         return (ContentLabel) _children.get(0);
     }

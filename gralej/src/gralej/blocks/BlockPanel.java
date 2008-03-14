@@ -7,7 +7,6 @@ package gralej.blocks;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -16,6 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -23,9 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.swing.AbstractAction;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 /**
@@ -310,16 +313,34 @@ public class BlockPanel implements StyleChangeListener {
     protected void onMousePressed(MouseEvent e) {
         int x = unscale(e.getX());
         int y = unscale(e.getY());
-        ContentLabel target = findContainingContentLabel(x, y);
-        if (target != null) {
-            target.flipContentVisibility();
-            scrollTo(target); // ensure it remains in the visible area
-            if (_selectOnClick)
-                setSelectedBlock(target);
-            updateCursorForPoint(x, y);
+        if (e.getButton() == MouseEvent.BUTTON1) { // left button
+            ContentLabel target = findContainingContentLabel(x, y);
+            if (target != null) {
+                target.flipContentVisibility();
+                scrollTo(target); // ensure it remains in the visible area
+                if (_selectOnClick)
+                    setSelectedBlock(target);
+                updateCursorForPoint(x, y);
+            }
+            else {
+                setSelectedBlock(null);
+            }
         }
-        else {
-            setSelectedBlock(null);
+        else if (e.getButton() == MouseEvent.BUTTON3) { // right button
+            Block target = findContainingBlock(_content, x, y);
+            if (target != null) {
+                AVPairListBlock avs = null;
+                if (target instanceof ContentLabel)
+                    target = target.getParent();    // attribute or sort label
+                if (target instanceof AVPairBlock)
+                    avs = (AVPairListBlock) target.getParent();
+                else if (target instanceof AVMBlock)
+                    avs = (AVPairListBlock) ((AVMBlock) target).getContent();
+                
+                if (avs != null) {
+                    popupMenu(e.getX(), e.getY(), avs);
+                }
+            }
         }
     }
     
@@ -331,6 +352,23 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     protected void onMouseExited(MouseEvent ev) {
+    }
+    
+    protected void popupMenu(int x, int y, AVPairListBlock avs) {
+        JPopupMenu menu = new JPopupMenu("Visible Features");
+        for (Block b : avs.getChildren()) {
+            final AVPairBlock av = (AVPairBlock) b;
+            final JCheckBoxMenuItem item = new JCheckBoxMenuItem(
+                    null,
+                    !av.isModelHidden());
+            item.setAction(new AbstractAction(av.getAttribute().getVisibleText()) {
+                @Override public void actionPerformed(ActionEvent e) {
+                    av.setModelHidden(!item.isSelected());
+                }
+            });
+            menu.add(item);
+        }
+        menu.show(_canvas, x, y);
     }
 
     private static boolean blockContainsPoint(Block block, int x, int y) {

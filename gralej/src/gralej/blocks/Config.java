@@ -40,7 +40,37 @@ class Config {
     }
 
     static String get(String name) {
-        return GralePreferences.getInstance().get(name);
+        String s = GralePreferences.getInstance().get(name);
+        return unescapeUnicode(s);
+    }
+    
+    public static String unescapeUnicode(String s) {
+        int j = s.indexOf("\\u");
+        if (j == -1)
+            return s;
+        StringBuilder sb = new StringBuilder(s.length());
+        int i = 0;
+        do {
+            sb.append(s.substring(i, j));
+            i = j + 2;
+            j = i + 4;
+            try {
+                String u = s.substring(i, j);
+                int codePoint = Integer.parseInt(u, 16);
+                sb.append(Character.toChars(codePoint));
+            }
+            catch (Exception e) {
+                Log.warning(
+                    "Invalid Unicode escape sequence in:", s,
+                    "; Exception:", e);
+                return sb.toString();
+            }
+            i = j;
+            j = s.indexOf("\\u", i);
+        }
+        while (j != -1);
+        sb.append(s.substring(i));
+        return sb.toString();
     }
     
     static Color getColor(String key, String defaultColorSpec) {

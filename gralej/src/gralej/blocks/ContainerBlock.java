@@ -28,7 +28,7 @@ public abstract class ContainerBlock extends Block {
     }
     
     @Override
-    public Iterable<Block> getChildren() {
+    public List<Block> getChildren() {
         return _children;
     }
     
