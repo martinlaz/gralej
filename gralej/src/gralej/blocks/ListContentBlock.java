@@ -16,5 +16,6 @@ public class ListContentBlock extends ContainerBlock {
 
             addChild(item);
         }
+        sealChildren();
     }
 }

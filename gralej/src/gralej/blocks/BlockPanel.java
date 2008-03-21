@@ -96,10 +96,10 @@ public class BlockPanel implements StyleChangeListener {
                 g.setColor(_style.getSelectionFrameColor());
                 g.setStroke(_dashedStroke);
                 g.drawRect(
-                        _selectedBlock.getX() - N,
-                        _selectedBlock.getY() - N,
-                        _selectedBlock.getWidth() + N * 2,
-                        _selectedBlock.getHeight() + N * 2
+                        _selectedBlock.getX() - N + 1,
+                        _selectedBlock.getY() - N + 1,
+                        _selectedBlock.getWidth() + N * 2 - 3,
+                        _selectedBlock.getHeight() + N * 2 - 3
                         );
             }
             
@@ -327,18 +327,30 @@ public class BlockPanel implements StyleChangeListener {
             }
         }
         else if (e.getButton() == MouseEvent.BUTTON3) { // right button
-            Block target = findContainingBlock(_content, x, y);
-            if (target != null) {
-                AVPairListBlock avs = null;
-                if (target instanceof ContentLabel)
-                    target = target.getParent();    // attribute or sort label
-                if (target instanceof AVPairBlock)
-                    avs = (AVPairListBlock) target.getParent();
-                else if (target instanceof AVMBlock)
-                    avs = (AVPairListBlock) ((AVMBlock) target).getContent();
-                
-                if (avs != null) {
-                    popupMenu(e.getX(), e.getY(), avs);
+            if (e.isControlDown()) {
+                ContentLabel target = findContainingContentLabel(x, y);
+                if (target != null && target.getParent() instanceof AVPairBlock) {
+                    AVPairBlock av = (AVPairBlock) target.getParent();
+                    av.setModelHidden(true);
+                    updateCursorForPoint(x, y);
+                }
+            }
+            else {
+                Block target = findContainingBlock(_content, x, y);
+                if (target != null) {
+                    AVPairListBlock avs = null;
+                    if (target instanceof ContentLabel)
+                        target = target.getParent();    // attribute or sort label
+                    if (target instanceof AVPairBlock)
+                        avs = (AVPairListBlock) target.getParent();
+                    else if (target instanceof AVMBlock)
+                        avs = (AVPairListBlock) ((AVMBlock) target).getContent();
+                    else if (target instanceof AVPairListBlock)
+                        avs = (AVPairListBlock) target;
+
+                    if (avs != null) {
+                        popupMenu(e.getX(), e.getY(), avs);
+                    }
                 }
             }
         }
