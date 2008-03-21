@@ -374,7 +374,7 @@ public class BlockPanel implements StyleChangeListener {
                     null,
                     !av.isModelHidden());
             item.setAction(new AbstractAction(av.getAttribute().getVisibleText()) {
-                @Override public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(ActionEvent e) {
                     av.setModelHidden(!item.isSelected());
                 }
             });
