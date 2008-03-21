@@ -46,7 +46,7 @@ public class ReentrancyBlock extends ContentOwningBlock {
             // the content label will do it
             _content.update();
             _content.setVisible(false);
-            addChild(_content);
+            lastAddChild(_content);
         }
         return _content;
     }

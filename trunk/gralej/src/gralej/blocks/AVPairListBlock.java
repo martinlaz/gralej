@@ -8,6 +8,8 @@ public class AVPairListBlock extends ContainerBlock {
         
         for (AVPairBlock av : avPairs)
             addChild(av);
+        
+        sealChildren();
     }
 
     @Override

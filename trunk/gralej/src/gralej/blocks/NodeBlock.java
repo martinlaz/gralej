@@ -10,7 +10,7 @@ public class NodeBlock extends ContentOwningBlock {
         setLayout(getPanelStyle().getLayoutFactory().getNodeLayout());
         
         addChild(label);
-        addChild(content);
+        lastAddChild(content);
 
         setContent(content);
 

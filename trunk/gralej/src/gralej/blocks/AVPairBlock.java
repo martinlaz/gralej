@@ -8,7 +8,7 @@ public class AVPairBlock extends ContentOwningBlock {
         setLayout(getPanelStyle().getLayoutFactory().getAVPairLayout());
         
         addChild(a);
-        addChild(v);
+        lastAddChild(v);
         setContent(v);
         
         _isModelHidden = isModelHidden;

@@ -12,6 +12,6 @@ public class ListBlock extends ContentOwningBlock {
             addChild(content);
             setContent(content);
         }
-        addChild(labfac.createListRBracketLabel(panel));
+        lastAddChild(labfac.createListRBracketLabel(panel));
     }
 }

@@ -13,7 +13,7 @@ public class RootBlock extends ContentOwningBlock {
     RootBlock(BlockPanel panel, Block content) {
         setPanel(panel);
         setLayout(new HorizontalBlockLayout());
-        addChild(content);
+        lastAddChild(content);
         setContent(content);
     }
     

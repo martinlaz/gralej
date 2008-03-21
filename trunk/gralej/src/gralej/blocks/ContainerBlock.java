@@ -5,6 +5,7 @@
 
 package gralej.blocks;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,6 +49,15 @@ public abstract class ContainerBlock extends Block {
     protected void addChild(Block block) {
         block.setParent(this);
         _children.add(block);
+    }
+    
+    protected void lastAddChild(Block block) {
+        addChild(block);
+        sealChildren();
+    }
+    
+    protected void sealChildren() {
+        _children  = Collections.unmodifiableList(_children);
     }
     
     protected void updateLayoutManager() {

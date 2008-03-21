@@ -1,6 +1,5 @@
 package gralej.blocks;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
@@ -11,7 +10,7 @@ public class AVMBlock extends ContentOwningBlock {
         setLayout(getPanelStyle().getLayoutFactory().getAVMLayout());
         
         addChild(sort);
-        addChild(avPairs);
+        lastAddChild(avPairs);
         setContent(avPairs);
     }
     
