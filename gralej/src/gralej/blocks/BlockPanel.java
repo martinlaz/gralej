@@ -1,8 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
+//TODO: local settings: auto-resize, display-hidden, select-on-click...
 package gralej.blocks;
 
 import java.awt.BasicStroke;
