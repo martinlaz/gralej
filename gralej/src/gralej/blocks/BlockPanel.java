@@ -402,7 +402,11 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     ContentLabel findContainingContentLabel(int x, int y) {
-        if (_lastHit != null && _lastHit.isVisible() && blockContainsPoint(_lastHit, x, y))
+        if (_lastHit != null
+                && blockContainsPoint(_lastHit, x, y)
+                && _lastHit.isVisible()
+                && !_lastHit.isHiddenByAncestor()
+                )
             return _lastHit;
         Block b = findContainingBlock(_content, x, y);
         if (b != null && b instanceof ContentLabel)
