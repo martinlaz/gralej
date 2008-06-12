@@ -22,6 +22,8 @@ public class AdvancedOptsPane extends JComponent {
 
 	private static final long serialVersionUID = 948685334475298016L;
 
+        JTable table;
+        
     public AdvancedOptsPane(GralePreferences prefs) {
 
         GridBagLayout layout = new GridBagLayout();
@@ -31,7 +33,7 @@ public class AdvancedOptsPane extends JComponent {
         
         // create components
         AdvancedOptsTableModel model = new AdvancedOptsTableModel(prefs);
-        JTable table = new JTable(model);
+        table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         scrollPane.setMinimumSize(new Dimension(500,300));

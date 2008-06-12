@@ -79,6 +79,8 @@ public class GenDialog extends JDialog {
     private GralePreferences prefs;
     
     private ObserverListMemento observers;
+    
+    private AdvancedOptsPane advOptsPane;
 
     /**
      * @param owner
@@ -151,7 +153,8 @@ public class GenDialog extends JDialog {
         tabsPanel.add("2", panel2);
         listicons[2] = icontheme.getIcon("large-l+f");
         
-        JComponent panel3 = new AdvancedOptsPane(prefs);
+        advOptsPane = new AdvancedOptsPane(prefs);
+        JComponent panel3 = advOptsPane;
         listlabels[3] = "Advanced Settings";
         lmodel.addElement("3");
         tabsPanel.add("3", panel3);
@@ -375,6 +378,9 @@ public class GenDialog extends JDialog {
             	
             	closeWindow(false);
             	*/
+                if (advOptsPane.table.isEditing())
+                    advOptsPane.table.getCellEditor().stopCellEditing();
+                
             	closeWindow(true);
                 // laz: ugly hack until we fix preferences
                 gralej.blocks.BlockPanelStyle.getInstance().preferencesChange();

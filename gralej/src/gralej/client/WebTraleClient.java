@@ -5,6 +5,7 @@
  */
 package gralej.client;
 
+import gralej.prefs.GralePreferences;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -164,6 +165,7 @@ public class WebTraleClient extends JPanel {
     private InputStream getStream(String spec) throws IOException {
         HttpURLConnection con = (HttpURLConnection) new URL(webtraleContextURL,
                 spec).openConnection();
+        con.setRequestProperty("User-Agent", "Gralej/" + GralePreferences.getInstance().get("_gralej.version"));
         try {
             return con.getInputStream();
         } catch (IOException ex) {
