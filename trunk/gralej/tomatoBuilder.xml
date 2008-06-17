@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <project name="gralej" default="catchup" basedir=".">
+    <project name="gralej-parser" default="catchup" basedir=".">
         <property
             name    =   "grammar.src.file"
             value   =   "${basedir}/src/gralej/parsers/trale-msg.g" />

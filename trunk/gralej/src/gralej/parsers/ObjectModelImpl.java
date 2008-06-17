@@ -110,14 +110,20 @@ class OM {
 
     static class List extends Entity implements IList {
         java.util.List<IEntity> _ls;
+        IEntity _tail;
 
-        List(Flags flags, java.util.List<IEntity> ls) {
+        List(Flags flags, java.util.List<IEntity> ls, IEntity tail) {
             super(flags);
             _ls = ls;
+            _tail = tail;
         }
 
         public Iterable<IEntity> elements() {
             return _ls;
+        }
+        
+        public IEntity tail() {
+            return _tail;
         }
 
         public void accept(IVisitor v) {

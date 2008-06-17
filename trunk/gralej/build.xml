@@ -67,4 +67,8 @@
     nbproject/build-impl.xml file. 
 
     -->
+    
+    <import file="tomatoBuilder.xml"/>
+    
+    <target name="-pre-compile" depends="catchup"/>
 </project>
