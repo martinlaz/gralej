@@ -2,6 +2,7 @@ package gralej.parsers;
 
 import gralej.controller.StreamInfo;
 
+import gralej.util.Log;
 import java.io.*;
 import java.util.*;
 import tomato.GrammarHandler;
@@ -35,7 +36,25 @@ class GrisuFormatParser implements IGraleParser {
 
     private LRTable loadLRTable() throws Exception {
         final String grammarResourceName = "trale-msg.g";
-        InputStream is = getClass().getResourceAsStream(grammarResourceName);
+        // first try the compiled grammar
+        // it must load ok most of the time
+        InputStream is = getClass().getResourceAsStream(grammarResourceName + ".bin");
+        if (is != null) {
+            try {
+                ObjectInputStream ois = new ObjectInputStream(is);
+                return (LRTable) ois.readObject();
+            }
+            catch (Exception e) {
+                Log.warning("Exception while loading bin grammar:", e);
+            }
+            finally {
+                is.close();
+            }
+        }
+        
+        // fail-safe
+        // no cached grammar? recompile it
+        is = getClass().getResourceAsStream(grammarResourceName);
         if (is == null) {
             throw new IOException("Failed to load resource: "
                     + grammarResourceName);

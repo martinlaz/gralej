@@ -23,6 +23,7 @@ public class LabelFactory {
     String LIST_LBRACKET_TEXT;
     String LIST_RBRACKET_TEXT;
     String LIST_SEPARATOR_TEXT;
+    String LIST_TAIL_SEPARATOR_TEXT;
 
     Map<String, LabelStyle> _labelStyles = new TreeMap<String, LabelStyle>();
 
@@ -53,6 +54,7 @@ public class LabelFactory {
         LIST_LBRACKET_TEXT      = Config.get("block.label.list.text.left");
         LIST_RBRACKET_TEXT      = Config.get("block.label.list.text.right");
         LIST_SEPARATOR_TEXT     = Config.get("block.label.list.text.separator");
+        LIST_TAIL_SEPARATOR_TEXT     = Config.get("block.label.list.text.tailSeparator");
         
         String[] types = new String[] {
             "tag",
@@ -162,6 +164,11 @@ public class LabelFactory {
 
     public Label createListSeparatorLabel(BlockPanel panel) {
         return createLabel(LIST_SEPARATOR_TEXT, getLabelStyle("list"), panel);
+    }
+    
+    public Label createListTailSeparatorLabel(BlockPanel panel) {
+        return createLabel(
+            LIST_TAIL_SEPARATOR_TEXT, getLabelStyle("list"), panel);
     }
 
     public Label createAnyLabel(String text, BlockPanel panel) {
