@@ -40,8 +40,14 @@ public class BlockCreator extends AbstractVisitor {
             entity.accept(this);
             ll.add(_result);
         }
+        
+        Block tail = null;
+        if (ls.tail() != null) {
+            ls.tail().accept(this);
+            tail = _result;
+        }
 
-        _result = new ListBlock(_panel, new ListContentBlock(_panel, ll));
+        _result = new ListBlock(_panel, new ListContentBlock(_panel, ll, tail));
     }
 
     @Override

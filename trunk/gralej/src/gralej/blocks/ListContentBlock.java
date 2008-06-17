@@ -1,7 +1,7 @@
 package gralej.blocks;
 
 public class ListContentBlock extends ContainerBlock {
-    ListContentBlock(BlockPanel panel, Iterable<Block> listItems) {
+    ListContentBlock(BlockPanel panel, Iterable<Block> listItems, Block tail) {
         setPanel(panel);
         setLayout(getPanelStyle().getLayoutFactory().getListContentLayout());
         
@@ -15,6 +15,10 @@ public class ListContentBlock extends ContainerBlock {
                 firstAdded = true;
 
             addChild(item);
+        }
+        if (tail != null) {
+            addChild(labfac.createListTailSeparatorLabel(panel));
+            addChild(tail);
         }
         sealChildren();
     }
