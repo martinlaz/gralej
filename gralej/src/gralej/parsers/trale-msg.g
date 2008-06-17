@@ -218,10 +218,7 @@ list
             L<IEntity> structs  = (L<IEntity>)_[3];
             IEntity tail        = (IEntity)_[4];
             
-            if (tail != null)
-                structs.add(tail);
-            
-            IList ls = new OM.List((OM.Flags)_[1], structs);
+            IList ls = new OM.List((OM.Flags)_[1], structs, tail);
             _id2ent.put(N(_[2]), ls);
             return ls;
         }
