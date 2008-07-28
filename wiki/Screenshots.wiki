@@ -1,4 +1,4 @@
-#summary Screenshots of the running Gralej
+#summary Screenshots of a running Gralej
 
 = Main Window =
 
