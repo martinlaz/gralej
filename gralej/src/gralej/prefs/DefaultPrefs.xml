@@ -17,7 +17,7 @@ where RR = 2byte hex value for red
 <properties>
 <comment>GraleJ factory properties</comment>
 
-<entry key="_gralej.version">0.3.3</entry>
+<entry key="_gralej.version">0.3.5</entry>
 
 <entry key="server.port">1080</entry>
 <entry key="server.portrange.lo">5001</entry>

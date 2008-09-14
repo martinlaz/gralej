@@ -1,6 +1,5 @@
 package gralej.blocks;
 
-import gralej.prefs.GPrefsChangeListener;
 import java.awt.Color;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +9,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BlockPanelStyle implements GPrefsChangeListener {
+public class BlockPanelStyle {
     
     static private BlockPanelStyle _instance;
     
@@ -39,8 +38,6 @@ public class BlockPanelStyle implements GPrefsChangeListener {
         _layfac = layfac;
         
         initFields();
-        
-        //GralePreferences.getInstance().addListener(this, "block.");
     }
 
     public void updatePreferences() {
