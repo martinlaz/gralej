@@ -7,6 +7,8 @@ package gralej.controller;
  * @version $Id$
  */
 public class StreamInfo {
+    
+    public final static StreamInfo GRISU = new StreamInfo("grisu");
 
     private String type;
     private String name;

@@ -36,7 +36,7 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         _layout = new CardLayout();
         setLayout(_layout);
         try {
-            _parser = GraleParserFactory.createParser(new StreamInfo("grisu"));
+            _parser = GraleParserFactory.createParser(StreamInfo.GRISU);
         }
         catch (UnsupportedProtocolException e) {
             throw new RuntimeException(e);
@@ -54,7 +54,7 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         try {
             _parseResults = _parser.parseAll(
                 new ByteArrayInputStream(s.getBytes("utf-8")),
-                new StreamInfo("grisu"));
+                StreamInfo.GRISU);
             _views = new BlockPanel[_parseResults.size()];
         }
         catch (Exception e) {
