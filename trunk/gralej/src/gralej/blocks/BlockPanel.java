@@ -1,7 +1,5 @@
-//TODO: local settings: auto-resize, display-hidden, select-on-click...
 package gralej.blocks;
 
-import gralej.util.Log;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -264,18 +262,20 @@ public class BlockPanel implements StyleChangeListener {
         _canvas.repaint();
         
         if (_autoResize)
-            pack(_ui.getParent());
+            pack(_canvas.getParent());
         
         fireStateChanged();
     }
     
-    private static void pack(Component c) {
+    private void pack(Component c) {
         if (c == null)
             return;
         if (c instanceof JFrame)
             ((JFrame) c).pack();
         else if (c instanceof JInternalFrame)
             ((JInternalFrame) c).pack();
+        else if (c instanceof BlockPanelContainer)
+            ((BlockPanelContainer) c).panelResized(this);
         else
             pack(c.getParent());
     }
@@ -564,8 +564,6 @@ public class BlockPanel implements StyleChangeListener {
                 y = scale(b.getY()),
                 w = scale(b.getWidth()),
                 h = scale(b.getHeight());
-        Log.debug("ViewRect:", r);
-        Log.debug("BlockRect:", x, y, w, h);
         return r.contains(x, y, w, h);
     }
 }

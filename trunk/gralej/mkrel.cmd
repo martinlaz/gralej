@@ -1,4 +1,5 @@
 del dist\README.txt
+del dist\plugin.jar
 ren dist gralej
 tar cvf gralej_v%1.tar gralej
 bzip2 gralej_v%1.tar
