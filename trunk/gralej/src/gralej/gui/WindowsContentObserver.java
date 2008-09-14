@@ -15,6 +15,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * A WindowContentObserver is that type of ContentObserver showing
@@ -135,7 +137,7 @@ public class WindowsContentObserver extends ContentObserver {
         }
     }
 
-    class Window extends JFrame implements ActionListener {
+    class Window extends JFrame implements ActionListener, ChangeListener {
 
         IDataPackage data;
 
@@ -147,6 +149,7 @@ public class WindowsContentObserver extends ContentObserver {
             super(data.getTitle());
             this.data = data;
             this.display = data.createView();
+            this.display.addChangeListener(this);
             
             setIconImage(theme.getIcon("grale").getImage());
             
@@ -521,6 +524,14 @@ public class WindowsContentObserver extends ContentObserver {
             }
             else if (source == m_CloseAllWindows) {
                 model.closeAll();
+            }
+        }
+        
+        public void stateChanged(ChangeEvent ev) {
+            if (ev.getSource() == display) {
+                String newZoom = Integer.toString(display.getZoom());
+                if (!newZoom.equals(zoomfield.getText()))
+                    zoomfield.setText(newZoom);
             }
         }
 

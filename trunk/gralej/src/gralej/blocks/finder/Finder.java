@@ -58,7 +58,7 @@ public abstract class Finder {
                 if (matches(lab)) {
                     // ensure the label is visible
                     ensureVisible(b);
-                    _panel.scrollTo(b);
+                    _panel.centerBlock(b);
                     _panel.setSelectedBlock(b);
                     return true;
                 }

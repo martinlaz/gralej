@@ -1,6 +1,7 @@
 //TODO: local settings: auto-resize, display-hidden, select-on-click...
 package gralej.blocks;
 
+import gralej.util.Log;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -14,8 +15,10 @@ import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -26,6 +29,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -39,8 +44,9 @@ public class BlockPanel implements StyleChangeListener {
     BlockPanelStyle _style;
     int _zoom = 100;
     double _scaleFactor = 1;
-    DrawingPane _canvas;
     JPanel _ui;
+    DrawingPane _canvas;
+    ScrollPane _scrollPane;
     boolean _autoResize;
     boolean _autoExpandTags;
     boolean _displayHiddenFeatures;
@@ -50,7 +56,12 @@ public class BlockPanel implements StyleChangeListener {
     private Block _selectedBlock;
     private Stroke _dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, 
                             BasicStroke.JOIN_ROUND, 0,  new float[]{2}, 0);
-
+    
+    private int _lastMousePressedX;
+    private int _lastMousePressedY;
+    
+    protected Set<ChangeListener> _changeListeners = new HashSet<ChangeListener>();
+    
     private class DrawingPane extends JPanel {
         @Override
         protected void paintComponent(Graphics g_) {
@@ -104,6 +115,40 @@ public class BlockPanel implements StyleChangeListener {
         }
     }
     
+    private class ScrollPane extends JScrollPane {
+        ScrollPane(final DrawingPane canvas, final BlockPanel owner) {
+            super(canvas);
+            
+            canvas.addMouseWheelListener(new MouseAdapter() {
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    if (!e.isControlDown()) {
+                        processMouseWheelEvent(e);
+                        return;
+                    }
+                    
+                    Rectangle r = getViewport().getViewRect();
+                    int relX = e.getX() - (int) r.getX();
+                    int relY = e.getY() - (int) r.getY();
+
+                    int x = owner.unscale(e.getX());
+                    int y = owner.unscale(e.getY());
+
+                    if (e.getWheelRotation() < 0)
+                        owner.zoomIn();
+                    else
+                        owner.zoomOut();
+
+                    x = owner.scale(x);
+                    y = owner.scale(y);
+
+                    r.setLocation(x - relX, y - relY);
+                    canvas.scrollRectToVisible(r);
+                }
+            });
+        }
+    }
+    
     public BlockPanel(gralej.om.IVisitable contentModel) {
         this(contentModel, BlockPanelStyle.getInstance());
     }
@@ -126,11 +171,11 @@ public class BlockPanel implements StyleChangeListener {
         
         _canvas = new DrawingPane();
         
-        JScrollPane scrollPane = new JScrollPane(_canvas);
+        _scrollPane = new ScrollPane(_canvas, this);
         int vUnitIncrement = Config.getInt(
                 "block.panel.scrollbar.vertical.unitIncrement");
-        scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
-        _ui.add(scrollPane, BorderLayout.CENTER);
+        _scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
+        _ui.add(_scrollPane, BorderLayout.CENTER);
         
         _autoResize = Boolean.parseBoolean(Config.get("behavior.alwaysfitsize"));
         _autoExpandTags = autoExpandTags;
@@ -145,6 +190,10 @@ public class BlockPanel implements StyleChangeListener {
                 onMousePressed(e);
             }
             @Override
+            public void mouseReleased(MouseEvent e) {
+                onMouseReleased(e);
+            }
+            @Override
             public void mouseExited(MouseEvent e) {
                 onMouseExited(e);
             }
@@ -154,6 +203,10 @@ public class BlockPanel implements StyleChangeListener {
             @Override
             public void mouseMoved(MouseEvent e) {
                 onMouseMoved(e);
+            }
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                onMouseDragged(e);
             }
         });
         
@@ -167,6 +220,20 @@ public class BlockPanel implements StyleChangeListener {
         if (!Boolean.parseBoolean(Config.get("behavior.nodeContentInitiallyVisible"))) {
             showNodeContents(false);
         }
+    }
+    
+    public void addChangeListener(ChangeListener listener) {
+        _changeListeners.add(listener);
+    }
+    
+    public void removeChangeListener(ChangeListener listener) {
+        _changeListeners.remove(listener);
+    }
+    
+    protected void fireStateChanged() {
+        ChangeEvent ev = new ChangeEvent(this);
+        for (ChangeListener cl : _changeListeners)
+            cl.stateChanged(ev);
     }
     
     public void setStyle(BlockPanelStyle newStyle) {
@@ -198,6 +265,8 @@ public class BlockPanel implements StyleChangeListener {
         
         if (_autoResize)
             pack(_ui.getParent());
+        
+        fireStateChanged();
     }
     
     private static void pack(Component c) {
@@ -264,11 +333,11 @@ public class BlockPanel implements StyleChangeListener {
         return size;
     }
     
-    private int scale(int n) {
+    int scale(int n) {
         return (int) (n * _scaleFactor);
     }
     
-    private int unscale(int n) {
+    int unscale(int n) {
         return (int) (n / _scaleFactor);
     }
     
@@ -307,16 +376,23 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     protected void onMousePressed(MouseEvent e) {
+        _lastMousePressedX = e.getX();
+        _lastMousePressedY = e.getY();
+    }
+    
+    protected void onMouseReleased(MouseEvent e) {
         int x = unscale(e.getX());
         int y = unscale(e.getY());
         if (e.getButton() == MouseEvent.BUTTON1) { // left button
             ContentLabel target = findContainingContentLabel(x, y);
             if (target != null) {
+                int relX = e.getX() - scale(target.getX());
+                int relY = e.getY() - scale(target.getY());
                 target.flipContentVisibility();
-                scrollTo(target); // ensure it remains in the visible area
+                scrollTo(target, e.getX() - relX, e.getY() - relY, e);
                 if (_selectOnClick)
                     setSelectedBlock(target);
-                updateCursorForPoint(x, y);
+                //updateCursorForPoint(x, y);
             }
             else {
                 setSelectedBlock(null);
@@ -350,6 +426,9 @@ public class BlockPanel implements StyleChangeListener {
                 }
             }
         }
+        else {
+            updateCursorForPoint(x, y);
+        }
     }
     
     protected void onMouseMoved(MouseEvent ev) {
@@ -357,6 +436,18 @@ public class BlockPanel implements StyleChangeListener {
             return;
         }
         updateCursorForPoint(unscale(ev.getX()), unscale(ev.getY()));
+    }
+    
+    protected void onMouseDragged(MouseEvent ev) {
+        if (!ev.isControlDown())
+            return;
+        int dx = _lastMousePressedX - ev.getX();
+        int dy = _lastMousePressedY - ev.getY();
+        if (dx == 0 && dy == 0)
+            return;
+        Rectangle rect = _scrollPane.getViewport().getViewRect();
+        rect.translate(dx, dy);
+        _canvas.scrollRectToVisible(rect);
     }
     
     protected void onMouseExited(MouseEvent ev) {
@@ -438,13 +529,43 @@ public class BlockPanel implements StyleChangeListener {
         _currentCursor = newCursor;
     }
     
-    public void scrollTo(Block b) {
-        final int N = 30;
-        Rectangle brect = new Rectangle(
-                scale(b.getX() - N),
-                scale(b.getY() - N),
-                scale(b.getWidth()  + 2 * N),
-                scale(b.getHeight() + 2 * N));
-        _canvas.scrollRectToVisible(brect);
+    public void centerBlock(Block b) {
+        Rectangle r = _scrollPane.getViewport().getViewRect();
+        int x = scale(b.getX());
+        int y = scale(b.getY());
+        int w = scale(b.getWidth());
+        int h = scale(b.getHeight());
+        int x1 = x - (int)(r.getWidth()  / 2.0 - w / 2.0);
+        int y1 = y - (int)(r.getHeight() / 2.0 - h / 2.0);
+        if (x1 < 0)
+            x1 = x;
+        if (y1 < 0)
+            y1 = y;
+        r.setLocation(x1, y1);
+        _canvas.scrollRectToVisible(r);
+    }
+    
+    private void scrollTo(Block b, int mouseX, int mouseY, MouseEvent e) {
+        Rectangle r = _scrollPane.getViewport().getViewRect();
+        int relX = mouseX - (int) r.getX();
+        int relY = mouseY - (int) r.getY();
+        int x = scale(b.getX());
+        int y = scale(b.getY());
+        r.setLocation(x - relX, y - relY);
+        _canvas.scrollRectToVisible(r);
+        //updateCursorForPoint(x, y);
+        if (!e.isShiftDown() && !isBlockVisible(b))
+            centerBlock(b);
+    }
+    
+    private boolean isBlockVisible(Block b) {
+        Rectangle r = _scrollPane.getViewport().getViewRect();
+        int x = scale(b.getX()),
+                y = scale(b.getY()),
+                w = scale(b.getWidth()),
+                h = scale(b.getHeight());
+        Log.debug("ViewRect:", r);
+        Log.debug("BlockRect:", x, y, w, h);
+        return r.contains(x, y, w, h);
     }
 }
