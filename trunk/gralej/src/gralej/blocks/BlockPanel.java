@@ -103,8 +103,8 @@ public class BlockPanel implements StyleChangeListener {
                 g.drawRect(
                         _selectedBlock.getX() - N + 1,
                         _selectedBlock.getY() - N + 1,
-                        _selectedBlock.getWidth() + N * 2 - 3,
-                        _selectedBlock.getHeight() + N * 2 - 3
+                        _selectedBlock.getWidth() + N * 2 - 2,
+                        _selectedBlock.getHeight() + N * 2 - 2
                         );
             }
             
@@ -129,18 +129,20 @@ public class BlockPanel implements StyleChangeListener {
                     int relX = e.getX() - (int) r.getX();
                     int relY = e.getY() - (int) r.getY();
 
-                    int x = owner.unscale(e.getX());
-                    int y = owner.unscale(e.getY());
+                    // unscale
+                    double x = e.getX() / owner.getScaleFactor();
+                    double y = e.getY() / owner.getScaleFactor();
 
                     if (e.getWheelRotation() < 0)
                         owner.zoomIn();
                     else
                         owner.zoomOut();
 
-                    x = owner.scale(x);
-                    y = owner.scale(y);
+                    // scale with the updated factor
+                    x *= owner.getScaleFactor();
+                    y *= owner.getScaleFactor();
 
-                    r.setLocation(x - relX, y - relY);
+                    r.setRect(x - relX, y - relY, r.getWidth(), r.getHeight());
                     canvas.scrollRectToVisible(r);
                 }
             });
@@ -318,6 +320,10 @@ public class BlockPanel implements StyleChangeListener {
         return _zoom;
     }
     
+    public double getScaleFactor() {
+        return _scaleFactor;
+    }
+    
     public void zoomIn() {
         setZoom(getZoom() + ZOOM_DELTA);
     }
@@ -333,11 +339,11 @@ public class BlockPanel implements StyleChangeListener {
         return size;
     }
     
-    int scale(int n) {
+    private int scale(int n) {
         return (int) (n * _scaleFactor);
     }
     
-    int unscale(int n) {
+    private int unscale(int n) {
         return (int) (n / _scaleFactor);
     }
     

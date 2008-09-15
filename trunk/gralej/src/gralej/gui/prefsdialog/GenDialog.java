@@ -100,7 +100,7 @@ public class GenDialog extends JDialog {
     private void initialize() throws GralePrefsInitException {
         this.setSize(750, 450);
         this.setLocationRelativeTo(getParent());
-        this.setTitle("GraleJ Preferences");
+        this.setTitle("Gralej Preferences");
         this.setContentPane(getJContentPane());
         this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         		//ModalExclusionType.APPLICAION_EXCLUDED);
@@ -230,7 +230,7 @@ public class GenDialog extends JDialog {
 
 		@Override
 		public String getDescription() {
-			return "GraleJ Configuration Files";
+			return "Gralej Configuration Files";
 		}
     }
     

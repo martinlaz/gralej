@@ -10,7 +10,7 @@ import gralej.prefs.GralePreferences;
 import javax.swing.table.AbstractTableModel;
 
 /** A table model for the JTable on the "advanced"
- * tab of GraleJ's preferences.
+ * tab of Gralej's preferences.
  * @author Niels Ott
  * @version $Id$
   */
