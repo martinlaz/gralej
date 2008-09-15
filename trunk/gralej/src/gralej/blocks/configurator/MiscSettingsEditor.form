@@ -106,7 +106,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="53" max="32767" attributes="0"/>
+                          <EmptySpace pref="48" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -145,7 +145,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel2">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Edge Width:"/>
+                    <Property name="text" type="java.lang.String" value="Edge Length:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="_spAVMEdgeLength">

@@ -333,8 +333,10 @@ public class OutputFormatter {
             bp.getCanvas().paint(grap);
             grap.dispose();
             ImageIO.write(img, format, p);
-        } catch (Throwable e) {
+        } catch (IOException e) {
             Log.error(e.getMessage());
+        } catch (OutOfMemoryError e) {
+            Log.error(e, "\nTry increasing the memory available to Java (-Xmx flag)");
         }
     }
 

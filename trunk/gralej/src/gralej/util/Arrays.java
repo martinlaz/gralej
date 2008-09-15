@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gralej.util;
 
 /**
@@ -22,5 +17,9 @@ public class Arrays {
     
     public static String concat(Object... objects) {
         return concat("", objects);
+    }
+    
+    public static <T> T[] tuple(T... ts) {
+        return ts;
     }
 }
