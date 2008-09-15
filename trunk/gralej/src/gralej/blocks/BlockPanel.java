@@ -1,4 +1,6 @@
-// $Id: $
+/**
+ * @version $Id: BlockPanel.java 283 2008-09-15 09:50:27Z martinlaz $
+ */
 
 package gralej.blocks;
 
