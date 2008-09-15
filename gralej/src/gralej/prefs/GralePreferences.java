@@ -657,7 +657,7 @@ public class GralePreferences  {
     public void saveToXML(File file) throws FileNotFoundException, IOException {
     	
     	prefs.storeToXML(new FileOutputStream(file), 
-    			"GraleJ preferences stored by the Export function in the preferences dialog.");
+    			"Gralej preferences stored by the Export function in the preferences dialog.");
     	
     }
     

@@ -15,7 +15,7 @@ where RR = 2byte hex value for red
       AA = 2byte hex value for the alpha channel (ff=no transparency)
 -->
 <properties>
-<comment>GraleJ factory properties</comment>
+<comment>Gralej factory properties</comment>
 
 <entry key="_gralej.version">0.3.5</entry>
 

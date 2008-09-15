@@ -229,7 +229,7 @@ public class OutputFormatter {
 
     private void toLaTeXFile(IDataPackage data, PrintStream p) {
         OM2LaTeXVisitor visitor = new OM2LaTeXVisitor();
-        String output = "% AVM output by GraleJ\n"
+        String output = "% AVM output by Gralej\n"
                 + "\\documentclass{article}\n" + "\\usepackage{avm+}\n"
                 + "\\usepackage{ecltree+}\n" + "\\avmoptions{center}\n"
                 + "\\begin{document}\n";
@@ -254,7 +254,7 @@ public class OutputFormatter {
      */
     private void toLaTeXSnippet(IDataPackage data, PrintStream p) {
         OM2LaTeXVisitor visitor = new OM2LaTeXVisitor();
-        String output = "% AVM output by GraleJ\n";
+        String output = "% AVM output by Gralej\n";
         if (data.getModel() instanceof ITree) {
             output += visitor.output(data.getModel());
         } else {

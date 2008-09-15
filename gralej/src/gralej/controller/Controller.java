@@ -147,7 +147,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
                     Log.error(
                                     "Cannot bind server to network port",
                                     port
-                                    + ", perhaps another GraleJ is running?"
+                                    + ", perhaps another Gralej is running?"
                                     );
             }
         }

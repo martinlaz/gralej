@@ -206,7 +206,7 @@ public class MainGUI implements ActionListener, ItemListener {
         JMenu helpmenu = new JMenu("Help");
         viewmenu.setMnemonic('H');
 
-        m_About = new JMenuItem("About GraleJ");
+        m_About = new JMenuItem("About Gralej");
         m_About.addActionListener(this);
         helpmenu.add(m_About);
 
@@ -335,7 +335,7 @@ public class MainGUI implements ActionListener, ItemListener {
             // VIEW MENU ITEMS
 
         } else if (source == m_About) {
-            AboutGraleJWindow w = new AboutGraleJWindow(frame);
+            AboutGralejWindow w = new AboutGralejWindow(frame);
             w.showWindow();
         } else if (source == m_Cascade) {
             c.getModel().cascade();
@@ -423,7 +423,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
         theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
 
-        frame = new JFrame("GraleJ");
+        frame = new JFrame("Gralej");
         frame.setIconImage(theme.getIcon("grale").getImage());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
