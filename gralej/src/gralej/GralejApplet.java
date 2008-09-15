@@ -93,6 +93,7 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         _win.eval("resizeGralejApplet(" +
             d.width + "," +
             d.height + ")");
+        log("panel resized");
     }
     
     public static BlockPanelStyle getBlockPanelStyle() {
