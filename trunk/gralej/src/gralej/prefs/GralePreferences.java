@@ -82,7 +82,9 @@ public class GralePreferences  {
             backingprefs.addPreferenceChangeListener(backinglistener);
         } catch (Exception e) {
             backingavailable = false;
-            Log.warning(
+            //Log.warning(
+            //        "GralePreferences: Java Preferences not available, will not save anything.");
+            System.err.println(
                     "GralePreferences: Java Preferences not available, will not save anything.");
             e.printStackTrace();
             // use the default settings as settings
