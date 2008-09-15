@@ -8,6 +8,8 @@ package gralej.blocks.configurator;
 
 import gralej.blocks.BlockPanelStyle;
 import gralej.blocks.LabelStyle;
+import gralej.util.Arrays;
+import gralej.util.Globals;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -37,6 +39,8 @@ public class LabelStyleEditor extends javax.swing.JDialog {
         setBlockPanelStyle(style);
         initComponents();
         setLocationRelativeTo(parent);
+        for (JLabel lab : Arrays.tuple(_colFrame, _colText, _colTextAlt))
+            lab.setCursor(Globals.HAND_CURSOR);
         
         _buttonGroupFrameStroke.add(_rdStrokeSolid);
         _buttonGroupFrameStroke.add(_rdStrokeDashed);

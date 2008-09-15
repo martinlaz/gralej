@@ -266,7 +266,9 @@ public class MainGUI implements ActionListener, ItemListener {
                     c.open(f);
                 }
                 try {
-                    gp.put("input.lastdir", files[0].getCanonicalPath());
+                    File f = files[0];
+                    File dir = f.isDirectory() ? f : f.getParentFile();
+                    gp.put("input.lastdir", dir.getCanonicalPath());
                 } catch (IOException e1) {
                     Log.warning(
                             "Getting the directory of the (first) chosen file failed.");
@@ -385,7 +387,8 @@ public class MainGUI implements ActionListener, ItemListener {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
             try {
-                gp.put("input.lastdir", f.getCanonicalPath());
+                File dir = f.isDirectory() ? f : f.getParentFile();
+                gp.put("input.lastdir", dir.getCanonicalPath());
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

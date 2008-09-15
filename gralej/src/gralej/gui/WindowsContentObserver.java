@@ -386,19 +386,9 @@ public class WindowsContentObserver extends ContentObserver {
             b_Print.setToolTipText("Print");
             toolbar.add(b_Print);
 
-            b_Resize = new JButton(theme.getIcon("maximize"));
-            b_Resize.addActionListener(this);
-            b_Resize.setToolTipText("Enable/disable auto-resizing");
-            b_Resize.setSelected(autoResize);
-            toolbar.add(b_Resize);
-
             toolbar.addSeparator();
 
-            b_ZoomMinus = new JButton(theme.getIcon("zoomout"));
-            b_ZoomMinus.addActionListener(this);
-            b_ZoomMinus.setToolTipText("Zoom out");
-            toolbar.add(b_ZoomMinus);
-
+            // Zoom
             toolbar.add(new JLabel("Zoom:"));
             zoomfield = new JTextField("100");
             zoomfield.setHorizontalAlignment(JTextField.RIGHT);
@@ -407,23 +397,37 @@ public class WindowsContentObserver extends ContentObserver {
             zoomfield.setMaximumSize(new Dimension(40, 20));
             zoomfield.setToolTipText("Zoom value");
             zoomfield.setText(Integer.toString(display.getZoom()));
-
             toolbar.add(zoomfield);
             toolbar.add(new JLabel("%"));
+            
             b_ZoomPlus = new JButton(theme.getIcon("zoomin"));
             b_ZoomPlus.addActionListener(this);
             b_ZoomPlus.setToolTipText("Zoom in");
             toolbar.add(b_ZoomPlus);
+            
+            b_ZoomMinus = new JButton(theme.getIcon("zoomout"));
+            b_ZoomMinus.addActionListener(this);
+            b_ZoomMinus.setToolTipText("Zoom out");
+            toolbar.add(b_ZoomMinus);
+            
+            toolbar.addSeparator();
+            
 
-            searchfield = new JTextField();
-            searchfield.setMaximumSize(new Dimension(90, 20));
-            searchfield.addActionListener(this);
+            //searchfield = new JTextField();
+            //searchfield.setMaximumSize(new Dimension(90, 20));
+            //searchfield.addActionListener(this);
 //            toolbar.add(searchfield);
 
-            b_Find = new JButton(theme.getIcon("magglass"));
-            b_Find.addActionListener(this);
-            b_Find.setToolTipText("Find");
+            //b_Find = new JButton(theme.getIcon("magglass"));
+            //b_Find.addActionListener(this);
+            //b_Find.setToolTipText("Find");
 //            toolbar.add(b_Find);
+            
+            b_Resize = new JButton(theme.getIcon("maximize"));
+            b_Resize.addActionListener(this);
+            b_Resize.setToolTipText("Enable/disable auto-resizing");
+            b_Resize.setSelected(autoResize);
+            toolbar.add(b_Resize);
 
             b_Raise = new JButton(theme.getIcon("raisewindow"));
             b_Raise.addActionListener(this);
@@ -538,9 +542,17 @@ public class WindowsContentObserver extends ContentObserver {
         private void save(int format) {
             File f = gui.saveDialog(format);
             if (f != null) {
-                model.save(f, data, display, format);
+                try {
+                    display.getUI().setCursor(
+                            Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    model.save(f, data, display, format);
+                } finally {
+                    display.getUI().setCursor(
+                            Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
             } else {
                 // file could not be opened. doing nothing might be appropriate
+                Log.error("Failed to open file");
             }
 
         }

@@ -7,6 +7,8 @@
 package gralej.blocks.configurator;
 
 import gralej.blocks.BlockPanelStyle;
+import gralej.util.Arrays;
+import gralej.util.Globals;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -28,6 +30,13 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(parent);
+        for (JLabel lab : Arrays.tuple(
+                _colAVMEdge,
+                _colBlockPanel, 
+                _colSelectionBackground,
+                _colSelectionFrame,
+                _colTreeEdge))
+            lab.setCursor(Globals.HAND_CURSOR);
         
         JComponent c = (JComponent) getContentPane();
         c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
@@ -128,7 +137,7 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
 
         jLabel1.setText("Color:");
 
-        jLabel2.setText("Edge Width:");
+        jLabel2.setText("Edge Length:");
 
         _spAVMEdgeLength.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
         _spAVMEdgeLength.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -162,7 +171,7 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(_spAVMEdgeLength, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(_colAVMEdge, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

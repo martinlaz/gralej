@@ -52,7 +52,7 @@ public class BlockPanel implements StyleChangeListener {
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private ContentLabel _lastHit;
     private Block _selectedBlock;
-    private Stroke _dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, 
+    private static Stroke _dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, 
                             BasicStroke.JOIN_ROUND, 0,  new float[]{2}, 0);
     
     private int _lastMousePressedX;
