@@ -1,3 +1,6 @@
+/**
+ * @version $Id$
+ */
 package gralej.blocks;
 
 /**
