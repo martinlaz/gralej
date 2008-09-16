@@ -383,7 +383,7 @@ public class GenDialog extends JDialog {
                 
             	closeWindow(true);
                 // laz: ugly hack until we fix preferences
-                gralej.blocks.BlockPanelStyle.getInstance().preferencesChange();
+                //gralej.blocks.BlockPanelStyle.getInstance().preferencesChange();
             } else if (e.getSource() == CancelButton) {
                 closeWindow(false);
             } else if (e.getSource() == ImportButton) {

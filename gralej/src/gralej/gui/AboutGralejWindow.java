@@ -24,7 +24,7 @@ class AboutGralejWindow extends JDialog implements HyperlinkListener {
 
 	public AboutGralejWindow(JFrame parent) {
         super(parent, true);
-        setTitle("About GraleJ");
+        setTitle("About " + gralej.Globals.APP_NAME_VER);
         
         // get icon theme
         /*GralePreferences prefs = GralePreferences.getInstance();
@@ -49,7 +49,7 @@ class AboutGralejWindow extends JDialog implements HyperlinkListener {
                         "Attempted to read a bad URL: " + aboutfile);
             }
         } else {
-            Log.warning("Couldn't find about.html.");
+            Log.error("Couldn't find about.html.");
         }
 
         editorPane.setPreferredSize(new Dimension(350, 350));

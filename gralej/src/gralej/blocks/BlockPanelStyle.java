@@ -1,5 +1,6 @@
 package gralej.blocks;
 
+import gralej.Config;
 import java.awt.Color;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,10 +9,13 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class BlockPanelStyle {
     
-    static private BlockPanelStyle _instance;
+    private static BlockPanelStyle _instance;
+    private ChangeListener _configChangeListener;
     
     public static BlockPanelStyle getInstance() {
         if (_instance == null) {
@@ -38,13 +42,19 @@ public class BlockPanelStyle {
         _layfac = layfac;
         
         initFields();
+        _configChangeListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                configChanged();
+            }
+        };
+        Config.currentConfig().addChangeListener(_configChangeListener);
     }
 
-    public void updatePreferences() {
-        //GralePreferences.getInstance().removeListener(this);
-        //Log.debug("removing", this, "as prefs change listener. thread:", Thread.currentThread());
-        _labfac.updatePreferences();
-        _layfac.updatePreferences();
+    public void updateConfig() {
+        Config cfg = new Config(Config.currentConfig());
+        
+        _labfac.updateConfig(cfg);
+        _layfac.updateConfig(cfg);
         
         for (Field f : getClass().getDeclaredFields()) {
             Key k = (Key) f.getAnnotation(Key.class);
@@ -53,13 +63,13 @@ public class BlockPanelStyle {
             String s = k.value();
             try {
                 if (f.getType() == String.class)
-                    Config.set(s, (String) f.get(this));
+                    cfg.put(s, (String) f.get(this));
                 else if (f.getType() == int.class)
-                    Config.set(s, (Integer) f.get(this));
+                    cfg.put(s, (Integer) f.get(this));
                 else if (f.getType() == boolean.class)
-                    Config.set(s, (Boolean) f.get(this));
+                    cfg.put(s, (Boolean) f.get(this));
                 else if (f.getType() == Color.class)
-                    Config.set(s, (Color) f.get(this));
+                    cfg.put(s, (Color) f.get(this));
                 else
                     throw new Exception(
                             "Unsupported field type: [" + f.getType() + "] for field: " + f);
@@ -69,11 +79,8 @@ public class BlockPanelStyle {
             }
         }
         
-        getInstance().preferencesChange();
-        
-        //Log.debug("adding", this, "as prefs change listener");
-        //GralePreferences.getInstance().addListener(this, "block.");
-        //Log.debug("done adding", this, "as prefs change listener");
+        if (Config.currentConfig().updateFrom(cfg))
+            Config.currentConfig().fireStateChanged(_configChangeListener);
     }
     
     private void initFields() {
@@ -84,13 +91,13 @@ public class BlockPanelStyle {
             String s = k.value();
             try {
                 if (f.getType() == String.class)
-                    f.set(this, Config.get(s));
+                    f.set(this, Config.s(s));
                 else if (f.getType() == int.class)
-                    f.set(this, Config.getInt(s));
+                    f.set(this, Config.i(s));
                 else if (f.getType() == boolean.class)
-                    f.set(this, Boolean.parseBoolean(Config.get(s)));
+                    f.set(this, Config.bool(s));
                 else if (f.getType() == Color.class)
-                    f.set(this, Config.getColor(s));
+                    f.set(this, Config.color(s));
                 else
                     throw new Exception(
                             "Unsupported field type: [" + f.getType() + "] for field: " + f);
@@ -297,8 +304,7 @@ public class BlockPanelStyle {
             l.styleChanged(this);
     }
 
-    public void preferencesChange() {
-        //Log.debug("updating blockpanelstyle", this, "from prefs. thread:", Thread.currentThread());
+    private void configChanged() {
         _labfac.updateSelf();
         _layfac.updateSelf();
         initFields();

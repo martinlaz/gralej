@@ -8,7 +8,7 @@ package gralej.blocks.configurator;
 
 import gralej.blocks.BlockPanelStyle;
 import gralej.util.Arrays;
-import gralej.util.Globals;
+import gralej.Globals;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;

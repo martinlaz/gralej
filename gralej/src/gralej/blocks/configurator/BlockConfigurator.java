@@ -116,7 +116,8 @@ public class BlockConfigurator extends BlockPanel {
         if (ev.getID() != MouseEvent.MOUSE_MOVED)
             return;
         Block target = findContainingBlock(getContent(), ev.getX(), ev.getY());
-        String msg = "<html>Click to modify miscellaneous <b>BlockPanel</b>, <b>AVMBlock</b> and <b>TreeBlock</b> settings.";
+        String msg = "<html>Click to modify miscellaneous <b>BlockPanel</b>,"
+                + " <b>AVMBlock</b> and <b>TreeBlock</b> settings.";
         if (target == null)
             ;
         else if (target instanceof ContainerBlock

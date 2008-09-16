@@ -191,7 +191,7 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
     }// </editor-fold>//GEN-END:initComponents
 
     private void _bCommitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bCommitActionPerformed
-        _configurator.getStyle().updatePreferences();
+        _configurator.getStyle().updateConfig();
     }//GEN-LAST:event__bCommitActionPerformed
 
     private void _bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bResetActionPerformed

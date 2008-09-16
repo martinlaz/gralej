@@ -1,5 +1,6 @@
 package gralej.blocks;
 
+import gralej.Config;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,20 +33,20 @@ public class LayoutFactory {
         return _layoutCache.get("block.layout." + type);
     }
     
-    void updatePreferences() {
+    void updateConfig(Config cfg) {
         for (BlockLayout x : _layoutCache.values()) {
-            Config.set("block.layout." + x.getName() + ".space.leading",  x.getLeadingSpace());
-            Config.set("block.layout." + x.getName() + ".space.intra",    x.getIntraSpace());
-            Config.set("block.layout." + x.getName() + ".space.trailing", x.getTrailingSpace());
+            cfg.put("block.layout." + x.getName() + ".space.leading",  x.getLeadingSpace());
+            cfg.put("block.layout." + x.getName() + ".space.intra",    x.getIntraSpace());
+            cfg.put("block.layout." + x.getName() + ".space.trailing", x.getTrailingSpace());
         }
     }
     
     void updateSelf() {
         for (BlockLayout x : _layoutCache.values()) {
             x.setAll(
-                    Config.getInt("block.layout." + x.getName() + ".space.leading"),
-                    Config.getInt("block.layout." + x.getName() + ".space.intra"),
-                    Config.getInt("block.layout." + x.getName() + ".space.trailing")
+                    Config.i("block.layout." + x.getName() + ".space.leading"),
+                    Config.i("block.layout." + x.getName() + ".space.intra"),
+                    Config.i("block.layout." + x.getName() + ".space.trailing")
                     );
         }
     }
@@ -76,9 +77,9 @@ public class LayoutFactory {
         String id_ = "block.layout." + id;
         BlockLayout layout = _layoutCache.get(id_);
         if (layout == null) {
-            int leading     = Config.getInt(id_ + ".space.leading");
-            int intra       = Config.getInt(id_ + ".space.intra");
-            int trailing    = Config.getInt(id_ + ".space.trailing");
+            int leading     = Config.i(id_ + ".space.leading");
+            int intra       = Config.i(id_ + ".space.intra");
+            int trailing    = Config.i(id_ + ".space.trailing");
             
             BlockLayout alayout = creator.newInstance();
             alayout.setName(id);
