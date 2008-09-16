@@ -8,7 +8,7 @@ import java.io.InputStream;
  * decouple the concrete Controler from the I/O mechanisms.
  * 
  * @author Niels
- * @version $Id: INewStreamListener.java 12 2007-11-13 14:39:45Z niels@drni.de $
+ * @version $Id$
  */
 public interface INewStreamListener {
 

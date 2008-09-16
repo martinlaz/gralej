@@ -1,3 +1,5 @@
+// $Id$
+
 package gralej.util;
 
 import gralej.prefs.GPrefsChangeListener;

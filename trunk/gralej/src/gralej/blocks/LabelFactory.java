@@ -1,29 +1,16 @@
 package gralej.blocks;
 
+import gralej.Config;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class LabelFactory {
 
-    String DEFAULT_FONT_SPEC;
-    // colors
-    String DEFAULT_TEXT_COLOR;
-    String DEFAULT_TEXT_ALT_COLOR;
-    // margins
-    int DEFAULT_MARGIN_TOP;
-    int DEFAULT_MARGIN_LEFT;
-    int DEFAULT_MARGIN_RIGHT;
-    int DEFAULT_MARGIN_BOTTOM;
-    // frame
-    int DEFAULT_FRAME_THICKNESS;
-    String DEFAULT_FRAME_COLOR;
-    String DEFAULT_FRAME_IS_DASHED;
-    
     // list
-    String LIST_LBRACKET_TEXT;
-    String LIST_RBRACKET_TEXT;
-    String LIST_SEPARATOR_TEXT;
-    String LIST_TAIL_SEPARATOR_TEXT;
+    String LIST_LBRACKET;
+    String LIST_RBRACKET;
+    String LIST_SEPARATOR;
+    String LIST_TAIL_SEPARATOR;
 
     Map<String, LabelStyle> _labelStyles = new TreeMap<String, LabelStyle>();
 
@@ -40,21 +27,10 @@ public class LabelFactory {
     }
     
     private void init() {
-        DEFAULT_FONT_SPEC       = Config.get   ("block.label._default.fontSpec");
-        DEFAULT_TEXT_COLOR      = Config.get   ("block.label._default.text.color");
-        DEFAULT_TEXT_ALT_COLOR  = Config.get   ("block.label._default.text.colorAlt");
-        DEFAULT_MARGIN_TOP      = Config.getInt("block.label._default.margin.top");
-        DEFAULT_MARGIN_LEFT     = Config.getInt("block.label._default.margin.left");
-        DEFAULT_MARGIN_RIGHT    = Config.getInt("block.label._default.margin.right");
-        DEFAULT_MARGIN_BOTTOM   = Config.getInt("block.label._default.margin.bottom");
-        DEFAULT_FRAME_THICKNESS = Config.getInt("block.label._default.frame.thickness");
-        DEFAULT_FRAME_COLOR     = Config.get   ("block.label._default.frame.color");
-        DEFAULT_FRAME_IS_DASHED = Config.get   ("block.label._default.frame.isDashed");
-
-        LIST_LBRACKET_TEXT      = Config.get("block.label.list.text.left");
-        LIST_RBRACKET_TEXT      = Config.get("block.label.list.text.right");
-        LIST_SEPARATOR_TEXT     = Config.get("block.label.list.text.separator");
-        LIST_TAIL_SEPARATOR_TEXT     = Config.get("block.label.list.text.tailSeparator");
+        LIST_LBRACKET       = Config.s("block.label.list.text.left");
+        LIST_RBRACKET       = Config.s("block.label.list.text.right");
+        LIST_SEPARATOR      = Config.s("block.label.list.text.separator");
+        LIST_TAIL_SEPARATOR = Config.s("block.label.list.text.tailSeparator");
         
         String[] types = new String[] {
             "tag",
@@ -85,46 +61,40 @@ public class LabelFactory {
     
     private void initLabelStyle(LabelStyle ls) {
         String type = "block.label." + ls.getName();
-        ls.setFont(Config.getFont(type + ".fontSpec",
-                    DEFAULT_FONT_SPEC));
-        ls.setTextColor(Config.getColor(type + ".text.color",
-                DEFAULT_TEXT_COLOR));
-        ls.setTextAltColor(Config.getColor(type + ".text.colorAlt",
-                DEFAULT_TEXT_ALT_COLOR));
-        ls.setMarginTop(Config.getInt(type + ".margin.top", DEFAULT_MARGIN_TOP));
-        ls.setMarginLeft(Config.getInt(type + ".margin.left", DEFAULT_MARGIN_LEFT));
-        ls.setMarginRight(Config.getInt(type + ".margin.right", DEFAULT_MARGIN_RIGHT));
-        ls.setMarginBottom(Config.getInt(type + ".margin.bottom", DEFAULT_MARGIN_BOTTOM));
-        ls.setFrameThickness(Config.getInt(type + ".frame.thickness", DEFAULT_FRAME_THICKNESS));
-        ls.setFrameColor(Config.getColor(type + ".frame.color", DEFAULT_FRAME_COLOR));
-        ls.setFrameDashed(Boolean.parseBoolean(Config.get(type + ".frame.isDashed", DEFAULT_FRAME_IS_DASHED)));
+        ls.setFont(
+                Config.font(type + ".fontSpec"));
+        ls.setTextColor(
+                Config.color(type + ".text.color"));
+        ls.setTextAltColor(
+                Config.color(type + ".text.colorAlt"));
+        ls.setMarginTop(
+                Config.i(type + ".margin.top"));
+        ls.setMarginLeft(
+                Config.i(type + ".margin.left"));
+        ls.setMarginRight(
+                Config.i(type + ".margin.right"));
+        ls.setMarginBottom(
+                Config.i(type + ".margin.bottom"));
+        ls.setFrameThickness(
+                Config.i(type + ".frame.thickness"));
+        ls.setFrameColor(
+                Config.color(type + ".frame.color"));
+        ls.setFrameDashed(
+                Config.bool(type + ".frame.isDashed"));
     }
     
-    void updatePreferences() {
+    void updateConfig(Config cfg) {
         for (LabelStyle s : _labelStyles.values()) {
-            //<entry key="log.message.info"/>
-            /*
-            System.err.println("<entry key=\"block.label." + s.getName() + ".fontSpec\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".text.color\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".text.colorAlt\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.top\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.left\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.right\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".margin.bottom\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".frame.thickness\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".frame.color\"/>");
-            System.err.println("<entry key=\"block.label." + s.getName() + ".frame.isDashed\"/>");
-            */
-            Config.set("block.label." + s.getName() + ".fontSpec",      s.getFont());
-            Config.set("block.label." + s.getName() + ".text.color",    s.getTextColor());
-            Config.set("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());
-            Config.set("block.label." + s.getName() + ".margin.top",    s.getMarginTop());
-            Config.set("block.label." + s.getName() + ".margin.left",   s.getMarginLeft());
-            Config.set("block.label." + s.getName() + ".margin.right",  s.getMarginRight());
-            Config.set("block.label." + s.getName() + ".margin.bottom",   s.getMarginBottom());
-            Config.set("block.label." + s.getName() + ".frame.thickness", s.getFrameThickness());
-            Config.set("block.label." + s.getName() + ".frame.color",     s.getFrameColor());
-            Config.set("block.label." + s.getName() + ".frame.isDashed",  s.isFrameDashed());
+            cfg.put("block.label." + s.getName() + ".fontSpec",      s.getFont());
+            cfg.put("block.label." + s.getName() + ".text.color",    s.getTextColor());
+            cfg.put("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());
+            cfg.put("block.label." + s.getName() + ".margin.top",    s.getMarginTop());
+            cfg.put("block.label." + s.getName() + ".margin.left",   s.getMarginLeft());
+            cfg.put("block.label." + s.getName() + ".margin.right",  s.getMarginRight());
+            cfg.put("block.label." + s.getName() + ".margin.bottom",   s.getMarginBottom());
+            cfg.put("block.label." + s.getName() + ".frame.thickness", s.getFrameThickness());
+            cfg.put("block.label." + s.getName() + ".frame.color",     s.getFrameColor());
+            cfg.put("block.label." + s.getName() + ".frame.isDashed",  s.isFrameDashed());
         }
     }
     
@@ -155,20 +125,20 @@ public class LabelFactory {
     }
 
     public Label createListLBracketLabel(BlockPanel panel) {
-        return createLabel(LIST_LBRACKET_TEXT, getLabelStyle("list"), panel);
+        return createLabel(LIST_LBRACKET, getLabelStyle("list"), panel);
     }
 
     public Label createListRBracketLabel(BlockPanel panel) {
-        return createLabel(LIST_RBRACKET_TEXT, getLabelStyle("list"), panel);
+        return createLabel(LIST_RBRACKET, getLabelStyle("list"), panel);
     }
 
     public Label createListSeparatorLabel(BlockPanel panel) {
-        return createLabel(LIST_SEPARATOR_TEXT, getLabelStyle("list"), panel);
+        return createLabel(LIST_SEPARATOR, getLabelStyle("list"), panel);
     }
     
     public Label createListTailSeparatorLabel(BlockPanel panel) {
         return createLabel(
-            LIST_TAIL_SEPARATOR_TEXT, getLabelStyle("list"), panel);
+            LIST_TAIL_SEPARATOR, getLabelStyle("list"), panel);
     }
 
     public Label createAnyLabel(String text, BlockPanel panel) {

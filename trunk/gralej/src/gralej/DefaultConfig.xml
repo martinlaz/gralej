@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- $Id$ -->
+<!--
+Font speficiation format:
+  name-style-size
+where name is the font name like Arial, style is PLAIN, BOLD or ITALIC
+
+Color specification format:
+  RRGGBB
+where RR = 2byte hex value for red
+      GG = 2byte hex value for green
+      BB = 2byte hex value for blue
+-->
+<properties>
+<comment>Gralej factory properties</comment>
+
+<entry key="server.port">1080</entry>
+<entry key="server.portrange.lo">5001</entry>
+<entry key="server.portrange.hi">5050</entry>
+<entry key="mode.grale">true</entry>
+
+
+<!-- generic look and feel -->
+<entry key="gui.l+f.icontheme">crystal</entry>
+<entry key="gui.l+f.java-l+f">System Default</entry>
+<entry key="gui.windows.main.size.width">200</entry>
+<entry key="gui.windows.main.size.height">300</entry>
+<entry key="gui.windows.location.xmarginoffset">100</entry>
+<entry key="gui.windows.location.ymarginoffset">100</entry>
+<entry key="gui.windows.location.xdiff">30</entry>
+<entry key="gui.windows.location.xdiff2">75</entry>
+<entry key="gui.windows.location.ydiff">30</entry>
+<entry key="gui.windows.size.xmin">250</entry>
+<entry key="gui.windows.size.ymin">150</entry>
+
+<!-- output formatting -->
+<entry key="output.latex.snippet">false</entry> 
+<!-- whether to print as snippet (as opposed to full document) -->
+<entry key="input.lastdir"></entry> 
+<entry key="input.lastserver"></entry> 
+
+<!-- message output methods (popup, stderr, file, ignore) -->
+<entry key="log.message.info">ignore</entry> 
+<entry key="log.message.warning">stderr</entry> 
+<entry key="log.message.error">popup</entry> 
+<entry key="log.message.critical">popup</entry> 
+<entry key="log.message.debug">ignore</entry>
+<entry key="log.file">gralej.log</entry>
+
+<!-- application behavior -->
+<entry key="behavior.openonload">false</entry>
+<entry key="behavior.showstatusbar">false</entry>
+<entry key="behavior.showtoolbar">true</entry>
+<entry key="behavior.showwindowtoolbar">true</entry>
+<entry key="behavior.alwaysfitsize">false</entry>
+<entry key="behavior.autoexpandtags">false</entry>
+<entry key="behavior.displayModelHiddenFeatures">true</entry>
+<entry key="behavior.nodeContentInitiallyVisible">false</entry>
+<entry key="behavior.selectOnClick">false</entry>
+<entry key="behavior.defaultzoom">100</entry>
+
+<!--those are required! -->
+<entry key="behavior.defaultzoom.min">10</entry>
+<entry key="behavior.defaultzoom.max">1600</entry>
+
+<entry key="block.avm.bracket.color">0x003333</entry>
+<entry key="block.avm.bracket.edge.length">7</entry>
+<entry key="block.avm.bracket.style.rounded">true</entry>
+
+<entry key="block.label._diff.strikethroughline.color">0x000000</entry>
+<entry key="block.label._diff.text.color">0xff0000</entry>
+
+<entry key="block.label.any.fontSpec">Times-ITALIC-12</entry>
+<entry key="block.label.any.frame.color">0x000000</entry>
+<entry key="block.label.any.frame.isDashed">false</entry>
+<entry key="block.label.any.frame.thickness">0</entry>
+<entry key="block.label.any.margin.bottom">0</entry>
+<entry key="block.label.any.margin.left">0</entry>
+<entry key="block.label.any.margin.right">0</entry>
+<entry key="block.label.any.margin.top">0</entry>
+<entry key="block.label.any.text.color">0x006600</entry>
+<entry key="block.label.any.text.colorAlt">0xc0c0c0</entry>
+
+<entry key="block.label.attribute.fontSpec">Times-PLAIN-12</entry>
+<entry key="block.label.attribute.frame.color">0x000000</entry>
+<entry key="block.label.attribute.frame.isDashed">false</entry>
+<entry key="block.label.attribute.frame.thickness">0</entry>
+<entry key="block.label.attribute.margin.bottom">0</entry>
+<entry key="block.label.attribute.margin.left">0</entry>
+<entry key="block.label.attribute.margin.right">0</entry>
+<entry key="block.label.attribute.margin.top">0</entry>
+<entry key="block.label.attribute.text.color">0x000000</entry>
+<entry key="block.label.attribute.text.colorAlt">0xc0c0c0</entry>
+
+<entry key="block.label.continuation.text">...</entry>
+
+<entry key="block.label.list.fontSpec">Times-PLAIN-12</entry>
+<entry key="block.label.list.frame.color">0x000000</entry>
+<entry key="block.label.list.frame.isDashed">false</entry>
+<entry key="block.label.list.frame.thickness">0</entry>
+<entry key="block.label.list.margin.bottom">0</entry>
+<entry key="block.label.list.margin.left">0</entry>
+<entry key="block.label.list.margin.right">0</entry>
+<entry key="block.label.list.margin.top">0</entry>
+<entry key="block.label.list.text.color">0x000000</entry>
+<entry key="block.label.list.text.colorAlt">0xc0c0c0</entry>
+<entry key="block.label.list.text.left">&lt;</entry>
+<entry key="block.label.list.text.right">&gt;</entry>
+<entry key="block.label.list.text.separator">,</entry>
+<entry key="block.label.list.text.tailSeparator">|</entry>
+
+<entry key="block.label.node.internal.fontSpec">Arial-BOLD-12</entry>
+<entry key="block.label.node.internal.frame.color">0x000000</entry>
+<entry key="block.label.node.internal.frame.isDashed">false</entry>
+<entry key="block.label.node.internal.frame.thickness">0</entry>
+<entry key="block.label.node.internal.margin.bottom">0</entry>
+<entry key="block.label.node.internal.margin.left">0</entry>
+<entry key="block.label.node.internal.margin.right">0</entry>
+<entry key="block.label.node.internal.margin.top">0</entry>
+<entry key="block.label.node.internal.text.color">0x112233</entry>
+<entry key="block.label.node.internal.text.colorAlt">0x112233</entry>
+
+<entry key="block.label.node.leaf.fontSpec">Arial-BOLD-12</entry>
+<entry key="block.label.node.leaf.frame.color">0x000000</entry>
+<entry key="block.label.node.leaf.frame.isDashed">false</entry>
+<entry key="block.label.node.leaf.frame.thickness">0</entry>
+<entry key="block.label.node.leaf.margin.bottom">0</entry>
+<entry key="block.label.node.leaf.margin.left">0</entry>
+<entry key="block.label.node.leaf.margin.right">0</entry>
+<entry key="block.label.node.leaf.margin.top">0</entry>
+<entry key="block.label.node.leaf.text.color">0x993300</entry>
+<entry key="block.label.node.leaf.text.colorAlt">0x993300</entry>
+
+<entry key="block.label.sort.fontSpec">Times-ITALIC-12</entry>
+<entry key="block.label.sort.frame.color">0x000000</entry>
+<entry key="block.label.sort.frame.isDashed">false</entry>
+<entry key="block.label.sort.frame.thickness">0</entry>
+<entry key="block.label.sort.margin.bottom">0</entry>
+<entry key="block.label.sort.margin.left">5</entry>
+<entry key="block.label.sort.margin.right">5</entry>
+<entry key="block.label.sort.margin.top">0</entry>
+<entry key="block.label.sort.text.color">0x003399</entry>
+<entry key="block.label.sort.text.colorAlt">0xc0c0c0</entry>
+
+<entry key="block.label.species.fontSpec">Times-ITALIC-12</entry>
+<entry key="block.label.species.frame.color">0x000000</entry>
+<entry key="block.label.species.frame.isDashed">false</entry>
+<entry key="block.label.species.frame.thickness">0</entry>
+<entry key="block.label.species.margin.bottom">0</entry>
+<entry key="block.label.species.margin.left">0</entry>
+<entry key="block.label.species.margin.right">0</entry>
+<entry key="block.label.species.margin.top">0</entry>
+<entry key="block.label.species.text.color">0x003399</entry>
+<entry key="block.label.species.text.colorAlt">0xc0c0c0</entry>
+
+<entry key="block.label.tag.fontSpec">Courier-BOLD-12</entry>
+<entry key="block.label.tag.frame.color">0x000000</entry>
+<entry key="block.label.tag.frame.isDashed">false</entry>
+<entry key="block.label.tag.frame.thickness">1</entry>
+<entry key="block.label.tag.margin.bottom">0</entry>
+<entry key="block.label.tag.margin.left">3</entry>
+<entry key="block.label.tag.margin.right">3</entry>
+<entry key="block.label.tag.margin.top">0</entry>
+<entry key="block.label.tag.text.color">0x000000</entry>
+<entry key="block.label.tag.text.colorAlt">0x000000</entry>
+<entry key="block.label.text.maxLength">70</entry>
+
+<entry key="block.layout.avm.compact">true</entry>
+<entry key="block.layout.avm.space.intra">5</entry>
+<entry key="block.layout.avm.space.leading">3</entry>
+<entry key="block.layout.avm.space.trailing">5</entry>
+
+<entry key="block.layout.avpair.space.intra">5</entry>
+<entry key="block.layout.avpair.space.leading">10</entry>
+<entry key="block.layout.avpair.space.trailing">10</entry>
+
+<entry key="block.layout.avpairlist.space.intra">6</entry>
+<entry key="block.layout.avpairlist.space.leading">0</entry>
+<entry key="block.layout.avpairlist.space.trailing">0</entry>
+
+<entry key="block.layout.list.space.intra">0</entry>
+<entry key="block.layout.list.space.leading">0</entry>
+<entry key="block.layout.list.space.trailing">0</entry>
+
+<entry key="block.layout.listcontent.space.intra">3</entry>
+<entry key="block.layout.listcontent.space.leading">3</entry>
+<entry key="block.layout.listcontent.space.trailing">3</entry>
+
+<entry key="block.layout.node.space.intra">2</entry>
+<entry key="block.layout.node.space.leading">5</entry>
+<entry key="block.layout.node.space.trailing">5</entry>
+
+<entry key="block.layout.reentrancy.space.intra">5</entry>
+<entry key="block.layout.reentrancy.space.leading">0</entry>
+<entry key="block.layout.reentrancy.space.trailing">0</entry>
+
+<entry key="block.panel.background">0xffffff</entry>
+<entry key="block.panel.margins.all">20</entry>
+<entry key="block.panel.scrollbar.vertical.unitIncrement">20</entry>
+<entry key="block.panel.selection.background.color">0xf5f5f5</entry>
+<entry key="block.panel.selection.frame.color">0x999999</entry>
+
+<entry key="block.tree.edge.color">0xa7a7a7</entry>
+<entry key="block.tree.minDistance.horizontal">25</entry>
+<entry key="block.tree.minDistance.vertical">40</entry>
+
+</properties>

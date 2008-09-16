@@ -2,10 +2,11 @@
  * WebTraleClient.java
  *
  * Created on 4. Dezember 2007, 17:55
+ * $Id$
  */
 package gralej.client;
 
-import gralej.prefs.GralePreferences;
+import gralej.Globals;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -165,7 +166,8 @@ public class WebTraleClient extends JPanel {
     private InputStream getStream(String spec) throws IOException {
         HttpURLConnection con = (HttpURLConnection) new URL(webtraleContextURL,
                 spec).openConnection();
-        con.setRequestProperty("User-Agent", "Gralej/" + GralePreferences.getInstance().get("_gralej.version"));
+        con.setRequestProperty("User-Agent",
+                Globals.APP_NAME + "/" + Globals.VERSION_STRING);
         try {
             return con.getInputStream();
         } catch (IOException ex) {

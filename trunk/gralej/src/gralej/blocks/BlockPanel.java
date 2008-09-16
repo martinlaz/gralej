@@ -4,6 +4,8 @@
 
 package gralej.blocks;
 
+import gralej.Config;
+import gralej.util.ChangeEventSource;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -20,7 +22,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,14 +32,12 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Martin
  */
-public class BlockPanel implements StyleChangeListener {
+public class BlockPanel extends ChangeEventSource implements StyleChangeListener {
     final static int ZOOM_DELTA = 10;
     
     Map<ContainerBlock,Set<Integer>> _expandedTags;
@@ -61,8 +60,6 @@ public class BlockPanel implements StyleChangeListener {
     
     private int _lastMousePressedX;
     private int _lastMousePressedY;
-    
-    protected Set<ChangeListener> _changeListeners = new HashSet<ChangeListener>();
     
     private class DrawingPane extends JPanel {
         @Override
@@ -158,7 +155,7 @@ public class BlockPanel implements StyleChangeListener {
     }
     
     public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style) {
-        this(contentModel, style, Boolean.parseBoolean(Config.get("behavior.autoexpandtags")));
+        this(contentModel, style, Config.bool("behavior.autoexpandtags"));
     }
     
     public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style, boolean autoExpandTags) {
@@ -176,15 +173,15 @@ public class BlockPanel implements StyleChangeListener {
         _canvas = new DrawingPane();
         
         _scrollPane = new ScrollPane(_canvas, this);
-        int vUnitIncrement = Config.getInt(
+        int vUnitIncrement = Config.i(
                 "block.panel.scrollbar.vertical.unitIncrement");
         _scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
         _ui.add(_scrollPane, BorderLayout.CENTER);
         
-        _autoResize = Boolean.parseBoolean(Config.get("behavior.alwaysfitsize"));
+        _autoResize = Config.bool("behavior.alwaysfitsize");
         _autoExpandTags = autoExpandTags;
-        _displayHiddenFeatures = Boolean.parseBoolean(Config.get("behavior.displayModelHiddenFeatures"));
-        _selectOnClick = Boolean.parseBoolean(Config.get("behavior.selectOnClick"));
+        _displayHiddenFeatures = Config.bool("behavior.displayModelHiddenFeatures");
+        _selectOnClick = Config.bool("behavior.selectOnClick");
         
         _canvas.addMouseListener(new MouseAdapter() {
             @Override
@@ -221,23 +218,9 @@ public class BlockPanel implements StyleChangeListener {
                 new BlockCreator(this).createBlock(contentModel)
                 );
         _content.update();
-        if (!Boolean.parseBoolean(Config.get("behavior.nodeContentInitiallyVisible"))) {
+        if (!Config.bool("behavior.nodeContentInitiallyVisible")) {
             showNodeContents(false);
         }
-    }
-    
-    public void addChangeListener(ChangeListener listener) {
-        _changeListeners.add(listener);
-    }
-    
-    public void removeChangeListener(ChangeListener listener) {
-        _changeListeners.remove(listener);
-    }
-    
-    protected void fireStateChanged() {
-        ChangeEvent ev = new ChangeEvent(this);
-        for (ChangeListener cl : _changeListeners)
-            cl.stateChanged(ev);
     }
     
     public void setStyle(BlockPanelStyle newStyle) {
@@ -270,7 +253,7 @@ public class BlockPanel implements StyleChangeListener {
         if (_autoResize)
             pack(_canvas.getParent());
         
-        fireStateChanged();
+        fireStateChanged(this);
     }
     
     private void pack(Component c) {
