@@ -134,10 +134,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                     double x = e.getX() / owner.getScaleFactor();
                     double y = e.getY() / owner.getScaleFactor();
 
-                    if (e.getWheelRotation() < 0)
-                        owner.zoomIn();
-                    else
+                    if (e.getWheelRotation() > 0)
                         owner.zoomOut();
+                    else
+                        owner.zoomIn();
 
                     // scale with the updated factor
                     x *= owner.getScaleFactor();
@@ -173,15 +173,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         _canvas = new DrawingPane();
         
         _scrollPane = new ScrollPane(_canvas, this);
-        int vUnitIncrement = Config.i(
-                "block.panel.scrollbar.vertical.unitIncrement");
-        _scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
         _ui.add(_scrollPane, BorderLayout.CENTER);
         
         _autoResize = Config.bool("behavior.alwaysfitsize");
         _autoExpandTags = autoExpandTags;
-        _displayHiddenFeatures = Config.bool("behavior.displayModelHiddenFeatures");
-        _selectOnClick = Config.bool("behavior.selectOnClick");
         
         _canvas.addMouseListener(new MouseAdapter() {
             @Override
@@ -296,7 +291,9 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     public void setZoom(int zoom) {
-        if (zoom <= 0 || zoom == _zoom)
+        if (zoom <= 0)
+            zoom = ZOOM_DELTA;
+        if (zoom == _zoom)
             return;
         _zoom = zoom;
         _scaleFactor = _zoom / 100.0;
@@ -335,6 +332,11 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     public void styleChanged(Object sender) {
+        int vUnitIncrement = Config.i(
+                "block.panel.scrollbar.vertical.unitIncrement");
+        _scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
+        _displayHiddenFeatures = Config.bool("behavior.displayModelHiddenFeatures");
+        _selectOnClick = Config.bool("behavior.selectOnClick");
         _canvas.setBackground(_style.getBackgroundColor());
         if (_content != null)
             _content.update();

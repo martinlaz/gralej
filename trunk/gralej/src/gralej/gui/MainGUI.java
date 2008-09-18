@@ -1,14 +1,13 @@
 package gralej.gui;
 
-import gralej.blocks.configurator.BlockConfiguratorFrame;
+import gralej.Config;
+import gralej.blocks.configurator.BlockConfiguratorDialog;
 import gralej.controller.Controller;
 import gralej.controller.StreamInfo;
 import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
-import gralej.gui.prefsdialog.GenDialog;
 import gralej.parsers.OutputFormatter;
-import gralej.prefs.GralePreferences;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -37,6 +36,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * 
@@ -44,6 +45,7 @@ import javax.swing.KeyStroke;
  * @version $Id$
  */
 public class MainGUI implements ActionListener, ItemListener {
+    private Config cfg;
 
     private final IconTheme theme;
 
@@ -51,17 +53,15 @@ public class MainGUI implements ActionListener, ItemListener {
 
     private Controller c;
 
-    private GralePreferences gp;
-
     private JMenu saveallmenu;
 
-    private JMenuItem m_Quit, m_Close, m_CloseAll, m_Open, m_About, m_Pref,
+    private JMenuItem m_Quit, m_Close, m_CloseAll, m_Open, m_About, m_Options,
             m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll,
             m_SaveAllXML, m_Server;
 
     private JToolBar toolbar;
     private JButton b_Open, b_Close, b_CloseAll, b_Save;
-    private JButton b_Pref;
+    private JButton b_Options;
     private JCheckBoxMenuItem m_AutoOpenWindows, m_AutoExpandTags,
             m_ShowToolBar, m_ShowStatusBar;
 
@@ -139,24 +139,22 @@ public class MainGUI implements ActionListener, ItemListener {
 
         m_AutoOpenWindows = new JCheckBoxMenuItem("Auto-Open Windows");
         m_AutoOpenWindows.addActionListener(this);
-        m_AutoOpenWindows.setState(gp.getBoolean("behavior.openonload"));
         viewmenu.add(m_AutoOpenWindows);
         
         m_AutoExpandTags = new JCheckBoxMenuItem("Auto-Expand Tags");
         m_AutoExpandTags.addActionListener(this);
-        m_AutoExpandTags.setState(gp.getBoolean("behavior.autoexpandtags"));
         viewmenu.add(m_AutoExpandTags);
 
         viewmenu.addSeparator();
 
-        m_ShowToolBar = new JCheckBoxMenuItem("Show Toolbar");
+        m_ShowToolBar = new JCheckBoxMenuItem("Toolbar");
         m_ShowToolBar.addActionListener(this);
-        m_ShowToolBar.setState(gp.getBoolean("behavior.showtoolbar"));
+        m_ShowToolBar.setState(cfg.getBool("behavior.showtoolbar"));
         viewmenu.add(m_ShowToolBar);
 
-        m_ShowStatusBar = new JCheckBoxMenuItem("Show Statusbar");
+        m_ShowStatusBar = new JCheckBoxMenuItem("Status Bar");
         m_ShowStatusBar.addActionListener(this);
-        m_ShowStatusBar.setState(gp.getBoolean("behavior.showstatusbar"));
+        m_ShowStatusBar.setState(cfg.getBool("behavior.showstatusbar"));
         viewmenu.add(m_ShowStatusBar);
 
         menubar.add(viewmenu);
@@ -177,28 +175,21 @@ public class MainGUI implements ActionListener, ItemListener {
         
         JMenuItem bcm = new JMenuItem("AVM Tree View Configurator");
         bcm.addActionListener(new ActionListener() {
-            private BlockConfiguratorFrame bc;
             public void actionPerformed(ActionEvent e) {
-                if (bc == null) {
-                    bc = new BlockConfiguratorFrame();
-                    bc.addWindowListener(new WindowAdapter() {
-                        @Override public void windowClosed(WindowEvent evt) {
-                            bc.removeWindowListener(this);
-                            bc = null;
-                        }
-                    });
-                }
-                bc.setVisible(true);
-                bc.toFront();
+                BlockConfiguratorDialog d =
+                        new BlockConfiguratorDialog(frame, true, cfg);
+                d.setVisible(true);
+                if (d.okayed())
+                    cfg.save();
             }
         });
         
         toolsmenu.add(bcm);
         
-        m_Pref = new JMenuItem("Preferences...");
-        m_Pref.setAccelerator(KeyStroke.getKeyStroke("F2"));
-        m_Pref.addActionListener(this);
-        toolsmenu.add(m_Pref);
+        m_Options = new JMenuItem("Options...");
+        m_Options.setAccelerator(KeyStroke.getKeyStroke("F2"));
+        m_Options.addActionListener(this);
+        toolsmenu.add(m_Options);
 
         menubar.add(toolsmenu);
 
@@ -237,22 +228,30 @@ public class MainGUI implements ActionListener, ItemListener {
         b_CloseAll.setToolTipText("Close All");
         toolbar.add(b_CloseAll);
         
-        b_Pref = new JButton(theme.getIcon("configure"));
-        b_Pref.addActionListener(this);
-        b_Pref.setToolTipText("Preferences");
-        toolbar.add(b_Pref);
+        b_Options = new JButton(theme.getIcon("configure"));
+        b_Options.addActionListener(this);
+        b_Options.setToolTipText("Options");
+        toolbar.add(b_Options);
 
     }
-
+    
+    public void quit() {
+        try {
+            cfg.set("gui.windows.main.size.width", ""+frame.getWidth(),false);
+            cfg.set("gui.windows.main.size.height", ""+frame.getHeight(),false);
+            cfg.save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
+    
     public void actionPerformed(ActionEvent e) {
         JComponent source = (JComponent) (e.getSource());
         if (source == m_Quit) {
-            System.exit(0);
-
-            // OPEN
-
+            quit();
         } else if (source == m_Open || source == b_Open) {
-            JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
+            JFileChooser fc = new JFileChooser(cfg.get("input.lastdir"));
             fc.setMultiSelectionEnabled(true);
             int returnVal = fc.showOpenDialog(source);
 
@@ -268,11 +267,11 @@ public class MainGUI implements ActionListener, ItemListener {
                 try {
                     File f = files[0];
                     File dir = f.isDirectory() ? f : f.getParentFile();
-                    gp.put("input.lastdir", dir.getCanonicalPath());
+                    cfg.set(
+                            "input.lastdir", dir.getCanonicalPath(), false);
                 } catch (IOException e1) {
                     Log.warning(
                             "Getting the directory of the (first) chosen file failed.");
-                    e1.printStackTrace();
                 }
             } else {
                 // file could not be opened. doing nothing might be appropriate
@@ -294,7 +293,7 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_WebTrale) {
             while (true) {
                 String surl = JOptionPane.showInputDialog(frame,
-                        "Choose server", gp.get("input.lastserver"));
+                        "Choose server", cfg.get("input.lastserver"));
                 if (surl == null)
                     break; // cancel
                 try {
@@ -304,9 +303,9 @@ public class MainGUI implements ActionListener, ItemListener {
                     continue; // try again
                 }
                 try {
-                    gp.put("input.lastserver", surl);
+                    cfg.set("input.lastserver", surl, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Log.warning(ex);
                 }
                 break;
             }
@@ -344,19 +343,20 @@ public class MainGUI implements ActionListener, ItemListener {
         } else if (source == m_Tile) {
             c.getModel().tile();
         } else if (source == m_ShowToolBar) {
-            gp.putBoolean("behavior.showtoolbar", m_ShowToolBar.getState());
+            cfg.set("behavior.showtoolbar", ""+m_ShowToolBar.getState(), false);
             toolbar.setVisible(m_ShowToolBar.getState());
 
         } else if (source == m_ShowStatusBar) {
-            gp.putBoolean("behavior.showstatusbar", m_ShowStatusBar.getState());
+            cfg.set("behavior.showstatusbar",  ""+m_ShowStatusBar.getState(), false);
             statusbar.setVisible(m_ShowStatusBar.getState());
 
-        } else if (source == m_Pref || source == b_Pref) {
+        } else if (source == m_Options || source == b_Options) {
             // TODO tie preferences window in here
-            GenDialog prefFrame = new GenDialog(frame);
-            prefFrame.setVisible(true);
-
-        } else if (source == m_Server) {
+            //GenDialog prefFrame = new GenDialog(frame);
+            //prefFrame.setVisible(true);
+            new OptionsDialog(frame, true).setVisible(true);
+        }
+        else if (source == m_Server) {
             // maybe not the best way to store the information
             if (m_Server.getText().equals("Start Server")) {
                 c.startServer();
@@ -364,9 +364,9 @@ public class MainGUI implements ActionListener, ItemListener {
                 c.stopServer();
             }
         } else if (source == m_AutoOpenWindows) {
-            gp.putBoolean("behavior.openonload", m_AutoOpenWindows.getState());
+            cfg.set("behavior.openonload", ""+m_AutoOpenWindows.getState(), false);
         } else if (source == m_AutoExpandTags) {
-            gp.putBoolean("behavior.autoexpandtags", m_AutoExpandTags.getState());
+            cfg.set("behavior.autoexpandtags", ""+m_AutoExpandTags.getState(), false);
         }
     }
 
@@ -377,7 +377,7 @@ public class MainGUI implements ActionListener, ItemListener {
      * @return the chosen file
      */
     public File saveDialog(int format) {
-        JFileChooser fc = new JFileChooser(gp.get("input.lastdir"));
+        JFileChooser fc = new JFileChooser(cfg.get("input.lastdir"));
         fc.setMultiSelectionEnabled(false);
         // fc.setAcceptAllFileFilterUsed(false);
         fc.addChoosableFileFilter(c.getModel().getOutputFormatter().getFilter(
@@ -388,7 +388,7 @@ public class MainGUI implements ActionListener, ItemListener {
             File f = fc.getSelectedFile();
             try {
                 File dir = f.isDirectory() ? f : f.getParentFile();
-                gp.put("input.lastdir", dir.getCanonicalPath());
+                cfg.set("input.lastdir", dir.getCanonicalPath(), false);
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -422,11 +422,10 @@ public class MainGUI implements ActionListener, ItemListener {
      */
     public MainGUI(Controller c) {
         this.c = c;
-        gp = GralePreferences.getInstance();
+        cfg = Config.currentConfig();
+        theme = IconThemeFactory.getIconTheme(cfg.get("gui.l+f.icontheme"));
 
-        theme = IconThemeFactory.getIconTheme(gp.get("gui.l+f.icontheme"));
-
-        frame = new JFrame("Gralej");
+        frame = new JFrame(gralej.Globals.APP_NAME);
         frame.setIconImage(theme.getIcon("grale").getImage());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -435,7 +434,6 @@ public class MainGUI implements ActionListener, ItemListener {
 
         // instantiate toolbar
         createToolBar();
-        toolbar.setVisible(gp.getBoolean("behavior.showtoolbar"));
         frame.getContentPane().add(toolbar, BorderLayout.NORTH);
 
         // observers
@@ -450,19 +448,21 @@ public class MainGUI implements ActionListener, ItemListener {
         notifyOfListElements(0);
 
         frame.pack();
-        frame.setSize(gp.getInt("gui.windows.main.size.width"), 
-                      gp.getInt("gui.windows.main.size.height"));
+        frame.setSize(cfg.getInt("gui.windows.main.size.width"), 
+                      cfg.getInt("gui.windows.main.size.height"));
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent we) {
-                try {
-                    gp.putInt("gui.windows.main.size.width", frame.getWidth());
-                    gp.putInt("gui.windows.main.size.height", frame.getHeight());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
+                quit();
+            }
+        });
+        
+        initConfigDeps();
+        
+        cfg.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                initConfigDeps();
             }
         });
         
@@ -470,6 +470,13 @@ public class MainGUI implements ActionListener, ItemListener {
 
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
+    }
+    
+    private void initConfigDeps() {
+        m_AutoExpandTags.setSelected(cfg.getBool("behavior.autoexpandtags"));
+        m_AutoOpenWindows.setSelected(cfg.getBool("behavior.openonload"));
+        statusbar.setVisible(cfg.getBool("behavior.showstatusbar"));
+        toolbar.setVisible(cfg.getBool("behavior.showtoolbar"));
     }
 
     /**
@@ -491,7 +498,6 @@ public class MainGUI implements ActionListener, ItemListener {
             add(counter, BorderLayout.WEST);
             connectionInfo = new JLabel();
             add(connectionInfo, BorderLayout.EAST);
-            setVisible(gp.getBoolean("behavior.showstatusbar"));
         }
 
         void setNumberOfItems(int i) {

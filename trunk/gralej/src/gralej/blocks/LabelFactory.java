@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class LabelFactory {
+    Config _cfg;
 
     // list
     String LIST_LBRACKET;
@@ -17,6 +18,10 @@ public class LabelFactory {
     static private LabelFactory _instance;
     
     public LabelFactory() {
+        this(Config.currentConfig());
+    }
+    public LabelFactory(Config cfg) {
+        _cfg = cfg;
         init();
     }
     
@@ -27,10 +32,10 @@ public class LabelFactory {
     }
     
     private void init() {
-        LIST_LBRACKET       = Config.s("block.label.list.text.left");
-        LIST_RBRACKET       = Config.s("block.label.list.text.right");
-        LIST_SEPARATOR      = Config.s("block.label.list.text.separator");
-        LIST_TAIL_SEPARATOR = Config.s("block.label.list.text.tailSeparator");
+        LIST_LBRACKET       = _cfg.get("block.label.list.text.left");
+        LIST_RBRACKET       = _cfg.get("block.label.list.text.right");
+        LIST_SEPARATOR      = _cfg.get("block.label.list.text.separator");
+        LIST_TAIL_SEPARATOR = _cfg.get("block.label.list.text.tailSeparator");
         
         String[] types = new String[] {
             "tag",
@@ -62,39 +67,43 @@ public class LabelFactory {
     private void initLabelStyle(LabelStyle ls) {
         String type = "block.label." + ls.getName();
         ls.setFont(
-                Config.font(type + ".fontSpec"));
+                _cfg.getFont(type + ".fontSpec"));
         ls.setTextColor(
-                Config.color(type + ".text.color"));
+                _cfg.getColor(type + ".text.color"));
         ls.setTextAltColor(
-                Config.color(type + ".text.colorAlt"));
+                _cfg.getColor(type + ".text.colorAlt"));
         ls.setMarginTop(
-                Config.i(type + ".margin.top"));
+                _cfg.getInt(type + ".margin.top"));
         ls.setMarginLeft(
-                Config.i(type + ".margin.left"));
+                _cfg.getInt(type + ".margin.left"));
         ls.setMarginRight(
-                Config.i(type + ".margin.right"));
+                _cfg.getInt(type + ".margin.right"));
         ls.setMarginBottom(
-                Config.i(type + ".margin.bottom"));
+                _cfg.getInt(type + ".margin.bottom"));
         ls.setFrameThickness(
-                Config.i(type + ".frame.thickness"));
+                _cfg.getInt(type + ".frame.thickness"));
         ls.setFrameColor(
-                Config.color(type + ".frame.color"));
+                _cfg.getColor(type + ".frame.color"));
         ls.setFrameDashed(
-                Config.bool(type + ".frame.isDashed"));
+                _cfg.getBool(type + ".frame.isDashed"));
+    }
+    
+    void updateConfig() {
+        updateConfig(_cfg);
     }
     
     void updateConfig(Config cfg) {
         for (LabelStyle s : _labelStyles.values()) {
-            cfg.put("block.label." + s.getName() + ".fontSpec",      s.getFont());
-            cfg.put("block.label." + s.getName() + ".text.color",    s.getTextColor());
-            cfg.put("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());
-            cfg.put("block.label." + s.getName() + ".margin.top",    s.getMarginTop());
-            cfg.put("block.label." + s.getName() + ".margin.left",   s.getMarginLeft());
-            cfg.put("block.label." + s.getName() + ".margin.right",  s.getMarginRight());
-            cfg.put("block.label." + s.getName() + ".margin.bottom",   s.getMarginBottom());
-            cfg.put("block.label." + s.getName() + ".frame.thickness", s.getFrameThickness());
-            cfg.put("block.label." + s.getName() + ".frame.color",     s.getFrameColor());
-            cfg.put("block.label." + s.getName() + ".frame.isDashed",  s.isFrameDashed());
+            cfg.set("block.label." + s.getName() + ".fontSpec",      s.getFont());
+            cfg.set("block.label." + s.getName() + ".text.color",    s.getTextColor());
+            cfg.set("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());
+            cfg.set("block.label." + s.getName() + ".margin.top",    s.getMarginTop());
+            cfg.set("block.label." + s.getName() + ".margin.left",   s.getMarginLeft());
+            cfg.set("block.label." + s.getName() + ".margin.right",  s.getMarginRight());
+            cfg.set("block.label." + s.getName() + ".margin.bottom",   s.getMarginBottom());
+            cfg.set("block.label." + s.getName() + ".frame.thickness", s.getFrameThickness());
+            cfg.set("block.label." + s.getName() + ".frame.color",     s.getFrameColor());
+            cfg.set("block.label." + s.getName() + ".frame.isDashed",  s.isFrameDashed());
         }
     }
     

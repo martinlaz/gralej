@@ -12,7 +12,6 @@ import javax.swing.event.ChangeListener;
 public class ChangeEventSource {
     protected Set<ChangeListener> _sinks = new
         HashSet<ChangeListener>();
-    protected ChangeEvent _event = new ChangeEvent(this);
     
     public void addChangeListener(ChangeListener sink) {
         _sinks.add(sink);
@@ -23,8 +22,8 @@ public class ChangeEventSource {
     }
     
     protected void fireStateChanged(Object sender) {
+        ChangeEvent event = new ChangeEvent(sender);
         for (ChangeListener sink : _sinks)
-            if (sink != sender)
-                sink.stateChanged(_event);
+            sink.stateChanged(event);
     }
 }

@@ -1,12 +1,12 @@
 package gralej.controller;
 
+import gralej.Config;
 import gralej.blocks.BlockPanel;
 import gralej.gui.ContentObserver;
 import gralej.gui.ListContentObserver;
 import gralej.gui.WindowsContentObserver;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.OutputFormatter;
-import gralej.prefs.GralePreferences;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,10 +37,8 @@ public class ContentModel {
         files.add(parse);
         list.add(parse);
         
-        GralePreferences gp = GralePreferences.getInstance();
-        if (gp.getBoolean("behavior.openonload")) {
+        if (Config.bool("behavior.openonload"))
             observer.add(parse);
-        }
     }
 
     /**

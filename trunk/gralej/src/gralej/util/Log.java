@@ -2,25 +2,21 @@
 
 package gralej.util;
 
-import gralej.prefs.GPrefsChangeListener;
+import gralej.Config;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-
+import java.io.IOException;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
-import gralej.prefs.GralePreferences;
-import java.io.IOException;
 
 /**
  * The Log offers a single instance (much like the GralePreferences).
  * It reports errors depending on their badness to STDOUT, a pop-up or to a
  * logfile.
  * 
- * 
- * 
- * 
  * @author Armin
- * 
+ * @version $Id$
  */
 
 public class Log {
@@ -52,25 +48,23 @@ public class Log {
     }
     
     static {
-        final String keyPrefix = "log.";
-        GralePreferences.getInstance().addListener(new GPrefsChangeListener() {
-                public void preferencesChange() {
-                    instance = null;
-                }
-            },
-            keyPrefix);
+        new Config.KeySetObserver(Config.prefixToKeySet("log.")) {
+            protected void keySetChanged(Set<String> changeSet) {
+                instance = null;
+            }
+        };
     }
 
     private Log() {
         // read way from prefs
-        GralePreferences gp = GralePreferences.getInstance();
-        mapping[Severity.INFO.ordinal()] = Method.valueOf(gp.get("log.message.info").toUpperCase());
-        mapping[Severity.WARNING.ordinal()] = Method.valueOf(gp.get("log.message.warning").toUpperCase());
-        mapping[Severity.ERROR.ordinal()] = Method.valueOf(gp.get("log.message.error").toUpperCase());
-        mapping[Severity.CRITICAL.ordinal()] = Method.valueOf(gp.get("log.message.critical").toUpperCase());
-        mapping[Severity.DEBUG.ordinal()] = Method.valueOf(gp.get("log.message.debug").toUpperCase());
+        Config cfg = Config.currentConfig();
+        mapping[Severity.INFO.ordinal()] = Method.valueOf(cfg.get("log.message.info").toUpperCase());
+        mapping[Severity.WARNING.ordinal()] = Method.valueOf(cfg.get("log.message.warning").toUpperCase());
+        mapping[Severity.ERROR.ordinal()] = Method.valueOf(cfg.get("log.message.error").toUpperCase());
+        mapping[Severity.CRITICAL.ordinal()] = Method.valueOf(cfg.get("log.message.critical").toUpperCase());
+        mapping[Severity.DEBUG.ordinal()] = Method.valueOf(cfg.get("log.message.debug").toUpperCase());
         
-        String filename = gp.get("log.file");
+        String filename = cfg.get("log.file");
 
         for (Method m : mapping) {
             if (m == Method.FILE) {

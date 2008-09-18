@@ -32,10 +32,11 @@ public class LabelStyleEditor extends javax.swing.JDialog {
     
     /** Creates new form LabelStyleEditor */
     public LabelStyleEditor(
-            java.awt.Frame parent, boolean modal,
+            java.awt.Window parent, boolean modal,
             BlockPanelStyle style)
     {
-        super(parent, modal);
+        super(parent);
+        setModal(modal);
         setBlockPanelStyle(style);
         initComponents();
         setLocationRelativeTo(parent);

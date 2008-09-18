@@ -5,6 +5,7 @@
 
 package gralej.blocks.configurator;
 
+import gralej.Config;
 import gralej.blocks.*;
 import gralej.controller.StreamInfo;
 import gralej.om.IVisitable;
@@ -30,7 +31,10 @@ public class BlockConfigurator extends BlockPanel {
     Handler _handler;
     
     public BlockConfigurator(Handler handler) {
-        super(getSample(), new BlockPanelStyle(), false);
+        this(handler, Config.currentConfig());
+    }
+    public BlockConfigurator(Handler handler, Config cfg) {
+        super(getSample(), new BlockPanelStyle(cfg), false);
         setDisplayingModelHiddenFeatures(true);
         showNodeContents(false);
         

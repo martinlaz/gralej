@@ -26,8 +26,9 @@ public class MiscSettingsEditor extends javax.swing.JDialog {
     BlockPanelStyle _style;
     boolean _isInitializing;
     
-    public MiscSettingsEditor(java.awt.Frame parent, boolean modal, BlockPanelStyle style) {
-        super(parent, modal);
+    public MiscSettingsEditor(java.awt.Window parent, boolean modal, BlockPanelStyle style) {
+        super(parent);
+        setModal(modal);
         initComponents();
         setLocationRelativeTo(parent);
         for (JLabel lab : Arrays.tuple(

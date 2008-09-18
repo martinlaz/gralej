@@ -1,9 +1,9 @@
 package gralej.parsers;
 
+import gralej.Config;
 import gralej.util.Log;
 import gralej.blocks.BlockPanel;
 import gralej.om.ITree;
-import gralej.prefs.GralePreferences;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -219,8 +219,7 @@ public class OutputFormatter {
     }
 
     private void toLaTeX(IDataPackage data, PrintStream p) {
-        GralePreferences gp = GralePreferences.getInstance();
-        if (gp.getBoolean("output.latex.snippet")) {
+        if (Config.bool("output.latex.snippet")) {
             toLaTeXSnippet(data, p);
         } else {
             toLaTeXFile(data, p);

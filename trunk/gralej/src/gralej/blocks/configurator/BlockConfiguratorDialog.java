@@ -1,13 +1,13 @@
 /*
- * BlockConfiguratorFrame.java
+ * BlockConfiguratorDialog.java
  *
  * Created on 6. März 2008, 12:50
  */
 
 package gralej.blocks.configurator;
 
+import gralej.Config;
 import gralej.blocks.BlockLayout;
-import gralej.blocks.BlockPanelStyle;
 import gralej.blocks.LabelStyle;
 import java.awt.BorderLayout;
 import javax.swing.UIManager;
@@ -16,21 +16,36 @@ import javax.swing.UIManager;
  *
  * @author  Martin
  */
-public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockConfigurator.Handler {
+public class BlockConfiguratorDialog extends javax.swing.JDialog implements BlockConfigurator.Handler {
     
     BlockLayoutEditor _layed;
     LabelStyleEditor _labed;
     MiscSettingsEditor _misced;
     BlockConfigurator _configurator;
+    Config _cfg;
+    private boolean _okayed;
     
-    public BlockConfiguratorFrame() {
+    public BlockConfiguratorDialog(java.awt.Window parent, boolean modal) {
+        this(parent, modal, Config.currentConfig());
+    }
+    
+    public BlockConfiguratorDialog(java.awt.Window parent, boolean modal, Config cfg) {
+        super(parent);
+        setModal(modal);
+        
+        _cfg = cfg;
+        
         initComponents();
         
-        _configurator = new BlockConfigurator(this);
+        _configurator = new BlockConfigurator(this, cfg);
         
         _treePanel.setLayout(new BorderLayout());
         _treePanel.add(_configurator.getUI());
         pack();
+    }
+    
+    public boolean okayed() {
+        return _okayed;
     }
     
     private MiscSettingsEditor misced() {
@@ -85,8 +100,8 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        _bCommit = new javax.swing.JButton();
-        _bReset = new javax.swing.JButton();
+        _bCancel = new javax.swing.JButton();
+        _bOk = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         _lblMessage = new javax.swing.JLabel();
         _treePanel = new javax.swing.JPanel();
@@ -94,17 +109,17 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("AVM Tree View Configurator");
 
-        _bCommit.setText("Commit");
-        _bCommit.addActionListener(new java.awt.event.ActionListener() {
+        _bCancel.setText("Cancel");
+        _bCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _bCommitActionPerformed(evt);
+                _bCancelActionPerformed(evt);
             }
         });
 
-        _bReset.setText("Reset");
-        _bReset.addActionListener(new java.awt.event.ActionListener() {
+        _bOk.setText("OK");
+        _bOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _bResetActionPerformed(evt);
+                _bOkActionPerformed(evt);
             }
         });
 
@@ -118,7 +133,7 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(_lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                .addComponent(_lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -137,11 +152,11 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_bCommit, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(_bReset, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addComponent(_bCancel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(_bOk, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {_bCommit, _bReset});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {_bCancel, _bOk});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -149,9 +164,9 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(_bReset)
+                        .addComponent(_bOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(_bCommit))
+                        .addComponent(_bCancel))
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
@@ -190,23 +205,26 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void _bCommitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bCommitActionPerformed
-        _configurator.getStyle().updateConfig();
-    }//GEN-LAST:event__bCommitActionPerformed
+    private void _bCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bCancelActionPerformed
+//        BlockPanelStyle s = new BlockPanelStyle();
+//        _configurator.setStyle(s);
+//        
+//        layed().setBlockPanelStyle(s);
+//        layed().setVisible(false);
+//        
+//        labed().setBlockPanelStyle(s);
+//        labed().setVisible(false);
+//        
+//        misced().reset(s);
+//        misced().setVisible(false);
+        dispose();
+}//GEN-LAST:event__bCancelActionPerformed
 
-    private void _bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bResetActionPerformed
-        BlockPanelStyle s = new BlockPanelStyle();
-        _configurator.setStyle(s);
-        
-        layed().setBlockPanelStyle(s);
-        layed().setVisible(false);
-        
-        labed().setBlockPanelStyle(s);
-        labed().setVisible(false);
-        
-        misced().reset(s);
-        misced().setVisible(false);
-    }//GEN-LAST:event__bResetActionPerformed
+    private void _bOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bOkActionPerformed
+        _okayed = true;
+        _configurator.getStyle().updateConfig();
+        dispose();
+}//GEN-LAST:event__bOkActionPerformed
     
     /**
      * @param args the command line arguments
@@ -219,7 +237,7 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
                 } catch (Exception e) {
                     System.err.println("-- failed to set the system's native look and feel");
                 }
-                BlockConfiguratorFrame dialog = new BlockConfiguratorFrame();
+                BlockConfiguratorDialog dialog = new BlockConfiguratorDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
@@ -231,8 +249,8 @@ public class BlockConfiguratorFrame extends javax.swing.JFrame implements BlockC
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton _bCommit;
-    private javax.swing.JButton _bReset;
+    private javax.swing.JButton _bCancel;
+    private javax.swing.JButton _bOk;
     private javax.swing.JLabel _lblMessage;
     private javax.swing.JPanel _treePanel;
     private javax.swing.JPanel jPanel1;
