@@ -3,7 +3,6 @@ package gralej;
 import gralej.controller.Controller;
 import gralej.util.Log;
 import gralej.gui.*;
-import gralej.prefs.GralePreferences;
 
 import java.io.IOException;
 
@@ -17,33 +16,31 @@ import javax.swing.UIManager;
  */
 
 public class Main {
-
-    private static void createAndShowGUI() {
-
-        // initialize look and feel
-        String lookandfeel = GralePreferences.getInstance().get(
-                "gui.l+f.java-l+f");
-
+    private static void setLookAndFeel(String lookandfeel) {
         // default is system look and feel
-        if ("System Default".equals(lookandfeel)) {
+        if ("System Default".equals(lookandfeel))
             lookandfeel = UIManager.getSystemLookAndFeelClassName();
-        }
 
         try {
             UIManager.setLookAndFeel(lookandfeel);
         } catch (Exception e) {
-            Log.error(
-                    "Cannot load " + lookandfeel
-                            + ". Falling back to system default L&F.");
-            e.printStackTrace();
-            try {
-                UIManager.setLookAndFeel(UIManager
-                        .getSystemLookAndFeelClassName());
-            } catch (Exception e1) {
-                throw new RuntimeException(
-                        "Cannot set system default L&F! Good bye.", e1);
-            }
+            Log.error("Cannot load look and feel:", lookandfeel);
         }
+    }
+
+    private static void createAndShowGUI() {
+
+        // initialize look and feel
+        String javaLookAndFeelKey = "gui.l+f.java-l+f";
+        setLookAndFeel(Config.s(javaLookAndFeelKey));
+        
+//        new Config.KeyObserver(javaLookAndFeelKey) {
+//            protected void keyChanged() {
+//                Log.debug("Changining Java's Look & Feel");
+//                setLookAndFeel(_val);
+//                Log.debug("Done with the Look & Feel");
+//            }
+//        };
 
         // initialize the controller
         Controller c = new Controller();

@@ -12,17 +12,13 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class BlockPanelStyle {
+public class BlockPanelStyle implements ChangeListener {
     
     private static BlockPanelStyle _instance;
-    private ChangeListener _configChangeListener;
     
     public static BlockPanelStyle getInstance() {
         if (_instance == null) {
-            _instance = new BlockPanelStyle(
-                    LabelFactory.getInstance(),
-                    LayoutFactory.getInstance()
-                    );
+            _instance = new BlockPanelStyle();
             _instance.addStyleChangeListener(new StyleChangeListener() {
                 public void styleChanged(Object sender) {
                     // just to keep the singleton alive
@@ -34,27 +30,29 @@ public class BlockPanelStyle {
     
     
     public BlockPanelStyle() {
-        this(new LabelFactory(), new LayoutFactory());
+        this(Config.currentConfig());
     }
     
-    public BlockPanelStyle(LabelFactory labfac, LayoutFactory layfac) {
-        _labfac = labfac;
-        _layfac = layfac;
+    public BlockPanelStyle(Config cfg) {
+        _cfg = cfg;
+        _labfac = new LabelFactory(cfg);
+        _layfac = new LayoutFactory(cfg);
         
         initFields();
-        _configChangeListener = new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                configChanged();
-            }
-        };
-        Config.currentConfig().addChangeListener(_configChangeListener);
+        Config.currentConfig().addChangeListener(this);
     }
+    
+    public void stateChanged(ChangeEvent e) {
+        configChanged();
+    }
+    
+    private boolean isUpdatingConfig;
 
     public void updateConfig() {
-        Config cfg = new Config(Config.currentConfig());
-        
-        _labfac.updateConfig(cfg);
-        _layfac.updateConfig(cfg);
+        if (isUpdatingConfig) return;
+        isUpdatingConfig = true;
+        _labfac.updateConfig();
+        _layfac.updateConfig();
         
         for (Field f : getClass().getDeclaredFields()) {
             Key k = (Key) f.getAnnotation(Key.class);
@@ -63,24 +61,23 @@ public class BlockPanelStyle {
             String s = k.value();
             try {
                 if (f.getType() == String.class)
-                    cfg.put(s, (String) f.get(this));
+                    _cfg.set(s, (String) f.get(this));
                 else if (f.getType() == int.class)
-                    cfg.put(s, (Integer) f.get(this));
+                    _cfg.set(s, (Integer) f.get(this));
                 else if (f.getType() == boolean.class)
-                    cfg.put(s, (Boolean) f.get(this));
+                    _cfg.set(s, (Boolean) f.get(this));
                 else if (f.getType() == Color.class)
-                    cfg.put(s, (Color) f.get(this));
+                    _cfg.set(s, (Color) f.get(this));
                 else
                     throw new Exception(
-                            "Unsupported field type: [" + f.getType() + "] for field: " + f);
+                            "Unsupported field type: ["
+                            + f.getType() + "] for field: " + f);
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        
-        if (Config.currentConfig().updateFrom(cfg))
-            Config.currentConfig().fireStateChanged(_configChangeListener);
+        isUpdatingConfig = false;
     }
     
     private void initFields() {
@@ -91,13 +88,13 @@ public class BlockPanelStyle {
             String s = k.value();
             try {
                 if (f.getType() == String.class)
-                    f.set(this, Config.s(s));
+                    f.set(this, _cfg.get(s));
                 else if (f.getType() == int.class)
-                    f.set(this, Config.i(s));
+                    f.set(this, _cfg.getInt(s));
                 else if (f.getType() == boolean.class)
-                    f.set(this, Config.bool(s));
+                    f.set(this, _cfg.getBool(s));
                 else if (f.getType() == Color.class)
-                    f.set(this, Config.color(s));
+                    f.set(this, _cfg.getColor(s));
                 else
                     throw new Exception(
                             "Unsupported field type: [" + f.getType() + "] for field: " + f);
@@ -107,13 +104,15 @@ public class BlockPanelStyle {
             }
         }
     }
-    // style listeners
-    Set<StyleChangeListener> _changeListeners = new HashSet();
-    // labels
-    LabelFactory _labfac;
     
+    // style listeners
+    private Set<StyleChangeListener> _changeListeners = new HashSet();
+    // labels
+    private LabelFactory _labfac;
     // layouts
-    LayoutFactory _layfac;
+    private LayoutFactory _layfac;
+    // configuration
+    private Config _cfg;
     
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -295,8 +294,6 @@ public class BlockPanelStyle {
     
     public void removeStyleChangeListener(StyleChangeListener l) {
         _changeListeners.remove(l);
-        //if (_changeListeners.isEmpty())
-          //  GralePreferences.getInstance().removeListener(this);
     }
     
     public void fireStyleChanged() {

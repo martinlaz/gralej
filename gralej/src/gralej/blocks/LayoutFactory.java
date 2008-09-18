@@ -5,11 +5,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class LayoutFactory {
+    private Config _cfg;
     
     private Map<String, BlockLayout> _layoutCache = new TreeMap<String, BlockLayout>();
     private static LayoutFactory _instance;
     
     public LayoutFactory() {
+        this(Config.currentConfig());
+    }
+    public LayoutFactory(Config cfg) {
+        _cfg = cfg;
         init();
     }
     
@@ -33,20 +38,24 @@ public class LayoutFactory {
         return _layoutCache.get("block.layout." + type);
     }
     
+    void updateConfig() {
+        updateConfig(_cfg);
+    }
+    
     void updateConfig(Config cfg) {
         for (BlockLayout x : _layoutCache.values()) {
-            cfg.put("block.layout." + x.getName() + ".space.leading",  x.getLeadingSpace());
-            cfg.put("block.layout." + x.getName() + ".space.intra",    x.getIntraSpace());
-            cfg.put("block.layout." + x.getName() + ".space.trailing", x.getTrailingSpace());
+            cfg.set("block.layout." + x.getName() + ".space.leading",  x.getLeadingSpace());
+            cfg.set("block.layout." + x.getName() + ".space.intra",    x.getIntraSpace());
+            cfg.set("block.layout." + x.getName() + ".space.trailing", x.getTrailingSpace());
         }
     }
     
     void updateSelf() {
         for (BlockLayout x : _layoutCache.values()) {
             x.setAll(
-                    Config.i("block.layout." + x.getName() + ".space.leading"),
-                    Config.i("block.layout." + x.getName() + ".space.intra"),
-                    Config.i("block.layout." + x.getName() + ".space.trailing")
+                    _cfg.getInt("block.layout." + x.getName() + ".space.leading"),
+                    _cfg.getInt("block.layout." + x.getName() + ".space.intra"),
+                    _cfg.getInt("block.layout." + x.getName() + ".space.trailing")
                     );
         }
     }
@@ -77,9 +86,9 @@ public class LayoutFactory {
         String id_ = "block.layout." + id;
         BlockLayout layout = _layoutCache.get(id_);
         if (layout == null) {
-            int leading     = Config.i(id_ + ".space.leading");
-            int intra       = Config.i(id_ + ".space.intra");
-            int trailing    = Config.i(id_ + ".space.trailing");
+            int leading     = _cfg.getInt(id_ + ".space.leading");
+            int intra       = _cfg.getInt(id_ + ".space.intra");
+            int trailing    = _cfg.getInt(id_ + ".space.trailing");
             
             BlockLayout alayout = creator.newInstance();
             alayout.setName(id);

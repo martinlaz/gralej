@@ -9,14 +9,25 @@ import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.prefs.Preferences;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public final class Config extends ChangeEventSource {
-    private static final String DEFAULT_CONFIG = "/gralej/DefaultConfig.xml";
+    private static final String DEFAULT_CONFIG_PATH =
+            "/gralej/DefaultConfig.xml";
     
     private static Config _default;
     private static Config _current;
@@ -27,6 +38,66 @@ public final class Config extends ChangeEventSource {
         private UnknownKeyException(String key) {
             super(key);
         }
+    }
+    
+    abstract public static class KeyObserver {
+        protected String _key, _val;
+        public KeyObserver(String key) { this(Config.currentConfig(), key); }
+        public KeyObserver(final Config cfg, String key) {
+            _key = key;
+            _val = cfg.get(key);
+            cfg.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e) {
+                    String val = cfg.get(_key);
+                    if (!val.equals(_val)) {
+                        _val = val;
+                        keyChanged();
+                    }
+                }
+            });
+        }
+        abstract protected void keyChanged();
+    }
+    
+    abstract public static class KeySetObserver {
+        protected Map<String,String> _subCfg;
+        
+        public KeySetObserver(String... keySet) {
+            this(Arrays.asList(keySet));
+        }
+        public KeySetObserver(Collection<String> keySet) {
+            this(Config.currentConfig(), keySet);
+        }
+        public KeySetObserver(final Config cfg, Collection<String> keySet) {
+            _subCfg = new TreeMap<String,String>();
+            for (String key : keySet)
+                _subCfg.put(key, cfg.get(key));
+            cfg.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e) {
+                    Set<String> changeSet = new TreeSet<String>();
+                    for (Map.Entry<String,String> entry : _subCfg.entrySet()) {
+                        String value = cfg.get(entry.getKey());
+                        if (!entry.setValue(value).equals(value))
+                            changeSet.add(entry.getKey());
+                    }
+                    if (!changeSet.isEmpty())
+                        keySetChanged(changeSet);
+                }
+            });
+        }
+        abstract protected void keySetChanged(Set<String> changeSet);
+    }
+    
+    public static Collection<String> prefixToKeySet(String prefix) {
+        return prefixToKeySet(Config.currentConfig(), prefix);
+    }
+    
+    public static Collection<String> prefixToKeySet(Config cfg, String prefix) {
+        List<String> ls = new LinkedList<String>();
+        for (String key : cfg.keySet())
+            if (key.startsWith(prefix))
+                ls.add(key);
+        return ls;
     }
     
     private Config() {}
@@ -42,7 +113,7 @@ public final class Config extends ChangeEventSource {
             _default = new Config();
             try {
                 _default._props.loadFromXML(
-                    Config.class.getResourceAsStream(DEFAULT_CONFIG));
+                    Config.class.getResourceAsStream(DEFAULT_CONFIG_PATH));
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -82,20 +153,15 @@ public final class Config extends ChangeEventSource {
         save();
     }
     
-    public boolean updateFrom(Config other) {
-        return updateFrom(other, true);
-    }
-    
-    public boolean updateFrom(Config other, boolean saveIfChanged) {
-        boolean changed = false;
+    public void updateFrom(Config other) {
+        boolean isChanged = false;
         for (Object key : other._props.keySet()) {
             Object value = other._props.get(key);
             if (!_props.put(key, value).equals(value))
-                changed = true;
+                isChanged = true;
         }
-        if (changed && saveIfChanged)
-            save();
-        return changed;
+        if (isChanged)
+            fireStateChanged(this);
     }
     
     public void save() {
@@ -131,8 +197,14 @@ public final class Config extends ChangeEventSource {
     
     public void importFrom(InputStream is) throws IOException {
         _props.loadFromXML(is);
+        // we assume that something's changed
+        fireStateChanged(this);
+        
+        // warn if importing an older configuration
+        // with obsolete keys
         Set<Object> keys = new HashSet<Object>(_props.keySet());
         keys.removeAll(defaultConfig()._props.keySet());
+        
         if (!keys.isEmpty()) {
             Log.warning("The following keys will be ignored:");
             for (Object key : keys) {
@@ -141,8 +213,8 @@ public final class Config extends ChangeEventSource {
         }
     }
     
-    public void fireStateChanged(Object sender) {
-        super.fireStateChanged(sender);
+    public Set<String> keySet() {
+        return Collections.unmodifiableSet(_props.stringPropertyNames());
     }
     
     public String get(String key) {
@@ -171,33 +243,39 @@ public final class Config extends ChangeEventSource {
         return Font.decode(get(key));
     }
     
-    public void put(String key, String value) {
+    public void set(String key, String value) {
+        set(key, value, true);
+    }
+    
+    public void set(String key, String value, boolean fireIfChanged) {
         if (!_props.containsKey(key))
             throw new UnknownKeyException(key);
-        _props.put(key, value);
+        boolean isChanged = !_props.put(key, value).equals(value);
+        if (isChanged && fireIfChanged)
+            fireStateChanged(this);
     }
     
-    public void put(String key, int value) {
-        put(key, Integer.toString(value));
+    public void set(String key, int value) {
+        set(key, Integer.toString(value));
     }
     
-    public void put(String key, double value) {
-        put(key, Double.toString(value));
+    public void set(String key, double value) {
+        set(key, Double.toString(value));
     }
     
-    public void put(String key, boolean value) {
-        put(key, value ? "true" : "false");
+    public void set(String key, boolean value) {
+        set(key, value ? "true" : "false");
     }
     
-    public void put(String key, Color value) {
+    public void set(String key, Color value) {
         String s = String.format(
             "0x%02x%02x%02x",
             value.getRed(), value.getGreen(), value.getBlue()
             );
-        put(key, s);
+        set(key, s);
     }
     
-    public void put(String key, Font font) {
+    public void set(String key, Font font) {
         String style;
         switch (font.getStyle()) {
             case Font.BOLD:
@@ -209,7 +287,7 @@ public final class Config extends ChangeEventSource {
             default:
                 style = "PLAIN";
         }
-        put(key, font.getName() + "-" + style + "-" + font.getSize());
+        set(key, font.getName() + "-" + style + "-" + font.getSize());
     }
     
     // some conviniences

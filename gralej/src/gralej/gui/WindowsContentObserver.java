@@ -1,5 +1,6 @@
 package gralej.gui;
 
+import gralej.Config;
 import gralej.controller.ContentModel;
 import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
@@ -7,7 +8,6 @@ import gralej.blocks.BlockPanel;
 import gralej.blocks.finder.Finder;
 import gralej.blocks.finder.FinderDialog;
 import gralej.parsers.*;
-import gralej.prefs.GralePreferences;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -23,9 +23,8 @@ import javax.swing.event.ChangeListener;
  * AVMs in single JFrames. These frames are modelled as an inner
  * class.
  * 
- * 
  * @author Armin
- * @version
+ * @version $Id$
  */
 public class WindowsContentObserver extends ContentObserver {
 
@@ -113,12 +112,11 @@ public class WindowsContentObserver extends ContentObserver {
      * Cascade windows. Offsets are taken from the general preferences.
      */
     public void cascade() {
-        GralePreferences gp = GralePreferences.getInstance();
-        int xMarginOffset = gp.getInt("gui.windows.location.xmarginoffset");
-        int yMarginOffset = gp.getInt("gui.windows.location.ymarginoffset");
-        int xDiff = gp.getInt("gui.windows.location.xdiff");
-        int yDiff = gp.getInt("gui.windows.location.ydiff");
-        int xDiff2 = gp.getInt("gui.windows.location.xdiff2");
+        int xMarginOffset = Config.i("gui.windows.location.xmarginoffset");
+        int yMarginOffset = Config.i("gui.windows.location.ymarginoffset");
+        int xDiff = Config.i("gui.windows.location.xdiff");
+        int yDiff = Config.i("gui.windows.location.ydiff");
+        int xDiff2 = Config.i("gui.windows.location.xdiff2");
 
         Rectangle size = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getMaximumWindowBounds();
@@ -153,18 +151,18 @@ public class WindowsContentObserver extends ContentObserver {
             
             setIconImage(theme.getIcon("grale").getImage());
             
-            this.autoResize = gp.getBoolean("behavior.alwaysfitsize");
+            this.autoResize = Config.bool("behavior.alwaysfitsize");
             display.setAutoResize(autoResize);
 
             setJMenuBar(createMenuBar());
             createToolBar();
-            toolbar.setVisible(gp.getBoolean("behavior.showwindowtoolbar"));
+            toolbar.setVisible(Config.bool("behavior.showwindowtoolbar"));
             add(toolbar, BorderLayout.NORTH);
             add(display.getUI());
             setLocationByPlatform(true);
             setMinimumSize(new Dimension(
-                    gp.getInt("gui.windows.size.xmin"),
-                    gp.getInt("gui.windows.size.ymin")));
+                    Config.i("gui.windows.size.xmin"),
+                    Config.i("gui.windows.size.ymin")));
             setSize(display.getUI().getSize());
             setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
             
@@ -184,8 +182,6 @@ public class WindowsContentObserver extends ContentObserver {
             });
             setVisible(true);
         }
-
-        private GralePreferences gp = GralePreferences.getInstance();
 
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Find, m_FindNext,
@@ -290,7 +286,7 @@ public class WindowsContentObserver extends ContentObserver {
             
             if (data.getModel() instanceof gralej.om.ITree) {
                 m_ShowHideNodeContents = new JMenuItem();
-                if (gp.getBoolean("behavior.nodeContentInitiallyVisible"))
+                if (Config.bool("behavior.nodeContentInitiallyVisible"))
                     m_ShowHideNodeContents.setText("Hide Contents of All Nodes");
                 else
                     m_ShowHideNodeContents.setText("Show Contents of All Nodes");
@@ -305,7 +301,7 @@ public class WindowsContentObserver extends ContentObserver {
             m_Hidden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H,
                     InputEvent.CTRL_DOWN_MASK));
             m_Hidden.addActionListener(this);
-            m_Hidden.setState(gp.getBoolean("behavior.displayModelHiddenFeatures"));
+            m_Hidden.setState(Config.bool("behavior.displayModelHiddenFeatures"));
             viewmenu.add(m_Hidden); // TODO implement and uncomment
             
             m_Resize = new JCheckBoxMenuItem("Auto-Adjust Window Size");
@@ -331,9 +327,9 @@ public class WindowsContentObserver extends ContentObserver {
             
             viewmenu.addSeparator();
 
-            m_ShowWindowToolBar = new JCheckBoxMenuItem("Show toolbar");
+            m_ShowWindowToolBar = new JCheckBoxMenuItem("Toolbar");
             m_ShowWindowToolBar.addActionListener(this);
-            m_ShowWindowToolBar.setState(gp.getBoolean("behavior.showwindowtoolbar"));
+            m_ShowWindowToolBar.setState(Config.bool("behavior.showwindowtoolbar"));
             viewmenu.add(m_ShowWindowToolBar);
 
             menubar.add(viewmenu);
@@ -394,7 +390,7 @@ public class WindowsContentObserver extends ContentObserver {
             zoomfield.setHorizontalAlignment(JTextField.RIGHT);
             zoomfield.addActionListener(this);
             // zoomfield.setPreferredSize(new Dimension(10,30));
-            zoomfield.setMaximumSize(new Dimension(40, 20));
+            zoomfield.setMaximumSize(new Dimension(50, 20));
             zoomfield.setToolTipText("Zoom value");
             zoomfield.setText(Integer.toString(display.getZoom()));
             toolbar.add(zoomfield);
@@ -475,7 +471,7 @@ public class WindowsContentObserver extends ContentObserver {
                     zoomfield.setText(
                             Integer.toString(display.getZoom()));
                 } catch (NumberFormatException e1) {
-                    zoomfield.setText(gp.get("behavior.defaultzoom"));
+                    zoomfield.setText(Config.s("behavior.defaultzoom"));
                     Log.warning("Invalid zoom value. Defaulting to 100%.");
                     display.setZoom(Integer.parseInt(zoomfield.getText()));
                 }
@@ -490,7 +486,10 @@ public class WindowsContentObserver extends ContentObserver {
             } else if (source == m_Raise || source == b_Raise) {
                 gui.raiseMainWindow();
             } else if (source == m_ShowWindowToolBar) {
-                gp.putBoolean("behavior.showwindowtoolbar", m_ShowWindowToolBar.getState());
+                Config.currentConfig().set(
+                        "behavior.showwindowtoolbar",
+                        ""+m_ShowWindowToolBar.getState(),
+                        false);
                 toolbar.setVisible(m_ShowWindowToolBar.getState());
             }
             else if (source == m_Hidden) {
@@ -552,11 +551,9 @@ public class WindowsContentObserver extends ContentObserver {
                 }
             } else {
                 // file could not be opened. doing nothing might be appropriate
-                Log.error("Failed to open file");
+                //Log.error("Failed to open file");
             }
-
         }
-
     }
 
     public void notifyOfServerConnection(boolean isConnected) {

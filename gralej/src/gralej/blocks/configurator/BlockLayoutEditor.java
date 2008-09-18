@@ -24,10 +24,11 @@ public class BlockLayoutEditor extends javax.swing.JDialog {
     
     /** Creates new form BlockLayoutEditor */
     public BlockLayoutEditor(
-            java.awt.Frame parent,
+            java.awt.Window parent,
             boolean modal,
             BlockPanelStyle style) {
-        super(parent, modal);
+        super(parent);
+        setModal(modal);
         initComponents();
         setLocationRelativeTo(parent);
         

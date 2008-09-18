@@ -1,5 +1,6 @@
 package gralej.controller;
 
+import gralej.Config;
 import gralej.client.WebTraleClient;
 import gralej.util.Log;
 import gralej.fileIO.FileLoader;
@@ -8,7 +9,6 @@ import gralej.parsers.IGraleParser;
 import gralej.parsers.IParseResultReceiver;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.UnsupportedProtocolException;
-import gralej.prefs.GralePreferences;
 import gralej.server.IGraleServer;
 import gralej.server.SocketServer;
 
@@ -113,10 +113,9 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
     
     public void startServer () {
-        GralePreferences gp = GralePreferences.getInstance();
-        if (gp.getBoolean("mode.grale")) {
-            final int portlo = gp.getInt("server.portrange.lo");
-            final int porthi = gp.getInt("server.portrange.hi");
+        if (Config.bool("mode.grale")) {
+            final int portlo = Config.i("server.portrange.lo");
+            final int porthi = Config.i("server.portrange.hi");
             boolean ok = false;
             for (int port = portlo; port <= porthi; ++port) {
                 try {
@@ -135,7 +134,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
             }
         }
         else {
-            int port = gp.getInt("server.port");
+            int port = Config.i("server.port");
             if ( server == null ) {
                     server = new SocketServer(port);
             }	
@@ -154,7 +153,6 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 
         server.registerNewStreamListener(this);
         cm.notifyOfServerConnection(true);
-
     }
     
     public void stopServer () {
