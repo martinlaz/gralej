@@ -1,4 +1,29 @@
 /*
+ *  $Id$
+ *
+ *  Author:
+ *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]
+ *     
+ *  This file is part of the Gralej system
+ *     http://code.google.com/p/gralej/
+ *
+ *  Gralej is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Gralej is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+/*
  * OptionsDialog.java
  *
  * Created on 16. September 2008, 14:50
@@ -189,7 +214,7 @@ public class OptionsDialog extends javax.swing.JDialog {
         _bOk = new javax.swing.JButton();
         _bImport = new javax.swing.JButton();
         _bExport = new javax.swing.JButton();
-        _Defaults = new javax.swing.JButton();
+        _bDefaults = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Options");
@@ -456,10 +481,10 @@ public class OptionsDialog extends javax.swing.JDialog {
             }
         });
 
-        _Defaults.setText("Defaults");
-        _Defaults.addActionListener(new java.awt.event.ActionListener() {
+        _bDefaults.setText("Defaults");
+        _bDefaults.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _DefaultsActionPerformed(evt);
+                _bDefaultsActionPerformed(evt);
             }
         });
 
@@ -476,7 +501,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_bExport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(_Defaults)
+                        .addComponent(_bDefaults)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                         .addComponent(_bOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -494,7 +519,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                     .addComponent(_bOk)
                     .addComponent(_bImport)
                     .addComponent(_bExport)
-                    .addComponent(_Defaults))
+                    .addComponent(_bDefaults))
                 .addContainerGap())
         );
 
@@ -553,9 +578,9 @@ public class OptionsDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event__bExportActionPerformed
 
-    private void _DefaultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__DefaultsActionPerformed
+    private void _bDefaultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bDefaultsActionPerformed
         _cfg.updateFrom(Config.defaultConfig());
-    }//GEN-LAST:event__DefaultsActionPerformed
+}//GEN-LAST:event__bDefaultsActionPerformed
 
     private void _bOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bOkActionPerformed
         Config.currentConfig().updateFrom(_cfg);
@@ -585,8 +610,8 @@ public class OptionsDialog extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton _Defaults;
     private javax.swing.JButton _bCancel;
+    private javax.swing.JButton _bDefaults;
     private javax.swing.JButton _bExport;
     private javax.swing.JButton _bImport;
     private javax.swing.JButton _bOk;

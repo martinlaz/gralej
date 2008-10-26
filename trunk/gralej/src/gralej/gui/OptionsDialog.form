@@ -31,7 +31,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="_bExport" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="_Defaults" min="-2" max="-2" attributes="0"/>
+                      <Component id="_bDefaults" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="45" max="32767" attributes="0"/>
                       <Component id="_bOk" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -53,7 +53,7 @@
                   <Component id="_bOk" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="_bImport" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="_bExport" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="_Defaults" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="_bDefaults" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -503,12 +503,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_bExportActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="_Defaults">
+    <Component class="javax.swing.JButton" name="_bDefaults">
       <Properties>
         <Property name="text" type="java.lang.String" value="Defaults"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_DefaultsActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_bDefaultsActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
