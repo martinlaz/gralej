@@ -118,10 +118,14 @@ public class OM2LaTeXVisitor extends AbstractVisitor {
             _out.append("\\chunk{");
             if (child instanceof ITree) {
                 child.accept(this);
-            } else {
+                
+            } else if (child instanceof ITypedFeatureStructure) {
                 _out.append("\\begin{Avm}\n");
                 child.accept(this);
                 _out.append("\\end{Avm}\n");
+            }
+            else {
+            //TODO: add case to IList
             }
             _out.append("}\n");
         }
