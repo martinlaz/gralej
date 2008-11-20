@@ -56,6 +56,37 @@ public class TraleMsgHandler extends GrammarHandler {
     }
     
 
+    public static class Terminals extends tomato.AbstractTerminals {
+        public Terminals(tomato.Grammar g) {
+            super(g);
+        }
+        public tomato.Terminal _BEGIN_ANY;
+        public tomato.Terminal _BEGIN_CONJ;
+        public tomato.Terminal _BEGIN_DISJ;
+        public tomato.Terminal _BEGIN_FEATVAL;
+        public tomato.Terminal _BEGIN_FUNCT;
+        public tomato.Terminal _BEGIN_LIST;
+        public tomato.Terminal _BEGIN_REENTR;
+        public tomato.Terminal _BEGIN_REF;
+        public tomato.Terminal _BEGIN_REL;
+        public tomato.Terminal _BEGIN_REST;
+        public tomato.Terminal _BEGIN_SET;
+        public tomato.Terminal _BEGIN_STRUC;
+        public tomato.Terminal _BEGIN_TAIL;
+        public tomato.Terminal _BEGIN_TREE;
+        public tomato.Terminal _INT;
+        public tomato.Terminal _LPAR;
+        public tomato.Terminal _LT;
+        public tomato.Terminal _MINUS;
+        public tomato.Terminal _NEWDATA;
+        public tomato.Terminal _NEWLINE;
+        public tomato.Terminal _PIPE;
+        public tomato.Terminal _PLUS;
+        public tomato.Terminal _RPAR;
+        public tomato.Terminal _STAR;
+        public tomato.Terminal _STRING;
+    } // end of Terminals
+
     protected void bindReduceHandlers() {
         tomato.ReduceHandler handler;
 
@@ -229,6 +260,8 @@ public class TraleMsgHandler extends GrammarHandler {
                 _helper.adviceResult(title, _tree);
             else if (_tfs != null)
                 _helper.adviceResult(title, _tfs);
+            else if (_[2] instanceof IList)
+                _helper.adviceResult(title, (IList) _[2]);
             else
                 throw new NotImplementedException("in datapackage");
             
