@@ -1,6 +1,6 @@
 =How to configure Gralej=
 
-Until we come up with a more friendly configuration interface, the only way for a user to control the appearance and the behavior of Gralej is through the Advanced tab of the Preferences dialog. The following explanations are meant to assist the brave users dared to go there.
+Until we come up with a more friendly configuration interface, the only way for a user to control the appearance and the behavior of Gralej is through the Advanced tab of the Preferences dialog. The following explanations are meant to assist the brave ones dared to go there.
 
 ==Fonts==
 
