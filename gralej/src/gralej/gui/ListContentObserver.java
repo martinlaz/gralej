@@ -19,6 +19,8 @@ import java.awt.Cursor;
  */
 public class ListContentObserver extends ContentObserver {
 
+    //private static Logger logger = Logger.getAnonymousLogger();
+    
     private DefaultListModel listmodel;
     private JList list;
     private MainGUI gui;
@@ -34,12 +36,12 @@ public class ListContentObserver extends ContentObserver {
         list = new JList(listmodel) {
             // tooltip with name
             public String getToolTipText(MouseEvent e) {
-                int p = locationToIndex(e.getPoint());
-                if (p != -1) {
-                    return getModel().getElementAt(p).toString();
-                } else {
-                    return "";
+                if (!getScrollableTracksViewportWidth()) {
+                    int p = locationToIndex(e.getPoint());
+                    if (p != -1)
+                        return getModel().getElementAt(p).toString();
                 }
+                return null;
             }
         };
 

@@ -1,0 +1,11 @@
+Version 0.5.3
+------------------------------------------------------------------------------
+2009-01-09
+- View panning works now just by mouse dragging, without pressing Control.
+This feature is much better usable this way.
+
+- Bug fixed: In the AVM tree view configurator, the LabelStyle editor
+used to incorrectly set the text color when the alternative text
+color was changed. [A problem with the tag labels surfaced in the process:
+tags are initially displayed in their with normal color, regardless of state.]
+

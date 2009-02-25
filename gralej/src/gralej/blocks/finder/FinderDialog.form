@@ -26,16 +26,19 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Group type="102" alignment="1" attributes="1">
-                      <Component id="_chkRegex" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="_bClose" linkSize="1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="_txt" min="-2" pref="146" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="_bFind" linkSize="1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="_chkCaseSensitive" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="102" alignment="1" attributes="1">
+                          <Component id="_chkRegex" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="_bClose" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="_txt" min="-2" pref="146" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="_bFind" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -56,6 +59,8 @@
                   <Component id="_bClose" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="_chkRegex" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="_chkCaseSensitive" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -89,6 +94,12 @@
       <Properties>
         <Property name="mnemonic" type="int" value="114"/>
         <Property name="text" type="java.lang.String" value="Regular Expression"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="_chkCaseSensitive">
+      <Properties>
+        <Property name="mnemonic" type="int" value="99"/>
+        <Property name="text" type="java.lang.String" value="Case Sensitive"/>
       </Properties>
     </Component>
   </SubComponents>

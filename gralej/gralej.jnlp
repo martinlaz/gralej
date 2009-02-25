@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://gralej.googlecode.com/files/" href="gralej.jnlp">
+    <information>
+        <title>gralej</title>
+        <vendor>Martin Lazarov</vendor>
+        <description>gralej</description>
+        <description kind="short">gralej</description>
+        <homepage href="http://code.google.com/p/gralej/"/>
+        <offline-allowed/>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.6+" java-vm-args="-Xmx256m"/>
+        <jar href="gralej.jar" main="true" download="eager"/>
+        <jar href="tomato.jar" download="eager"/>
+        <jar href="batik-awt-util.jar"/>
+        <jar href="batik-svggen.jar"/>
+        <jar href="batik-util.jar"/>
+    </resources>
+    <application-desc main-class="gralej.Main">
+    </application-desc>
+</jnlp>

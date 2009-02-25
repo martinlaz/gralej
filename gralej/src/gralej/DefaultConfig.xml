@@ -96,6 +96,14 @@ where RR = 2byte hex value for red
 <entry key="block.label.continuation.text">...</entry>
 
 <entry key="block.label.list.fontSpec">Times-PLAIN-12</entry>
+<entry key="block.label.list.text.left">&lt;</entry>
+<entry key="block.label.list.text.right">&gt;</entry>
+<!-- experimental: use Math brackets, if a math font is available -->
+<!--
+<entry key="block.label.list.fontSpec">DejaVu Sans-PLAIN-12</entry>
+<entry key="block.label.list.text.left">&#x27e8;</entry>
+<entry key="block.label.list.text.right">&#x27e9;</entry>
+-->
 <entry key="block.label.list.frame.color">0x000000</entry>
 <entry key="block.label.list.frame.isDashed">false</entry>
 <entry key="block.label.list.frame.thickness">0</entry>
@@ -105,8 +113,6 @@ where RR = 2byte hex value for red
 <entry key="block.label.list.margin.top">0</entry>
 <entry key="block.label.list.text.color">0x000000</entry>
 <entry key="block.label.list.text.colorAlt">0xc0c0c0</entry>
-<entry key="block.label.list.text.left">&lt;</entry>
-<entry key="block.label.list.text.right">&gt;</entry>
 <entry key="block.label.list.text.separator">,</entry>
 <entry key="block.label.list.text.tailSeparator">|</entry>
 
@@ -198,7 +204,7 @@ where RR = 2byte hex value for red
 <entry key="block.panel.background">0xffffff</entry>
 <entry key="block.panel.margins.all">20</entry>
 <entry key="block.panel.scrollbar.vertical.unitIncrement">20</entry>
-<entry key="block.panel.selection.background.color">0xf5f5f5</entry>
+<entry key="block.panel.selection.background.color">0xff9999</entry>
 <entry key="block.panel.selection.frame.color">0x999999</entry>
 
 <entry key="block.tree.edge.color">0xa7a7a7</entry>

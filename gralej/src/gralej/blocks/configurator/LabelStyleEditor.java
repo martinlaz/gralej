@@ -550,7 +550,7 @@ public class LabelStyleEditor extends javax.swing.JDialog {
     private void _colTextAltMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__colTextAltMouseClicked
         if (!setColor(_colTextAlt))
             return;
-        _style.setTextColor(_colTextAlt.getBackground());
+        _style.setTextAltColor(_colTextAlt.getBackground());
         _panelStyle.fireStyleChanged();
     }//GEN-LAST:event__colTextAltMouseClicked
 

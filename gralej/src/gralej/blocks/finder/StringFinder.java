@@ -32,7 +32,7 @@ import gralej.blocks.Label;
  */
 class StringFinder extends Finder {
     
-    private String _s;
+    protected String _s;
     
     StringFinder(String s) { _s = s; }
 

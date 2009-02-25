@@ -84,6 +84,7 @@ public class FinderDialog extends javax.swing.JDialog {
         _bFind = new javax.swing.JButton();
         _bClose = new javax.swing.JButton();
         _chkRegex = new javax.swing.JCheckBox();
+        _chkCaseSensitive = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Find");
@@ -107,6 +108,9 @@ public class FinderDialog extends javax.swing.JDialog {
         _chkRegex.setMnemonic('r');
         _chkRegex.setText("Regular Expression");
 
+        _chkCaseSensitive.setMnemonic('c');
+        _chkCaseSensitive.setText("Case Sensitive");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -115,15 +119,17 @@ public class FinderDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(_chkRegex)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(_bClose))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(_txt, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(_bFind)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(_chkCaseSensitive)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(_chkRegex)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(_bClose))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(_txt, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(_bFind))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -141,6 +147,8 @@ public class FinderDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_bClose)
                     .addComponent(_chkRegex))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_chkCaseSensitive)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -154,7 +162,8 @@ public class FinderDialog extends javax.swing.JDialog {
     private void _bFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bFindActionPerformed
         opts = new FinderOptions();
         opts.text = _txt.getText();
-        opts.regex = _chkRegex.isSelected();
+        opts.isRegex = _chkRegex.isSelected();
+        opts.isCaseSensitive = _chkCaseSensitive.isSelected();
         dispose();
     }//GEN-LAST:event__bFindActionPerformed
     
@@ -178,6 +187,7 @@ public class FinderDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _bClose;
     private javax.swing.JButton _bFind;
+    private javax.swing.JCheckBox _chkCaseSensitive;
     private javax.swing.JCheckBox _chkRegex;
     private javax.swing.JTextField _txt;
     private javax.swing.JLabel jLabel1;
