@@ -35,8 +35,11 @@ class RegexFinder extends Finder {
     
     private Pattern _pat;
     
-    RegexFinder(String regex) {
-        _pat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+    RegexFinder(String regex, boolean caseSensitive) {
+        if (caseSensitive)
+            _pat = Pattern.compile(regex);
+        else
+            _pat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
     }
 
     @Override

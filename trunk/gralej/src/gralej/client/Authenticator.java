@@ -63,6 +63,7 @@ public class Authenticator extends java.net.Authenticator {
                 Dialog.ModalityType.APPLICATION_MODAL);
         AuthenticatorPanel ap = new AuthenticatorPanel(dlg, url);
         dlg.add(ap);
+        dlg.setLocationRelativeTo(gralej.gui.MainGUI.getLastFrame());
         dlg.pack();
         dlg.setVisible(true);
         dlg.dispose();

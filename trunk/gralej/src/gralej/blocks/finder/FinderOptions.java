@@ -30,5 +30,6 @@ package gralej.blocks.finder;
  */
 class FinderOptions {
     String text;
-    boolean regex;
+    boolean isRegex;
+    boolean isCaseSensitive;
 }

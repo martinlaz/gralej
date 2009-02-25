@@ -49,7 +49,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
     private final IconTheme theme;
 
-    private final JFrame frame;
+    private static JFrame frame;
 
     private Controller c;
 
@@ -66,6 +66,10 @@ public class MainGUI implements ActionListener, ItemListener {
             m_ShowToolBar, m_ShowStatusBar;
 
     StatusBar statusbar;
+    
+    public static JFrame getLastFrame() {
+        return frame;
+    }
 
     private JMenuBar createMenuBar() {
 

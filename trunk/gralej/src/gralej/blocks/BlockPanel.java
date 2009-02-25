@@ -454,8 +454,8 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     protected void onMouseDragged(MouseEvent ev) {
-        if (!ev.isControlDown())
-            return;
+        //if (!ev.isControlDown())
+        //    return;
         int dx = _lastMousePressedX - ev.getX();
         int dy = _lastMousePressedY - ev.getY();
         if (dx == 0 && dy == 0)

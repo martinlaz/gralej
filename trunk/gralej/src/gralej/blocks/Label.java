@@ -41,8 +41,6 @@ public class Label extends Block {
     int _th; // height
     int _ascent;
     
-    protected boolean _useTextAltColor;
-    
     // diff
     boolean _different;
     boolean _struckOut;
@@ -110,6 +108,10 @@ public class Label extends Block {
         _struckOut = strikeThrough;
     }
     
+    protected boolean useTextAltColor() {
+        return false;
+    }
+    
     @Override
     public void paint(Graphics2D g) {
         int x = getX();
@@ -130,7 +132,7 @@ public class Label extends Block {
         Color color;
         if (_different)
             color = getPanelStyle().getDifferentTextColor();
-        else if (_useTextAltColor)
+        else if (useTextAltColor())
             color =_style.getTextAltColor();
         else
             color = _style.getTextColor();

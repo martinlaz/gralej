@@ -30,6 +30,7 @@ import gralej.blocks.BlockPanel;
 import gralej.blocks.ContentLabel;
 import gralej.blocks.Label;
 import gralej.util.Log;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -43,8 +44,10 @@ public abstract class Finder {
     
     static Finder newInstance(FinderOptions opts, BlockPanel panel) {
         Finder f;
-        if (opts.regex)
-            f = new RegexFinder(opts.text);
+        if (opts.isRegex)
+            f = new RegexFinder(opts.text, opts.isCaseSensitive);
+        else if (opts.isCaseSensitive)
+            f = new CaseSensitiveStringFinder(opts.text);
         else
             f = new StringFinder(opts.text);
         f.setPanel(panel);
@@ -83,7 +86,7 @@ public abstract class Finder {
                 }
             }
             else if (_panel.isDisplayingModelHiddenFeatures() || !b.isModelHidden())
-                _stack.push(b.getChildren().iterator());
+                _stack.push(new ArrayList<Block>(b.getChildren()).iterator());
         }
         _panel.setSelectedBlock(null);
         return false;

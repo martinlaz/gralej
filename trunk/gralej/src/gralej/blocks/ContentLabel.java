@@ -25,20 +25,30 @@
 package gralej.blocks;
 
 public class ContentLabel extends Label {
+    private Block _content;
+    
     ContentLabel(BlockPanel panel, LabelStyle style, String text) {
         super(panel, style, text);
     }
     
     public void flipContentVisibility() {
-        Block content = ((ContentOwner) getParent()).getContent();
-        if (content == null)
+        if (_content == null)
+            _content = ((ContentOwner) getParent()).getContent();
+        if (_content == null)
             return;
-
-        boolean visible = !content.isVisible();
-        _useTextAltColor = !visible;
-        content.setVisible(visible);
+        
+        boolean newVisible = !_content.isVisible();
+        _content.setVisible(newVisible);
 
         getPanel().getCanvas().repaint();
+    }
+    
+    @Override
+    protected boolean useTextAltColor() {
+        if (_content == null)
+            return false;
+
+        return !_content.isVisible();
     }
 
     public void flip() {
