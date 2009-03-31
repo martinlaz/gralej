@@ -41,11 +41,11 @@ import java.util.Map;
 
 public class BlockCreator extends AbstractVisitor {
     Block _result;
-    
+
     BlockPanel _panel;
     LabelFactory _labfac;
     Map<IEntity, ContentCreator> _contentCreatorCache;
-    
+
     public BlockCreator(BlockPanel panel) {
         _panel = panel;
         _labfac = _panel.getStyle().getLabelFactory();
@@ -64,7 +64,7 @@ public class BlockCreator extends AbstractVisitor {
             entity.accept(this);
             ll.add(_result);
         }
-        
+
         Block tail = null;
         if (ls.tail() != null) {
             ls.tail().accept(this);
@@ -76,11 +76,17 @@ public class BlockCreator extends AbstractVisitor {
 
     @Override
     public void visit(ITag tag) {
-        _result = new ReentrancyBlock(
-                _panel,
-                filterLabel(_labfac.createTagLabel(tag.number() + "", _panel), tag),
-                tag.number(),
-                getContentCreator(tag.target()));
+        IEntity target = tag.target();
+
+        if (target == null) {
+            _result = new EmptyReentrancyBlock(_panel, filterLabel(_labfac
+                    .createEmptyTagLabel(tag.number() + "", _panel), tag), tag
+                    .number());
+        } else {
+            _result = new ReentrancyBlock(_panel, filterLabel(_labfac
+                    .createTagLabel(tag.number() + "", _panel), tag), tag
+                    .number(), getContentCreator(tag.target()));
+        }
     }
 
     @Override
@@ -91,7 +97,8 @@ public class BlockCreator extends AbstractVisitor {
     @Override
     public void visit(ITypedFeatureStructure tfs) {
         if (tfs.isSpecies()) {
-            _result = filterLabel(_labfac.createSpeciesLabel(tfs.typeName(), _panel), tfs);
+            _result = filterLabel(_labfac.createSpeciesLabel(tfs.typeName(),
+                    _panel), tfs);
             return;
         }
 
@@ -106,11 +113,8 @@ public class BlockCreator extends AbstractVisitor {
                 alab.flip();
         }
 
-        _result = new AVMBlock(
-                _panel,
-                filterLabel(_labfac.createSortLabel(tfs.typeName(), _panel), tfs),
-                new AVPairListBlock(_panel, ll)
-                );
+        _result = new AVMBlock(_panel, filterLabel(_labfac.createSortLabel(tfs
+                .typeName(), _panel), tfs), new AVPairListBlock(_panel, ll));
     }
 
     @Override
@@ -153,15 +157,15 @@ public class BlockCreator extends AbstractVisitor {
         }
         return cc;
     }
-    
+
     private static Label filterLabel(Label l, IEntity e) {
         l.setDifferent(e.isDifferent());
         l.setStruckOut(e.isStruckout());
         return l;
     }
-    
+
     private static ContentLabel filterLabel(ContentLabel l, IEntity e) {
-        filterLabel((Label)l, e);
+        filterLabel((Label) l, e);
         return l;
     }
 }
