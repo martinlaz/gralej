@@ -170,6 +170,18 @@ where RR = 2byte hex value for red
 <entry key="block.label.tag.margin.top">0</entry>
 <entry key="block.label.tag.text.color">0x000000</entry>
 <entry key="block.label.tag.text.colorAlt">0x000000</entry>
+
+<entry key="block.label.unbound.fontSpec">Courier-BOLD-12</entry>
+<entry key="block.label.unbound.frame.color">0xff0000</entry>
+<entry key="block.label.unbound.frame.isDashed">false</entry>
+<entry key="block.label.unbound.frame.thickness">1</entry>
+<entry key="block.label.unbound.margin.bottom">0</entry>
+<entry key="block.label.unbound.margin.left">3</entry>
+<entry key="block.label.unbound.margin.right">3</entry>
+<entry key="block.label.unbound.margin.top">0</entry>
+<entry key="block.label.unbound.text.color">0xff0000</entry>
+<entry key="block.label.unbound.text.colorAlt">0x000000</entry>
+
 <entry key="block.label.text.maxLength">70</entry>
 
 <entry key="block.layout.avm.compact">true</entry>

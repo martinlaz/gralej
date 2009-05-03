@@ -316,7 +316,7 @@ public class TraleMsgLexer implements Lexer {
                     t._code = g.lookupTerminal(t.name()).code();
                 }
             }
-            _EOF._name = "{eof}";
+            _EOF._name = g.eofSymbol().string();
             _EOF._code = g.eofSymbol().code();
         }
     }

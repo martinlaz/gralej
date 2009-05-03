@@ -1,3 +1,7 @@
+//
+// WARNING: this Java file is generated from trale-msg.g !!!
+//
+
 package gralej.parsers;
 
 import gralej.om.IAny;
@@ -29,6 +33,7 @@ public class TraleMsgHandler extends GrammarHandler {
     
     ITree _tree;
     ITypedFeatureStructure _tfs;
+    int _reentr;
     L<OM.Tag> _tags = new L<OM.Tag>();
     L<Pair<OM.Tree,Integer>> _trees = new L<Pair<OM.Tree,Integer>>();
     
@@ -72,6 +77,7 @@ datapackage0
             _tag2ent.clear();
             _tags.clear();
             _trees.clear();
+            _reentr = 0;
             return null;
         }
     .
@@ -151,7 +157,6 @@ tree
     {
         String label        = S(_[3]);
         int linkid          = N(_[5]);
-        //IEntity content     = _id2ent.get(linkid);
         L<ITree> children   = (L<ITree>)_[6];
         
         OM.Tree t = new OM.Tree(label, children);
@@ -162,8 +167,10 @@ tree
     }
   .
 
+begin_reentr -> _BEGIN_REENTR { _reentr++; return null; } .
+
 reentr
-  ->  _BEGIN_REENTR flags id tag struct _RPAR
+  ->  begin_reentr flags id tag struct _RPAR
        {{
           if (_[4] != null) {
             int id  = N(_[2]);
@@ -173,6 +180,7 @@ reentr
             _id2ent.put(id, e);
             _tag2ent.put(tag, e);
           }
+          _reentr--;
           return null;
        }}
   .
@@ -188,7 +196,9 @@ struc
             int id = N(_[2]);
             _id2ent.put(id, tfs);
             
-            if (id == 0)
+            
+            // if not substructure of a reentrancy
+            if (_reentr == 0)
                 _tfs = tfs;
             
             return tfs;

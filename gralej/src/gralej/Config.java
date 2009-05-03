@@ -139,6 +139,7 @@ public final class Config extends ChangeEventSource {
             }
             catch (Exception e) {
                 e.printStackTrace();
+                Log.critical("Failed to load default config.");
                 System.exit(1);
             }
         }
@@ -161,8 +162,7 @@ public final class Config extends ChangeEventSource {
             catch (SecurityException e) {
                 // we're not using the logger here because
                 // it uses us, and we're not available yet
-                e.printStackTrace();
-                System.err.println("^-- will use default config only");
+                System.err.println("-- cannot load local config (will use default config instead).");
             }
         }
         return _current;

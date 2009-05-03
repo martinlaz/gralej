@@ -40,31 +40,38 @@ public class LabelFactory {
     Map<String, LabelStyle> _labelStyles = new TreeMap<String, LabelStyle>();
 
     static private LabelFactory _instance;
-
+    
     public LabelFactory() {
         this(Config.currentConfig());
     }
-
     public LabelFactory(Config cfg) {
         _cfg = cfg;
         init();
     }
-
+    
     public static LabelFactory getInstance() {
         if (_instance == null)
             _instance = new LabelFactory();
         return _instance;
     }
-
+    
     private void init() {
-        LIST_LBRACKET = _cfg.get("block.label.list.text.left");
-        LIST_RBRACKET = _cfg.get("block.label.list.text.right");
-        LIST_SEPARATOR = _cfg.get("block.label.list.text.separator");
+        LIST_LBRACKET       = _cfg.get("block.label.list.text.left");
+        LIST_RBRACKET       = _cfg.get("block.label.list.text.right");
+        LIST_SEPARATOR      = _cfg.get("block.label.list.text.separator");
         LIST_TAIL_SEPARATOR = _cfg.get("block.label.list.text.tailSeparator");
-
-        String[] types = new String[] { "tag", "sort", "attribute", "list",
-                "any", "species", "node.internal", "node.leaf" };
-
+        
+        String[] types = new String[] {
+            "tag",
+            "sort",
+            "attribute",
+            "list",
+            "any",
+            "species",
+            "node.internal",
+            "node.leaf"
+        };
+        
         // instantiante all label styles
         for (String type : types)
             getLabelStyle(type);
@@ -80,63 +87,58 @@ public class LabelFactory {
         }
         return ls;
     }
-
+    
     private void initLabelStyle(LabelStyle ls) {
         String type = "block.label." + ls.getName();
-        ls.setFont(_cfg.getFont(type + ".fontSpec"));
-        ls.setTextColor(_cfg.getColor(type + ".text.color"));
-        ls.setTextAltColor(_cfg.getColor(type + ".text.colorAlt"));
-        ls.setMarginTop(_cfg.getInt(type + ".margin.top"));
-        ls.setMarginLeft(_cfg.getInt(type + ".margin.left"));
-        ls.setMarginRight(_cfg.getInt(type + ".margin.right"));
-        ls.setMarginBottom(_cfg.getInt(type + ".margin.bottom"));
-        ls.setFrameThickness(_cfg.getInt(type + ".frame.thickness"));
-        ls.setFrameColor(_cfg.getColor(type + ".frame.color"));
-        ls.setFrameDashed(_cfg.getBool(type + ".frame.isDashed"));
+        ls.setFont(
+                _cfg.getFont(type + ".fontSpec"));
+        ls.setTextColor(
+                _cfg.getColor(type + ".text.color"));
+        ls.setTextAltColor(
+                _cfg.getColor(type + ".text.colorAlt"));
+        ls.setMarginTop(
+                _cfg.getInt(type + ".margin.top"));
+        ls.setMarginLeft(
+                _cfg.getInt(type + ".margin.left"));
+        ls.setMarginRight(
+                _cfg.getInt(type + ".margin.right"));
+        ls.setMarginBottom(
+                _cfg.getInt(type + ".margin.bottom"));
+        ls.setFrameThickness(
+                _cfg.getInt(type + ".frame.thickness"));
+        ls.setFrameColor(
+                _cfg.getColor(type + ".frame.color"));
+        ls.setFrameDashed(
+                _cfg.getBool(type + ".frame.isDashed"));
     }
-
+    
     void updateConfig() {
         updateConfig(_cfg);
     }
-
+    
     void updateConfig(Config cfg) {
         for (LabelStyle s : _labelStyles.values()) {
-            cfg.set("block.label." + s.getName() + ".fontSpec", s.getFont());
-            cfg.set("block.label." + s.getName() + ".text.color", s
-                    .getTextColor());
-            cfg.set("block.label." + s.getName() + ".text.colorAlt", s
-                    .getTextAltColor());
-            cfg.set("block.label." + s.getName() + ".margin.top", s
-                    .getMarginTop());
-            cfg.set("block.label." + s.getName() + ".margin.left", s
-                    .getMarginLeft());
-            cfg.set("block.label." + s.getName() + ".margin.right", s
-                    .getMarginRight());
-            cfg.set("block.label." + s.getName() + ".margin.bottom", s
-                    .getMarginBottom());
-            cfg.set("block.label." + s.getName() + ".frame.thickness", s
-                    .getFrameThickness());
-            cfg.set("block.label." + s.getName() + ".frame.color", s
-                    .getFrameColor());
-            cfg.set("block.label." + s.getName() + ".frame.isDashed", s
-                    .isFrameDashed());
+            cfg.set("block.label." + s.getName() + ".fontSpec",      s.getFont());
+            cfg.set("block.label." + s.getName() + ".text.color",    s.getTextColor());
+            cfg.set("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());
+            cfg.set("block.label." + s.getName() + ".margin.top",    s.getMarginTop());
+            cfg.set("block.label." + s.getName() + ".margin.left",   s.getMarginLeft());
+            cfg.set("block.label." + s.getName() + ".margin.right",  s.getMarginRight());
+            cfg.set("block.label." + s.getName() + ".margin.bottom",   s.getMarginBottom());
+            cfg.set("block.label." + s.getName() + ".frame.thickness", s.getFrameThickness());
+            cfg.set("block.label." + s.getName() + ".frame.color",     s.getFrameColor());
+            cfg.set("block.label." + s.getName() + ".frame.isDashed",  s.isFrameDashed());
         }
     }
-
+    
     void updateSelf() {
         init();
         for (LabelStyle ls : _labelStyles.values())
             initLabelStyle(ls);
     }
 
-    public ContentLabel createContentLabel(String text, LabelStyle style,
-            BlockPanel panel) {
+    public ContentLabel createContentLabel(String text, LabelStyle style, BlockPanel panel) {
         return new ContentLabel(panel, style, text);
-    }
-
-    public EmptyContentLabel createEmptyContentLabel(String text,
-            LabelStyle style, BlockPanel panel) {
-        return new EmptyContentLabel(panel, style, text);
     }
 
     public Label createLabel(String text, LabelStyle style, BlockPanel panel) {
@@ -146,9 +148,9 @@ public class LabelFactory {
     public ContentLabel createTagLabel(String text, BlockPanel panel) {
         return createContentLabel(text, getLabelStyle("tag"), panel);
     }
-
-    public EmptyContentLabel createEmptyTagLabel(String text, BlockPanel panel) {
-        return createEmptyContentLabel(text, getLabelStyle("tag"), panel);
+    
+    public Label createUnboundVarLabel(String text, BlockPanel panel) {
+        return createLabel(text, getLabelStyle("unbound"), panel);
     }
 
     public ContentLabel createSortLabel(String text, BlockPanel panel) {
@@ -170,9 +172,10 @@ public class LabelFactory {
     public Label createListSeparatorLabel(BlockPanel panel) {
         return createLabel(LIST_SEPARATOR, getLabelStyle("list"), panel);
     }
-
+    
     public Label createListTailSeparatorLabel(BlockPanel panel) {
-        return createLabel(LIST_TAIL_SEPARATOR, getLabelStyle("list"), panel);
+        return createLabel(
+            LIST_TAIL_SEPARATOR, getLabelStyle("list"), panel);
     }
 
     public Label createAnyLabel(String text, BlockPanel panel) {
