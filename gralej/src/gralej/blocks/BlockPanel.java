@@ -105,7 +105,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         @Override
         public void removeNotify() {
             super.removeNotify();
-            System.err.println("-- remove notify");
+            //System.err.println("-- remove notify");
             _bp._style.removeStyleChangeListener(_bp);
         }
         
