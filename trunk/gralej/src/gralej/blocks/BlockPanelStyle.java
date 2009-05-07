@@ -31,8 +31,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -130,7 +130,7 @@ public class BlockPanelStyle implements ChangeListener {
     }
     
     // style listeners
-    private Set<StyleChangeListener> _changeListeners = new HashSet();
+    private Map<StyleChangeListener,Object> _changeListeners = new WeakHashMap<StyleChangeListener,Object>();
     // labels
     private LabelFactory _labfac;
     // layouts
@@ -313,7 +313,7 @@ public class BlockPanelStyle implements ChangeListener {
     }
     
     public void addStyleChangeListener(StyleChangeListener l) {
-        _changeListeners.add(l);
+        _changeListeners.put(l, null);
     }
     
     public void removeStyleChangeListener(StyleChangeListener l) {
@@ -321,8 +321,10 @@ public class BlockPanelStyle implements ChangeListener {
     }
     
     public void fireStyleChanged() {
-        for (StyleChangeListener l : _changeListeners)
-            l.styleChanged(this);
+        for (StyleChangeListener l : _changeListeners.keySet()) {
+            if (l != null)
+                l.styleChanged(this);
+        }
     }
 
     private void configChanged() {
