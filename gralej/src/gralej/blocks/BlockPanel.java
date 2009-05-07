@@ -26,6 +26,7 @@ package gralej.blocks;
 
 import gralej.Config;
 import gralej.util.ChangeEventSource;
+import gralej.util.Log;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -52,6 +53,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -80,6 +82,20 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     
     private int _lastMousePressedX;
     private int _lastMousePressedY;
+    
+    private static class SelectionEventSource extends ChangeEventSource {
+        void fire(BlockPanel bp) {
+            fireStateChanged(bp);
+        }
+    }
+    
+    private SelectionEventSource _selectionChangedEvent = new SelectionEventSource();
+    public void addSelectionListener(ChangeListener l) {
+        _selectionChangedEvent.addChangeListener(l);
+    }
+    public void removeSelectionListener(ChangeListener l) {
+        _selectionChangedEvent.removeChangeListener(l);
+    }
     
     private class DrawingPane extends JPanel {
         @Override
@@ -287,8 +303,15 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     public void setSelectedBlock(Block b) {
         if (_selectedBlock == b)
             return;
+        if (b != null && b.getModel() == null)
+            b = null;
         _selectedBlock = b;
         _canvas.repaint();
+        _selectionChangedEvent.fire(this);
+    }
+    
+    public Block getSelectedBlock() {
+        return _selectedBlock;
     }
     
     public void setAutoResize(boolean autoResize) {
@@ -399,15 +422,26 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         int x = unscale(e.getX());
         int y = unscale(e.getY());
         if (e.getButton() == MouseEvent.BUTTON1) { // left button
-            ContentLabel target = findContainingContentLabel(x, y);
+            Block target = findContainingBlock(_content, x, y);
             if (target != null) {
-                int relX = e.getX() - scale(target.getX());
-                int relY = e.getY() - scale(target.getY());
-                target.flipContentVisibility();
-                scrollTo(target, e.getX() - relX, e.getY() - relY, e);
-                if (_selectOnClick)
-                    setSelectedBlock(target);
-                //updateCursorForPoint(x, y);
+                if (!e.isControlDown() && target instanceof ContentLabel) {
+                    ContentLabel contentLabel = (ContentLabel) target;
+                    int relX = e.getX() - scale(contentLabel.getX());
+                    int relY = e.getY() - scale(contentLabel.getY());
+                    contentLabel.flipContentVisibility();
+                    scrollTo(contentLabel, e.getX() - relX, e.getY() - relY, e);
+                    //updateCursorForPoint(x, y);
+                }
+                if (_selectOnClick) {
+                    if (target instanceof Label) {
+                        //TODO: if Ctrl -> add to selection
+                        setSelectedBlock(target);
+                    }
+                    else {
+                        //TODO: clear selection
+                        setSelectedBlock(null);
+                    }
+                }
             }
             else {
                 setSelectedBlock(null);
@@ -580,5 +614,41 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                 w = scale(b.getWidth()),
                 h = scale(b.getHeight());
         return r.contains(x, y, w, h);
+    }
+    
+    public void ensureVisible(Block b) {
+        if (b.getRoot() != _content) {
+            Log.warning("Cannot ensure the visibility of a foreign block", b);
+            System.err.println(b.getRoot());
+            System.err.println(_content);
+            return;
+        }
+        for (Block p = b.getParent(); p != null; p = p.getParent()) {
+            if (p.isVisible())
+                continue;
+            if (p.getParent() == null)
+                break;
+            // make it visible through the content label
+            ContentLabel cl = null;
+            for (Block c : p.getParent().getChildren()) {
+                if (c instanceof ContentLabel) {
+                    cl = (ContentLabel) c;
+                    break;
+                }
+            }
+            if (cl != null) {
+                cl.flip();
+            }
+            else {
+                Log.warning("Invisible block not controlled by a content label???", p);
+                p.setVisible(true);
+            }
+        }
+        if (!b.isVisible()) {
+            if (b.getParent() != null && b.getParent() instanceof AVPairBlock)
+                ((AVPairBlock)b.getParent()).getAttribute().flip();
+            else
+                b.setVisible(true);
+        }
     }
 }

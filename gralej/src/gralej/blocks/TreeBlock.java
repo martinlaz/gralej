@@ -37,7 +37,7 @@ public class TreeBlock extends ContainerBlock {
         addNode(root);
     }
 
-    public NodeBlock getRoot() {
+    public NodeBlock getRootNode() {
         return (NodeBlock) _children.get(0);
     }
 

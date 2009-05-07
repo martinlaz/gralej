@@ -33,6 +33,8 @@ class OM {
         final static int STRUCKOUT = 4;
         final static int MULTILINE = 8;
         final static int EXPANDED = 16;
+        
+        final static Flags DEFAULT_FLAGS = new Flags();
 
         int flags;
 
@@ -204,7 +206,7 @@ class OM {
 
         TFS(Flags flags, String typeName,
                 java.util.List<IFeatureValuePair> featVals) {
-            super(flags);
+            super(Flags.DEFAULT_FLAGS);
             _typeName = typeName;
             _featVals = featVals;
         }
@@ -226,12 +228,13 @@ class OM {
         }
     }
 
-    static class Tree implements ITree {
+    static class Tree extends Entity implements ITree {
         String _label;
         IEntity _content;
         java.util.List<ITree> _children;
 
         Tree(String label, java.util.List<ITree> children) {
+            super(new Flags());
             _label = label;
             _children = children;
         }
