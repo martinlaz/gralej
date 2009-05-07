@@ -98,6 +98,17 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     private class DrawingPane extends JPanel {
+        BlockPanel _bp;
+        DrawingPane(BlockPanel bp) {
+            _bp = bp;
+        }
+        @Override
+        public void removeNotify() {
+            super.removeNotify();
+            System.err.println("-- remove notify");
+            _bp._style.removeStyleChangeListener(_bp);
+        }
+        
         @Override
         protected void paintComponent(Graphics g_) {
             super.paintComponent(g_);
@@ -195,18 +206,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style, boolean autoExpandTags) {
-        final BlockPanel thisPanel = this;
-        
-        _ui = new JPanel() {
-            @Override
-            public void removeNotify() {
-                super.removeNotify();
-                _style.removeStyleChangeListener(thisPanel);
-            }
-        };
+        _ui = new JPanel();
         _ui.setLayout(new BorderLayout());
         
-        _canvas = new DrawingPane();
+        _canvas = new DrawingPane(this);
         
         _scrollPane = new ScrollPane(_canvas, this);
         _ui.add(_scrollPane, BorderLayout.CENTER);
