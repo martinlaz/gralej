@@ -79,7 +79,7 @@ public abstract class Finder {
                 Label lab = (Label) b;
                 if (matches(lab)) {
                     // ensure the label is visible
-                    ensureVisible(b);
+                    _panel.ensureVisible(b);
                     _panel.centerBlock(b);
                     _panel.setSelectedBlock(b);
                     return true;
@@ -90,35 +90,5 @@ public abstract class Finder {
         }
         _panel.setSelectedBlock(null);
         return false;
-    }
-    
-    private static void ensureVisible(Block b) {
-        for (Block p = b.getParent(); p != null; p = p.getParent()) {
-            if (p.isVisible())
-                continue;
-            if (p.getParent() == null)
-                break;
-            // make it visible through the content label
-            ContentLabel cl = null;
-            for (Block c : p.getParent().getChildren()) {
-                if (c instanceof ContentLabel) {
-                    cl = (ContentLabel) c;
-                    break;
-                }
-            }
-            if (cl != null) {
-                cl.flip();
-            }
-            else {
-                Log.warning("FINDER: Invisible block not controlled by a content label???", p);
-                p.setVisible(true);
-            }
-        }
-        if (!b.isVisible()) {
-            if (b.getParent() != null && b.getParent() instanceof AVPairBlock)
-                ((AVPairBlock)b.getParent()).getAttribute().flip();
-            else
-                b.setVisible(true);
-        }
     }
 }

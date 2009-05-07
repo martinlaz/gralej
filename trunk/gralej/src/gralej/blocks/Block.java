@@ -24,6 +24,7 @@
 
 package gralej.blocks;
 
+import gralej.om.IEntity;
 import java.util.Collections;
 import java.awt.Graphics2D;
 import java.util.List;
@@ -39,6 +40,7 @@ public abstract class Block {
     private int _width = -1, _height = -1;
     private BlockPanel _panel;
     private ContainerBlock _parent;
+    private IEntity _model;
     
     protected BlockPanel getPanel() {
         assert _panel != null;
@@ -52,6 +54,15 @@ public abstract class Block {
     protected void setPanel(BlockPanel panel) {
         assert _panel == null;
         _panel = panel;
+    }
+    
+    public void setModel(IEntity model) {
+        assert _model == null;
+        _model = model;
+    }
+    
+    public IEntity getModel() {
+        return _model;
     }
     
     // visibility
@@ -148,6 +159,12 @@ public abstract class Block {
         if (_parent == null)
             return "";
         return _parent.getPath() + "/" + _parent.indexOf(this);
+    }
+    
+    public Block getRoot() {
+        if (_parent == null)
+            return this;
+        return _parent.getRoot();
     }
 
     public void paint(Graphics2D g) {

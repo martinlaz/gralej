@@ -72,6 +72,7 @@ public class BlockCreator extends AbstractVisitor {
         }
 
         _result = new ListBlock(_panel, new ListContentBlock(_panel, ll, tail));
+        _result.setModel(ls);
     }
 
     @Override
@@ -84,8 +85,16 @@ public class BlockCreator extends AbstractVisitor {
                     getContentCreator(tag.target()));
         }
         else {
-            Label unboundVarLabel = _labfac.createUnboundVarLabel(tag.number() + "", _panel);
-            _result = filterLabel(unboundVarLabel, tag);
+            Label lab = _labfac.createUnboundVarLabel(tag.number() + "", _panel);
+            lab.setModel(tag);
+            final Label unboundVarLabel = filterLabel(lab, tag);
+            _result = new ContainerBlock() {
+                {
+                    setPanel(_panel);
+                    setLayout(LayoutFactory.getInstance().getReentrancyLayout());
+                    addChild(unboundVarLabel);
+                }
+            };
         }
     }
 
@@ -122,6 +131,7 @@ public class BlockCreator extends AbstractVisitor {
     @Override
     public void visit(ITree tree) {
         _result = new TreeBlock(_panel, createTree(tree));
+        _result.setModel(tree);
     }
 
     private NodeBlock createTree(ITree u) {
@@ -134,11 +144,14 @@ public class BlockCreator extends AbstractVisitor {
                 childNodes.add(createTree(v));
             label = _labfac.createInternalNodeLabel(u.label(), _panel);
         }
+        label.setModel(u);
 
         u.content().accept(this);
         Block content = _result;
 
-        return new NodeBlock(_panel, label, content, childNodes);
+        NodeBlock nodeBlock = new NodeBlock(_panel, label, content, childNodes);
+        nodeBlock.setModel(u);
+        return nodeBlock;
     }
 
     private ContentCreator getContentCreator(final IEntity entity) {
@@ -163,6 +176,7 @@ public class BlockCreator extends AbstractVisitor {
     private static Label filterLabel(Label l, IEntity e) {
         l.setDifferent(e.isDifferent());
         l.setStruckOut(e.isStruckout());
+        l.setModel(e);
         return l;
     }
     

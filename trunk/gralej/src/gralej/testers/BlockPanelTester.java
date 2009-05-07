@@ -1,5 +1,6 @@
 package gralej.testers;
 
+import gralej.blocks.Block;
 import gralej.controller.StreamInfo;
 import gralej.blocks.BlockPanel;
 import gralej.parsers.GraleParserFactory;
@@ -17,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class BlockPanelTester {
 
@@ -24,6 +27,7 @@ public class BlockPanelTester {
     final static String STREAM_INFO_TYPE = "grisu";
     public JFrame lastFrame;
     public BlockPanel lastPanel;
+    public IDataPackage lastDataPackage;
 
     /**
      * @param args
@@ -98,7 +102,16 @@ public class BlockPanelTester {
         f.setTitle(datapak.getTitle());
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setLocationByPlatform(true);
-        BlockPanel blockPanel = new BlockPanel(datapak.getModel());
+        final BlockPanel blockPanel = new BlockPanel(datapak.getModel());
+        blockPanel.addSelectionListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                Block b = blockPanel.getSelectedBlock();
+                String path = null;
+                if (b != null)
+                    path = b.getPath();
+                System.err.println("selection changed; path: " + path);
+            }
+        });
         JPanel view = blockPanel.getUI();
         //view.setOpaque(true);
         //f.setContentPane(view);
@@ -107,6 +120,7 @@ public class BlockPanelTester {
         f.setVisible(true);
         lastFrame = f;
         lastPanel = blockPanel;
+        lastDataPackage = datapak;
     }
 
     static InputStream stringToInputStream(String s) {

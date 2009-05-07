@@ -312,7 +312,7 @@ public final class Config extends ChangeEventSource {
         set(key, font.getName() + "-" + style + "-" + font.getSize());
     }
     
-    // some conviniences
+    // some conveniences
     public static String s(String key) {
         return currentConfig().get(key);
     }

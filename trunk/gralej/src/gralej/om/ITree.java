@@ -24,7 +24,7 @@
 
 package gralej.om;
 
-public interface ITree extends IVisitable {
+public interface ITree extends IEntity {
     String label();
 
     IEntity content();
