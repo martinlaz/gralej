@@ -59,4 +59,38 @@ public class AVPairBlock extends ContentOwningBlock {
     public Block getValue() {
         return getContent();
     }
+    
+    @Override
+    protected Block getEastNeighbour(Block child) {
+        if (child == getAttribute()) {
+            Block b = getValue();
+            if (b.isVisible())
+                return b.getPrincipalBlock();
+        }
+        return getParent().getEastNeighbour(this);
+    }
+    
+    @Override
+    protected Block getWestNeighbour(Block child) {
+        if (child == getValue()) {
+            return getAttribute();
+        }
+        return getParent().getWestNeighbour(this);
+    }
+    
+    @Override
+    protected Block getNorthNeighbour(Block child) {
+        if (child == getValue()) {
+            return getAttribute();
+        }
+        return super.getNorthNeighbour(this);
+    }
+    
+    @Override
+    protected Block getSouthNeighbour(Block child) {
+        if (child == getValue()) {
+            return getAttribute();
+        }
+        return super.getSouthNeighbour(this);
+    }
 }

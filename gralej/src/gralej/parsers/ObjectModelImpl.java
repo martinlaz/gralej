@@ -62,6 +62,13 @@ class OM {
             flags |= HIDDEN;
         }
 
+        void setDifferent(boolean flag) {
+            if (flag)
+                flags |= DIFFERENT;
+            else
+                flags &= ~DIFFERENT;
+        }
+        
         void setDifferent() {
             flags |= DIFFERENT;
         }
@@ -84,6 +91,8 @@ class OM {
 
         Entity(Flags flags) {
             _flags = flags;
+            if (flags.flags == 0)
+                _flags = OM.Flags.DEFAULT_FLAGS;
         }
 
         public boolean isHidden() {
@@ -92,6 +101,12 @@ class OM {
 
         public boolean isDifferent() {
             return _flags.isDifferent();
+        }
+        
+        public void setDifferent(boolean flag) {
+            if (_flags == Flags.DEFAULT_FLAGS)
+                _flags = new OM.Flags();
+            _flags.setDifferent(flag);
         }
 
         public boolean isStruckout() {
@@ -199,20 +214,35 @@ class OM {
             v.visit(this);
         }
     }
+    
+    static class Type extends Entity implements IType {
+        String _typeName;
+        Type(Flags flags, String typeName) {
+            super(flags);
+            _typeName = typeName;
+        }
+        public String typeName() {
+            return _typeName;
+        }
+    }
 
     static class TFS extends Entity implements ITypedFeatureStructure {
-        String _typeName;
+        IType _type;
         java.util.List<IFeatureValuePair> _featVals;
 
-        TFS(Flags flags, String typeName,
+        TFS(Flags flags, IType type,
                 java.util.List<IFeatureValuePair> featVals) {
-            super(Flags.DEFAULT_FLAGS);
-            _typeName = typeName;
+            super(flags);
+            _type = type;
             _featVals = featVals;
         }
 
         public String typeName() {
-            return _typeName;
+            return _type.typeName();
+        }
+        
+        public IType type() {
+            return _type;
         }
 
         public Iterable<IFeatureValuePair> featureValuePairs() {
@@ -234,7 +264,7 @@ class OM {
         java.util.List<ITree> _children;
 
         Tree(String label, java.util.List<ITree> children) {
-            super(new Flags());
+            super(Flags.DEFAULT_FLAGS);
             _label = label;
             _children = children;
         }

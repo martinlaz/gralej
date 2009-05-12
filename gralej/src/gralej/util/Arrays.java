@@ -30,7 +30,7 @@ public class Arrays {
         for (int i = 0; i < objects.length; ++i) {
             if (i > 0)
                 sb.append(delimiter);
-            sb.append(objects[i].toString());
+            sb.append(objects[i]);
         }
         return sb.toString();
     }

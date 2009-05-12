@@ -41,10 +41,6 @@ public class Label extends Block {
     int _th; // height
     int _ascent;
     
-    // diff
-    boolean _different;
-    boolean _struckOut;
-    
     Label(BlockPanel panel, LabelStyle style, String text) {
         _style = style;
         setPanel(panel);
@@ -92,28 +88,20 @@ public class Label extends Block {
         _ascent = fm.getAscent();
     }
 
-    public boolean isDifferent() {
-        return _different;
-    }
-
-    public void setDifferent(boolean different) {
-        _different = different;
-    }
-
     public boolean isStruckOut() {
-        return _struckOut;
+        if (getModel() != null)
+            return getModel().isStruckout();
+        return false;
     }
 
-    public void setStruckOut(boolean strikeThrough) {
-        _struckOut = strikeThrough;
-    }
-    
     protected boolean useTextAltColor() {
         return false;
     }
     
     @Override
     public void paint(Graphics2D g) {
+        super.paint(g);
+        
         int x = getX();
         int y = getY();
         int w = getWidth();
@@ -130,10 +118,10 @@ public class Label extends Block {
         }
         
         Color color;
-        if (_different)
+        if (isDifferent())
             color = getPanelStyle().getDifferentTextColor();
         else if (useTextAltColor())
-            color =_style.getTextAltColor();
+            color = _style.getTextAltColor();
         else
             color = _style.getTextColor();
 
@@ -143,7 +131,7 @@ public class Label extends Block {
         y += _style.getMarginTop() + _ascent;
         g.drawString(_visibleText, x, y);
         
-        if (_struckOut) {
+        if (isStruckOut()) {
             g.setColor(getPanelStyle().getStrikethroughLineColor());
             y = getY();
             g.drawLine(

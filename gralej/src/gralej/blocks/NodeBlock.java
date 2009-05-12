@@ -27,6 +27,7 @@ package gralej.blocks;
 import java.util.List;
 
 public class NodeBlock extends ContentOwningBlock {
+    private NodeBlock _parentNode;
     private List<NodeBlock> _childNodes;
 
     NodeBlock(BlockPanel panel, Label label, Block content, List<NodeBlock> childNodes) {
@@ -51,5 +52,55 @@ public class NodeBlock extends ContentOwningBlock {
 
     public boolean isLeafNode() {
         return _childNodes.isEmpty();
+    }
+    
+    void setParentNode(NodeBlock parentNode) {
+        assert _parentNode == null;
+        _parentNode = parentNode;
+    }
+    
+    @Override
+    protected Block getNorthNeighbour(Block child) {
+        if (child == getContent())
+            return getLabel();
+        if (_parentNode != null)
+            return _parentNode.getPrincipalBlock();
+        return null;
+    }
+    
+    @Override
+    protected Block getSouthNeighbour(Block child) {
+        if (child == getLabel()) {
+            Block b = getContent();
+            if (b != null && b.isVisible() && b instanceof ContainerBlock)
+                return ((ContainerBlock)b).getPrincipalBlock();
+        }
+        if (!isLeafNode())
+            return _childNodes.get(0).getPrincipalBlock();
+        return null;
+    }
+    
+    @Override
+    protected Block getEastNeighbour(Block child) {
+        if (child != getLabel())
+            return getLabel();
+        if (_parentNode == null)
+            return null;
+        int i = _parentNode._childNodes.indexOf(this);
+        if (i == _parentNode._childNodes.size() - 1)
+            return null;
+        return _parentNode._childNodes.get(i + 1).getPrincipalBlock();
+    }
+    
+    @Override
+    protected Block getWestNeighbour(Block child) {
+        if (child != getLabel())
+            return getLabel();
+        if (_parentNode == null)
+            return null;
+        int i = _parentNode._childNodes.indexOf(this);
+        if (i == 0)
+            return null;
+        return _parentNode._childNodes.get(i - 1).getPrincipalBlock();
     }
 }

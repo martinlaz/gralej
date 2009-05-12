@@ -29,6 +29,7 @@ public interface IEntity extends IVisitable {
     boolean isHidden();
 
     boolean isDifferent();
+    void setDifferent(boolean flag);
 
     boolean isStruckout();
 

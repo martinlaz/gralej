@@ -145,4 +145,43 @@ public abstract class ContainerBlock extends Block {
             return child;
         return null;
     }
+    
+    @Override Block getPrincipalBlock() {
+        for (Block b : _children) {
+            if (!b.isVisible())
+                continue;
+            if (b instanceof ContainerBlock) {
+                b = ((ContainerBlock) b).getPrincipalBlock();
+                if (b != null)
+                    return b;
+            }
+            else if (b instanceof ContentLabel && b.isVisible())
+                return b;
+        }
+        return null;
+    }
+    
+    protected Block getWestNeighbour(Block child) {
+        if (getParent() != null)
+            return getParent().getWestNeighbour(this);
+        return null;
+    }
+    
+    protected Block getNorthNeighbour(Block child) {
+        if (getParent() != null)
+            return getParent().getNorthNeighbour(this);
+        return null;
+    }
+    
+    protected Block getEastNeighbour(Block child) {
+        if (getParent() != null)
+            return getParent().getEastNeighbour(this);
+        return null;
+    }
+    
+    protected Block getSouthNeighbour(Block child) {
+        if (getParent() != null)
+            return getParent().getSouthNeighbour(this);
+        return null;
+    }
 }

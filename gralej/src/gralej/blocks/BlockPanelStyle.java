@@ -177,6 +177,8 @@ public class BlockPanelStyle implements ChangeListener {
     Color selectionBackgroundColor;
     @Key("block.panel.selection.frame.color")
     Color selectionFrameColor;
+    @Key("block.panel.different.background.color")
+    Color differentBackgroundColor;
     
     // different labels
     @Key("block.label._diff.text.color")
@@ -295,11 +297,15 @@ public class BlockPanelStyle implements ChangeListener {
     public void setTreeEdgeColor(Color treeEdgeColor) {
         this.treeEdgeColor = treeEdgeColor;
     }
+    
+    public Color getDifferentBackgroundColor() {
+        return differentBackgroundColor;
+    }
 
     public Color getDifferentTextColor() {
         return differentTextColor;
     }
-
+    
     public void setDifferentTextColor(Color differentTextColor) {
         this.differentTextColor = differentTextColor;
     }

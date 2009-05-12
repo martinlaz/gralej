@@ -95,4 +95,30 @@ public class AVMBlock extends ContentOwningBlock {
         g.drawLine(x + w, y, x + w - e, y);
         g.drawLine(x + w, y + h, x + w - e, y + h);
     }
+    
+    @Override
+    protected Block getSouthNeighbour(Block child) {
+        if (child == getTypeLabel()) {
+            ContainerBlock b = getAVPairs();
+            if (b.isVisible())
+                return b.getPrincipalBlock();
+        }
+        return super.getSouthNeighbour(this);
+    }
+    
+    @Override
+    protected Block getEastNeighbour(Block child) {
+        if (child != getTypeLabel()) {
+            return getTypeLabel();
+        }
+        return getParent().getEastNeighbour(this);
+    }
+    
+    @Override
+    protected Block getWestNeighbour(Block child) {
+        if (child != getTypeLabel()) {
+            return getTypeLabel();
+        }
+        return getParent().getWestNeighbour(this);
+    }
 }

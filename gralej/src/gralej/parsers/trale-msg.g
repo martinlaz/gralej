@@ -131,7 +131,9 @@ featvals
         }
   .
 flags
-  ->  { return _flags = new OM.Flags(); } | flags flag { return _flags; }
+  ->    { return _flags = new OM.Flags(); }
+  | flags flag
+        { return _flags; }
   .
 ########################
 ## Structures ##########
@@ -190,12 +192,11 @@ struc
         {
             OM.TFS tfs = new OM.TFS(
                 (OM.Flags)_[1],
-                S(_[3]),        // type name
+                (OM.Type) _[3],
                 (L<IFeatureValuePair>)_[4]
                 );
             int id = N(_[2]);
             _id2ent.put(id, tfs);
-            
             
             // if not substructure of a reentrancy
             if (_reentr == 0)
@@ -219,10 +220,12 @@ featval
   .
 
 disjunction
-  ->  _BEGIN_DISJ flags id struct struct structs _RPAR . 
+  ->  _BEGIN_DISJ flags id struct struct structs _RPAR
+        { throw new NotImplementedException("disjunction"); } . 
 
 conjunction
-  ->  _BEGIN_CONJ flags id struct struct structs _RPAR .
+  ->  _BEGIN_CONJ flags id struct struct structs _RPAR
+        { throw new NotImplementedException("conjunction"); } . 
 
 list
   ->  _BEGIN_LIST flags id structs tail _RPAR
@@ -255,7 +258,7 @@ relation
 
 type
   ->  _LPAR flags id name _RPAR
-        { return _[3]; }
+        { return new OM.Type((OM.Flags)_[1], S(_[3])); }
   .
 
 ref
@@ -301,7 +304,7 @@ target      -> _INT .
 # Flags ################
 ########################
 flag        ->
-        hidden      { _flags.setHidden();       return null; }
+    |   hidden      { _flags.setHidden();       return null; }
     |   different   { _flags.setDifferent();    return null; }
     |   struckout   { _flags.setStruckout();    return null; }
     |   multiline   { _flags.setMultiline();    return null; }

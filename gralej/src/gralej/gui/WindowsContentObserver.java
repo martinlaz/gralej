@@ -181,6 +181,7 @@ public class WindowsContentObserver extends ContentObserver {
                     }
             });
             setVisible(true);
+            display.getCanvas().requestFocusInWindow();
         }
 
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
@@ -506,8 +507,10 @@ public class WindowsContentObserver extends ContentObserver {
             else if (source == m_Find) {
                 finder = FinderDialog.getFinder(this, display);
                 if (finder != null) {
-                    if (finder.find())
+                    if (finder.find()) {
+                        display.getCanvas().requestFocusInWindow();
                         m_FindNext.setEnabled(true);
+                    }
                     else {
                         JOptionPane.showMessageDialog(this, "No matches were found.");
                         finder = null;

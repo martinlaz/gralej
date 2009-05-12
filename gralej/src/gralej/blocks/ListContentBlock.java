@@ -46,4 +46,20 @@ public class ListContentBlock extends ContainerBlock {
         }
         sealChildren();
     }
+    
+    @Override
+    protected Block getWestNeighbour(Block child) {
+        int i = indexOf(child);
+        if (i == 0)
+            return getParent().getWestNeighbour(this);
+        return getChildren().get(i - 2).getPrincipalBlock();
+    }
+    
+    @Override
+    protected Block getEastNeighbour(Block child) {
+        int i = indexOf(child);
+        if (i == getChildren().size() - 1)
+            return getParent().getWestNeighbour(this);
+        return getChildren().get(i + 2).getPrincipalBlock();
+    }
 }

@@ -25,8 +25,10 @@
 package gralej.blocks;
 
 import gralej.om.IEntity;
+import java.awt.Color;
 import java.util.Collections;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.List;
 
 /**
@@ -155,6 +157,33 @@ public abstract class Block {
         return true;
     }
     
+    // the neighbourhood -- for keyboard navigation
+    //
+    Block getWestNeighbour() {
+        if (_parent != null)
+            return _parent.getWestNeighbour(this);
+        return null;
+    }
+    Block getNorthNeighbour() {
+        if (_parent != null)
+            return _parent.getNorthNeighbour(this);
+        return null;
+    }
+    Block getEastNeighbour() {
+        if (_parent != null)
+            return _parent.getEastNeighbour(this);
+        return null;
+    }
+    Block getSouthNeighbour() {
+        if (_parent != null)
+            return _parent.getSouthNeighbour(this);
+        return null;
+    }
+    
+    Block getPrincipalBlock() { return null; }
+    
+    // paths
+    //
     public String getPath() {
         if (_parent == null)
             return "";
@@ -166,8 +195,21 @@ public abstract class Block {
             return this;
         return _parent.getRoot();
     }
+    
+    public boolean isDifferent() {
+        if (_model != null)
+            return _model.isDifferent();
+        return false;
+    }
 
     public void paint(Graphics2D g) {
+        if (isDifferent()) {
+            Color oldColor = g.getColor();
+            g.setColor(getPanelStyle().getDifferentBackgroundColor());
+            Rectangle frame = new Rectangle(_x, _y, _width, _height);
+            g.fill(frame);
+            g.setColor(oldColor);
+        }
         for (Block child : getChildren())
             if (child.isVisible())
                 child.paint(g);
