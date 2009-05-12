@@ -32,7 +32,6 @@ import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.UnsupportedProtocolException;
-import gralej.prefs.GralePreferences;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Dimension;
@@ -41,6 +40,8 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Collections;
 import javax.swing.JApplet;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import netscape.javascript.JSObject;
 
 /**
@@ -105,10 +106,26 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
     public void showView(int i) {
         BlockPanel view = getView(i);
         if (view == null) return;
+        view.setAutoResize(true);
         _layout.show(getContentPane(), "_bp" + i);
         //validate();
         log("switching to view: " + i);
         panelResized(view);
+    }
+    
+    public void openViewInFrame(int i) {
+        if (_parseResults == null || i >= _parseResults.size())
+            return;
+        IDataPackage datapak = _parseResults.get(i);
+        JFrame f = new JFrame();
+        f.setTitle(datapak.getTitle());
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setLocationByPlatform(true);
+        final BlockPanel blockPanel = new BlockPanel(datapak.getModel());
+        JPanel view = blockPanel.getUI();
+        f.add(view);
+        f.pack();
+        f.setVisible(true);
     }
     
     public void panelResized(BlockPanel bp) {
@@ -123,8 +140,8 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         return BlockPanelStyle.getInstance();
     }
     
-    public static GralePreferences getPreferences() {
-        return GralePreferences.getInstance();
+    public static Config getPreferences() {
+        return Config.defaultConfig();
     }
     
     public static Color decodeColor(String s) {
