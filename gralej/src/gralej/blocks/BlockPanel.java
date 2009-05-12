@@ -605,7 +605,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             }
         }
         if (b != null) {
-            //ensureVisible(b);   // contents of tags might be invisible
+            ensureVisible(b);
             if (!isBlockVisible(b))
                 centerBlock(b);
             setSelectedBlock(b, addToHistory);
