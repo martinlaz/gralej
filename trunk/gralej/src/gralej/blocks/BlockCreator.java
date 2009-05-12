@@ -78,16 +78,18 @@ public class BlockCreator extends AbstractVisitor {
     @Override
     public void visit(ITag tag) {
         if (tag.target() != null) {
+            ContentLabel lab = _labfac.createTagLabel(tag.number() + "", _panel);
+            lab.setModel(tag);
             _result = new ReentrancyBlock(
                     _panel,
-                    filterLabel(_labfac.createTagLabel(tag.number() + "", _panel), tag),
+                    lab,
                     tag.number(),
                     getContentCreator(tag.target()));
         }
         else {
             Label lab = _labfac.createUnboundVarLabel(tag.number() + "", _panel);
             lab.setModel(tag);
-            final Label unboundVarLabel = filterLabel(lab, tag);
+            final Label unboundVarLabel = lab;
             _result = new ContainerBlock() {
                 {
                     setPanel(_panel);
@@ -100,32 +102,38 @@ public class BlockCreator extends AbstractVisitor {
 
     @Override
     public void visit(IAny any) {
-        _result = filterLabel(_labfac.createAnyLabel(any.value(), _panel), any);
+        _result = _labfac.createAnyLabel(any.value(), _panel);
+        _result.setModel(any);
     }
 
     @Override
     public void visit(ITypedFeatureStructure tfs) {
         if (tfs.isSpecies()) {
-            _result = filterLabel(_labfac.createSpeciesLabel(tfs.typeName(), _panel), tfs);
+            _result = _labfac.createSpeciesLabel(tfs.typeName(), _panel);
+            _result.setModel(tfs.type());
             return;
         }
 
         List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
 
         for (IFeatureValuePair featVal : tfs.featureValuePairs()) {
-            ContentLabel alab = filterLabel(_labfac.createAttributeLabel(
-                    featVal.feature().toUpperCase(), _panel), featVal);
+            ContentLabel alab = _labfac.createAttributeLabel(
+                    featVal.feature().toUpperCase(), _panel);
+            alab.setModel(featVal);
             featVal.value().accept(this);
             ll.add(new AVPairBlock(_panel, alab, _result, featVal.isHidden()));
             if (featVal.isHidden())
                 alab.flip();
         }
 
+        ContentLabel sortLabel = _labfac.createSortLabel(tfs.typeName(), _panel);
+        sortLabel.setModel(tfs.type());
         _result = new AVMBlock(
                 _panel,
-                filterLabel(_labfac.createSortLabel(tfs.typeName(), _panel), tfs),
+                sortLabel,
                 new AVPairListBlock(_panel, ll)
                 );
+        _result.setModel(tfs);
     }
 
     @Override
@@ -151,6 +159,8 @@ public class BlockCreator extends AbstractVisitor {
 
         NodeBlock nodeBlock = new NodeBlock(_panel, label, content, childNodes);
         nodeBlock.setModel(u);
+        for (NodeBlock childNode : childNodes)
+            childNode.setParentNode(nodeBlock);
         return nodeBlock;
     }
 
@@ -171,17 +181,5 @@ public class BlockCreator extends AbstractVisitor {
             _contentCreatorCache.put(entity, cc);
         }
         return cc;
-    }
-    
-    private static Label filterLabel(Label l, IEntity e) {
-        l.setDifferent(e.isDifferent());
-        l.setStruckOut(e.isStruckout());
-        l.setModel(e);
-        return l;
-    }
-    
-    private static ContentLabel filterLabel(ContentLabel l, IEntity e) {
-        filterLabel((Label)l, e);
-        return l;
     }
 }

@@ -68,4 +68,27 @@ public class AVPairListBlock extends ContainerBlock {
         }
         updateSelf();
     }
+    
+    @Override
+    protected Block getSouthNeighbour(Block child) {
+        boolean found = false;
+        for (Block b : getChildren()) {
+            if (found)
+                return b.getPrincipalBlock();
+            if (b == child)
+                found = true;
+        }
+        return super.getSouthNeighbour(this);
+    }
+    
+    @Override
+    protected Block getNorthNeighbour(Block child) {
+        Block found = getParent();
+        for (Block b : getChildren()) {
+            if (b == child)
+                break;
+            found = b;
+        }
+        return found.getPrincipalBlock();
+    }
 }

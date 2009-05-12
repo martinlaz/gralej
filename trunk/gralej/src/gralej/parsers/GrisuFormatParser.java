@@ -35,11 +35,22 @@ import tomato.Parser;
 
 class GrisuFormatParser implements IGraleParser {
 
+    private final static String GRISU_STREAM_ENCODING = "GRISU_STREAM_ENCODING";
+    
     private Parser _parser;
     private TraleMsgLexer _lexer;
     private TraleMsgHandler _grammarHandler;
+    private String _inputEncoding;
 
     public GrisuFormatParser() {
+        try {
+            _inputEncoding = System.getProperty(GRISU_STREAM_ENCODING);
+            if (_inputEncoding == null)
+                _inputEncoding = System.getenv(GRISU_STREAM_ENCODING);
+        }
+        catch (SecurityException ex) {
+            // ignore
+        }
         try {
             LRTable lr = loadLRTable();
             _parser = new Parser(lr);
@@ -114,7 +125,19 @@ class GrisuFormatParser implements IGraleParser {
         _grammarHandler._helper.setResultReceiver(receiver);
         _grammarHandler._helper.setCharBuffer(_lexer.getCharBuffer());
         _grammarHandler._helper.setStreamInfo(meta);
-        _lexer.reset(new InputStreamReader(s));
+        Reader r = null;
+        if (_inputEncoding != null) {
+            try {
+                r = new InputStreamReader(s, _inputEncoding);
+                Log.debug("using encoding:", _inputEncoding);
+            }
+            catch (UnsupportedEncodingException ex) {
+                Log.warning(ex);
+            }
+        }
+        if (r == null)
+            r = new InputStreamReader(s);
+        _lexer.reset(r);
         Thread t = new Thread(new Runnable() {
 
             public void run() {

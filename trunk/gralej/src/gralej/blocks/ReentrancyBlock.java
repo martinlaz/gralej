@@ -84,4 +84,22 @@ public class ReentrancyBlock extends ContentOwningBlock {
         }
         return b;
     }
+    
+    @Override
+    protected Block getEastNeighbour(Block child) {
+        Block b = getContent();
+        if (child == b || b == null || !b.isVisible())
+            return getParent().getEastNeighbour(this);
+        b = b.getPrincipalBlock();
+        if (b == null || !b.isVisible())
+            return getParent().getEastNeighbour(this);
+        return b;
+    }
+    
+    @Override
+    protected Block getWestNeighbour(Block child) {
+        if (child != getTagLabel())
+            return getTagLabel();
+        return getParent().getWestNeighbour(this);
+    }
 }

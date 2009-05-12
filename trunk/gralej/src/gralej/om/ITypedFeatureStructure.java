@@ -26,6 +26,7 @@ package gralej.om;
 
 public interface ITypedFeatureStructure extends IEntity {
     String typeName();
+    IType type();
 
     Iterable<IFeatureValuePair> featureValuePairs();
 
