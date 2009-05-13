@@ -73,8 +73,12 @@ public class AVPairListBlock extends ContainerBlock {
     protected Block getSouthNeighbour(Block child) {
         boolean found = false;
         for (Block b : getChildren()) {
-            if (found)
-                return b.getPrincipalBlock();
+            if (found) {
+                if (b.isVisible())
+                    return b.getPrincipalBlock();
+                else
+                    continue;
+            }
             if (b == child)
                 found = true;
         }
@@ -87,7 +91,8 @@ public class AVPairListBlock extends ContainerBlock {
         for (Block b : getChildren()) {
             if (b == child)
                 break;
-            found = b;
+            if (b.isVisible())
+                found = b;
         }
         return found.getPrincipalBlock();
     }
