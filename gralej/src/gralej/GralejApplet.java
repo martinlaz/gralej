@@ -108,7 +108,6 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         if (view == null) return;
         view.setAutoResize(true);
         _layout.show(getContentPane(), "_bp" + i);
-        //validate();
         log("switching to view: " + i);
         panelResized(view);
     }
@@ -121,11 +120,13 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         f.setTitle(datapak.getTitle());
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setLocationByPlatform(true);
-        final BlockPanel blockPanel = new BlockPanel(datapak.getModel());
+        BlockPanel blockPanel = new BlockPanel(datapak.getModel());
+        blockPanel.setAutoResize(false);
         JPanel view = blockPanel.getUI();
         f.add(view);
         f.pack();
         f.setVisible(true);
+        return;
     }
     
     public void panelResized(BlockPanel bp) {
@@ -140,8 +141,8 @@ public class GralejApplet extends JApplet implements BlockPanelContainer {
         return BlockPanelStyle.getInstance();
     }
     
-    public static Config getPreferences() {
-        return Config.defaultConfig();
+    public static Config getConfig() {
+        return Config.currentConfig();
     }
     
     public static Color decodeColor(String s) {
