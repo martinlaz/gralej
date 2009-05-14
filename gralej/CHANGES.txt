@@ -1,5 +1,14 @@
+Version 0.6.0
+---------------------------------------------------------------------
+2009-05-14
+- Keyboard navigation in feature structures.
+- The ability to display unbound variables (unbound tags sounds weird).
+- Highlighting of substructures.
+- Selection listeners.
+
+
 Version 0.5.3
-------------------------------------------------------------------------------
+---------------------------------------------------------------------
 2009-01-09
 - View panning works now just by mouse dragging, without pressing Control.
 This feature is much better usable this way.

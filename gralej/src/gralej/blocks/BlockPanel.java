@@ -321,12 +321,13 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     private boolean setSelectedBlock(Block b, boolean addToHistory) {
-        if (_selectedBlock == b)
-            return false;
         if (b != null && b.getModel() == null)
             b = null;
+        if (_selectedBlock == b)
+            return false;
         _selectedBlock = b;
-        _canvas.repaint();
+        //_canvas.repaint();
+        _canvas.repaint(0); // do it immediately
         //Log.debug("new selected block:", b);
         if (b != null && addToHistory)
             _selectionHistory.add(b);
