@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://code.google.com/p/gralej/source/browse/trunk/gralej" href="gralej.jnlp">
+<jnlp spec="1.0+" codebase="http://gralej.googlecode.com/svn/trunk/gralej/" href="gralej.jnlp">
     <information>
         <title>gralej</title>
         <vendor>Martin Lazarov</vendor>
