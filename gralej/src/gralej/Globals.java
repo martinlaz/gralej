@@ -29,7 +29,7 @@ import java.awt.Cursor;
 public class Globals {
     public static final int VERSION_MAJOR = 0;
     public static final int VERSION_MINOR = 6;
-    public static final int VERSION_REVISION = 0;
+    public static final int VERSION_REVISION = 1;
     
     public static final String VERSION_STRING =
             VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_REVISION;

@@ -46,7 +46,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" pref="217" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="_bCancel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -84,12 +84,11 @@
                           <Component id="_chkAutoExpandTags" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkDisplayHidden" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkAVMsInitiallyVisible" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="_chkSelectOnClick" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="_chkAutoOpenWindows" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkOutputLatexSnippet" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkModeGrale" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="_chkAutoOpenWindows" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="102" max="32767" attributes="0"/>
+                      <EmptySpace pref="88" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -107,12 +106,10 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="_chkAVMsInitiallyVisible" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="_chkSelectOnClick" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="_chkOutputLatexSnippet" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="_chkModeGrale" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="9" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -131,7 +128,7 @@
                 <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="checkBoxModel(&quot;behavior.autoexpandtags&quot;)" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Make sure that each tag is expanded at least once"/>
+                <Property name="text" type="java.lang.String" value="Ensure that each tag in an AVM is expanded at least once"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="_chkDisplayHidden">
@@ -139,7 +136,7 @@
                 <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="checkBoxModel(&quot;behavior.displayModelHiddenFeatures&quot;)" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Display also features that are marked hidden by TRALE"/>
+                <Property name="text" type="java.lang.String" value="Display features marked as hidden by TRALE"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="_chkAVMsInitiallyVisible">
@@ -148,14 +145,6 @@
                   <Connection code="checkBoxModel(&quot;behavior.nodeContentInitiallyVisible&quot;)" type="code"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Make AVMs initially visible (in the tree display)"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="_chkSelectOnClick">
-              <Properties>
-                <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="checkBoxModel(&quot;behavior.selectOnClick&quot;)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Mark the last clicked content label as selected"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="_chkOutputLatexSnippet">
@@ -171,7 +160,7 @@
                 <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="checkBoxModel(&quot;mode.grale&quot;)" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Start in GRALE compatibility mode"/>
+                <Property name="text" type="java.lang.String" value="Start Gralej in GRALE compatibility mode"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="_chkAutoResize">
@@ -179,7 +168,7 @@
                 <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="checkBoxModel(&quot;behavior.alwaysfitsize&quot;)" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Auto-resizing is on by default"/>
+                <Property name="text" type="java.lang.String" value="Resize windows to fit trees and AVMs"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -196,24 +185,40 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="_cboJavaLF" pref="287" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jSeparator2" pref="377" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="_cboIconTheme" alignment="0" pref="288" max="32767" attributes="0"/>
-                                  <Component id="jButton6" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                                      <Component id="_cboJavaLF" pref="287" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="_cboIconTheme" alignment="0" pref="288" max="32767" attributes="0"/>
+                                          <Component id="jButton6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="_chkSelectOnClick" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="_chkSelectOnHover" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -238,12 +243,39 @@
                           <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="103" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jSeparator2" min="-2" pref="10" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="_chkSelectOnClick" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="_chkSelectOnHover" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
+            <Component class="javax.swing.JCheckBox" name="_chkSelectOnClick">
+              <Properties>
+                <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="checkBoxModel(&quot;behavior.selectOnClick&quot;)" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Select content labels on mouse click &lt;i&gt;(double click expands contents)"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="_chkSelectOnHover">
+              <Properties>
+                <Property name="model" type="javax.swing.ButtonModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="checkBoxModel(&quot;behavior.selectOnHover&quot;)" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Select content labels on mouse hover &lt;i&gt;(single click expands contents)"/>
+                <Property name="toolTipText" type="java.lang.String" value="This option has priority over the upper one"/>
+              </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
+              </AccessibilityProperties>
+            </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Java Look &amp; Feel:"/>
@@ -270,6 +302,8 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JSeparator" name="jSeparator2">
             </Component>
           </SubComponents>
         </Container>
@@ -348,7 +382,7 @@
                           <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="_cboLogInfo" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="46" max="32767" attributes="0"/>
+                      <EmptySpace pref="22" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -437,7 +471,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="191" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="167" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

@@ -39,6 +39,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -57,6 +58,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.Timer;
 import javax.swing.event.ChangeListener;
 
 /**
@@ -66,18 +68,19 @@ import javax.swing.event.ChangeListener;
 public class BlockPanel extends ChangeEventSource implements StyleChangeListener {
     final static int ZOOM_DELTA = 10;
     
-    Map<ContainerBlock,Set<Integer>> _expandedTags;
-    RootBlock _content;
-    BlockPanelStyle _style;
-    int _zoom = 100;
-    double _scaleFactor = 1;
-    JPanel _ui;
-    DrawingPane _canvas;
-    ScrollPane _scrollPane;
-    boolean _autoResize;
-    boolean _autoExpandTags;
-    boolean _displayHiddenFeatures;
-    boolean _selectOnClick;
+    private Map<ContainerBlock,Set<Integer>> _expandedTags;
+    private RootBlock _content;
+    private BlockPanelStyle _style;
+    private int _zoom = 100;
+    private double _scaleFactor = 1;
+    private JPanel _ui;
+    private DrawingPane _canvas;
+    private ScrollPane _scrollPane;
+    private boolean _autoResize;
+    private boolean _autoExpandTags;
+    private boolean _displayHiddenFeatures;
+    private boolean _selectOnClick;
+    private boolean _selectOnHover;
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private ContentLabel _lastHit;
     private Block _selectedBlock;
@@ -86,6 +89,9 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     
     private int _lastMousePressedX;
     private int _lastMousePressedY;
+    private MouseEvent _lastMouseMoveEvent;
+    private HoverTimer _hoverTimer = new HoverTimer();
+    
     private BoundedHistory<Block> _selectionHistory = new BoundedHistory<Block>(100);
     
     private static class SelectionEventSource extends ChangeEventSource {
@@ -199,6 +205,33 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                     canvas.scrollRectToVisible(r);
                 }
             });
+        }
+    }
+    
+    class HoverTimer implements ActionListener {
+        private Block target;
+        private Timer timer = new Timer(500, this);
+        
+        HoverTimer() {
+            timer.setRepeats(false);
+        }
+        
+        void setTarget(Block newTarget) {
+            if (newTarget == target)
+                return;
+            target = newTarget;
+            timer.stop();
+            if (target instanceof ContentLabel)
+                timer.start();
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            //Log.debug(e);
+            int x = unscale(_lastMouseMoveEvent.getX());
+            int y = unscale(_lastMouseMoveEvent.getY());
+            Block b = findContainingContentLabel(x, y);
+            if (target == b && b != null)
+                setSelectedBlock(b);
         }
     }
     
@@ -405,6 +438,8 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         _scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
         _displayHiddenFeatures = Config.bool("behavior.displayModelHiddenFeatures");
         _selectOnClick = Config.bool("behavior.selectOnClick");
+        _selectOnHover = Config.bool("behavior.selectOnHover");
+        _hoverTimer.timer.setInitialDelay(Config.i("behavior.mouseHoverTimeMs"));
         _canvas.setBackground(_style.getBackgroundColor());
         if (_content != null)
             _content.update();
@@ -449,11 +484,11 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         if (e.getButton() == MouseEvent.BUTTON1) { // left button
             Block target = findContainingBlock(_content, x, y);
             if (target != null) {
-                if (!e.isControlDown() && target instanceof ContentLabel) {
+                if (target instanceof ContentLabel && (_selectOnHover || e.getClickCount() > 1)) {
                     flipAndScrollTo(target, e.getX(), e.getY(), e);
                     //updateCursorForPoint(x, y);
                 }
-                if (_selectOnClick) {
+                if (_selectOnClick || _selectOnHover) {
                     if (target instanceof Label) {
                         //TODO: if Ctrl -> add to selection
                         setSelectedBlock(target);
@@ -505,7 +540,20 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         if (ev.getID() != MouseEvent.MOUSE_MOVED) {
             return;
         }
-        updateCursorForPoint(unscale(ev.getX()), unscale(ev.getY()));
+        
+        Block target = updateCursorForPoint(
+                unscale(ev.getX()), unscale(ev.getY()));
+        
+        _lastMouseMoveEvent = ev;
+        
+        if (_selectOnHover) {
+            if (_hoverTimer.timer.getInitialDelay() == 0 && target instanceof ContentLabel) {
+                setSelectedBlock(target);
+            }
+            else {
+                _hoverTimer.setTarget(target);
+            }
+        }
     }
     
     protected void onMouseDragged(MouseEvent ev) {
@@ -541,67 +589,56 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     protected void onKeyPressed(KeyEvent ev) {
-        if (!_selectOnClick)
-            return;
         Block b = null;
         boolean addToHistory = true;
         
-        if (_selectedBlock == null) {
-            switch (ev.getKeyCode()) {
-                case KeyEvent.VK_DOWN:
-                    setSelectedBlock(_content.getPrincipalBlock());
-                    return;
-                case KeyEvent.VK_BACK_SPACE:
-                    if (ev.isShiftDown()) { // move forward in history
-                        if (_selectionHistory.hasNext())
-                            b = _selectionHistory.next();
-                    }
-                    else {
-                        if (_selectionHistory.hasPrev())
-                            b = _selectionHistory.prev();
-                    }
-                    addToHistory = false;
-                    break;
+        if (ev.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            if (ev.isShiftDown()) { // move forward in history
+                if (_selectionHistory.hasNext())
+                    b = _selectionHistory.next();
             }
+            else {
+                if (_selectionHistory.hasPrev())
+                    b = _selectionHistory.prev();
+            }
+            addToHistory = false;
         }
-        else {
-            switch (ev.getKeyCode()) {
-                case KeyEvent.VK_SPACE:
-                    if (ev.getModifiers() == 0 && _selectedBlock instanceof ContentLabel) {
-                        int x = _selectedBlock.getX();
-                        int y = _selectedBlock.getY();
-                        flipAndScrollTo(_selectedBlock, x, y, ev);
-                    }
-                    break;
-                // vi-style key navigation:
-                //  h=left, j=down, k=up, l=right
-                case KeyEvent.VK_L: // right/east
-                case KeyEvent.VK_RIGHT:
-                    b = _selectedBlock.getEastNeighbour();
-                    break;
-                case KeyEvent.VK_H: // left/west
-                case KeyEvent.VK_LEFT:
-                    b = _selectedBlock.getWestNeighbour();
-                    break;
-                case KeyEvent.VK_K: // up/north
-                case KeyEvent.VK_UP:
-                    b = _selectedBlock.getNorthNeighbour();
-                    break;
-                case KeyEvent.VK_J: // down/south
-                case KeyEvent.VK_DOWN:
-                    b = _selectedBlock.getSouthNeighbour();
-                    break;
-                case KeyEvent.VK_BACK_SPACE:
-                    if (ev.isShiftDown()) { // move forward in history
-                        if (_selectionHistory.hasNext())
-                            b = _selectionHistory.next();
-                    }
-                    else {
-                        if (_selectionHistory.hasPrev())
-                            b = _selectionHistory.prev();
-                    }
-                    addToHistory = false;
-                    break;
+        else if (_selectOnClick || _selectOnHover) {        
+            if (_selectedBlock == null && ev.getKeyCode() == KeyEvent.VK_DOWN) {
+                setSelectedBlock(_content.getPrincipalBlock());
+                ev.consume();
+                return;
+            }
+            else if (ev.getModifiers() == 0) {
+                switch (ev.getKeyCode()) {
+                    case KeyEvent.VK_SPACE:
+                        if (_selectedBlock instanceof ContentLabel) {
+                            int x = _selectedBlock.getX();
+                            int y = _selectedBlock.getY();
+                            flipAndScrollTo(_selectedBlock, x, y, ev);
+                        }
+                        break;
+                    // vi-style key navigation:
+                    //  h=left, j=down, k=up, l=right
+                    case KeyEvent.VK_L: // right/east
+                    case KeyEvent.VK_RIGHT:
+                        b = _selectedBlock.getEastNeighbour();
+                        break;
+                    case KeyEvent.VK_H: // left/west
+                    case KeyEvent.VK_LEFT:
+                        b = _selectedBlock.getWestNeighbour();
+                        break;
+                    case KeyEvent.VK_K: // up/north
+                    case KeyEvent.VK_UP:
+                        b = _selectedBlock.getNorthNeighbour();
+                        break;
+                    case KeyEvent.VK_J: // down/south
+                    case KeyEvent.VK_DOWN:
+                        b = _selectedBlock.getSouthNeighbour();
+                        break;
+                }
+                if (b != null)
+                    ev.consume(); // prevents scrolling if an arrow key was pressed
             }
         }
         if (b != null) {
@@ -609,7 +646,6 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             if (!isBlockVisible(b))
                 centerBlock(b);
             setSelectedBlock(b, addToHistory);
-            ev.consume();   // prevent scrolling if an arrow key was pressed
         }
     }
 
@@ -653,7 +689,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         _currentCursor = _defaultCursor;
     }
 
-    private void updateCursorForPoint(int x, int y) {
+    private Block updateCursorForPoint(int x, int y) {
         if (_defaultCursor == null)
             initCursors();
 
@@ -663,6 +699,8 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             updateCursor(_defaultCursor);
         else
             updateCursor(_handCursor);
+        
+        return target;
     }
 
     void updateCursor(Cursor newCursor) {
