@@ -1,5 +1,7 @@
 del dist\README.txt
 del dist\plugin.jar
+del dist\launch.html
+del dist\launch.jnlp
 copy LICENSE.txt dist
 ren dist gralej
 tar cvf gralej_v%1.tar gralej

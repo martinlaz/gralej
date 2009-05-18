@@ -46,8 +46,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TreeSet;
 import javax.swing.ButtonModel;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -182,17 +180,19 @@ public class OptionsDialog extends javax.swing.JDialog {
         _chkAutoExpandTags = new javax.swing.JCheckBox();
         _chkDisplayHidden = new javax.swing.JCheckBox();
         _chkAVMsInitiallyVisible = new javax.swing.JCheckBox();
-        _chkSelectOnClick = new javax.swing.JCheckBox();
         _chkOutputLatexSnippet = new javax.swing.JCheckBox();
         _chkModeGrale = new javax.swing.JCheckBox();
         _chkAutoResize = new javax.swing.JCheckBox();
         _pLookAndFeel = new javax.swing.JPanel();
+        _chkSelectOnClick = new javax.swing.JCheckBox();
+        _chkSelectOnHover = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         _cboJavaLF = new javax.swing.JComboBox();
         _cboIconTheme = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
         _pLogging = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -223,25 +223,22 @@ public class OptionsDialog extends javax.swing.JDialog {
         _chkAutoOpenWindows.setText("Automatically open windows as new data arrive");
 
         _chkAutoExpandTags.setModel(checkBoxModel("behavior.autoexpandtags"));
-        _chkAutoExpandTags.setText("Make sure that each tag is expanded at least once");
+        _chkAutoExpandTags.setText("Ensure that each tag in an AVM is expanded at least once");
 
         _chkDisplayHidden.setModel(checkBoxModel("behavior.displayModelHiddenFeatures"));
-        _chkDisplayHidden.setText("Display also features that are marked hidden by TRALE");
+        _chkDisplayHidden.setText("Display features marked as hidden by TRALE");
 
         _chkAVMsInitiallyVisible.setModel(checkBoxModel("behavior.nodeContentInitiallyVisible"));
         _chkAVMsInitiallyVisible.setText("Make AVMs initially visible (in the tree display)");
-
-        _chkSelectOnClick.setModel(checkBoxModel("behavior.selectOnClick"));
-        _chkSelectOnClick.setText("Mark the last clicked content label as selected");
 
         _chkOutputLatexSnippet.setModel(checkBoxModel("output.latex.snippet"));
         _chkOutputLatexSnippet.setText("Output LaTeX files as snippets");
 
         _chkModeGrale.setModel(checkBoxModel("mode.grale"));
-        _chkModeGrale.setText("Start in GRALE compatibility mode");
+        _chkModeGrale.setText("Start Gralej in GRALE compatibility mode");
 
         _chkAutoResize.setModel(checkBoxModel("behavior.alwaysfitsize"));
-        _chkAutoResize.setText("Auto-resizing is on by default");
+        _chkAutoResize.setText("Resize windows to fit trees and AVMs");
 
         javax.swing.GroupLayout _pGeneralLayout = new javax.swing.GroupLayout(_pGeneral);
         _pGeneral.setLayout(_pGeneralLayout);
@@ -254,11 +251,10 @@ public class OptionsDialog extends javax.swing.JDialog {
                     .addComponent(_chkAutoExpandTags)
                     .addComponent(_chkDisplayHidden)
                     .addComponent(_chkAVMsInitiallyVisible)
-                    .addComponent(_chkSelectOnClick)
+                    .addComponent(_chkAutoOpenWindows)
                     .addComponent(_chkOutputLatexSnippet)
-                    .addComponent(_chkModeGrale)
-                    .addComponent(_chkAutoOpenWindows))
-                .addContainerGap(102, Short.MAX_VALUE))
+                    .addComponent(_chkModeGrale))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         _pGeneralLayout.setVerticalGroup(
             _pGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,15 +270,21 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(_chkAVMsInitiallyVisible)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(_chkSelectOnClick)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(_chkOutputLatexSnippet)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(_chkModeGrale)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("General", _pGeneral);
+
+        _chkSelectOnClick.setModel(checkBoxModel("behavior.selectOnClick"));
+        _chkSelectOnClick.setText("<html>Select content labels on mouse click <i>(double click expands contents)");
+        _chkSelectOnClick.setToolTipText("");
+
+        _chkSelectOnHover.setModel(checkBoxModel("behavior.selectOnHover"));
+        _chkSelectOnHover.setText("<html>Select content labels on mouse hover <i>(single click expands contents)");
+        _chkSelectOnHover.setToolTipText("This option has priority over the upper one");
 
         jLabel1.setText("Java Look & Feel:");
 
@@ -301,21 +303,32 @@ public class OptionsDialog extends javax.swing.JDialog {
         _pLookAndFeel.setLayout(_pLookAndFeelLayout);
         _pLookAndFeelLayout.setHorizontalGroup(
             _pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(_pLookAndFeelLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _pLookAndFeelLayout.createSequentialGroup()
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(_pLookAndFeelLayout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(_cboJavaLF, 0, 287, Short.MAX_VALUE))
-                    .addGroup(_pLookAndFeelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addContainerGap()
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1))
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(_cboIconTheme, 0, 288, Short.MAX_VALUE)
-                            .addComponent(jButton6))))
+                            .addGroup(_pLookAndFeelLayout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(_cboJavaLF, 0, 287, Short.MAX_VALUE))
+                            .addGroup(_pLookAndFeelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(_cboIconTheme, 0, 288, Short.MAX_VALUE)
+                                    .addComponent(jButton6)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(_chkSelectOnClick))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(_chkSelectOnHover)))
                 .addContainerGap())
         );
         _pLookAndFeelLayout.setVerticalGroup(
@@ -333,8 +346,16 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jButton6))
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_chkSelectOnClick)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(_chkSelectOnHover)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        _chkSelectOnHover.getAccessibleContext().setAccessibleDescription("");
 
         jTabbedPane1.addTab("Look & Feel", _pLookAndFeel);
 
@@ -409,7 +430,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(_cboLogInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Logging", _pLogging);
@@ -447,7 +468,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -512,7 +533,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_bCancel)
@@ -630,6 +651,7 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox _chkModeGrale;
     private javax.swing.JCheckBox _chkOutputLatexSnippet;
     private javax.swing.JCheckBox _chkSelectOnClick;
+    private javax.swing.JCheckBox _chkSelectOnHover;
     private javax.swing.JPanel _pAdvanced;
     private javax.swing.JPanel _pGeneral;
     private javax.swing.JPanel _pLogging;
@@ -648,6 +670,7 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
     

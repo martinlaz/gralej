@@ -25,6 +25,7 @@
 package gralej.blocks;
 
 import java.util.List;
+import java.util.Stack;
 
 public class NodeBlock extends ContentOwningBlock {
     private NodeBlock _parentNode;
@@ -63,8 +64,20 @@ public class NodeBlock extends ContentOwningBlock {
     protected Block getNorthNeighbour(Block child) {
         if (child == getContent())
             return getLabel();
-        if (_parentNode != null)
-            return _parentNode.getPrincipalBlock();
+        if (_parentNode != null) {
+            Block b = _parentNode.getContent();
+            Stack<Block> s = new Stack<Block>();
+            s.push(_parentNode);
+            if (b instanceof AVMBlock && b.isVisible()) {
+                for (Block bb : b.getChildren().get(1).getChildren())
+                    s.push(bb);
+            }
+            while (!s.isEmpty()) {
+                b = s.pop();
+                if (b.isVisible())
+                    return b.getPrincipalBlock();
+            }
+        }
         return null;
     }
     
