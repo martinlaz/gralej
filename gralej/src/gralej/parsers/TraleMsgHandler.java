@@ -270,12 +270,12 @@ public class TraleMsgHandler extends GrammarHandler {
             
             String title = S(_[1]);
             
-            if (_tree != null)
+            if (_[2] instanceof IList)
+                _helper.adviceResult(title, (IList) _[2]);
+            else if (_tree != null)
                 _helper.adviceResult(title, _tree);
             else if (_tfs != null)
                 _helper.adviceResult(title, _tfs);
-            else if (_[2] instanceof IList)
-                _helper.adviceResult(title, (IList) _[2]);
             else
                 throw new NotImplementedException("in datapackage");
             

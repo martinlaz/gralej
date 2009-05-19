@@ -1,10 +1,18 @@
-del dist\README.txt
-del dist\plugin.jar
-del dist\launch.html
-del dist\launch.jnlp
-copy LICENSE.txt dist
-ren dist gralej
+setlocal
+set DIR=dist\gralej
+
+rd /q /s %DIR%
+
+md %DIR%
+copy LICENSE.txt %DIR%
+copy dist\gralej.jar %DIR%
+
+md %DIR%\lib
+copy lib\*jar %DIR%\lib
+
+pushd %DIR%\..
 tar cvf gralej_v%1.tar gralej
 bzip2 gralej_v%1.tar
-move gralej_v%1.tar.bz2 ..
-ren gralej dist
+popd
+
+move %DIR%\..\gralej_v%1.tar.bz2 ..
