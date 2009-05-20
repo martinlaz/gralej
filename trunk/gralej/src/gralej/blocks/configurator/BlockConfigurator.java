@@ -108,7 +108,7 @@ public class BlockConfigurator extends BlockPanel {
     }
     
     @Override
-    protected void onMouseReleased(MouseEvent ev) {
+    protected void onMouseClicked(MouseEvent ev) {
         setSelectedBlock(null);
         
         Block target = findContainingBlock(getContent(), ev.getX(), ev.getY());

@@ -273,18 +273,20 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addComponent(_chkOutputLatexSnippet)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(_chkModeGrale)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("General", _pGeneral);
 
         _chkSelectOnClick.setModel(checkBoxModel("behavior.selectOnClick"));
-        _chkSelectOnClick.setText("<html>Select content labels on mouse click <i>(double click expands contents)");
+        _chkSelectOnClick.setText("<html>Select content labels on mouse <b>click</b><br><i>(double click expands contents)");
         _chkSelectOnClick.setToolTipText("");
+        _chkSelectOnClick.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         _chkSelectOnHover.setModel(checkBoxModel("behavior.selectOnHover"));
-        _chkSelectOnHover.setText("<html>Select content labels on mouse hover <i>(single click expands contents)");
+        _chkSelectOnHover.setText("<html>Select content labels on mouse <b>hover</b><br><i>(single click expands contents)");
         _chkSelectOnHover.setToolTipText("This option has priority over the upper one");
+        _chkSelectOnHover.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel1.setText("Java Look & Feel:");
 
@@ -304,12 +306,10 @@ public class OptionsDialog extends javax.swing.JDialog {
         _pLookAndFeelLayout.setHorizontalGroup(
             _pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _pLookAndFeelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(_pLookAndFeelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
@@ -323,12 +323,8 @@ public class OptionsDialog extends javax.swing.JDialog {
                                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(_cboIconTheme, 0, 288, Short.MAX_VALUE)
                                     .addComponent(jButton6)))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(_chkSelectOnClick))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(_chkSelectOnHover)))
+                    .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         _pLookAndFeelLayout.setVerticalGroup(
@@ -430,7 +426,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(_cboLogInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Logging", _pLogging);
@@ -468,7 +464,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -533,7 +529,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_bCancel)
