@@ -93,4 +93,9 @@ public class AVPairBlock extends ContentOwningBlock {
         }
         return super.getSouthNeighbour(this);
     }
+    
+    @Override
+    public String toString() {
+        return getClass() + "@" + hashCode() + "[" + getAttribute().getText() + "]";
+    }
 }

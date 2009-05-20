@@ -269,6 +269,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                 onMouseReleased(e);
             }
             @Override
+            public void mouseClicked(MouseEvent e) {
+                onMouseClicked(e);
+            }
+            @Override
             public void mouseExited(MouseEvent e) {
                 onMouseExited(e);
             }
@@ -476,43 +480,48 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     protected void onMousePressed(MouseEvent e) {
         _lastMousePressedX = e.getX();
         _lastMousePressedY = e.getY();
+        
+        if ((_selectOnClick || _selectOnHover) && e.getButton() == MouseEvent.BUTTON1) { // left button
+            int x = unscale(e.getX());
+            int y = unscale(e.getY());
+            
+            Block target = findContainingBlock(_content, x, y);
+            
+            if (target instanceof Label) {
+                //TODO: if Ctrl -> add to selection
+                setSelectedBlock(target);
+            }
+            else {
+                //TODO: clear selection
+                setSelectedBlock(null);
+            }
+        }
     }
     
     protected void onMouseReleased(MouseEvent e) {
         int x = unscale(e.getX());
         int y = unscale(e.getY());
         if (e.getButton() == MouseEvent.BUTTON1) { // left button
-            Block target = findContainingBlock(_content, x, y);
-            if (target != null) {
-                if (target instanceof ContentLabel && (_selectOnHover || e.getClickCount() > 1)) {
+            if (_selectOnHover || !_selectOnClick) {
+                Block target = findContainingBlock(_content, x, y);
+                if (target instanceof ContentLabel) {
                     flipAndScrollTo(target, e.getX(), e.getY(), e);
                     //updateCursorForPoint(x, y);
                 }
-                if (_selectOnClick || _selectOnHover) {
-                    if (target instanceof Label) {
-                        //TODO: if Ctrl -> add to selection
-                        setSelectedBlock(target);
-                    }
-                    else {
-                        //TODO: clear selection
-                        setSelectedBlock(null);
-                    }
-                }
-            }
-            else {
-                setSelectedBlock(null);
             }
         }
         else if (e.getButton() == MouseEvent.BUTTON3) { // right button
             if (e.isControlDown()) {
+                // control + right click = model-hide featval blocks
                 ContentLabel target = findContainingContentLabel(x, y);
                 if (target != null && target.getParent() instanceof AVPairBlock) {
                     AVPairBlock av = (AVPairBlock) target.getParent();
                     av.setModelHidden(true);
-                    updateCursorForPoint(x, y);
+                    //updateCursorForPoint(x, y);
                 }
             }
             else {
+                // create a popup menu to model-show/hide featvals
                 Block target = findContainingBlock(_content, x, y);
                 if (target != null) {
                     AVPairListBlock avs = null;
@@ -531,13 +540,26 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                 }
             }
         }
-        else {
-            updateCursorForPoint(x, y);
+        updateCursorForPoint(x, y);
+        //updateCursor(_defaultCursor);
+    }
+    
+    protected void onMouseClicked(MouseEvent e) {
+        int x = unscale(e.getX());
+        int y = unscale(e.getY());
+        if (e.getButton() == MouseEvent.BUTTON1) { // left button
+            if (_selectOnClick && !_selectOnHover) {
+                Block target = findContainingBlock(_content, x, y);
+                if (target instanceof ContentLabel && (_selectOnHover || e.getClickCount() > 1)) {
+                    flipAndScrollTo(target, e.getX(), e.getY(), e);
+                    //updateCursorForPoint(x, y);
+                }
+            }
         }
     }
     
     protected void onMouseMoved(MouseEvent ev) {
-        if (ev.getID() != MouseEvent.MOUSE_MOVED) {
+        if (ev.getID() != MouseEvent.MOUSE_MOVED) { // could it be something else??
             return;
         }
         
@@ -616,6 +638,11 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                             int x = _selectedBlock.getX();
                             int y = _selectedBlock.getY();
                             flipAndScrollTo(_selectedBlock, x, y, ev);
+                            updateCursor(_defaultCursor);
+//                            updateCursorForPoint(
+//                                    _lastMouseMoveEvent.getX(),
+//                                    _lastMouseMoveEvent.getY()
+//                                    );
                         }
                         break;
                     // vi-style key navigation:
