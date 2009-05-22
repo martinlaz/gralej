@@ -191,7 +191,7 @@ public class OptionsDialog extends javax.swing.JDialog {
         _cboJavaLF = new javax.swing.JComboBox();
         _cboIconTheme = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
+        _bOpenAMVTreeConfigurator = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         _pLogging = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -294,10 +294,10 @@ public class OptionsDialog extends javax.swing.JDialog {
 
         jLabel3.setText("AVM tree:");
 
-        jButton6.setText("Open configurator...");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        _bOpenAMVTreeConfigurator.setText("Open configurator...");
+        _bOpenAMVTreeConfigurator.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                _bOpenAMVTreeConfiguratorActionPerformed(evt);
             }
         });
 
@@ -322,7 +322,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(_cboIconTheme, 0, 288, Short.MAX_VALUE)
-                                    .addComponent(jButton6)))))
+                                    .addComponent(_bOpenAMVTreeConfigurator)))))
                     .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
@@ -341,7 +341,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jButton6))
+                    .addComponent(_bOpenAMVTreeConfigurator))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -543,9 +543,9 @@ public class OptionsDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void _bOpenAMVTreeConfiguratorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bOpenAMVTreeConfiguratorActionPerformed
         new BlockConfiguratorDialog(this, true, _cfg).setVisible(true);
-    }//GEN-LAST:event_jButton6ActionPerformed
+}//GEN-LAST:event__bOpenAMVTreeConfiguratorActionPerformed
 
     private void _bImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bImportActionPerformed
         JFileChooser fc = new JFileChooser(new File(_cfg.get("input.lastdir")));
@@ -600,6 +600,8 @@ public class OptionsDialog extends javax.swing.JDialog {
 }//GEN-LAST:event__bDefaultsActionPerformed
 
     private void _bOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bOkActionPerformed
+        if (_tabAdvOpts.isEditing())
+            _tabAdvOpts.getCellEditor().stopCellEditing(); // ... and accept changes
         Config.currentConfig().updateFrom(_cfg);
         Config.currentConfig().save();
         dispose();
@@ -632,6 +634,7 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JButton _bExport;
     private javax.swing.JButton _bImport;
     private javax.swing.JButton _bOk;
+    private javax.swing.JButton _bOpenAMVTreeConfigurator;
     private javax.swing.JComboBox _cboIconTheme;
     private javax.swing.JComboBox _cboJavaLF;
     private javax.swing.JComboBox _cboLogCritical;
@@ -653,7 +656,6 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel _pLogging;
     private javax.swing.JPanel _pLookAndFeel;
     private javax.swing.JTable _tabAdvOpts;
-    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

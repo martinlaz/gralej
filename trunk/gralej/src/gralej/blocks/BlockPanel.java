@@ -40,7 +40,6 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -62,11 +61,10 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeListener;
 
 /**
- *
  * @author Martin
  */
 public class BlockPanel extends ChangeEventSource implements StyleChangeListener {
-    final static int ZOOM_DELTA = 10;
+    private final static int ZOOM_DELTA = 10;
     
     private Map<ContainerBlock,Set<Integer>> _expandedTags;
     private RootBlock _content;
@@ -86,10 +84,11 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private Block _selectedBlock;
     private static Stroke _dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, 
                             BasicStroke.JOIN_ROUND, 0,  new float[]{2}, 0);
-    
-    private int _lastMousePressedX;
-    private int _lastMousePressedY;
+
+    private int _doubleClickInterval = 700;
+    private MouseEvent _lastMousePressEvent;
     private MouseEvent _lastMouseMoveEvent;
+    private MouseEvent _lastMouseClickEvent;
     private HoverTimer _hoverTimer = new HoverTimer();
     
     private BoundedHistory<Block> _selectionHistory = new BoundedHistory<Block>(100);
@@ -208,7 +207,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         }
     }
     
-    class HoverTimer implements ActionListener {
+    private class HoverTimer implements ActionListener {
         private Block target;
         private Timer timer = new Timer(500, this);
         
@@ -324,6 +323,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         }
     }
     
+    // called by RootBlock, need package access
     void updateSelf() {
         _content.setPosition(_style.getMargin(), _style.getMargin());
 
@@ -437,13 +437,15 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     public void styleChanged(Object sender) {
-        int vUnitIncrement = Config.i(
+        Config cfg = Config.currentConfig();
+        int vUnitIncrement = cfg.getInt(
                 "block.panel.scrollbar.vertical.unitIncrement");
         _scrollPane.getVerticalScrollBar().setUnitIncrement(vUnitIncrement);
-        _displayHiddenFeatures = Config.bool("behavior.displayModelHiddenFeatures");
-        _selectOnClick = Config.bool("behavior.selectOnClick");
-        _selectOnHover = Config.bool("behavior.selectOnHover");
-        _hoverTimer.timer.setInitialDelay(Config.i("behavior.mouseHoverTimeMs"));
+        _displayHiddenFeatures = cfg.getBool("behavior.displayModelHiddenFeatures");
+        _selectOnClick = cfg.getBool("behavior.selectOnClick");
+        _selectOnHover = cfg.getBool("behavior.selectOnHover");
+        _hoverTimer.timer.setInitialDelay(cfg.getInt("behavior.mouseHoverTimeMs"));
+        _doubleClickInterval = cfg.getInt("behavior.doubleClickIntervalMs");
         _canvas.setBackground(_style.getBackgroundColor());
         if (_content != null)
             _content.update();
@@ -478,8 +480,9 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     protected void onMousePressed(MouseEvent e) {
-        _lastMousePressedX = e.getX();
-        _lastMousePressedY = e.getY();
+        //_lastMousePressedX = e.getX();
+        //_lastMousePressedY = e.getY();
+        _lastMousePressEvent = e;
         
         if ((_selectOnClick || _selectOnHover) && e.getButton() == MouseEvent.BUTTON1) { // left button
             int x = unscale(e.getX());
@@ -505,8 +508,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             if (_selectOnHover || !_selectOnClick) {
                 Block target = findContainingBlock(_content, x, y);
                 if (target instanceof ContentLabel) {
-                    flipAndScrollTo(target, e.getX(), e.getY(), e);
-                    //updateCursorForPoint(x, y);
+                    flipAndScrollTo(target, e.getX(), e.getY());
                 }
             }
         }
@@ -517,7 +519,6 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                 if (target != null && target.getParent() instanceof AVPairBlock) {
                     AVPairBlock av = (AVPairBlock) target.getParent();
                     av.setModelHidden(true);
-                    //updateCursorForPoint(x, y);
                 }
             }
             else {
@@ -536,23 +537,40 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
 
                     if (avs != null) {
                         popupMenu(e.getX(), e.getY(), avs);
+                        return;
                     }
                 }
             }
         }
         updateCursorForPoint(x, y);
-        //updateCursor(_defaultCursor);
     }
     
     protected void onMouseClicked(MouseEvent e) {
-        int x = unscale(e.getX());
-        int y = unscale(e.getY());
-        if (e.getButton() == MouseEvent.BUTTON1) { // left button
-            if (_selectOnClick && !_selectOnHover) {
+        if (_selectOnClick && !_selectOnHover) {
+            if (e.getButton() == MouseEvent.BUTTON1) { // left button
+                
+                // testing for double click
+                // -- e.getClickCount() is not reliable
+                if (_lastMouseClickEvent == null
+                        || e.getWhen() - _lastMouseClickEvent.getWhen() > _doubleClickInterval
+                        || Math.abs(e.getX() - _lastMouseClickEvent.getX()) > 5
+                        || Math.abs(e.getY() - _lastMouseClickEvent.getY()) > 5
+                        ) {
+                    _lastMouseClickEvent = e;
+                    return;
+                }
+                
+                _lastMouseClickEvent = null;
+                
+                int x = unscale(e.getX());
+                int y = unscale(e.getY());
+                
                 Block target = findContainingBlock(_content, x, y);
-                if (target instanceof ContentLabel && (_selectOnHover || e.getClickCount() > 1)) {
-                    flipAndScrollTo(target, e.getX(), e.getY(), e);
-                    //updateCursorForPoint(x, y);
+                
+                //if (target instanceof ContentLabel && e.getClickCount() > 1) {
+                if (target instanceof ContentLabel) {
+                    flipAndScrollTo(target, e.getX(), e.getY());
+                    updateCursorForPoint(x, y);
                 }
             }
         }
@@ -581,8 +599,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     protected void onMouseDragged(MouseEvent ev) {
         //if (!ev.isControlDown())
         //    return;
-        int dx = _lastMousePressedX - ev.getX();
-        int dy = _lastMousePressedY - ev.getY();
+        if (_lastMousePressEvent == null)
+            return;
+        int dx = _lastMousePressEvent.getX() - ev.getX();
+        int dy = _lastMousePressEvent.getY() - ev.getY();
         if (dx == 0 && dy == 0)
             return;
         Rectangle rect = _scrollPane.getViewport().getViewRect();
@@ -626,9 +646,11 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             addToHistory = false;
         }
         else if (_selectOnClick || _selectOnHover) {        
-            if (_selectedBlock == null && ev.getKeyCode() == KeyEvent.VK_DOWN) {
-                setSelectedBlock(_content.getPrincipalBlock());
-                ev.consume();
+            if (_selectedBlock == null) {
+                if (ev.getKeyCode() == KeyEvent.VK_DOWN) {
+                    setSelectedBlock(_content.getPrincipalBlock());
+                    ev.consume();
+                }
                 return;
             }
             else if (ev.getModifiers() == 0) {
@@ -637,7 +659,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                         if (_selectedBlock instanceof ContentLabel) {
                             int x = _selectedBlock.getX();
                             int y = _selectedBlock.getY();
-                            flipAndScrollTo(_selectedBlock, x, y, ev);
+                            flipAndScrollTo(_selectedBlock, x, y);
                             updateCursor(_defaultCursor);
 //                            updateCursorForPoint(
 //                                    _lastMouseMoveEvent.getX(),
@@ -694,7 +716,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         return block;
     }
     
-    ContentLabel findContainingContentLabel(int x, int y) {
+    private ContentLabel findContainingContentLabel(int x, int y) {
         if (_lastHit != null
                 && blockContainsPoint(_lastHit, x, y)
                 && _lastHit.isVisible()
@@ -730,7 +752,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         return target;
     }
 
-    void updateCursor(Cursor newCursor) {
+    private void updateCursor(Cursor newCursor) {
         if (newCursor == _currentCursor)
             return;
         _canvas.setCursor(newCursor);
@@ -753,7 +775,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         _canvas.scrollRectToVisible(r);
     }
     
-    private void scrollTo(Block b, int mouseX, int mouseY, InputEvent e) {
+    private void scrollTo(Block b, int mouseX, int mouseY) {
         Rectangle r = _scrollPane.getViewport().getViewRect();
         int relX = mouseX - (int) r.getX();
         int relY = mouseY - (int) r.getY();
@@ -762,16 +784,16 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         r.setLocation(x - relX, y - relY);
         _canvas.scrollRectToVisible(r);
         //updateCursorForPoint(x, y);
-        if (!e.isShiftDown() && !isBlockVisible(b))
+        if (!isBlockVisible(b))
             centerBlock(b);
     }
     
-    private void flipAndScrollTo(Block target, int x, int y, InputEvent e) {
+    private void flipAndScrollTo(Block target, int x, int y) {
         ContentLabel contentLabel = (ContentLabel) target;
         int relX = x - scale(contentLabel.getX());
         int relY = y - scale(contentLabel.getY());
         contentLabel.flip();
-        scrollTo(contentLabel, x - relX, y - relY, e);
+        scrollTo(contentLabel, x - relX, y - relY);
     }
     
     private boolean isBlockVisible(Block b) {
