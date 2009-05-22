@@ -60,6 +60,7 @@ where RR = 2byte hex value for red
 <entry key="behavior.selectOnClick">true</entry>
 <entry key="behavior.selectOnHover">false</entry>
 <entry key="behavior.mouseHoverTimeMs">500</entry>
+<entry key="behavior.doubleClickIntervalMs">700</entry>
 <entry key="behavior.defaultzoom">100</entry>
 
 <!--those are required! -->
