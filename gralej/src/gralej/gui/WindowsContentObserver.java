@@ -513,11 +513,12 @@ public class WindowsContentObserver extends ContentObserver {
                     }
                     else {
                         JOptionPane.showMessageDialog(this, "No matches were found.");
+                        display.setSelectedBlock(null);
                         finder = null;
                     }
                 }
-                if (finder == null) {
-                    display.setSelectedBlock(null);
+                if (finder == null) {   // the user canceled the search
+                    //display.setSelectedBlock(null);
                     m_FindNext.setEnabled(false);
                 }
             }

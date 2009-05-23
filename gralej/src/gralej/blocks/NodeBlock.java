@@ -69,8 +69,11 @@ public class NodeBlock extends ContentOwningBlock {
             Stack<Block> s = new Stack<Block>();
             s.push(_parentNode);
             if (b instanceof AVMBlock && b.isVisible()) {
-                for (Block bb : b.getChildren().get(1).getChildren())
-                    s.push(bb);
+                s.push(b);
+                Block avs = b.getChildren().get(1);
+                if (avs.isVisible())
+                    for (Block bb : avs.getChildren())
+                        s.push(bb);
             }
             while (!s.isEmpty()) {
                 b = s.pop();
