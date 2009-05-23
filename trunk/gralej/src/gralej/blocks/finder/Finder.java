@@ -88,7 +88,7 @@ public abstract class Finder {
             else if (_panel.isDisplayingModelHiddenFeatures() || !b.isModelHidden())
                 _stack.push(new ArrayList<Block>(b.getChildren()).iterator());
         }
-        _panel.setSelectedBlock(null);
+        //_panel.setSelectedBlock(null);
         return false;
     }
 }
