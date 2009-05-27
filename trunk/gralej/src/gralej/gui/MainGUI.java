@@ -183,7 +183,7 @@ public class MainGUI implements ActionListener, ItemListener {
                 BlockConfiguratorDialog d =
                         new BlockConfiguratorDialog(frame, true, cfg);
                 d.setVisible(true);
-                if (d.okayed())
+                if (d.isOkayed())
                     cfg.save();
             }
         });

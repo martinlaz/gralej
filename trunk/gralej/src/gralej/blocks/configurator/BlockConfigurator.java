@@ -31,6 +31,7 @@ import gralej.om.IVisitable;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.InputStream;
 
@@ -106,6 +107,15 @@ public class BlockConfigurator extends BlockPanel {
         _lastMessage = msg;
         _handler.updateMessage(msg);
     }
+
+    @Override
+    protected void onMousePressed(MouseEvent e) {  }
+
+    @Override
+    protected void onMouseReleased(MouseEvent e) {  }
+
+    @Override
+    protected void onKeyPressed(KeyEvent ev) { }
     
     @Override
     protected void onMouseClicked(MouseEvent ev) {
@@ -149,7 +159,7 @@ public class BlockConfigurator extends BlockPanel {
                 target = target.getParent();
             BlockLayout layout = ((ContainerBlock)target).getLayout();
             if (layout != null && layout.getName() != null)
-                msg = "<html>Click to modify the <b>" + layout.getName() + "</b> block layout.";
+                msg = "<html>Click to modify the <b>" + layout.getName() + "</b> layout.";
             else if (!(target instanceof TreeBlock)) {
                 target = null;
                 msg = null;
@@ -158,9 +168,9 @@ public class BlockConfigurator extends BlockPanel {
         else if (target instanceof Label) {
             Label label = (Label) target;
             LabelStyle style = label.getStyle();
-            msg = "<html>Click to modify the <b>" + style.getName() + "</b> label style. ";
+            msg = "<html>Click to modify the <b>" + style.getName() + "</b> style. ";
             msg += "Press <i>Control</i> and click to modify the <b>"
-                    + label.getParent().getLayout().getName() + "</b> block layout.";
+                    + label.getParent().getLayout().getName() + "</b> layout.";
         }
         else {
             target = null;

@@ -403,6 +403,11 @@ public class LabelStyleEditor extends javax.swing.JDialog {
 
         _rdStrokeSolid.setSelected(true);
         _rdStrokeSolid.setText("Solid");
+        _rdStrokeSolid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _rdStrokeSolidActionPerformed(evt);
+            }
+        });
 
         _rdStrokeDashed.setText("Dashed");
         _rdStrokeDashed.addActionListener(new java.awt.event.ActionListener() {
@@ -556,9 +561,15 @@ public class LabelStyleEditor extends javax.swing.JDialog {
 
     private void _rdStrokeDashedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__rdStrokeDashedActionPerformed
         if (_isInitializing) return;
-        _style.setFrameDashed(_rdStrokeDashed.isSelected());
+        _style.setFrameDashed(true);
         _panelStyle.fireStyleChanged();
     }//GEN-LAST:event__rdStrokeDashedActionPerformed
+
+    private void _rdStrokeSolidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__rdStrokeSolidActionPerformed
+        if (_isInitializing) return;
+        _style.setFrameDashed(false);
+        _panelStyle.fireStyleChanged();
+    }//GEN-LAST:event__rdStrokeSolidActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup _buttonGroupFrameStroke;
