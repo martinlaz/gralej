@@ -23,7 +23,7 @@ where RR = 2byte hex value for red
 
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>
-<entry key="gui.l+f.java-l+f">System Default</entry>
+<entry key="gui.l+f.java-l+f">com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel</entry>
 <entry key="gui.windows.main.size.width">200</entry>
 <entry key="gui.windows.main.size.height">300</entry>
 <entry key="gui.windows.location.xmarginoffset">100</entry>

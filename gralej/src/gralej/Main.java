@@ -38,13 +38,24 @@ import javax.swing.UIManager;
 public class Main {
     private static void setLookAndFeel(String lookandfeel) {
         // default is system look and feel
-        if ("System Default".equals(lookandfeel))
+        if ("System Default".equals(lookandfeel)) {
             lookandfeel = UIManager.getSystemLookAndFeelClassName();
+        }
+        else {
+            try {
+                Class.forName(lookandfeel);
+            }
+            catch (ClassNotFoundException ex) {
+                Log.warning("Non-existent look and feel:", lookandfeel);
+                lookandfeel = UIManager.getSystemLookAndFeelClassName();
+            }
+        }
 
         try {
             UIManager.setLookAndFeel(lookandfeel);
-        } catch (Exception e) {
-            Log.error("Cannot load look and feel:", lookandfeel);
+        }
+        catch (Exception e) {
+            Log.warning("Cannot set look and feel:", lookandfeel);
         }
     }
 
@@ -84,6 +95,9 @@ public class Main {
                 catch (Exception e) {
                     System.err.println(e);
                 }
+            }
+            else {
+                System.err.println("-- unknown arg: " + arg);
             }
         }
 

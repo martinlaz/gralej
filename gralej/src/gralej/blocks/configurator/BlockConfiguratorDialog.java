@@ -61,7 +61,7 @@ public class BlockConfiguratorDialog extends javax.swing.JDialog implements Bloc
         pack();
     }
     
-    public boolean okayed() {
+    public boolean isOkayed() {
         return _okayed;
     }
     
