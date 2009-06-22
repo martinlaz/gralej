@@ -110,6 +110,8 @@ public class BlockCreator extends AbstractVisitor {
     public void visit(ITypedFeatureStructure tfs) {
         if (tfs.isSpecies()) {
             _result = _labfac.createSpeciesLabel(tfs.typeName(), _panel);
+            if (tfs.isDifferent())
+                tfs.type().setDifferent(true);
             _result.setModel(tfs.type());
             return;
         }
