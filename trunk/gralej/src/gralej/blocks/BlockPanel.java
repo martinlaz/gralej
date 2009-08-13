@@ -79,6 +79,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private boolean _displayHiddenFeatures;
     private boolean _selectOnClick;
     private boolean _selectOnHover;
+    private boolean _useKeyboardInterface;
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private ContentLabel _lastHit;
     private Block _selectedBlock;
@@ -444,6 +445,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         _displayHiddenFeatures = cfg.getBool("behavior.displayModelHiddenFeatures");
         _selectOnClick = cfg.getBool("behavior.selectOnClick");
         _selectOnHover = cfg.getBool("behavior.selectOnHover");
+        _useKeyboardInterface = cfg.getBool("block.panel.useKeyboardInterface");
         _hoverTimer.timer.setInitialDelay(cfg.getInt("behavior.mouseHoverTimeMs"));
         _doubleClickInterval = cfg.getInt("behavior.doubleClickIntervalMs");
         _canvas.setBackground(_style.getBackgroundColor());
@@ -483,13 +485,15 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         //_lastMousePressedX = e.getX();
         //_lastMousePressedY = e.getY();
         _lastMousePressEvent = e;
+
+        if (e.getButton() != MouseEvent.BUTTON1) // left button
+            return;
         
-        if ((_selectOnClick || _selectOnHover) && e.getButton() == MouseEvent.BUTTON1) { // left button
+        if ((_selectOnClick || _selectOnHover)) {
             int x = unscale(e.getX());
             int y = unscale(e.getY());
-            
+
             Block target = findContainingBlock(_content, x, y);
-            
             if (target instanceof Label) {
                 //TODO: if Ctrl -> add to selection
                 setSelectedBlock(target);
@@ -498,6 +502,9 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                 //TODO: clear selection
                 setSelectedBlock(null);
             }
+        }
+        else if (_useKeyboardInterface) {
+            setSelectedBlock(null, false);
         }
     }
     
@@ -645,7 +652,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             }
             addToHistory = false;
         }
-        else if (_selectOnClick || _selectOnHover) {        
+        else if (_useKeyboardInterface) {
             if (_selectedBlock == null) {
                 if (ev.getKeyCode() == KeyEvent.VK_DOWN) {
                     setSelectedBlock(_content.getPrincipalBlock());
