@@ -62,8 +62,6 @@ where RR = 2byte hex value for red
 <entry key="behavior.mouseHoverTimeMs">500</entry>
 <entry key="behavior.doubleClickIntervalMs">700</entry>
 <entry key="behavior.defaultzoom">100</entry>
-
-<!--those are required! -->
 <entry key="behavior.defaultzoom.min">10</entry>
 <entry key="behavior.defaultzoom.max">1600</entry>
 
@@ -222,6 +220,7 @@ where RR = 2byte hex value for red
 <entry key="block.panel.selection.background.color">0xdddddd</entry>
 <entry key="block.panel.selection.frame.color">0x999999</entry>
 <entry key="block.panel.different.background.color">0xffccff</entry>
+<entry key="block.panel.useKeyboardInterface">true</entry>
 
 <entry key="block.tree.edge.color">0xa7a7a7</entry>
 <entry key="block.tree.minDistance.horizontal">25</entry>
