@@ -67,6 +67,7 @@ public class BlockPanelStyle implements ChangeListener {
     }
     
     public void stateChanged(ChangeEvent e) {
+        if (isUpdatingConfig) return;
         configChanged();
     }
     
@@ -328,8 +329,9 @@ public class BlockPanelStyle implements ChangeListener {
     
     public void fireStyleChanged() {
         for (StyleChangeListener l : _changeListeners.keySet()) {
-            if (l != null)
+            if (l != null) {
                 l.styleChanged(this);
+            }
         }
     }
 

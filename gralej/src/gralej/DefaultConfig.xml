@@ -57,7 +57,7 @@ where RR = 2byte hex value for red
 <entry key="behavior.autoexpandtags">false</entry>
 <entry key="behavior.displayModelHiddenFeatures">true</entry>
 <entry key="behavior.nodeContentInitiallyVisible">false</entry>
-<entry key="behavior.selectOnClick">true</entry>
+<entry key="behavior.selectOnClick">false</entry>
 <entry key="behavior.selectOnHover">false</entry>
 <entry key="behavior.mouseHoverTimeMs">500</entry>
 <entry key="behavior.doubleClickIntervalMs">700</entry>
@@ -72,7 +72,7 @@ where RR = 2byte hex value for red
 <entry key="block.label._diff.strikethroughline.color">0x000000</entry>
 <entry key="block.label._diff.text.color">0xff0000</entry>
 
-<entry key="block.label.any.fontSpec">Times-ITALIC-12</entry>
+<entry key="block.label.any.fontSpec">Arial-ITALIC-12</entry>
 <entry key="block.label.any.frame.color">0x000000</entry>
 <entry key="block.label.any.frame.isDashed">false</entry>
 <entry key="block.label.any.frame.thickness">0</entry>
@@ -83,7 +83,7 @@ where RR = 2byte hex value for red
 <entry key="block.label.any.text.color">0x006600</entry>
 <entry key="block.label.any.text.colorAlt">0xc0c0c0</entry>
 
-<entry key="block.label.attribute.fontSpec">Times-PLAIN-12</entry>
+<entry key="block.label.attribute.fontSpec">Times New Roman-PLAIN-12</entry>
 <entry key="block.label.attribute.frame.color">0x000000</entry>
 <entry key="block.label.attribute.frame.isDashed">false</entry>
 <entry key="block.label.attribute.frame.thickness">0</entry>
@@ -96,7 +96,7 @@ where RR = 2byte hex value for red
 
 <entry key="block.label.continuation.text">...</entry>
 
-<entry key="block.label.list.fontSpec">Times-PLAIN-12</entry>
+<entry key="block.label.list.fontSpec">Arial-PLAIN-12</entry>
 <entry key="block.label.list.text.left">&lt;</entry>
 <entry key="block.label.list.text.right">&gt;</entry>
 <!-- experimental: use Math brackets, if a math font is available -->
@@ -139,7 +139,7 @@ where RR = 2byte hex value for red
 <entry key="block.label.node.leaf.text.color">0x993300</entry>
 <entry key="block.label.node.leaf.text.colorAlt">0x993300</entry>
 
-<entry key="block.label.sort.fontSpec">Times-ITALIC-12</entry>
+<entry key="block.label.sort.fontSpec">Arial-ITALIC-12</entry>
 <entry key="block.label.sort.frame.color">0x000000</entry>
 <entry key="block.label.sort.frame.isDashed">false</entry>
 <entry key="block.label.sort.frame.thickness">0</entry>
@@ -150,7 +150,7 @@ where RR = 2byte hex value for red
 <entry key="block.label.sort.text.color">0x003399</entry>
 <entry key="block.label.sort.text.colorAlt">0xc0c0c0</entry>
 
-<entry key="block.label.species.fontSpec">Times-ITALIC-12</entry>
+<entry key="block.label.species.fontSpec">Arial-ITALIC-12</entry>
 <entry key="block.label.species.frame.color">0x000000</entry>
 <entry key="block.label.species.frame.isDashed">false</entry>
 <entry key="block.label.species.frame.thickness">0</entry>

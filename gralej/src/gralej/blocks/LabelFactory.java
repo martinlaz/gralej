@@ -118,16 +118,17 @@ public class LabelFactory {
     
     void updateConfig(Config cfg) {
         for (LabelStyle s : _labelStyles.values()) {
-            cfg.set("block.label." + s.getName() + ".fontSpec",      s.getFont());
-            cfg.set("block.label." + s.getName() + ".text.color",    s.getTextColor());
-            cfg.set("block.label." + s.getName() + ".text.colorAlt", s.getTextAltColor());
-            cfg.set("block.label." + s.getName() + ".margin.top",    s.getMarginTop());
-            cfg.set("block.label." + s.getName() + ".margin.left",   s.getMarginLeft());
-            cfg.set("block.label." + s.getName() + ".margin.right",  s.getMarginRight());
-            cfg.set("block.label." + s.getName() + ".margin.bottom",   s.getMarginBottom());
-            cfg.set("block.label." + s.getName() + ".frame.thickness", s.getFrameThickness());
-            cfg.set("block.label." + s.getName() + ".frame.color",     s.getFrameColor());
-            cfg.set("block.label." + s.getName() + ".frame.isDashed",  s.isFrameDashed());
+            String styleName = s.getName();
+            cfg.set("block.label." + styleName + ".fontSpec",        s.getFont());
+            cfg.set("block.label." + styleName + ".text.color",      s.getTextColor());
+            cfg.set("block.label." + styleName + ".text.colorAlt",   s.getTextAltColor());
+            cfg.set("block.label." + styleName + ".margin.top",      s.getMarginTop());
+            cfg.set("block.label." + styleName + ".margin.left",     s.getMarginLeft());
+            cfg.set("block.label." + styleName + ".margin.right",    s.getMarginRight());
+            cfg.set("block.label." + styleName + ".margin.bottom",   s.getMarginBottom());
+            cfg.set("block.label." + styleName + ".frame.thickness", s.getFrameThickness());
+            cfg.set("block.label." + styleName + ".frame.color",     s.getFrameColor());
+            cfg.set("block.label." + styleName + ".frame.isDashed",  s.isFrameDashed());
         }
     }
     
