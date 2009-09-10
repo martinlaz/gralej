@@ -664,8 +664,7 @@ is divided into following sections:
     <target depends="init" name="deps-clean" unless="no.deps"/>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
-        <delete file="${dist.dir}/*"/>
-        <delete dir="${dist.dir}/lib"/>
+        <delete dir="${dist.dir}"/>
     </target>
     <target name="-post-clean">
         <!-- Empty placeholder for easier customization. -->
