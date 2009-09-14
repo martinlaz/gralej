@@ -71,4 +71,10 @@
     <import file="tomatoBuilder.xml"/>
     
     <target name="-pre-compile" depends="catchup"/>
+    <target depends="init" name="-do-clean">
+        <delete dir="${build.dir}"/>
+        <!-- we have dist/gralej.jar under source control
+        <delete dir="${dist.dir}"/>
+        -->
+    </target>
 </project>
