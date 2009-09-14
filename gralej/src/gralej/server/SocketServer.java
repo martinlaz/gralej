@@ -58,14 +58,14 @@ public class SocketServer extends ServerBaseImpl {
                 }
 
             } catch (IOException e) {
-            	e.printStackTrace();
+            	//e.printStackTrace();
             	if (! shutdown_state) {
             		Log.error("An exception "
             				+ "occured while waiting for incoming connections. "
             				+ "Server thread terminates now, restart the server "
             				+ "to regain networking functionality. ");
             	} else {
-            		Log.warning(this.getName() + 
+            		Log.debug(this.getName() +
             				": Caught exception during server shutdown, " +
             				"this may be normal.");
             	}
@@ -119,13 +119,13 @@ public class SocketServer extends ServerBaseImpl {
             } catch (IOException e) {
                 // the remote host closed the connection before something
                 // useful has happened, we can ignore this.
-            	e.printStackTrace();
+            	//e.printStackTrace();
             	if ( ! shutdown_state) {
-            		Log.warning(this.getName()
+            		Log.debug(this.getName()
             				+ ": Remote closed connection "
             				+ "before sending something useful. Closing handler.");
             	} else {
-            		Log.warning(this.getName() + ": " +
+            		Log.debug(this.getName() + ": " +
             				"Caught exception during connection shutdown, " +
             				"this may be normal.");
             	}

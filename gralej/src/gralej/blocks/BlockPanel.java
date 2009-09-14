@@ -175,6 +175,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private class ScrollPane extends JScrollPane {
         ScrollPane(final DrawingPane canvas, final BlockPanel owner) {
             super(canvas);
+            //setBorder(BorderFactory.createEmptyBorder());
             
             canvas.addMouseWheelListener(new MouseAdapter() {
                 @Override

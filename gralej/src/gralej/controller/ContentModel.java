@@ -28,6 +28,21 @@ public class ContentModel {
     private ContentObserver observer;
     private ArrayList<IDataPackage> files = new ArrayList<IDataPackage>();
     private OutputFormatter of;
+    private int numOpenStreams;
+
+    public void newStream(StreamInfo si) {
+        numOpenStreams++;
+        notifyOfServerConnection(true);
+    }
+
+    public void streamClosed(StreamInfo si) {
+        numOpenStreams--;
+        notifyOfServerConnection(true);
+    }
+
+    public int getOpenStreamCount() {
+        return numOpenStreams;
+    }
 
     public OutputFormatter getOutputFormatter() {
         return of;

@@ -56,6 +56,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
         Log.info("New stream of type " + streamMeta);
+        cm.newStream(streamMeta);
 
         try {
             // ask parser factory for parser
@@ -66,11 +67,11 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     public void streamClosed(StreamInfo meta, Exception ex) {
-        Log.info("Stream closed: " + meta);
+        cm.streamClosed(meta);
+        Log.debug("Stream closed: " + meta);
         if (ex != null)
             Log.error("Exception:", ex);
     }

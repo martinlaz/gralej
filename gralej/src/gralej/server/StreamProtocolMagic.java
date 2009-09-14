@@ -46,6 +46,18 @@ public class StreamProtocolMagic {
      *             reset.
      */
     public static String stream2type(BufferedInputStream in) throws IOException {
+        // wait for half a sec for data to arrive
+        // and, if nothing comes in, assume 'grisu'
+        if (in.available() == 0) {
+            try {
+                Thread.sleep(500);
+            }
+            catch (InterruptedException ex) {
+
+            }
+            if (in.available() == 0)
+                return "grisu";
+        }
 
         // max buffer size to read in
         int bufsize = 1024;
