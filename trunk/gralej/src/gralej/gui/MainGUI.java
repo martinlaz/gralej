@@ -10,6 +10,7 @@ import gralej.gui.icons.IconThemeFactory;
 import gralej.parsers.OutputFormatter;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -36,6 +38,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -76,7 +80,7 @@ public class MainGUI implements ActionListener, ItemListener {
         JMenuBar menubar = new JMenuBar();
         // menu "File"
         JMenu filemenu = new JMenu("File");
-        filemenu.setMnemonic('F');
+        filemenu.setMnemonic(KeyEvent.VK_F);
 
         m_Open = new JMenuItem("Open");
         m_Open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
@@ -129,7 +133,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
         // menu "View"
         JMenu viewmenu = new JMenu("View");
-        viewmenu.setMnemonic('V');
+        viewmenu.setMnemonic(KeyEvent.VK_V);
 
         m_Cascade = new JMenuItem("Cascade Windows");
         m_Cascade.addActionListener(this);
@@ -165,7 +169,7 @@ public class MainGUI implements ActionListener, ItemListener {
         
         // menu "Tools"
         JMenu toolsmenu = new JMenu("Tools");
-        toolsmenu.setMnemonic('T');
+        toolsmenu.setMnemonic(KeyEvent.VK_T);
 
         m_Server = new JMenuItem();
         m_Server.addActionListener(this);
@@ -199,7 +203,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
         // menu "Help"
         JMenu helpmenu = new JMenu("Help");
-        viewmenu.setMnemonic('H');
+        helpmenu.setMnemonic(KeyEvent.VK_H);
 
         m_About = new JMenuItem("About Gralej");
         m_About.addActionListener(this);
@@ -497,21 +501,31 @@ public class MainGUI implements ActionListener, ItemListener {
         JLabel connectionInfo;
 
         StatusBar() {
-            super();
+            setLayout(new GridLayout(1, 2));
+            final int MARGIN = 3;
             counter = new JLabel("0");
-            add(counter, BorderLayout.WEST);
+            //counter.setHorizontalAlignment(JLabel.LEADING);
+            counter.setBorder(new CompoundBorder(
+                        BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+                        BorderFactory.createEmptyBorder(0, MARGIN, 0, MARGIN)
+                    ));
+            add(counter);
             connectionInfo = new JLabel();
-            add(connectionInfo, BorderLayout.EAST);
+            //connectionInfo.setHorizontalAlignment(JLabel.TRAILING);
+            connectionInfo.setBorder(new CompoundBorder(
+                        BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+                        BorderFactory.createEmptyBorder(0, MARGIN, 0, MARGIN)
+                    ));
+            add(connectionInfo);
         }
 
         void setNumberOfItems(int i) {
-            counter.setText("" + i + " data items; ");
+            counter.setText(i + " data items");
         }
 
         void setConnectionInfo(String info) {
             connectionInfo.setText(info);
         }
-
     }
 
     /**
@@ -545,10 +559,20 @@ public class MainGUI implements ActionListener, ItemListener {
     public void notifyOfServerConnection(boolean isConnected) {
         if (isConnected) {
             m_Server.setText("Stop Server");
-            statusbar.setConnectionInfo("connected");
+            int openStreamCount = c.getModel().getOpenStreamCount();
+            if (openStreamCount == 0)
+                statusbar.setConnectionInfo("Listening...");
+            else {
+                String clients;
+                if (openStreamCount == 1)
+                    clients = " client";
+                else
+                    clients = " clients";
+                statusbar.setConnectionInfo(openStreamCount + clients);
+            }
         } else {
             m_Server.setText("Start Server");
-            statusbar.setConnectionInfo("not connected");
+            statusbar.setConnectionInfo("Disconnected");
         }
     }
 

@@ -139,7 +139,7 @@ public final class Config extends ChangeEventSource {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                Log.critical("Failed to load default config.");
+                System.err.println("Failed to load default config.");
                 System.exit(1);
             }
         }
