@@ -31,7 +31,6 @@ import gralej.Globals;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Frame;
-import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -162,7 +161,14 @@ public class WebTraleClient extends JPanel {
             }
         }
 
-        Authenticator.install();
+        try {
+            Authenticator.install();
+        }
+        catch (SecurityException ex) {
+            // this is thrown if we run in a sandbox
+            // we carry on, nevertheless...
+        }
+
         final WebTraleClient wtClient = new WebTraleClient(url);
 
         JFrame f = new JFrame();
@@ -252,47 +258,52 @@ public class WebTraleClient extends JPanel {
         request("rec-raw?q=", s);
     }
 
+    final Object _requestLock = new Object();
+
     private void request(final String prefix, final String suffix) {
         initParentWindow();
         new Thread(new Runnable() {
             public void run() {
-                try {
-                    if (parentWindow != null)
-                        parentWindow.setCursor(Globals.WAIT_CURSOR);
+                synchronized (_requestLock) {
                     try {
-                        InputStream is = getStream(prefix
-                                + URLEncoder.encode(suffix, "UTF-8"));
-                        if (is == null)
-                            return;
-                        // String content = readAll(is);
-                        // System.out.println(content);
-                        copyStream(is);
-                    }
-                    finally {
                         if (parentWindow != null)
-                            parentWindow.setCursor(Cursor.getDefaultCursor());
+                            parentWindow.setCursor(Globals.WAIT_CURSOR);
+                        try {
+                            InputStream is = getStream(prefix
+                                    + URLEncoder.encode(suffix, "UTF-8"));
+                            if (is == null)
+                                return;
+                            // String content = readAll(is);
+                            // System.out.println(content);
+                            copyStream(is);
+                        }
+                        finally {
+                            if (parentWindow != null)
+                                parentWindow.setCursor(Cursor.getDefaultCursor());
+                        }
+                    } catch (Exception ex) {
+                        showError(ex);
                     }
-                } catch (IOException ex) {
-                    showError(ex);
                 }
             }
         }).start();
     }
 
     private void showError(Exception e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), e.getClass()
-                .getName(), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this,
+                e.getMessage(), e.getClass().getName(),
+                JOptionPane.ERROR_MESSAGE);
     }
 
     private void lex() {
-        Object o = lstLexicon.getSelectedValue();
-        if (o == null) {
+        Object[] selection = lstLexicon.getSelectedValues();
+        if (selection.length == 0) {
             if (lstLexicon.getModel().getSize() == 0)
                 loadWords();
             return;
         }
-        String s = o.toString();
-        request("lex-raw?q=", s);
+        for (Object o : selection)
+            request("lex-raw?q=", o.toString());
     }
 
     /**
@@ -348,7 +359,6 @@ public class WebTraleClient extends JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lexicon", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(51, 51, 255))); // NOI18N
 
-        lstLexicon.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         lstLexicon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lstLexiconMouseClicked(evt);

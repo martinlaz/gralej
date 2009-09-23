@@ -98,7 +98,7 @@ class GrisuFormatParser implements IGraleParser {
             public void newDataPackage(IDataPackage data) {
                 parses.add(data);
             }
-            public void streamClosed(StreamInfo meta, Exception exception) {
+            public void streamClosed(InputStream is, StreamInfo meta, Exception exception) {
                 ex[0] = exception;
             }
         };
@@ -137,12 +137,14 @@ class GrisuFormatParser implements IGraleParser {
         }
         if (r == null)
             r = new InputStreamReader(s);
-        _lexer.reset(r);
+        final Reader fr = r;
+
         Thread t = new Thread(new Runnable() {
 
             public void run() {
                 Exception exception = null;
                 try {
+                    _lexer.reset(fr);
                     _parser.parse(_lexer);
                 } catch (Exception ex) {
                     exception = ex;
@@ -152,7 +154,7 @@ class GrisuFormatParser implements IGraleParser {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                receiver.streamClosed(meta, exception);
+                receiver.streamClosed(s, meta, exception);
             }
         });
         t.start();

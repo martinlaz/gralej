@@ -231,8 +231,8 @@ public class ContentModel {
     }
 
     public void notifyOfServerConnection(boolean isConnected) {
-        ((WindowsContentObserver) observer).notifyOfServerConnection(isConnected);
-        
+        if (observer != null)
+            ((WindowsContentObserver) observer).notifyOfServerConnection(isConnected);
     }
 
 }

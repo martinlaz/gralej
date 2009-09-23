@@ -22,6 +22,7 @@
 package gralej;
 
 import gralej.controller.Controller;
+import gralej.controller.StreamInfo;
 import gralej.util.Log;
 import gralej.gui.*;
 
@@ -59,31 +60,28 @@ public class Main {
         }
     }
 
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI(boolean startServer) {
 
         // initialize look and feel
         String javaLookAndFeelKey = "gui.l+f.java-l+f";
         setLookAndFeel(Config.s(javaLookAndFeelKey));
         
-//        new Config.KeyObserver(javaLookAndFeelKey) {
-//            protected void keyChanged() {
-//                Log.debug("Changining Java's Look & Feel");
-//                setLookAndFeel(_val);
-//                Log.debug("Done with the Look & Feel");
-//            }
-//        };
-
         // initialize the controller
         Controller c = new Controller();
 
         // initialize the GUI
-        new MainGUI(c);
+        MainGUI gui = new MainGUI(c, startServer);
 
-        c.startServer();
-
+        if (startServer)
+            c.startServer();
+        else {
+            c.newStream(System.in, StreamInfo.GRISU);
+            gui.getStatusBar().setConnectionInfo("StdIn");
+        }
     }
 
     public static void main(String[] args) throws IOException {
+        boolean useStdIn = false;
         
         for (String arg : args) {
             if (arg.equals("--reset")) {
@@ -96,14 +94,19 @@ public class Main {
                     System.err.println(e);
                 }
             }
+            else if (arg.equals("--stdin")) {
+                useStdIn = true;
+            }
             else {
                 System.err.println("-- unknown arg: " + arg);
             }
         }
 
+        final boolean startServer = !useStdIn;
+
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                createAndShowGUI(startServer);
             }
         });
     }

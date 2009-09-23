@@ -25,6 +25,7 @@
 package gralej.parsers;
 
 import gralej.controller.StreamInfo;
+import java.io.InputStream;
 
 /**
  * @author Niels
@@ -34,6 +35,6 @@ public interface IParseResultReceiver {
 
     void newDataPackage(IDataPackage data);
 
-    void streamClosed(StreamInfo meta, Exception exception);
+    void streamClosed(InputStream is, StreamInfo meta, Exception exception);
 
 }

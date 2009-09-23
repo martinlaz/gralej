@@ -75,9 +75,11 @@ public class ListContentObserver extends ContentObserver {
         });
 
         display = new JScrollPane(list);
+        display.setBorder(BorderFactory.createEmptyBorder());
 
         // Monitor all list selections
         list.addListSelectionListener(new ListUpdater());
+        
 
         display.setVisible(true);
 

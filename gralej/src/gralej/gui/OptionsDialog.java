@@ -207,6 +207,8 @@ public class OptionsDialog extends javax.swing.JDialog {
         _cboLogDebug = new javax.swing.JComboBox();
         _cboLogInfo = new javax.swing.JComboBox();
         jSeparator1 = new javax.swing.JSeparator();
+        _pConfirmations = new javax.swing.JPanel();
+        _chkConfirmAppExit = new javax.swing.JCheckBox();
         _pAdvanced = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         _tabAdvOpts = new javax.swing.JTable();
@@ -431,6 +433,28 @@ public class OptionsDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Logging", _pLogging);
 
+        _chkConfirmAppExit.setModel(checkBoxModel("behavior.confirm.exit"));
+        _chkConfirmAppExit.setText("Application exit");
+
+        javax.swing.GroupLayout _pConfirmationsLayout = new javax.swing.GroupLayout(_pConfirmations);
+        _pConfirmations.setLayout(_pConfirmationsLayout);
+        _pConfirmationsLayout.setHorizontalGroup(
+            _pConfirmationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(_pConfirmationsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(_chkConfirmAppExit)
+                .addContainerGap(292, Short.MAX_VALUE))
+        );
+        _pConfirmationsLayout.setVerticalGroup(
+            _pConfirmationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(_pConfirmationsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(_chkConfirmAppExit)
+                .addContainerGap(187, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Confirmations", _pConfirmations);
+
         _tabAdvOpts.setAutoCreateRowSorter(true);
         _tabAdvOpts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -646,12 +670,14 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox _chkAutoExpandTags;
     private javax.swing.JCheckBox _chkAutoOpenWindows;
     private javax.swing.JCheckBox _chkAutoResize;
+    private javax.swing.JCheckBox _chkConfirmAppExit;
     private javax.swing.JCheckBox _chkDisplayHidden;
     private javax.swing.JCheckBox _chkModeGrale;
     private javax.swing.JCheckBox _chkOutputLatexSnippet;
     private javax.swing.JCheckBox _chkSelectOnClick;
     private javax.swing.JCheckBox _chkSelectOnHover;
     private javax.swing.JPanel _pAdvanced;
+    private javax.swing.JPanel _pConfirmations;
     private javax.swing.JPanel _pGeneral;
     private javax.swing.JPanel _pLogging;
     private javax.swing.JPanel _pLookAndFeel;
