@@ -8,9 +8,11 @@ import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.IParseResultReceiver;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -87,7 +89,7 @@ public class BlockPanelTester {
                 });
             }
 
-            public void streamClosed(StreamInfo meta, Exception exception) {
+            public void streamClosed(InputStream is, StreamInfo meta, Exception exception) {
                 System.err.println("-- stream '" + meta.getType() + "' closed");
                 if (exception != null)
                     System.err.println("-- exception: " + exception);
@@ -95,6 +97,37 @@ public class BlockPanelTester {
 
         });
 
+        if (in != System.in && System.in != null) {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+                        String line;
+                        while ((line = r.readLine()) != null) {
+                            try {
+                                final Block b = lastPanel.getContent().getDescendant(line);
+                                if (b != null) {
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        public void run() {
+                                            lastPanel.ensureVisible(b);
+                                            lastPanel.centerBlock(b);
+                                            lastPanel.setSelectedBlock(b);
+                                        }
+                                    });
+                                }
+                            }
+                            catch (Exception ex) {
+
+                            }
+                        }
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            t.start();
+        }
     }
 
     void show(IDataPackage datapak) {

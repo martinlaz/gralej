@@ -1,6 +1,7 @@
 package gralej.gui;
 
 import gralej.Config;
+import gralej.Globals;
 import gralej.blocks.configurator.BlockConfiguratorDialog;
 import gralej.controller.Controller;
 import gralej.controller.StreamInfo;
@@ -70,12 +71,21 @@ public class MainGUI implements ActionListener, ItemListener {
             m_ShowToolBar, m_ShowStatusBar;
 
     StatusBar statusbar;
+    private static MainGUI lastInstance;
     
     public static JFrame getLastFrame() {
         return frame;
     }
 
-    private JMenuBar createMenuBar() {
+    public static MainGUI getLastInstance() {
+        return lastInstance;
+    }
+
+    public StatusBar getStatusBar() {
+        return statusbar;
+    }
+
+    private JMenuBar createMenuBar(boolean useServer) {
 
         JMenuBar menubar = new JMenuBar();
         // menu "File"
@@ -171,15 +181,17 @@ public class MainGUI implements ActionListener, ItemListener {
         JMenu toolsmenu = new JMenu("Tools");
         toolsmenu.setMnemonic(KeyEvent.VK_T);
 
-        m_Server = new JMenuItem();
-        m_Server.addActionListener(this);
-        toolsmenu.add(m_Server);
+        if (useServer) {
+            m_Server = new JMenuItem();
+            m_Server.addActionListener(this);
+            toolsmenu.add(m_Server);
 
-        m_WebTrale = new JMenuItem("Open WebTrale Client");
-        m_WebTrale.addActionListener(this);
-        toolsmenu.add(m_WebTrale);
-        
-        toolsmenu.addSeparator();
+            m_WebTrale = new JMenuItem("Open WebTrale Client");
+            m_WebTrale.addActionListener(this);
+            toolsmenu.add(m_WebTrale);
+
+            toolsmenu.addSeparator();
+        }
         
         JMenuItem bcm = new JMenuItem("AVM Tree View Configurator");
         bcm.addActionListener(new ActionListener() {
@@ -244,7 +256,23 @@ public class MainGUI implements ActionListener, ItemListener {
     }
     
     public void quit() {
+        quit(false);
+    }
+    
+    public void quit(boolean force) {
         try {
+            if (!force && cfg.bool("behavior.confirm.exit")) {
+                int response = JOptionPane.showConfirmDialog(
+                        frame,
+                        "Do you really want to quit " + Globals.APP_NAME + "?",
+                        "Confirm Quit",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (response == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+            frame.dispose();
             cfg.set("gui.windows.main.size.width", ""+frame.getWidth(),false);
             cfg.set("gui.windows.main.size.height", ""+frame.getHeight(),false);
             cfg.save();
@@ -428,17 +456,19 @@ public class MainGUI implements ActionListener, ItemListener {
     /**
      * 
      */
-    public MainGUI(Controller c) {
+    public MainGUI(Controller c, boolean useServer) {
+        lastInstance = this;
+        
         this.c = c;
         cfg = Config.currentConfig();
         theme = IconThemeFactory.getIconTheme(cfg.get("gui.l+f.icontheme"));
 
         frame = new JFrame(gralej.Globals.APP_NAME);
         frame.setIconImage(theme.getIcon("grale").getImage());
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // instantiate menus
-        frame.setJMenuBar(this.createMenuBar());
+        frame.setJMenuBar(this.createMenuBar(useServer));
 
         // instantiate toolbar
         createToolBar();
@@ -461,7 +491,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosed(WindowEvent we) {
+            public void windowClosing(WindowEvent we) {
                 quit();
             }
         });
@@ -495,13 +525,14 @@ public class MainGUI implements ActionListener, ItemListener {
      * @author Armin
      *
      */
-    class StatusBar extends JPanel {
+    public class StatusBar extends JPanel {
 
         JLabel counter;
         JLabel connectionInfo;
 
         StatusBar() {
             setLayout(new GridLayout(1, 2));
+            //setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
             final int MARGIN = 3;
             counter = new JLabel("0");
             //counter.setHorizontalAlignment(JLabel.LEADING);
@@ -519,11 +550,11 @@ public class MainGUI implements ActionListener, ItemListener {
             add(connectionInfo);
         }
 
-        void setNumberOfItems(int i) {
+        public void setNumberOfItems(int i) {
             counter.setText(i + " data items");
         }
 
-        void setConnectionInfo(String info) {
+        public void setConnectionInfo(String info) {
             connectionInfo.setText(info);
         }
     }
@@ -558,7 +589,8 @@ public class MainGUI implements ActionListener, ItemListener {
 
     public void notifyOfServerConnection(boolean isConnected) {
         if (isConnected) {
-            m_Server.setText("Stop Server");
+            if (m_Server != null)
+                m_Server.setText("Stop Server");
             int openStreamCount = c.getModel().getOpenStreamCount();
             if (openStreamCount == 0)
                 statusbar.setConnectionInfo("Listening...");
@@ -571,7 +603,8 @@ public class MainGUI implements ActionListener, ItemListener {
                 statusbar.setConnectionInfo(openStreamCount + clients);
             }
         } else {
-            m_Server.setText("Start Server");
+            if (m_Server != null)
+                m_Server.setText("Start Server");
             statusbar.setConnectionInfo("Disconnected");
         }
     }

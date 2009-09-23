@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -175,7 +176,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private class ScrollPane extends JScrollPane {
         ScrollPane(final DrawingPane canvas, final BlockPanel owner) {
             super(canvas);
-            //setBorder(BorderFactory.createEmptyBorder());
+            setBorder(BorderFactory.createEmptyBorder());
             
             canvas.addMouseWheelListener(new MouseAdapter() {
                 @Override

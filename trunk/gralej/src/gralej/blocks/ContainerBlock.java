@@ -135,7 +135,7 @@ public abstract class ContainerBlock extends Block {
             return this;
         int i = path[pathPos++];
         if (i < 0)
-            i = _children.size() - i;
+            i = _children.size() + i;
         if (i >= _children.size())
             return null;
         Block child = _children.get(i);

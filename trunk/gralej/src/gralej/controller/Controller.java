@@ -4,6 +4,7 @@ import gralej.Config;
 import gralej.client.WebTraleClient;
 import gralej.util.Log;
 import gralej.fileIO.FileLoader;
+import gralej.gui.MainGUI;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.IParseResultReceiver;
@@ -55,7 +56,7 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     }
 
     public void newStream(InputStream s, StreamInfo streamMeta) {
-        Log.info("New stream of type " + streamMeta);
+        Log.debug("New stream of type " + streamMeta);
         cm.newStream(streamMeta);
 
         try {
@@ -69,7 +70,13 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         }
     }
 
-    public void streamClosed(StreamInfo meta, Exception ex) {
+    public void streamClosed(InputStream is, StreamInfo meta, Exception ex) {
+        if (is == System.in) {  // when started with the option --stdin
+            if (MainGUI.getLastInstance() != null)
+                MainGUI.getLastInstance().quit(true);
+            else
+                System.exit(0);
+        }
         cm.streamClosed(meta);
         Log.debug("Stream closed: " + meta);
         if (ex != null)
@@ -141,14 +148,11 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
             }	
             try {
                 server.startListening();
-                Log.info("Server up and listening");
+                Log.debug("Server up and listening on port", port);
             } catch (IOException e) {
                     e.printStackTrace();
-                    Log.error(
-                                    "Cannot bind server to network port",
-                                    port
-                                    + ", perhaps another Gralej is running?"
-                                    );
+                    Log.error("Cannot bind server to network port",
+                            port + ", perhaps another Gralej is running?");
             }
         }
 
@@ -171,6 +175,10 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         cm.notifyOfServerConnection(false);
     }
 
+    public boolean isServerRunning() {
+        return server != null && server.isListening();
+    }
+
     public void startWebTraleClient(URL url) {
         final WebTraleClient wtc = WebTraleClient.inFrame(url);
         new Thread(new Runnable() {
@@ -180,5 +188,4 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
             }
         }).start();
     }
-
 }
