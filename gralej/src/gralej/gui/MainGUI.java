@@ -268,7 +268,7 @@ public class MainGUI implements ActionListener, ItemListener {
                         "Confirm Quit",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
-                if (response == JOptionPane.NO_OPTION) {
+                if (response != JOptionPane.YES_OPTION) {
                     return;
                 }
             }

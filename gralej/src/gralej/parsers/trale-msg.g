@@ -1,5 +1,5 @@
 //
-// WARNING: this Java file is generated from trale-msg.g !!!
+// WARNING: this is either trale-msg.g or a Java file generated from trale-msg.g !!!
 //
 
 package gralej.parsers;
@@ -9,7 +9,7 @@ import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
 import gralej.om.ITree;
-import gralej.om.ITypedFeatureStructure;
+import gralej.om.IVisitable;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,12 +32,13 @@ public class TraleMsgHandler extends GrammarHandler {
     Map<Integer,IEntity> _tag2ent = new TreeMap<Integer,IEntity>();
     
     ITree _tree;
-    ITypedFeatureStructure _tfs;
-    int _reentr;
+
     L<OM.Tag> _tags = new L<OM.Tag>();
     L<Pair<OM.Tree,Integer>> _trees = new L<Pair<OM.Tree,Integer>>();
     
     TraleMsgHandlerHelper _helper = new TraleMsgHandlerHelper();
+
+    final static String _LRS_PREFIX = "::LRS::";
     
     private void bindRefs() {
         for (OM.Tag tag : _tags)
@@ -70,42 +71,42 @@ datapackages -> | datapackages datapackage0 .
 datapackage0
     -> datapackage _NEWLINE 
         {
-            // get ready for the next datapackage
-            _tfs  = null;
+            // prepare for the next datapackage
             _tree = null;
             _id2ent.clear();
             _tag2ent.clear();
             _tags.clear();
             _trees.clear();
-            _reentr = 0;
             return null;
         }
     .
 
 datapackage
-  ->  _NEWDATA windowtitle structures 
+  ->  _NEWDATA windowtitle structure structures0
         {{
             bindRefs();
             
             String title = S(_[1]);
             
-            if (_[2] instanceof IList)
-                _helper.adviceResult(title, (IList) _[2]);
-            else if (_tree != null)
+            if (_tree != null) {
                 _helper.adviceResult(title, _tree);
-            else if (_tfs != null)
-                _helper.adviceResult(title, _tfs);
-            else
+                return null;
+            }
+            IVisitable obj = (IVisitable)_[2];
+            if (obj == null)
                 throw new NotImplementedException("in datapackage");
-            
+
+            _helper.adviceResult(title, obj);
+
             return null;
         }}
   .
+
 ########################
 ## Sequences ###########
 ########################
-structures
-  ->  structure | structures structure .
+structures0
+  ->  | structure structures0 .
 structs
   ->    { return new L<IEntity>(); } 
   |  structs struct 
@@ -135,6 +136,7 @@ flags
   | flags flag
         { return _flags; }
   .
+
 ########################
 ## Structures ##########
 ########################
@@ -169,10 +171,8 @@ tree
     }
   .
 
-begin_reentr -> _BEGIN_REENTR { _reentr++; return null; } .
-
 reentr
-  ->  begin_reentr flags id tag struct _RPAR
+  ->  _BEGIN_REENTR flags id tag struct _RPAR
        {{
           if (_[4] != null) {
             int id  = N(_[2]);
@@ -182,7 +182,6 @@ reentr
             _id2ent.put(id, e);
             _tag2ent.put(tag, e);
           }
-          _reentr--;
           return null;
        }}
   .
@@ -197,10 +196,6 @@ struc
                 );
             int id = N(_[2]);
             _id2ent.put(id, tfs);
-            
-            // if not substructure of a reentrancy
-            if (_reentr == 0)
-                _tfs = tfs;
             
             return tfs;
         }
@@ -245,21 +240,24 @@ tail
   .
 
 set
-  ->  _BEGIN_SET flags id structs rest _RPAR .
+  ->  _BEGIN_SET flags id structs rest _RPAR
+        { throw new NotImplementedException("set"); } .
 
 rest
-  ->  | _BEGIN_REST flags id struct _RPAR .
+  ->  | _BEGIN_REST flags id struct _RPAR
+        { throw new NotImplementedException("rest"); } .
 
 function
-  ->  _BEGIN_FUNCT flags id type functor structs _RPAR .
+  ->  _BEGIN_FUNCT flags id type functor structs _RPAR
+        { throw new NotImplementedException("function"); } .
 
 relation
-  ->  _BEGIN_REL flags id functor structs _RPAR .
+  ->  _BEGIN_REL flags id functor structs _RPAR
+        { throw new NotImplementedException("relation"); } .
 
 type
   ->  _LPAR flags id name _RPAR
-        { return new OM.Type((OM.Flags)_[1], S(_[3])); }
-  .
+        { return new OM.Type((OM.Flags)_[1], S(_[3])); } .
 
 ref
   ->  _BEGIN_REF flags id target _RPAR
@@ -275,14 +273,18 @@ ref
 
 any
   ->  _BEGIN_ANY flags id value _RPAR
-        {
+        {{
+            String s = S(_[3]);
+            if (s.startsWith(_LRS_PREFIX)) {
+                s = s.substring(_LRS_PREFIX.length());
+            }
             IAny any = new OM.Any(
                 (OM.Flags)_[1],
-                S(_[3])
+                s
                 );
             _id2ent.put(N(_[2]), any);
             return any;
-        }
+        }}
   .
 
 ########################

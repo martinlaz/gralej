@@ -30,15 +30,17 @@ import gralej.blocks.Label;
  *
  * @author Martin
  */
-class StringFinder extends Finder {
-    
-    protected String _s;
-    
-    StringFinder(String s) { _s = s; }
+class StringFinder extends Finder {    
+    StringFinder(FinderOptions opts) {
+        super(opts);
+    }
 
     @Override
     protected boolean matches(Label label) {
-        return _s.equalsIgnoreCase(label.getText());
+        String s = label.getText().toLowerCase();
+        if (_opts.isCompleteMatch)
+            return _opts.text.equals(s);
+        return s.indexOf(_opts.text) != -1;
     }
 
 }

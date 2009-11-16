@@ -25,6 +25,7 @@
 package gralej.blocks.finder;
 
 import gralej.blocks.Label;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -33,18 +34,22 @@ import java.util.regex.Pattern;
  */
 class RegexFinder extends Finder {
     
-    private Pattern _pat;
+    private Matcher _matcher;
     
-    RegexFinder(String regex, boolean caseSensitive) {
-        if (caseSensitive)
-            _pat = Pattern.compile(regex);
+    RegexFinder(FinderOptions opts) {
+        super(opts);
+        if (opts.isCaseSensitive)
+            _matcher = Pattern.compile(opts.text).matcher("");
         else
-            _pat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            _matcher = Pattern.compile(opts.text, Pattern.CASE_INSENSITIVE).matcher("");
     }
 
     @Override
     protected boolean matches(Label label) {
-        return _pat.matcher(label.getText()).matches();
+        _matcher.reset(label.getText());
+        if (_opts.isCompleteMatch)
+            return _matcher.matches();
+        return _matcher.find();
     }
 
 }
