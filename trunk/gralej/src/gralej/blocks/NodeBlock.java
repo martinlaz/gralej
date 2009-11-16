@@ -24,6 +24,7 @@
 
 package gralej.blocks;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -31,11 +32,16 @@ public class NodeBlock extends ContentOwningBlock {
     private NodeBlock _parentNode;
     private List<NodeBlock> _childNodes;
 
+    NodeBlock(BlockPanel panel, Label label, Block content) {
+        this(panel, label, content, Collections.EMPTY_LIST);
+    }
+
     NodeBlock(BlockPanel panel, Label label, Block content, List<NodeBlock> childNodes) {
         setPanel(panel);
         setLayout(getPanelStyle().getLayoutFactory().getNodeLayout());
-        
-        addChild(label);
+
+        if (label != null)
+            addChild(label);
         lastAddChild(content);
 
         setContent(content);

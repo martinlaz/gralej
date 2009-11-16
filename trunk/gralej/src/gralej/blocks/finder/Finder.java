@@ -24,12 +24,9 @@
 
 package gralej.blocks.finder;
 
-import gralej.blocks.AVPairBlock;
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
-import gralej.blocks.ContentLabel;
 import gralej.blocks.Label;
-import gralej.util.Log;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
@@ -41,15 +38,20 @@ import java.util.Stack;
 public abstract class Finder {
     private Stack<Iterator<Block>> _stack = new Stack<Iterator<Block>>();
     private BlockPanel _panel;
+    protected FinderOptions _opts;
+
+    protected Finder(FinderOptions opts) { _opts = opts; }
     
     static Finder newInstance(FinderOptions opts, BlockPanel panel) {
         Finder f;
         if (opts.isRegex)
-            f = new RegexFinder(opts.text, opts.isCaseSensitive);
+            f = new RegexFinder(opts);
         else if (opts.isCaseSensitive)
-            f = new CaseSensitiveStringFinder(opts.text);
-        else
-            f = new StringFinder(opts.text);
+            f = new CaseSensitiveStringFinder(opts);
+        else {
+            opts.text = opts.text.toLowerCase();
+            f = new StringFinder(opts);
+        }
         f.setPanel(panel);
         //prepareReentrancies(panel.getContent(), new TreeSet<Integer>());
         return f;

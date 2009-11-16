@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gralej.blocks.finder;
 
 import gralej.blocks.Label;
@@ -13,10 +8,13 @@ import gralej.blocks.Label;
  */
 class CaseSensitiveStringFinder extends StringFinder {
 
-    CaseSensitiveStringFinder(String s) { super(s); }
+    CaseSensitiveStringFinder(FinderOptions opts) { super(opts); }
     
     @Override
     protected boolean matches(Label label) {
-        return _s.equals(label.getText());
+        String s = label.getText();
+        if (_opts.isCompleteMatch)
+            return _opts.text.equals(s);
+        return s.indexOf(_opts.text) != -1;
     }
 }

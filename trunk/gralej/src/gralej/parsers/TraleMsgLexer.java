@@ -259,7 +259,7 @@ public class TraleMsgLexer implements Lexer {
     }
 
     static class Tokens {
-        // begins
+        // begins, two chars
         T _BEGIN_ANY = new T("(A");
         T _BEGIN_CONJ = new T("(C");
         T _BEGIN_DISJ = new T("(O");

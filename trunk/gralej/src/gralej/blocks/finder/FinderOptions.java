@@ -32,4 +32,5 @@ class FinderOptions {
     String text;
     boolean isRegex;
     boolean isCaseSensitive;
+    boolean isCompleteMatch;
 }

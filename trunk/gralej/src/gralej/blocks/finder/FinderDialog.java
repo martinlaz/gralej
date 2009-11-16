@@ -85,6 +85,7 @@ public class FinderDialog extends javax.swing.JDialog {
         _bClose = new javax.swing.JButton();
         _chkRegex = new javax.swing.JCheckBox();
         _chkCaseSensitive = new javax.swing.JCheckBox();
+        _chkCompleteMatch = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Find");
@@ -111,6 +112,9 @@ public class FinderDialog extends javax.swing.JDialog {
         _chkCaseSensitive.setMnemonic('c');
         _chkCaseSensitive.setText("Case Sensitive");
 
+        _chkCompleteMatch.setMnemonic('m');
+        _chkCompleteMatch.setText("Complete match");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -120,17 +124,18 @@ public class FinderDialog extends javax.swing.JDialog {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_chkCaseSensitive)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(_chkRegex)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(_bClose))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(_txt, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(_bFind))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(_chkCompleteMatch)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(_txt, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(_bFind))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(_chkCaseSensitive)
+                            .addComponent(_chkRegex))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addComponent(_bClose)))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {_bClose, _bFind});
@@ -144,11 +149,14 @@ public class FinderDialog extends javax.swing.JDialog {
                     .addComponent(_txt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_bFind))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(_bClose)
-                    .addComponent(_chkRegex))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_chkCaseSensitive)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(_chkRegex)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_chkCaseSensitive)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_chkCompleteMatch))
+                    .addComponent(_bClose))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -164,30 +172,15 @@ public class FinderDialog extends javax.swing.JDialog {
         opts.text = _txt.getText();
         opts.isRegex = _chkRegex.isSelected();
         opts.isCaseSensitive = _chkCaseSensitive.isSelected();
+        opts.isCompleteMatch = _chkCompleteMatch.isSelected();
         dispose();
     }//GEN-LAST:event__bFindActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                FinderDialog dialog = new FinderDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _bClose;
     private javax.swing.JButton _bFind;
     private javax.swing.JCheckBox _chkCaseSensitive;
+    private javax.swing.JCheckBox _chkCompleteMatch;
     private javax.swing.JCheckBox _chkRegex;
     private javax.swing.JTextField _txt;
     private javax.swing.JLabel jLabel1;

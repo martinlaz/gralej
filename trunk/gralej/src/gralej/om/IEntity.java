@@ -27,13 +27,17 @@ package gralej.om;
 public interface IEntity extends IVisitable {
     // flags
     boolean isHidden();
+    //void setHidden(boolean flag);
 
     boolean isDifferent();
     void setDifferent(boolean flag);
 
     boolean isStruckout();
+    //void setStruckout(boolean flag);
 
     boolean isMultiline();
+    //void setMultiline(boolean flag);
 
     boolean isExpanded();
+    //void setExpanded(boolean flag);
 }
