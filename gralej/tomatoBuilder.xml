@@ -11,6 +11,18 @@
         <property
             name    =   "grammar.handler.file"
             value   =   "${basedir}/src/gralej/parsers/TraleMsgHandler.java" />
+        
+        <property
+            name    =   "lrs.grammar.src.file"
+            value   =   "${basedir}/src/gralej/parsers/lrs-expr.g" />
+        
+        <property
+            name    =   "lrs.grammar.bin.file"
+            value   =   "${basedir}/src/gralej/parsers/lrs-expr.g.bin" />
+            
+        <property
+            name    =   "lrs.grammar.handler.file"
+            value   =   "${basedir}/src/gralej/parsers/LRSExprHandler.java" />
        
         <target name="catchup"
             depends="grale-protocol"
@@ -23,24 +35,58 @@
                 >
                 <arg value="-i"/>
                 <arg value="${grammar.src.file}"/>
+                <!--
                 <arg value="-o"/>
                 <arg value="${grammar.bin.file}"/>
                 <arg value="-f"/>
                 <arg value="bin"/>
+                -->
+                <arg value="-f"/>
+                <arg value="null"/>
                 <arg value="-c"/>
                 <arg value="${grammar.handler.file}"/>
+            </java>
+            
+            <java classname="tomato.LRTableBuilder"
+                failonerror="true"
+                >
+                <arg value="-i"/>
+                <arg value="${lrs.grammar.src.file}"/>
+                <!--
+                <arg value="-o"/>
+                <arg value="${lrs.grammar.bin.file}"/>
+                <arg value="-f"/>
+                <arg value="bin"/>
+                -->
+                <arg value="-f"/>
+                <arg value="null"/>
+                <arg value="-c"/>
+                <arg value="${lrs.grammar.handler.file}"/>
             </java>
         </target>
         
         <target name="grale-protocol">
             <condition property="catchup.done">
                 <and>
+                    <!--
                     <uptodate
                         srcfile="${grammar.src.file}"
                         targetfile="${grammar.bin.file}" />
+                        -->
+                    
                     <uptodate
                         srcfile="${grammar.src.file}"
                         targetfile="${grammar.handler.file}" />
+                    
+                    <!--
+                    <uptodate
+                        srcfile="${lrs.grammar.src.file}"
+                        targetfile="${lrs.grammar.bin.file}" />
+                        -->
+                        
+                    <uptodate
+                        srcfile="${lrs.grammar.src.file}"
+                        targetfile="${lrs.grammar.handler.file}" />
                 </and>
             </condition>
         </target>
