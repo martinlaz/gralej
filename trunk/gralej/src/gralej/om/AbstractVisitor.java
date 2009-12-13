@@ -24,6 +24,8 @@
 
 package gralej.om;
 
+import gralej.om.lrs.ILRSExpr;
+
 public abstract class AbstractVisitor implements IVisitor {
     public void visit(IVisitable visitable) {
         throw new RuntimeException("unknown visitable: visitable");
@@ -46,4 +48,6 @@ public abstract class AbstractVisitor implements IVisitor {
     public abstract void visit(ITypedFeatureStructure tfs);
 
     public abstract void visit(ITree tree);
+
+    public void visit(ILRSExpr expr) {}
 }

@@ -24,6 +24,8 @@
 
 package gralej.om;
 
+import gralej.om.lrs.ILRSExpr;
+
 public interface IVisitor {
     void visit(IVisitable visitable);
 
@@ -40,4 +42,6 @@ public interface IVisitor {
     void visit(ITypedFeatureStructure tfs);
 
     void visit(ITree tree);
+
+    void visit(ILRSExpr expr);
 }

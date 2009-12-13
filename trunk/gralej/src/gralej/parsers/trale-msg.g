@@ -1,5 +1,6 @@
 //
-// WARNING: this is either trale-msg.g or a Java file generated from trale-msg.g !!!
+// WARNING: this is either trale-msg.g
+//   or a Java file generated from trale-msg.g !!!
 //
 
 package gralej.parsers;
@@ -275,15 +276,18 @@ any
   ->  _BEGIN_ANY flags id value _RPAR
         {{
             String s = S(_[3]);
+            IEntity ent;
             if (s.startsWith(_LRS_PREFIX)) {
                 s = s.substring(_LRS_PREFIX.length());
+                ent = LRSExpr.parse(s);
             }
-            IAny any = new OM.Any(
-                (OM.Flags)_[1],
-                s
-                );
-            _id2ent.put(N(_[2]), any);
-            return any;
+            //else
+                ent = new OM.Any(
+                    (OM.Flags)_[1],
+                    s
+                    );
+            _id2ent.put(N(_[2]), ent);
+            return ent;
         }}
   .
 

@@ -25,6 +25,9 @@
 package gralej.parsers;
 
 import gralej.om.*;
+import gralej.om.lrs.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 class OM {
     static class Flags {
