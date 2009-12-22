@@ -25,6 +25,8 @@
 package gralej.blocks;
 
 import gralej.Config;
+import gralej.om.IEntity;
+import gralej.om.lrs.ILRSExpr;
 import gralej.util.BoundedHistory;
 import gralej.util.ChangeEventSource;
 import gralej.util.Log;
@@ -517,7 +519,16 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             if (_selectOnHover || !_selectOnClick) {
                 Block target = findContainingBlock(_content, x, y);
                 if (target instanceof ContentLabel) {
-                    flipAndScrollTo(target, e.getX(), e.getY());
+                    if (e.isControlDown()) {
+                        if (target.getParent() instanceof LRSBlock) {
+                            ILRSExpr lrsExpr = (ILRSExpr) target.getParent().getModel();
+                            frameEntity(lrsExpr, lrsExpr.text());
+                        }
+                    }
+                    else {
+                        flipAndScrollTo(target, e.getX(), e.getY());
+                        return; // don't update cursor in this case, otherwise looks weird
+                    }
                 }
             }
         }
@@ -848,5 +859,27 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             else
                 b.setVisible(true);
         }
+    }
+
+    public static JFrame frameEntity(IEntity ent) {
+        return frameEntity(ent, "", true);
+    }
+    public static JFrame frameEntity(IEntity ent, boolean show) {
+        return frameEntity(ent, "", show);
+    }
+    public static JFrame frameEntity(IEntity ent, String title) {
+        return frameEntity(ent, title, true);
+    }
+    public static JFrame frameEntity(IEntity ent, String title, boolean show) {
+        BlockPanel bp = new BlockPanel(ent);
+        JFrame f = new JFrame();
+        f.setContentPane(bp.getUI());
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setTitle(title);
+        if (show) {
+            f.pack();
+            f.setVisible(true);
+        }
+        return f;
     }
 }

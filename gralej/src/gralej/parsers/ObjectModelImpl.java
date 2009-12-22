@@ -25,9 +25,6 @@
 package gralej.parsers;
 
 import gralej.om.*;
-import gralej.om.lrs.*;
-import java.util.ArrayList;
-import java.util.Collections;
 
 class OM {
     static class Flags {
@@ -182,6 +179,9 @@ class OM {
         Tag(Flags flags, int number) {
             super(flags);
             _number = number;
+        }
+        Tag(int number) {
+            this(Flags.DEFAULT_FLAGS, number);
         }
 
         public int number() {

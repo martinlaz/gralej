@@ -36,6 +36,7 @@ public class LabelFactory {
     String LIST_RBRACKET;
     String LIST_SEPARATOR;
     String LIST_TAIL_SEPARATOR;
+    String LRS_BLOCK_TITLE;
 
     Map<String, LabelStyle> _labelStyles = new TreeMap<String, LabelStyle>();
 
@@ -60,6 +61,7 @@ public class LabelFactory {
         LIST_RBRACKET       = _cfg.get("block.label.list.text.right");
         LIST_SEPARATOR      = _cfg.get("block.label.list.text.separator");
         LIST_TAIL_SEPARATOR = _cfg.get("block.label.list.text.tailSeparator");
+        LRS_BLOCK_TITLE     = _cfg.get("block.label.lrsblock.title");
         
         String[] types = new String[] {
             "tag",
@@ -187,11 +189,24 @@ public class LabelFactory {
         return createLabel(text, getLabelStyle("species"), panel);
     }
 
-    public Label createInternalNodeLabel(String text, BlockPanel panel) {
+    public ContentLabel createInternalNodeLabel(String text, BlockPanel panel) {
         return createContentLabel(text, getLabelStyle("node.internal"), panel);
     }
 
-    public Label createLeafNodeLabel(String text, BlockPanel panel) {
+    public ContentLabel createLeafNodeLabel(String text, BlockPanel panel) {
         return createContentLabel(text, getLabelStyle("node.leaf"), panel);
+    }
+
+    public ContentLabel createLRSBlockLabel(BlockPanel panel) {
+        return createContentLabel(
+                LRS_BLOCK_TITLE, getLabelStyle("lrsblock"), panel);
+    }
+
+    public Label createLRSLabel(String text, BlockPanel panel) {
+        return createLabel(text, getLabelStyle("lrs"), panel);
+    }
+
+    public LRSContentLabel createLRSContentLabel(String text, BlockPanel panel) {
+        return new LRSContentLabel(panel, getLabelStyle("lrs"), text);
     }
 }

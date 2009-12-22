@@ -169,6 +169,14 @@ public class BlockPanelStyle implements ChangeListener {
     @Key("block.tree.edge.color")
     Color treeEdgeColor;
     
+    // lrs tree
+    @Key("block.lrstree.minDistance.horizontal")
+    int minLrsTreeNodesHorizontalDistance;
+    @Key("block.lrstree.minDistance.vertical")
+    int minLrsTreeNodesVerticalDistance;
+    @Key("block.lrstree.frameColor")
+    Color lrsTreeFrameColor;
+    
     // panel
     @Key("block.panel.margins.all")
     int margin;
@@ -291,8 +299,20 @@ public class BlockPanelStyle implements ChangeListener {
         this.minTreeNodesVerticalDistance = newValue;
     }
 
+    public int getMinLrsTreeNodesHorizontalDistance() {
+        return minLrsTreeNodesHorizontalDistance;
+    }
+
+    public int getMinLrsTreeNodesVerticalDistance() {
+        return minLrsTreeNodesVerticalDistance;
+    }
+
     public Color getTreeEdgeColor() {
         return treeEdgeColor;
+    }
+
+    public Color getLrsTreeFrameColor() {
+        return lrsTreeFrameColor;
     }
 
     public void setTreeEdgeColor(Color treeEdgeColor) {

@@ -150,4 +150,12 @@ public class LayoutFactory {
     public BlockLayout getNodeLayout() {
         return getLayout("node", VCLC);
     }
+
+    public BlockLayout getLRSNodeLayout() {
+        return getLayout("lrsnode", HLC);
+    }
+
+    public BlockLayout getLRSBlockLayout() {
+        return getLayout("lrsblock", VCLC);
+    }
 }

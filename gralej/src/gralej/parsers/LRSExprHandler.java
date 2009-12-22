@@ -5,20 +5,21 @@ import java.util.LinkedList;
 import static java.util.Collections.EMPTY_LIST;
 
 import static gralej.parsers.LRSExpr.*;
+import gralej.om.ITag;
 import gralej.om.lrs.ITerm;
 
-import tomato.GrammarHandler;
-import tomato.Token;
-
-public class LRSExprHandler extends GrammarHandler {
-    private static class LI extends LinkedList<Integer> {}
+public class LRSExprHandler extends tomato.GrammarHandler {
+    private static class LN extends LinkedList<Integer> {}
+    private static class LI extends LinkedList<ITag> {}
     private static class LT extends LinkedList<ITerm> {}
+    
+    private List<OM.Tag> _tags;
     
     private static String S(Object[] _, int i) {
         Object obj = _[i];
         if (obj instanceof CharSequence)
             return obj.toString();
-        return ((Token)obj).content().toString();
+        return ((tomato.Token)obj).content().toString();
     }
     private static Term T(Object[] _, int i) {
         return (Term)_[i];
@@ -28,6 +29,11 @@ public class LRSExprHandler extends GrammarHandler {
         if (obj == EMPTY_LIST)
             return EMPTY_LIST;
         return (LT) obj;
+    }
+    void setTagStore(List<OM.Tag> tags) {
+        if (tags == null)
+            tags = EMPTY_LIST;
+        _tags = tags;
     }
 
     public static class Terminals extends tomato.AbstractTerminals {
@@ -114,7 +120,21 @@ public class LRSExprHandler extends GrammarHandler {
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
-                LI li = (LI)_[0]; li.add((Integer)_[2]); return li;
+                LI tags = new LI();
+            for (Integer itag : (LN)_[1]) {
+                OM.Tag tag = new OM.Tag(itag);
+                tags.add(tag);
+                _tags.add(tag);
+            }
+            return tags;
+            }
+        };
+        // Constraints -> '(' TagList ')'
+        bindReduceHandler(14, handler);
+
+        handler = new tomato.ReduceHandler() {
+            public Object execute(Object[] _) {
+                LN li = (LN)_[0]; li.add((Integer)_[2]); return li;
             }
         };
         // TagList -> TagList ',' Tag
@@ -122,7 +142,7 @@ public class LRSExprHandler extends GrammarHandler {
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
-                LI li = new LI(); li.add((Integer)_[0]); return li;
+                LN li = new LN(); li.add((Integer)_[0]); return li;
             }
         };
         // TagList -> Tag
@@ -170,7 +190,7 @@ public class LRSExprHandler extends GrammarHandler {
         };
         // AlnumSeq -> AlnumSeq Alnum
         bindReduceHandler(92, handler);
-        // _INT -> _INT Digit
+        // Int -> Int Digit
         bindReduceHandler(96, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -186,7 +206,7 @@ public class LRSExprHandler extends GrammarHandler {
                 return Integer.parseInt(S(_,1));
             }
         };
-        // Tag -> '[' _INT ']'
+        // Tag -> '[' Int ']'
         bindReduceHandler(17, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -353,18 +373,10 @@ public class LRSExprHandler extends GrammarHandler {
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
-                return _[1];
-            }
-        };
-        // Constraints -> '(' TagList ')'
-        bindReduceHandler(14, handler);
-
-        handler = new tomato.ReduceHandler() {
-            public Object execute(Object[] _) {
                 return new ExCont(T(_,1));
             }
         };
-        // ExCont -> '^' Term
+        // ExCont -> '^' BasicTerm
         bindReduceHandler(23, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -372,7 +384,7 @@ public class LRSExprHandler extends GrammarHandler {
                 return new Functor(S(_,0), Ts(_,2), Ts(_,4));
             }
         };
-        // Functor -> _LCASE_WORD '(' Terms ')' SubTerms
+        // Functor -> LCaseWord '(' Terms ')' SubTerms
         bindReduceHandler(20, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -412,7 +424,7 @@ public class LRSExprHandler extends GrammarHandler {
                 return new MetaVar(S(_,0), Ts(_,1));
             }
         };
-        // MetaVar -> _UCASE_WORD SubTerms
+        // MetaVar -> UCaseWord SubTerms
         bindReduceHandler(19, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -428,9 +440,9 @@ public class LRSExprHandler extends GrammarHandler {
                 return new StringBuilder().append(S(_,0)).append(S(_,1));
             }
         };
-        // _LCASE_WORD -> LCase AlnumSeqOpt
+        // LCaseWord -> LCase AlnumSeqOpt
         bindReduceHandler(97, handler);
-        // _UCASE_WORD -> UCase AlnumSeqOpt
+        // UCaseWord -> UCase AlnumSeqOpt
         bindReduceHandler(98, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -440,7 +452,7 @@ public class LRSExprHandler extends GrammarHandler {
         };
         // AlnumSeq -> Alnum
         bindReduceHandler(91, handler);
-        // _INT -> Digit
+        // Int -> Digit
         bindReduceHandler(95, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -448,7 +460,7 @@ public class LRSExprHandler extends GrammarHandler {
                 return new Var(S(_,0));
             }
         };
-        // Var -> _LCASE_WORD
+        // Var -> LCaseWord
         bindReduceHandler(18, handler);
     }
 }
