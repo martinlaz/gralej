@@ -205,9 +205,9 @@ public class TraleMsgHandler extends GrammarHandler {
             IEntity ent;
             if (s.startsWith(_LRS_PREFIX)) {
                 s = s.substring(_LRS_PREFIX.length());
-                ent = LRSExpr.parse(s);
+                ent = LRSExpr.parse(s, _tags);
             }
-            //else
+            else
                 ent = new OM.Any(
                     (OM.Flags)_[1],
                     s

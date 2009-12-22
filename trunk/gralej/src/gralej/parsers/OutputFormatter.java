@@ -362,11 +362,11 @@ public class OutputFormatter {
 
     private void toXML(IDataPackage data, PrintStream p) {
         try {
-            Writer out = new BufferedWriter(new OutputStreamWriter(p, "UTF8"));
-            out.write("<parse>\n");
+            Writer out = new BufferedWriter(new OutputStreamWriter(p, "UTF-8"));
+            out.write("<gralej>\n");
             OM2XMLVisitor visitor = new OM2XMLVisitor();
             out.write(visitor.output(data.getModel()));
-            out.write("</parse>\n");
+            out.write("</gralej>\n");
             out.close();
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block

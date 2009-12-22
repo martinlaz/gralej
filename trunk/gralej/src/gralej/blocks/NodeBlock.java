@@ -26,31 +26,14 @@ package gralej.blocks;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
-public class NodeBlock extends ContentOwningBlock {
-    private NodeBlock _parentNode;
-    private List<NodeBlock> _childNodes;
+public abstract class NodeBlock extends ContentOwningBlock {
+    protected NodeBlock _parentNode;
+    protected List<NodeBlock> _childNodes = Collections.EMPTY_LIST;
+    private boolean _isCollapsed;
 
-    NodeBlock(BlockPanel panel, Label label, Block content) {
-        this(panel, label, content, Collections.EMPTY_LIST);
-    }
-
-    NodeBlock(BlockPanel panel, Label label, Block content, List<NodeBlock> childNodes) {
+    NodeBlock(BlockPanel panel) {
         setPanel(panel);
-        setLayout(getPanelStyle().getLayoutFactory().getNodeLayout());
-
-        if (label != null)
-            addChild(label);
-        lastAddChild(content);
-
-        setContent(content);
-
-        _childNodes = childNodes;
-    }
-    
-    public ContentLabel getLabel() {
-        return (ContentLabel) _children.get(0);
     }
     
     public Iterable<NodeBlock> getChildNodes() {
@@ -60,69 +43,36 @@ public class NodeBlock extends ContentOwningBlock {
     public boolean isLeafNode() {
         return _childNodes.isEmpty();
     }
+
+    boolean isCollapsed() {
+        return _isCollapsed;
+    }
+
+    void setCollapsed(boolean newValue) {
+        if (_isCollapsed == newValue)
+            return;
+        _isCollapsed = newValue;
+        updateParent();
+    }
     
     void setParentNode(NodeBlock parentNode) {
         assert _parentNode == null;
         _parentNode = parentNode;
     }
-    
-    @Override
-    protected Block getNorthNeighbour(Block child) {
-        if (child == getContent())
-            return getLabel();
-        if (_parentNode != null) {
-            Block b = _parentNode.getContent();
-            Stack<Block> s = new Stack<Block>();
-            s.push(_parentNode);
-            if (b instanceof AVMBlock && b.isVisible()) {
-                s.push(b);
-                Block avs = b.getChildren().get(1);
-                if (avs.isVisible())
-                    for (Block bb : avs.getChildren())
-                        s.push(bb);
-            }
-            while (!s.isEmpty()) {
-                b = s.pop();
-                if (b.isVisible())
-                    return b.getPrincipalBlock();
-            }
-        }
-        return null;
-    }
-    
-    @Override
-    protected Block getSouthNeighbour(Block child) {
-        if (child == getLabel()) {
-            Block b = getContent();
-            if (b != null && b.isVisible() && b instanceof ContainerBlock)
-                return ((ContainerBlock)b).getPrincipalBlock();
-        }
-        if (!isLeafNode())
-            return _childNodes.get(0).getPrincipalBlock();
-        return null;
-    }
-    
-    @Override
-    protected Block getEastNeighbour(Block child) {
-        if (child != getLabel())
-            return getLabel();
-        if (_parentNode == null)
-            return null;
-        int i = _parentNode._childNodes.indexOf(this);
-        if (i == _parentNode._childNodes.size() - 1)
-            return null;
-        return _parentNode._childNodes.get(i + 1).getPrincipalBlock();
-    }
-    
-    @Override
-    protected Block getWestNeighbour(Block child) {
-        if (child != getLabel())
-            return getLabel();
-        if (_parentNode == null)
-            return null;
-        int i = _parentNode._childNodes.indexOf(this);
-        if (i == 0)
-            return null;
-        return _parentNode._childNodes.get(i - 1).getPrincipalBlock();
-    }
+
+//    @Override
+//    public void setVisible(boolean newValue) {
+//        if (isVisible() == newValue || _isUpdatingChildren)
+//            return;
+//        _isUpdatingChildren = true;
+//        try {
+//            for (NodeBlock b : _childNodes) {
+//                b.setVisible(newValue);
+//            }
+//        }
+//        finally {
+//            _isUpdatingChildren = false;
+//        }
+//        super.setVisible(newValue);
+//    }
 }

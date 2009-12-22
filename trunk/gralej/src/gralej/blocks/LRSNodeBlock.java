@@ -24,10 +24,46 @@
 
 package gralej.blocks;
 
+import java.awt.Graphics2D;
+import java.util.List;
+
 /**
  *
  * @author Martin
  */
-public class LRSNodeBlock {
+public class LRSNodeBlock extends NodeBlock {
+    Label _parentLabel; // label that points to this node
 
+    LRSNodeBlock(BlockPanel panel, List<Block> labels, List<NodeBlock> childNodes) {
+        super(panel);
+        setLayout(getPanelStyle().getLayoutFactory().getLRSNodeLayout());
+
+        for (Block child : labels)
+            addChild(child);
+        _childNodes = childNodes;
+
+        sealChildren();
+    }
+
+    void setParentLabel(Label l) {
+        _parentLabel = l;
+    }
+
+    @Override
+    public void paint(Graphics2D g) {
+        super.paint(g);
+
+//        g.setColor(Color.BLUE);
+//        g.drawRect(_x, _y, getWidth(), getHeight());
+
+        if (_parentLabel == null)
+            return;
+
+        int x1 = _x + getWidth() / 2;
+        int y1 = _y;
+        int x2 = _parentLabel.getX() + _parentLabel.getWidth() / 2;
+        int y2 = _parentLabel.getY() + _parentLabel.getHeight();
+        g.setColor(getPanelStyle().getTreeEdgeColor());
+        g.drawLine(x1, y1, x2, y2);
+    }
 }

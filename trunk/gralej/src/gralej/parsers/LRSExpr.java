@@ -24,12 +24,14 @@
 
 package gralej.parsers;
 
+import gralej.om.ITag;
 import gralej.om.IVisitor;
 import gralej.om.lrs.*;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import tomato.CharLexer;
@@ -47,7 +49,9 @@ public final class LRSExpr implements ILRSExpr {
     private List<ITerm> _subs;
     private String _text;
 
-    private LRSExpr() {
+    private LRSExpr(List<ITerm> subs, String text) {
+        _subs = subs;
+        _text = text;
     }
 
     public List<ITerm> subTerms() {
@@ -64,13 +68,18 @@ public final class LRSExpr implements ILRSExpr {
 
     private static CharLexer _lexer;
     private static Parser _parser;
+    private static LRSExprHandler _grammarHandler;
+
+    public static LRSExpr parse(String text) {
+        return parse(text, new LinkedList<OM.Tag>());
+    }
 
     synchronized
-    public static LRSExpr parse(String text) {
+    static LRSExpr parse(String text, List<OM.Tag> tags) {
         if (_lexer == null) {
             LRTable lrt = Parsers.loadLRTable("lrs-expr.g");
             Grammar g = lrt.grammar();
-            GrammarHandler.bind("gralej.parsers.LRSExprHandler", g);
+            _grammarHandler = (LRSExprHandler) GrammarHandler.bind("gralej.parsers.LRSExprHandler", g);
             _parser = new Parser(lrt);
             _lexer = new CharLexer(g);
         }
@@ -78,7 +87,9 @@ public final class LRSExpr implements ILRSExpr {
         _lexer.reset(new StringReader(text));
         List<ITerm> terms;
         try {
+            _grammarHandler.setTagStore(tags);
             terms = (List<ITerm>) _parser.parse(_lexer);
+            _grammarHandler.setTagStore(null);
         }
         catch (RuntimeException ex) {
             ex.printStackTrace();
@@ -86,12 +97,8 @@ public final class LRSExpr implements ILRSExpr {
             System.err.println("after: " + text.substring(0, _lexer.charPos()));
             throw ex;
         }
-
-        LRSExpr expr = new LRSExpr();
-        expr._subs = terms;
-        expr._text = text;
         
-        return expr;
+        return new LRSExpr(terms, text);
     }
 
     @Override
@@ -126,9 +133,9 @@ public final class LRSExpr implements ILRSExpr {
     
 
     static class Term implements ITerm {
-        List<ITerm> _subTerms;
-        List<Integer> _posConstraints = EMPTY_LIST;
-        List<Integer> _negConstraints = EMPTY_LIST;
+        protected List<ITerm> _subTerms;
+        protected List<ITag> _posConstraints = EMPTY_LIST;
+        protected List<ITag> _negConstraints = EMPTY_LIST;
 
         Term() {
             this(EMPTY_LIST);
@@ -136,17 +143,20 @@ public final class LRSExpr implements ILRSExpr {
         Term(List<ITerm> subTerms) {
             _subTerms = seal(subTerms);
         }
-        void setConstraints(List<Integer> pos, List<Integer> neg) {
+        void setConstraints(List<ITag> pos, List<ITag> neg) {
             _posConstraints = seal(pos);
             _negConstraints = seal(neg);
         }
         public Iterable<ITerm> subTerms() {
             return _subTerms;
         }
-        public Iterable<Integer> positiveConstraints() {
+        public boolean isLeafTerm() {
+            return _subTerms.isEmpty();
+        }
+        public Iterable<ITag> positiveConstraints() {
             return _posConstraints;
         }
-        public Iterable<Integer> negativeConstraints() {
+        public Iterable<ITag> negativeConstraints() {
             return _negConstraints;
         }
         protected <T> List<T> seal(List<T> ls) {
@@ -155,27 +165,36 @@ public final class LRSExpr implements ILRSExpr {
         public String name() {
             throw new UnsupportedOperationException();
         }
+        public boolean hasPositiveConstraints() {
+            return !_posConstraints.isEmpty();
+        }
+        public boolean hasNegativeConstraints() {
+            return !_negConstraints.isEmpty();
+        }
+        public boolean hasConstraints() {
+            return !_posConstraints.isEmpty() || !_negConstraints.isEmpty();
+        }
     }
 
-    static class ExCont extends Term {
+    final static class ExCont extends Term implements IExCont {
         ExCont(ITerm t) {
             super(Collections.singletonList(t));
         }
     }
 
-    static class InCont extends Term {
+    final static class InCont extends Term implements IInCont {
         InCont(java.util.List<ITerm> ts) {
             super(ts);
         }
     }
 
-    static class SqCont extends Term {
+    final static class SqCont extends Term implements ISqCont {
         SqCont(java.util.List<ITerm> ts) {
             super(ts);
         }
     }
 
-    static class NamedTerm extends Term {
+    static class NamedTerm extends Term implements INamedTerm {
         String _name;
         NamedTerm(String name) {
             _name = name;
@@ -190,18 +209,18 @@ public final class LRSExpr implements ILRSExpr {
         }
     }
 
-    static class Var extends NamedTerm {
+    final static class Var extends NamedTerm implements IVar {
         Var(String name) { super(name); }
     }
 
-    static class MetaVar extends NamedTerm {
+    final static class MetaVar extends NamedTerm implements IMetaVar {
         MetaVar(String name, List<ITerm> subTerms) {
             super(name, subTerms);
         }
     }
 
-    static class Functor extends NamedTerm {
-        List<ITerm> _args;
+    final static class Functor extends NamedTerm implements IFunctor {
+        private List<ITerm> _args;
 
         Functor(String name, List<ITerm> args, List<ITerm> subTerms) {
             super(name, subTerms);

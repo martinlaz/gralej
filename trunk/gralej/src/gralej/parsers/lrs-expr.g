@@ -5,20 +5,21 @@ import java.util.LinkedList;
 import static java.util.Collections.EMPTY_LIST;
 
 import static gralej.parsers.LRSExpr.*;
+import gralej.om.ITag;
 import gralej.om.lrs.ITerm;
 
-import tomato.GrammarHandler;
-import tomato.Token;
-
-public class LRSExprHandler extends GrammarHandler {
-    private static class LI extends LinkedList<Integer> {}
+public class LRSExprHandler extends tomato.GrammarHandler {
+    private static class LN extends LinkedList<Integer> {}
+    private static class LI extends LinkedList<ITag> {}
     private static class LT extends LinkedList<ITerm> {}
+    
+    private List<OM.Tag> _tags;
     
     private static String S(Object[] _, int i) {
         Object obj = _[i];
         if (obj instanceof CharSequence)
             return obj.toString();
-        return ((Token)obj).content().toString();
+        return ((tomato.Token)obj).content().toString();
     }
     private static Term T(Object[] _, int i) {
         return (Term)_[i];
@@ -28,6 +29,11 @@ public class LRSExprHandler extends GrammarHandler {
         if (obj == EMPTY_LIST)
             return EMPTY_LIST;
         return (LT) obj;
+    }
+    void setTagStore(List<OM.Tag> tags) {
+        if (tags == null)
+            tags = EMPTY_LIST;
+        _tags = tags;
     }
 %
 
@@ -73,33 +79,41 @@ ContribConstraints ->
 
 Constraints ->
     '(' TagList ')'
-        { return _[1]; }
+        {{
+            LI tags = new LI();
+            for (Integer itag : (LN)_[1]) {
+                OM.Tag tag = new OM.Tag(itag);
+                tags.add(tag);
+                _tags.add(tag);
+            }
+            return tags;
+        }}
     .
 
 TagList ->
     Tag
-        { LI li = new LI(); li.add((Integer)_[0]); return li; }
+        { LN li = new LN(); li.add((Integer)_[0]); return li; }
     | TagList ',' Tag
-        { LI li = (LI)_[0]; li.add((Integer)_[2]); return li; }
+        { LN li = (LN)_[0]; li.add((Integer)_[2]); return li; }
     .
 
 Tag ->
-    '[' _INT ']'
+    '[' Int ']'
         { return Integer.parseInt(S(_,1)); }
     .
 
 Var ->
-    _LCASE_WORD
+    LCaseWord
         { return new Var(S(_,0)); }
     .
 
 MetaVar ->
-    _UCASE_WORD SubTerms
+    UCaseWord SubTerms
         { return new MetaVar(S(_,0), Ts(_,1)); }
     .
 
 Functor ->
-    _LCASE_WORD '(' Terms ')' SubTerms
+    LCaseWord '(' Terms ')' SubTerms
         { return new Functor(S(_,0), Ts(_,2), Ts(_,4)); }
     .
 
@@ -110,7 +124,7 @@ SubTerms ->
     .
 
 ExCont ->
-    '^' Term
+    '^' BasicTerm
         { return new ExCont(T(_,1)); }
     .
 
@@ -164,19 +178,19 @@ AlnumSeqOpt ->
     | AlnumSeq
     .
 
-_INT ->
+Int ->
     Digit
         { return new StringBuilder().append(S(_,0)); }
-    | _INT Digit
+    | Int Digit
         { return ((StringBuilder)_[0]).append(S(_,1)); }
     .
 
-_LCASE_WORD ->
+LCaseWord ->
     LCase AlnumSeqOpt
         { return new StringBuilder().append(S(_,0)).append(S(_,1)); }
     .
 
-_UCASE_WORD ->
+UCaseWord ->
     UCase AlnumSeqOpt
         { return new StringBuilder().append(S(_,0)).append(S(_,1)); }
     .

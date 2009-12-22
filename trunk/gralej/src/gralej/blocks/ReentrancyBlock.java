@@ -78,7 +78,7 @@ public class ReentrancyBlock extends ContentOwningBlock {
     private ContainerBlock getOutermostAVMBlock() {
         ContainerBlock b = getParent();
         ContainerBlock p = b.getParent();
-        while (p != null && !(p instanceof NodeBlock || p instanceof RootBlock)) {
+        while (p != null && !(p instanceof AVMNodeBlock || p instanceof RootBlock)) {
             b = p;
             p = p.getParent();
         }

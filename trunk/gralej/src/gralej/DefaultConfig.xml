@@ -184,6 +184,29 @@ where RR = 2byte hex value for red
 <entry key="block.label.unbound.text.color">0xff0000</entry>
 <entry key="block.label.unbound.text.colorAlt">0x000000</entry>
 
+<entry key="block.label.lrs.fontSpec">Courier-12</entry>
+<entry key="block.label.lrs.frame.color">0x000000</entry>
+<entry key="block.label.lrs.frame.isDashed">false</entry>
+<entry key="block.label.lrs.frame.thickness">0</entry>
+<entry key="block.label.lrs.margin.bottom">0</entry>
+<entry key="block.label.lrs.margin.left">0</entry>
+<entry key="block.label.lrs.margin.right">0</entry>
+<entry key="block.label.lrs.margin.top">0</entry>
+<entry key="block.label.lrs.text.color">0x000000</entry>
+<entry key="block.label.lrs.text.colorAlt">0xc0c0c0</entry>
+
+<entry key="block.label.lrsblock.fontSpec">Courier-BOLD-12</entry>
+<entry key="block.label.lrsblock.frame.color">0x000000</entry>
+<entry key="block.label.lrsblock.frame.isDashed">false</entry>
+<entry key="block.label.lrsblock.frame.thickness">0</entry>
+<entry key="block.label.lrsblock.margin.bottom">0</entry>
+<entry key="block.label.lrsblock.margin.left">0</entry>
+<entry key="block.label.lrsblock.margin.right">0</entry>
+<entry key="block.label.lrsblock.margin.top">0</entry>
+<entry key="block.label.lrsblock.text.color">0x993300</entry>
+<entry key="block.label.lrsblock.text.colorAlt">0xc0c0c0</entry>
+<entry key="block.label.lrsblock.title"> = CLLRS = </entry>
+
 <entry key="block.label.text.maxLength">70</entry>
 
 <entry key="block.layout.avm.compact">true</entry>
@@ -211,6 +234,14 @@ where RR = 2byte hex value for red
 <entry key="block.layout.node.space.leading">5</entry>
 <entry key="block.layout.node.space.trailing">5</entry>
 
+<entry key="block.layout.lrsnode.space.intra">0</entry>
+<entry key="block.layout.lrsnode.space.leading">5</entry>
+<entry key="block.layout.lrsnode.space.trailing">5</entry>
+
+<entry key="block.layout.lrsblock.space.intra">5</entry>
+<entry key="block.layout.lrsblock.space.leading">5</entry>
+<entry key="block.layout.lrsblock.space.trailing">6</entry>
+
 <entry key="block.layout.reentrancy.space.intra">5</entry>
 <entry key="block.layout.reentrancy.space.leading">0</entry>
 <entry key="block.layout.reentrancy.space.trailing">0</entry>
@@ -226,5 +257,9 @@ where RR = 2byte hex value for red
 <entry key="block.tree.edge.color">0xa7a7a7</entry>
 <entry key="block.tree.minDistance.horizontal">25</entry>
 <entry key="block.tree.minDistance.vertical">40</entry>
+
+<entry key="block.lrstree.minDistance.horizontal">2</entry>
+<entry key="block.lrstree.minDistance.vertical">20</entry>
+<entry key="block.lrstree.frameColor">0xe0e0e0</entry>
 
 </properties>

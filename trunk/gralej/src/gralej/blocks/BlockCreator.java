@@ -34,6 +34,15 @@ import gralej.om.ITree;
 import gralej.om.ITypedFeatureStructure;
 import gralej.om.IVisitable;
 
+import gralej.om.lrs.IExCont;
+import gralej.om.lrs.IFunctor;
+import gralej.om.lrs.IInCont;
+import gralej.om.lrs.ILRSExpr;
+import gralej.om.lrs.IMetaVar;
+import gralej.om.lrs.INamedTerm;
+import gralej.om.lrs.ISqCont;
+import gralej.om.lrs.ITerm;
+import gralej.om.lrs.IVar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,6 +116,124 @@ public class BlockCreator extends AbstractVisitor {
     }
 
     @Override
+    public void visit(ILRSExpr lrs) {
+        LRSTreeBlock lrsTree = new LRSTreeBlock(_panel, createLRSTree(lrs.subTerms()));
+        lrsTree.setModel(lrs);
+
+        _result = new LRSBlock(_panel, lrsTree);
+        _result.setModel(lrs);
+    }
+
+    private LRSNodeBlock createLRSTree(List<ITerm> terms) {
+        List<NodeBlock> childNodes = new LinkedList<NodeBlock>();
+        List<Block> labels = new LinkedList<Block>();
+        return createLRSNode(terms, labels, childNodes);
+    }
+    private LRSNodeBlock createLRSNode(List<Block> labels, List<NodeBlock> childNodes) {
+        return new LRSNodeBlock(_panel, labels, childNodes);
+    }
+    private LRSNodeBlock createLRSNode(ITerm term) {
+        List<Block> labels = new LinkedList<Block>();
+        List<NodeBlock> childNodes = new LinkedList<NodeBlock>();
+        processLRSTerm(term, labels, childNodes);
+        return createLRSNode(labels, childNodes);
+    }
+    private LRSNodeBlock createLRSNode(List<ITerm> terms, List<Block> labels, List<NodeBlock> childNodes) {
+        for (ITerm term : terms) {
+            if (!labels.isEmpty())
+                labels.add(_labfac.createLRSLabel(",", _panel));
+            processLRSTerm(term, labels, childNodes);
+        }
+        return createLRSNode(labels, childNodes);
+    }
+
+    private void processLRSTerm(ITerm term, List<Block> labels, List<NodeBlock> childNodes) {
+        if (term instanceof INamedTerm) {
+            if (term.isLeafTerm())
+                labels.add(_labfac.createLRSLabel(term.name(), _panel));
+            else {
+                LRSContentLabel lab = _labfac.createLRSContentLabel(term.name(), _panel);
+                labels.add(lab);
+                for (ITerm subTerm : term.subTerms()) {
+                    LRSNodeBlock node = createLRSNode(subTerm);
+                    node.setParentLabel(lab);
+                    childNodes.add(node);
+                    lab.addChildNode(node);
+                }
+            }   
+        }
+
+        if (term instanceof IFunctor) {
+            labels.add(_labfac.createLRSLabel("(", _panel));
+
+            boolean firstDone = false;
+            for (ITerm arg : ((IFunctor) term).args()) {
+                if (firstDone)
+                    labels.add(_labfac.createLRSLabel(",", _panel));
+                else
+                    firstDone = true;
+                processLRSTerm(arg, labels, childNodes);
+            }
+
+            labels.add(_labfac.createLRSLabel(")", _panel));
+        }
+        else if (term instanceof IMetaVar) {
+            // name done
+        }
+        else if (term instanceof IVar) {
+            // name done
+        }
+        else if (term instanceof IInCont) {
+            labels.add(_labfac.createLRSLabel("{", _panel));
+            for (ITerm subTerm : term.subTerms())
+                processLRSTerm(subTerm, labels, childNodes);
+            labels.add(_labfac.createLRSLabel("}", _panel));
+        }
+        else if (term instanceof IExCont) {
+            labels.add(_labfac.createLRSLabel("^", _panel));
+            for (ITerm subTerm : term.subTerms())
+                processLRSTerm(subTerm, labels, childNodes);
+        }
+        else if (term instanceof ISqCont) {
+            labels.add(_labfac.createLRSLabel("[", _panel));
+            for (ITerm subTerm : term.subTerms())
+                processLRSTerm(subTerm, labels, childNodes);
+            labels.add(_labfac.createLRSLabel("]", _panel));
+        }
+        else {
+            throw new AssertionError("unknown lrs term: " + term + " [" + term.getClass() + "]");
+        }
+        if (term.hasConstraints()) {
+            labels.add(_labfac.createLRSLabel("/", _panel));
+                labels.add(_labfac.createLRSLabel("(", _panel));
+
+                boolean comma = false;
+                for (IVisitable tag : term.positiveConstraints()) {
+                    if (comma)
+                        labels.add(_labfac.createLRSLabel(",", _panel));
+                    else
+                        comma = true;
+                    tag.accept(this);
+                    labels.add(_result);
+                }
+
+                labels.add(_labfac.createLRSLabel(")~(", _panel));
+
+                comma = false;
+                for (IVisitable tag : term.negativeConstraints()) {
+                    if (comma)
+                        labels.add(_labfac.createLRSLabel(",", _panel));
+                    else
+                        comma = true;
+                    tag.accept(this);
+                    labels.add(_result);
+                }
+
+                labels.add(_labfac.createLRSLabel(")", _panel));
+        }
+    }
+
+    @Override
     public void visit(ITypedFeatureStructure tfs) {
         if (tfs.isSpecies()) {
             _result = _labfac.createSpeciesLabel(tfs.typeName(), _panel);
@@ -159,7 +286,7 @@ public class BlockCreator extends AbstractVisitor {
         u.content().accept(this);
         Block content = _result;
 
-        NodeBlock nodeBlock = new NodeBlock(_panel, label, content, childNodes);
+        NodeBlock nodeBlock = new AVMNodeBlock(_panel, label, content, childNodes);
         nodeBlock.setModel(u);
         for (NodeBlock childNode : childNodes)
             childNode.setParentNode(nodeBlock);

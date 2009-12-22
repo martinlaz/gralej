@@ -25,11 +25,12 @@ package gralej.blocks;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Stack;
 
 public class TreeBlock extends ContainerBlock {
 
-    private NodeBlock _root;
-    private int MIN_HDIST, MIN_VDIST;
+    protected NodeBlock _root;
+    protected int MIN_HDIST, MIN_VDIST;
 
     TreeBlock(BlockPanel panel, NodeBlock root) {
         setPanel(panel);
@@ -47,6 +48,11 @@ public class TreeBlock extends ContainerBlock {
             addNode(child);
     }
 
+    protected void updateMinDistanceValues() {
+        MIN_HDIST = getPanelStyle().getMinTreeNodesHorizontalDistance();
+        MIN_VDIST = getPanelStyle().getMinTreeNodesVerticalDistance();
+    }
+
     @Override
     public void updateSelf() {
         if (_isUpdatingChildren)
@@ -56,18 +62,27 @@ public class TreeBlock extends ContainerBlock {
         // so we do the two things at the same time:
         // size computation and node positioning.
         
-        MIN_HDIST = getPanelStyle().getMinTreeNodesHorizontalDistance();
-        MIN_VDIST = getPanelStyle().getMinTreeNodesVerticalDistance();
+        updateMinDistanceValues();
 
         layoutNode(_root, getX(), getY());
 
         int w = 0;
         int h = 0;
 
-        for (Block node : getChildren()) {
+        Stack<NodeBlock> nodesStack = new Stack<NodeBlock>();
+        nodesStack.push(_root);
+        do {
+            NodeBlock node = nodesStack.pop();
+            if (node.isCollapsed())
+                continue;
+
             w = Math.max(w, node.getX() + node.getWidth());
             h = Math.max(h, node.getY() + node.getHeight());
+
+            for (NodeBlock child : node.getChildNodes())
+                nodesStack.push(child);
         }
+        while (!nodesStack.isEmpty());
 
         setSize(w - getX(), h - getY());
     }
@@ -93,6 +108,8 @@ public class TreeBlock extends ContainerBlock {
         NodeBlock lc = null; // last child
 
         for (NodeBlock child : u.getChildNodes()) {
+            if (child.isCollapsed())
+                continue;
             if (fc == null)
                 fc = child;
             else
@@ -100,6 +117,11 @@ public class TreeBlock extends ContainerBlock {
 
             nextX = layoutNode(child, nextX, nextY);
             lc = child;
+        }
+
+        if (fc == null) { // all children collapsed
+            u.setPosition(x, y);
+            return x + u.getWidth();
         }
 
         int m = (int) (fc.getX() + fc.getWidth() / 2.0 + (lc.getX()
@@ -127,12 +149,28 @@ public class TreeBlock extends ContainerBlock {
 
     @Override
     public void paint(Graphics2D g) {
-        super.paint(g);
-        g.setColor(getPanelStyle().getTreeEdgeColor());
+        //super.paint(g);
+        
+        Stack<NodeBlock> nodesStack = new Stack<NodeBlock>();
+        nodesStack.push(_root);
+        do {
+            NodeBlock node = nodesStack.pop();
+            if (node.isCollapsed())
+                continue;
+            
+            node.paint(g);
+
+            for (NodeBlock child : node.getChildNodes())
+                nodesStack.push(child);
+        }
+        while (!nodesStack.isEmpty());
+
         drawEdges(_root, g);
     }
 
-    private void drawEdges(NodeBlock node, Graphics g) {
+    protected void drawEdges(NodeBlock node, Graphics g) {
+        g.setColor(getPanelStyle().getTreeEdgeColor());
+        
         int x1 = node.getX() + node.getWidth() / 2;
         int y1 = node.getY() + node.getHeight();
 

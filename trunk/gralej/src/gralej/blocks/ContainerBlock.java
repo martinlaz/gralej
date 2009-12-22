@@ -86,6 +86,9 @@ public abstract class ContainerBlock extends Block {
     
     @Override
     public void update() {
+        if (_isUpdatingChildren)
+            return;
+        
         updateLayoutManager();
         
         _isUpdatingChildren = true;

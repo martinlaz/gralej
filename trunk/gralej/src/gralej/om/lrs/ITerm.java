@@ -24,13 +24,19 @@
 
 package gralej.om.lrs;
 
+import gralej.om.ITag;
+
 /**
  *
  * @author Martin
  */
 public interface ITerm {
-    Iterable<ITerm> subTerms();
-    Iterable<Integer> positiveConstraints();
-    Iterable<Integer> negativeConstraints();
     String name();
+    Iterable<ITerm> subTerms();
+    boolean isLeafTerm();
+    Iterable<ITag> positiveConstraints();
+    Iterable<ITag> negativeConstraints();
+    boolean hasPositiveConstraints();
+    boolean hasNegativeConstraints();
+    boolean hasConstraints();
 }

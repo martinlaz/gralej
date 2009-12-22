@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import gralej.om.*;
+import gralej.om.lrs.ILRSExpr;
 
 public class OM2XMLVisitor extends AbstractVisitor {
     StringBuffer _out;
@@ -74,7 +75,8 @@ public class OM2XMLVisitor extends AbstractVisitor {
         _out.append("<tag ");
         if (_reentrancies.add(tag.number())) {
             _out.append("id='" + tag.number() + "'>");
-            tag.target().accept(this);
+            if (tag.target() != null)
+                tag.target().accept(this);
             _out.append("</tag>\n");
         } else {
             _out.append("ref='" + tag.number() + "'/>\n");
@@ -100,6 +102,10 @@ public class OM2XMLVisitor extends AbstractVisitor {
         for (ITree child : tree.children())
             child.accept(this);
         _out.append("</tree>\n");
+    }
 
+    @Override
+    public void visit(ILRSExpr lrs) {
+        _out.append("<cllrs>" + lrs.text() + "</cllrs>");
     }
 }
