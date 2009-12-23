@@ -24,16 +24,21 @@
 
 package gralej.parsers;
 
+import gralej.Config;
 import gralej.om.ITag;
 import gralej.om.IVisitor;
 import gralej.om.lrs.*;
 
+import gralej.util.Log;
+import gralej.util.Strings;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.Map;
+import java.util.TreeMap;
 import tomato.CharLexer;
 import tomato.Grammar;
 import tomato.GrammarHandler;
@@ -165,6 +170,9 @@ public final class LRSExpr implements ILRSExpr {
         public String name() {
             throw new UnsupportedOperationException();
         }
+        public String uiName() {
+            throw new UnsupportedOperationException();
+        }
         public boolean hasPositiveConstraints() {
             return !_posConstraints.isEmpty();
         }
@@ -207,6 +215,10 @@ public final class LRSExpr implements ILRSExpr {
         public String name() {
             return _name;
         }
+        @Override
+        public String uiName() {
+            return NameMapper.forName(_name);
+        }
     }
 
     final static class Var extends NamedTerm implements IVar {
@@ -230,5 +242,45 @@ public final class LRSExpr implements ILRSExpr {
         public Iterable<ITerm> args() { return _args; }
         public ITerm arg(int i) { return _args.get(i); }
         public int arity() { return _args.size(); }
+    }
+
+    final static class NameMapper {
+        static Map<String,String> _nameMap = new TreeMap<String,String>();
+
+        static {
+            updateNameMap();
+            new Config.KeyObserver("lrs.namemap") {
+                @Override
+                protected void keyChanged() {
+                    updateNameMap();
+                }
+            };
+        }
+
+        static String forName(String name) {
+            if (_nameMap.containsKey(name))
+                return _nameMap.get(name);
+            return name;
+        }
+
+        static void updateNameMap() {
+            _nameMap.clear();
+
+            String S = Strings.unescapeCString(Config.s("lrs.namemap"));
+            String[] ss = S.split(",\\s*");
+
+            for (String s : ss) {
+                int i = s.indexOf(':');
+                if (i == -1) {
+                    Log.warning("ignoring lrs namemap spec: " + s);
+                    continue;
+                }
+
+                String key = s.substring(0, i);
+                String val = s.substring(i + 1);
+
+                _nameMap.put(key, val);
+            }
+        }
     }
 }

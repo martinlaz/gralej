@@ -32,6 +32,7 @@ import gralej.om.ITag;
  */
 public interface ITerm {
     String name();
+    String uiName();
     Iterable<ITerm> subTerms();
     boolean isLeafTerm();
     Iterable<ITag> positiveConstraints();

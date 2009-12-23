@@ -165,6 +165,13 @@ public class OptionsDialog extends javax.swing.JDialog {
         String val = (String) _tabAdvOpts.getModel().getValueAt(e.getFirstRow(), 1);
         _cfg.set(key, val);
     }
+
+    private void applyChanges() {
+        if (_tabAdvOpts.isEditing())
+            _tabAdvOpts.getCellEditor().stopCellEditing(); // ... and accept changes
+        Config.currentConfig().updateFrom(_cfg);
+        Config.currentConfig().save();
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -174,6 +181,7 @@ public class OptionsDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         _pGeneral = new javax.swing.JPanel();
         _chkAutoOpenWindows = new javax.swing.JCheckBox();
@@ -217,6 +225,9 @@ public class OptionsDialog extends javax.swing.JDialog {
         _bImport = new javax.swing.JButton();
         _bExport = new javax.swing.JButton();
         _bDefaults = new javax.swing.JButton();
+        _bApply = new javax.swing.JButton();
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Options");
@@ -256,7 +267,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                     .addComponent(_chkAutoOpenWindows)
                     .addComponent(_chkOutputLatexSnippet)
                     .addComponent(_chkModeGrale))
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(172, Short.MAX_VALUE))
         );
         _pGeneralLayout.setVerticalGroup(
             _pGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -310,7 +321,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _pLookAndFeelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
@@ -319,11 +330,11 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(_pLookAndFeelLayout.createSequentialGroup()
                                 .addGap(5, 5, 5)
-                                .addComponent(_cboJavaLF, 0, 287, Short.MAX_VALUE))
+                                .addComponent(_cboJavaLF, 0, 371, Short.MAX_VALUE))
                             .addGroup(_pLookAndFeelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(_cboIconTheme, 0, 288, Short.MAX_VALUE)
+                                    .addComponent(_cboIconTheme, 0, 372, Short.MAX_VALUE)
                                     .addComponent(_bOpenAMVTreeConfigurator)))))
                     .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.Alignment.LEADING))
@@ -380,7 +391,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(_pLoggingLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                     .addGroup(_pLoggingLayout.createSequentialGroup()
                         .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel9)
@@ -392,11 +403,11 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
-                            .addComponent(_cboLogCritical, 0, 278, Short.MAX_VALUE)
-                            .addComponent(_cboLogError, 0, 278, Short.MAX_VALUE)
-                            .addComponent(_cboLogWarning, 0, 278, Short.MAX_VALUE)
-                            .addComponent(_cboLogDebug, 0, 278, Short.MAX_VALUE)
-                            .addComponent(_cboLogInfo, 0, 278, Short.MAX_VALUE))))
+                            .addComponent(_cboLogCritical, 0, 362, Short.MAX_VALUE)
+                            .addComponent(_cboLogError, 0, 362, Short.MAX_VALUE)
+                            .addComponent(_cboLogWarning, 0, 362, Short.MAX_VALUE)
+                            .addComponent(_cboLogDebug, 0, 362, Short.MAX_VALUE)
+                            .addComponent(_cboLogInfo, 0, 362, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         _pLoggingLayout.setVerticalGroup(
@@ -443,7 +454,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(_pConfirmationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(_chkConfirmAppExit)
-                .addContainerGap(292, Short.MAX_VALUE))
+                .addContainerGap(376, Short.MAX_VALUE))
         );
         _pConfirmationsLayout.setVerticalGroup(
             _pConfirmationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -481,7 +492,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                 .addContainerGap())
         );
         _pAdvancedLayout.setVerticalGroup(
@@ -494,7 +505,7 @@ public class OptionsDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Advanced", _pAdvanced);
 
-        _bCancel.setText("Cancel");
+        _bCancel.setText("Close");
         _bCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 _bCancelActionPerformed(evt);
@@ -529,6 +540,13 @@ public class OptionsDialog extends javax.swing.JDialog {
             }
         });
 
+        _bApply.setText("Apply");
+        _bApply.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _bApplyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -536,15 +554,17 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(_bImport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_bExport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_bDefaults)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addComponent(_bOk)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_bApply)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_bCancel)))
                 .addContainerGap())
@@ -557,10 +577,11 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_bCancel)
-                    .addComponent(_bOk)
                     .addComponent(_bImport)
                     .addComponent(_bExport)
-                    .addComponent(_bDefaults))
+                    .addComponent(_bDefaults)
+                    .addComponent(_bApply)
+                    .addComponent(_bOk))
                 .addContainerGap())
         );
 
@@ -624,16 +645,17 @@ public class OptionsDialog extends javax.swing.JDialog {
 }//GEN-LAST:event__bDefaultsActionPerformed
 
     private void _bOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bOkActionPerformed
-        if (_tabAdvOpts.isEditing())
-            _tabAdvOpts.getCellEditor().stopCellEditing(); // ... and accept changes
-        Config.currentConfig().updateFrom(_cfg);
-        Config.currentConfig().save();
+        applyChanges();
         dispose();
     }//GEN-LAST:event__bOkActionPerformed
 
     private void _bCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bCancelActionPerformed
         dispose();
     }//GEN-LAST:event__bCancelActionPerformed
+
+    private void _bApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bApplyActionPerformed
+        applyChanges();
+    }//GEN-LAST:event__bApplyActionPerformed
     
     /**
      * @param args the command line arguments
@@ -653,6 +675,7 @@ public class OptionsDialog extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton _bApply;
     private javax.swing.JButton _bCancel;
     private javax.swing.JButton _bDefaults;
     private javax.swing.JButton _bExport;
@@ -682,6 +705,7 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel _pLogging;
     private javax.swing.JPanel _pLookAndFeel;
     private javax.swing.JTable _tabAdvOpts;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

@@ -150,9 +150,9 @@ public class BlockCreator extends AbstractVisitor {
     private void processLRSTerm(ITerm term, List<Block> labels, List<NodeBlock> childNodes) {
         if (term instanceof INamedTerm) {
             if (term.isLeafTerm())
-                labels.add(_labfac.createLRSLabel(term.name(), _panel));
+                labels.add(_labfac.createLRSLabel(term.uiName(), _panel));
             else {
-                LRSContentLabel lab = _labfac.createLRSContentLabel(term.name(), _panel);
+                LRSContentLabel lab = _labfac.createLRSContentLabel(term.uiName(), _panel);
                 labels.add(lab);
                 for (ITerm subTerm : term.subTerms()) {
                     LRSNodeBlock node = createLRSNode(subTerm);
