@@ -511,7 +511,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             setSelectedBlock(null, false);
         }
     }
-    
+
     protected void onMouseReleased(MouseEvent e) {
         int x = unscale(e.getX());
         int y = unscale(e.getY());

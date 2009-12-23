@@ -162,7 +162,7 @@ where RR = 2byte hex value for red
 <entry key="block.label.species.text.color">0x003399</entry>
 <entry key="block.label.species.text.colorAlt">0xc0c0c0</entry>
 
-<entry key="block.label.tag.fontSpec">Courier-BOLD-12</entry>
+<entry key="block.label.tag.fontSpec">Courier New-BOLD-12</entry>
 <entry key="block.label.tag.frame.color">0x000000</entry>
 <entry key="block.label.tag.frame.isDashed">false</entry>
 <entry key="block.label.tag.frame.thickness">1</entry>
@@ -173,7 +173,7 @@ where RR = 2byte hex value for red
 <entry key="block.label.tag.text.color">0x000000</entry>
 <entry key="block.label.tag.text.colorAlt">0x000000</entry>
 
-<entry key="block.label.unbound.fontSpec">Courier-BOLD-12</entry>
+<entry key="block.label.unbound.fontSpec">Courier New-BOLD-12</entry>
 <entry key="block.label.unbound.frame.color">0xff0000</entry>
 <entry key="block.label.unbound.frame.isDashed">false</entry>
 <entry key="block.label.unbound.frame.thickness">1</entry>
@@ -184,7 +184,7 @@ where RR = 2byte hex value for red
 <entry key="block.label.unbound.text.color">0xff0000</entry>
 <entry key="block.label.unbound.text.colorAlt">0x000000</entry>
 
-<entry key="block.label.lrs.fontSpec">Courier-12</entry>
+<entry key="block.label.lrs.fontSpec">Courier New-12</entry>
 <entry key="block.label.lrs.frame.color">0x000000</entry>
 <entry key="block.label.lrs.frame.isDashed">false</entry>
 <entry key="block.label.lrs.frame.thickness">0</entry>
@@ -193,9 +193,9 @@ where RR = 2byte hex value for red
 <entry key="block.label.lrs.margin.right">0</entry>
 <entry key="block.label.lrs.margin.top">0</entry>
 <entry key="block.label.lrs.text.color">0x000000</entry>
-<entry key="block.label.lrs.text.colorAlt">0xc0c0c0</entry>
+<entry key="block.label.lrs.text.colorAlt">0x990000</entry>
 
-<entry key="block.label.lrsblock.fontSpec">Courier-BOLD-12</entry>
+<entry key="block.label.lrsblock.fontSpec">Courier New-BOLD-12</entry>
 <entry key="block.label.lrsblock.frame.color">0x000000</entry>
 <entry key="block.label.lrsblock.frame.isDashed">false</entry>
 <entry key="block.label.lrsblock.frame.thickness">0</entry>
@@ -240,7 +240,7 @@ where RR = 2byte hex value for red
 
 <entry key="block.layout.lrsblock.space.intra">5</entry>
 <entry key="block.layout.lrsblock.space.leading">5</entry>
-<entry key="block.layout.lrsblock.space.trailing">6</entry>
+<entry key="block.layout.lrsblock.space.trailing">5</entry>
 
 <entry key="block.layout.reentrancy.space.intra">5</entry>
 <entry key="block.layout.reentrancy.space.leading">0</entry>
@@ -261,5 +261,7 @@ where RR = 2byte hex value for red
 <entry key="block.lrstree.minDistance.horizontal">2</entry>
 <entry key="block.lrstree.minDistance.vertical">20</entry>
 <entry key="block.lrstree.frameColor">0xe0e0e0</entry>
+
+<entry key="lrs.namemap">exists:\u2203, forall:\u2200</entry>
 
 </properties>
