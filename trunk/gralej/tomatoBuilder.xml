@@ -29,10 +29,13 @@
             unless="catchup.done">
             
             <echo message="Rebuilding the grammar derivatives..."/>
+            <!--<echo message="classpath=${javac.classpath}"/>-->
             
             <java classname="tomato.LRTableBuilder"
                 failonerror="true"
+                classpath="${javac.classpath}"
                 >
+                    <!-- classpath="${javac.classpath}" -->
                 <arg value="-i"/>
                 <arg value="${grammar.src.file}"/>
                 <!--
@@ -49,6 +52,7 @@
             
             <java classname="tomato.LRTableBuilder"
                 failonerror="true"
+                classpath="${javac.classpath}"
                 >
                 <arg value="-i"/>
                 <arg value="${lrs.grammar.src.file}"/>
