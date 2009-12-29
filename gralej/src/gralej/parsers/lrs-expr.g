@@ -16,10 +16,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
     private List<OM.Tag> _tags;
     
     private static String S(Object[] _, int i) {
-        Object obj = _[i];
-        if (obj instanceof CharSequence)
-            return obj.toString();
-        return ((tomato.Token)obj).content().toString();
+        return _[i].toString();
     }
     private static Term T(Object[] _, int i) {
         return (Term)_[i];
@@ -145,7 +142,7 @@ UCase ->
     | 'G' | 'H' | 'I' | 'J' | 'K' | 'L'
     | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R'
     | 'S' | 'T' | 'U' | 'V' | 'W' | 'X'
-    | 'Y' | 'Z'
+    | 'Y' | 'Z' | __NON_ASCII_UCASE
     .
 
 LCase ->
@@ -153,7 +150,7 @@ LCase ->
     | 'g' | 'h' | 'i' | 'j' | 'k' | 'l'
     | 'm' | 'n' | 'o' | 'p' | 'q' | 'r'
     | 's' | 't' | 'u' | 'v' | 'w' | 'x'
-    | 'y' | 'z'
+    | 'y' | 'z' | __NON_ASCII_LCASE
     .
 
 Digit ->
