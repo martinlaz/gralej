@@ -32,7 +32,7 @@ import java.util.List;
  * @author Martin
  */
 public class LRSNodeBlock extends NodeBlock {
-    Label _parentLabel; // label that points to this node
+    private LRSContentLabel _parentLabel; // label that points to this node
 
     LRSNodeBlock(BlockPanel panel, List<Block> labels, List<NodeBlock> childNodes) {
         super(panel);
@@ -45,8 +45,12 @@ public class LRSNodeBlock extends NodeBlock {
         sealChildren();
     }
 
-    void setParentLabel(Label l) {
+    void setParentLabel(LRSContentLabel l) {
         _parentLabel = l;
+    }
+
+    LRSContentLabel getParentLabel() {
+        return _parentLabel;
     }
 
     @Override

@@ -29,6 +29,7 @@ import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
+import gralej.om.IRelation;
 import gralej.om.ITag;
 import gralej.om.ITree;
 import gralej.om.ITypedFeatureStructure;
@@ -43,6 +44,7 @@ import gralej.om.lrs.INamedTerm;
 import gralej.om.lrs.ISqCont;
 import gralej.om.lrs.ITerm;
 import gralej.om.lrs.IVar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +63,34 @@ public class BlockCreator extends AbstractVisitor {
     }
 
     public Block createBlock(IVisitable vob) {
+        return createBlock(vob, null);
+    }
+
+    public Block createBlock(IVisitable vob, List<IRelation> residue) {
         vob.accept(this);
+        if (residue != null && !residue.isEmpty()) {
+            VerticalListBlock vl = new VerticalListBlock(_panel);
+            vl.addChild(_result);
+
+            vl.addChild(_labfac.createRelationNameLabel(" ", _panel));
+
+            ContentLabel residueSwitchLabel = _labfac.createRelationNameLabel("--", _panel);
+            vl.addChild(residueSwitchLabel);
+
+            VerticalListBlock relList = new VerticalListBlock(_panel);
+            for (IRelation rel : residue) {
+                visit(rel);
+                relList.addChild(_result);
+            }
+            relList.sealChildren();
+
+            vl.addChild(relList);
+            vl.sealChildren();
+
+            residueSwitchLabel.setContent(relList);
+
+            _result = vl;
+        }
         return _result;
     }
 
@@ -129,15 +158,18 @@ public class BlockCreator extends AbstractVisitor {
         List<Block> labels = new LinkedList<Block>();
         return createLRSNode(terms, labels, childNodes);
     }
+
     private LRSNodeBlock createLRSNode(List<Block> labels, List<NodeBlock> childNodes) {
         return new LRSNodeBlock(_panel, labels, childNodes);
     }
+
     private LRSNodeBlock createLRSNode(ITerm term) {
         List<Block> labels = new LinkedList<Block>();
         List<NodeBlock> childNodes = new LinkedList<NodeBlock>();
         processLRSTerm(term, labels, childNodes);
         return createLRSNode(labels, childNodes);
     }
+
     private LRSNodeBlock createLRSNode(List<ITerm> terms, List<Block> labels, List<NodeBlock> childNodes) {
         for (ITerm term : terms) {
             if (!labels.isEmpty())
@@ -206,30 +238,27 @@ public class BlockCreator extends AbstractVisitor {
         if (term.hasConstraints()) {
             labels.add(_labfac.createLRSLabel("/", _panel));
                 labels.add(_labfac.createLRSLabel("(", _panel));
-
-                boolean comma = false;
-                for (IVisitable tag : term.positiveConstraints()) {
-                    if (comma)
-                        labels.add(_labfac.createLRSLabel(",", _panel));
-                    else
-                        comma = true;
-                    tag.accept(this);
-                    labels.add(_result);
-                }
-
+                processConstraints(labels, term.positiveConstraints());
                 labels.add(_labfac.createLRSLabel(")~(", _panel));
-
-                comma = false;
-                for (IVisitable tag : term.negativeConstraints()) {
-                    if (comma)
-                        labels.add(_labfac.createLRSLabel(",", _panel));
-                    else
-                        comma = true;
-                    tag.accept(this);
-                    labels.add(_result);
-                }
-
+                processConstraints(labels, term.negativeConstraints());
                 labels.add(_labfac.createLRSLabel(")", _panel));
+        }
+    }
+
+    private void processConstraints(Collection<Block> labels, Iterable<ITag> tags) {
+        boolean comma = false;
+        for (ITag tag : tags) {
+            if (comma)
+                labels.add(_labfac.createLRSLabel(",", _panel));
+            else
+                comma = true;
+            if (tag.number() != -1) {
+                tag.accept(this);
+                labels.add(_result);
+            }
+            else {
+                labels.add(_labfac.createLRSLabel("[*]", _panel));
+            }
         }
     }
 
@@ -291,6 +320,17 @@ public class BlockCreator extends AbstractVisitor {
         for (NodeBlock childNode : childNodes)
             childNode.setParentNode(nodeBlock);
         return nodeBlock;
+    }
+
+    @Override
+    public void visit(IRelation rel) {
+        List<Block> argBlocks = new LinkedList<Block>();
+        for (IEntity arg : rel.args()) {
+            arg.accept(this);
+            argBlocks.add(_result);
+        }
+        _result = new RelationBlock(_panel, rel.name(), argBlocks);
+        _result.setModel(rel);
     }
 
     private ContentCreator getContentCreator(final IEntity entity) {

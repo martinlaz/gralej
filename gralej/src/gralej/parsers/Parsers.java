@@ -20,7 +20,7 @@ final class Parsers {
     private static Class _class = new Parsers().getClass();
 
     static LRTable loadLRTable(String grammarResourceName) {
-        // first try the compiled grammar
+        // first try the pre-compiled grammar
         // it must load ok most of the time
         InputStream is = _class.getResourceAsStream(grammarResourceName + ".bin");
         if (is != null) {

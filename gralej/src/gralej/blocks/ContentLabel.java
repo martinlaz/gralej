@@ -54,4 +54,9 @@ public class ContentLabel extends Label {
     public void flip() {
         flipContentVisibility();
     }
+
+    void setContent(Block content) {
+        assert _content == null;
+        _content = content;
+    }
 }

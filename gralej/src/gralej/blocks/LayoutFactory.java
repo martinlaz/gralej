@@ -143,6 +143,14 @@ public class LayoutFactory {
         return getLayout("listcontent", HLC);
     }
 
+    public BlockLayout getRelationLayout() {
+        return getLayout("relation", HLC);
+    }
+
+    public BlockLayout getRelationArgsLayout() {
+        return getLayout("relationargs", HLC);
+    }
+
     public BlockLayout getReentrancyLayout() {
         return getLayout("reentrancy", HLC);
     }
@@ -157,5 +165,9 @@ public class LayoutFactory {
 
     public BlockLayout getLRSBlockLayout() {
         return getLayout("lrsblock", VCLC);
+    }
+
+    public BlockLayout getVerticalListLayout() {
+        return getLayout("verticallist", VLC);
     }
 }

@@ -60,19 +60,13 @@ public abstract class NodeBlock extends ContentOwningBlock {
         _parentNode = parentNode;
     }
 
-//    @Override
-//    public void setVisible(boolean newValue) {
-//        if (isVisible() == newValue || _isUpdatingChildren)
-//            return;
-//        _isUpdatingChildren = true;
-//        try {
-//            for (NodeBlock b : _childNodes) {
-//                b.setVisible(newValue);
-//            }
-//        }
-//        finally {
-//            _isUpdatingChildren = false;
-//        }
-//        super.setVisible(newValue);
-//    }
+    @Override
+    public boolean isVisible() {
+        if (!super.isVisible() || _isCollapsed)
+            return false;
+        ContainerBlock parent = getParent();
+        if (parent != null)
+            return parent.isVisible();
+        return true;
+    }
 }

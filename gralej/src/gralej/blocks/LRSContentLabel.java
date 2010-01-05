@@ -36,19 +36,4 @@ public class LRSContentLabel extends ContentLabel {
     protected boolean useTextAltColor() {
         return _lrsNodes.isEmpty() || _lrsNodes.getFirst().isCollapsed();
     }
-
-    @Override
-    public boolean isVisible() {
-        if (!super.isVisible())
-            return false;
-        for (Block b = getParent(); b instanceof LRSNodeBlock; b = b.getParent()) {
-            LRSNodeBlock lrsNode = (LRSNodeBlock) b;
-            if (lrsNode.isCollapsed())
-                return false;
-            b = lrsNode._parentLabel;
-            if (b == null)
-                break;
-        }
-        return true;
-    }
 }

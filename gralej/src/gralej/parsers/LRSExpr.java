@@ -90,18 +90,9 @@ public final class LRSExpr implements ILRSExpr {
         }
 
         _lexer.reset(new StringReader(text));
-        List<ITerm> terms;
-        try {
-            _grammarHandler.setTagStore(tags);
-            terms = (List<ITerm>) _parser.parse(_lexer);
-            _grammarHandler.setTagStore(null);
-        }
-        catch (RuntimeException ex) {
-            ex.printStackTrace();
-            System.err.println("charpos: " + _lexer.charPos());
-            System.err.println("after: " + text.substring(0, _lexer.charPos()));
-            throw ex;
-        }
+        _grammarHandler.setTagStore(tags);
+        List<ITerm> terms = (List<ITerm>) _parser.parse(_lexer);
+        _grammarHandler.setTagStore(null);
         
         return new LRSExpr(terms, text);
     }

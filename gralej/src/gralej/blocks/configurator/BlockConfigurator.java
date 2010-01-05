@@ -54,7 +54,7 @@ public class BlockConfigurator extends BlockPanel {
         this(handler, Config.currentConfig());
     }
     public BlockConfigurator(Handler handler, Config cfg) {
-        super(getSample(), new BlockPanelStyle(cfg), false);
+        super(getSample(), null, new BlockPanelStyle(cfg), false);
         setDisplayingModelHiddenFeatures(true);
         showNodeContents(false);
         

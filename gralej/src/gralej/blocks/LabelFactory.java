@@ -209,4 +209,12 @@ public class LabelFactory {
     public LRSContentLabel createLRSContentLabel(String text, BlockPanel panel) {
         return new LRSContentLabel(panel, getLabelStyle("lrs"), text);
     }
+
+    public ContentLabel createRelationNameLabel(String text, BlockPanel panel) {
+        return createContentLabel(text, getLabelStyle("relation"), panel);
+    }
+
+    public Label createRelationLabel(String text, BlockPanel panel) {
+        return createLabel(text, getLabelStyle("relation"), panel);
+    }
 }

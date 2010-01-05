@@ -10,6 +10,7 @@ import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
 import gralej.om.ITree;
+import gralej.om.IRelation;
 import gralej.om.IVisitable;
 
 import java.util.Map;
@@ -19,7 +20,9 @@ import tomato.GrammarHandler;
 import tomato.Token;
 
 public class TraleMsgHandler extends GrammarHandler {
-    static class L<T> extends java.util.LinkedList<T> {}
+    static class L<T> extends java.util.LinkedList<T> {
+        L<T> a(T el) { add(el); return this; }
+    }
     
     static class Pair<T,V> {
         final T _1;
@@ -69,8 +72,7 @@ public class TraleMsgHandler extends GrammarHandler {
 ########################
 datapackages -> | datapackages datapackage0 .
 
-datapackage0
-    -> datapackage _NEWLINE 
+datapackage0 -> datapackage _NEWLINE 
         {
             // prepare for the next datapackage
             _tree = null;
@@ -82,26 +84,46 @@ datapackage0
         }
     .
 
-datapackage
-  ->  _NEWDATA windowtitle structure structures0
+datapackage ->
+    _NEWDATA windowtitle structure structures0 ineqs residue
         {{
             bindRefs();
             
             String title = S(_[1]);
+            L<IRelation> ineqs   = (L<IRelation>)_[4];
+            L<IRelation> residue = (L<IRelation>)_[5];
+
+            if (ineqs != null) {
+                if (residue != null)
+                    residue.addAll(ineqs);
+                else
+                    residue = ineqs;
+            }
             
             if (_tree != null) {
-                _helper.adviceResult(title, _tree);
+                _helper.adviceResult(title, _tree, residue);
                 return null;
             }
             IVisitable obj = (IVisitable)_[2];
             if (obj == null)
                 throw new NotImplementedException("in datapackage");
 
-            _helper.adviceResult(title, obj);
+            _helper.adviceResult(title, obj, residue);
 
             return null;
         }}
-  .
+    .
+
+ineqs ->
+    | _MINUS relations
+        { return _[1]; }
+    .
+
+residue ->
+    | _SLASH relations
+        { return _[1]; }
+    .
+    
 
 ########################
 ## Sequences ###########
@@ -137,6 +159,13 @@ flags
   | flags flag
         { return _flags; }
   .
+
+relations ->
+    relation
+        { return new L<IRelation>().a((IRelation)_[0]); }
+    | relations relation
+        { return ((L<IRelation>)_[0]).a((IRelation)_[1]); }
+    .
 
 ########################
 ## Structures ##########
@@ -254,7 +283,14 @@ function
 
 relation
   ->  _BEGIN_REL flags id functor structs _RPAR
-        { throw new NotImplementedException("relation"); } .
+        {
+            return new OM.Relation(
+                (OM.Flags)_[1],
+                S(_[3]),
+                (L<IEntity>)_[4]
+            );
+        }
+    .
 
 type
   ->  _LPAR flags id name _RPAR
