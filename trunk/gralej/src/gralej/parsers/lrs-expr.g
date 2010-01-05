@@ -95,8 +95,12 @@ TagList ->
     .
 
 Tag ->
-    '[' Int ']'
+    '[' TagValue ']'
         { return Integer.parseInt(S(_,1)); }
+    .
+TagValue ->
+    '*' { return -1; }
+    | Int
     .
 
 Var ->
@@ -137,30 +141,10 @@ SqCont ->
 
 # lexer
 
-UCase ->
-      'A' | 'B' | 'C' | 'D' | 'E' | 'F'
-    | 'G' | 'H' | 'I' | 'J' | 'K' | 'L'
-    | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R'
-    | 'S' | 'T' | 'U' | 'V' | 'W' | 'X'
-    | 'Y' | 'Z' | __NON_ASCII_UCASE
-    .
-
-LCase ->
-      'a' | 'b' | 'c' | 'd' | 'e' | 'f'
-    | 'g' | 'h' | 'i' | 'j' | 'k' | 'l'
-    | 'm' | 'n' | 'o' | 'p' | 'q' | 'r'
-    | 's' | 't' | 'u' | 'v' | 'w' | 'x'
-    | 'y' | 'z' | __NON_ASCII_LCASE
-    .
-
-Digit ->
-    '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-    .
-
 Alnum ->
-    UCase
-    | LCase
-    | Digit
+    _UCASE_LETTER
+    | _LCASE_LETTER
+    | _DIGIT
     .
 
 AlnumSeq ->
@@ -176,19 +160,19 @@ AlnumSeqOpt ->
     .
 
 Int ->
-    Digit
+    _DIGIT
         { return new StringBuilder().append(S(_,0)); }
-    | Int Digit
+    | Int _DIGIT
         { return ((StringBuilder)_[0]).append(S(_,1)); }
     .
 
 LCaseWord ->
-    LCase AlnumSeqOpt
+    _LCASE_LETTER AlnumSeqOpt
         { return new StringBuilder().append(S(_,0)).append(S(_,1)); }
     .
 
 UCaseWord ->
-    UCase AlnumSeqOpt
+    _UCASE_LETTER AlnumSeqOpt
         { return new StringBuilder().append(S(_,0)).append(S(_,1)); }
     .
 

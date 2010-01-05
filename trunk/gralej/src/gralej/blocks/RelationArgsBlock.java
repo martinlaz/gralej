@@ -1,9 +1,9 @@
 /*
- *  $Id$
+ *  $Id $
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]
- *     
+ *
  *  This file is part of the Gralej system
  *     http://code.google.com/p/gralej/
  *
@@ -22,24 +22,33 @@
  *
  */
 
-package gralej;
+package gralej.blocks;
 
-import java.awt.Cursor;
+/**
+ *
+ * @author Martin
+ */
+public class RelationArgsBlock extends ContainerBlock {
+    public RelationArgsBlock(BlockPanel panel, Iterable<Block> args) {
+        setPanel(panel);
+        setLayout(getPanelStyle().getLayoutFactory().getRelationArgsLayout());
 
-public class Globals {
-    public static final int VERSION_MAJOR = 0;
-    public static final int VERSION_MINOR = 7;
-    public static final int VERSION_REVISION = 8;
-    
-    public static final String VERSION_STRING =
-            VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_REVISION;
-    
-    public static final String APP_NAME = "Gralej";
-    public static final String APP_NAME_VER = 
-            APP_NAME + " (" + VERSION_STRING + ")";
-    
-    public static final Cursor HAND_CURSOR =
-            Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
-    public static final Cursor WAIT_CURSOR =
-            Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+        LabelFactory labfac = getPanelStyle().getLabelFactory();
+
+        addChild(labfac.createRelationLabel("(", panel));
+
+        boolean comma = false;
+        for (Block arg : args) {
+            if (comma)
+                addChild(labfac.createRelationLabel(",", panel));
+            else
+                comma = true;
+
+            addChild(arg);
+        }
+
+        addChild(labfac.createRelationLabel(")", panel));
+
+        sealChildren();
+    }
 }

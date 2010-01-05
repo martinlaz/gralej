@@ -43,5 +43,7 @@ public interface IVisitor {
 
     void visit(ITree tree);
 
+    void visit(IRelation expr);
+
     void visit(ILRSExpr expr);
 }

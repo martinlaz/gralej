@@ -26,6 +26,7 @@ package gralej.parsers;
 
 import gralej.controller.StreamInfo;
 import gralej.blocks.BlockPanel;
+import gralej.om.IRelation;
 import gralej.om.IVisitable;
 
 /**
@@ -36,6 +37,7 @@ public interface IDataPackage {
     String getTitle();
 
     IVisitable getModel();
+    Iterable<IRelation> getResidue();
 
     char[] getCharacters();
 

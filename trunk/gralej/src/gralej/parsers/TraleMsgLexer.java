@@ -33,6 +33,7 @@ import tomato.Grammar;
 import tomato.Lexer;
 import tomato.Token;
 import tomato.IllegalTokenException;
+import tomato.Terminal;
 
 public class TraleMsgLexer implements Lexer {
     PushbackReader _in;
@@ -178,6 +179,9 @@ public class TraleMsgLexer implements Lexer {
                 case '\n':
                     _current = _tokens._NEWLINE;
                     break;
+                case '/':
+                    _current = _tokens._SLASH;
+                    break;
                 case '!': // newdata
                 {
                     String s = "newdata";
@@ -283,6 +287,7 @@ public class TraleMsgLexer implements Lexer {
         T _RPAR = new T(")");
         T _STAR = new T("*");
         T _NEWLINE = new T("\n");
+        T _SLASH = new T("/");
         // multi-char
         T _NEWDATA = new T("!newdata");
         // mutable
@@ -313,7 +318,10 @@ public class TraleMsgLexer implements Lexer {
                         continue;
 
                     t._name = f.getName();
-                    t._code = g.lookupTerminal(t.name()).code();
+                    Terminal term = g.lookupTerminal(t.name());
+                    if (term == null)
+                        throw new RuntimeException("unknown terminal: " + t.name());
+                    t._code = term.code();
                 }
             }
             _EOF._name = g.eofSymbol().string();

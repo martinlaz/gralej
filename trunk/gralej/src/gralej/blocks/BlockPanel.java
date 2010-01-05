@@ -26,6 +26,7 @@ package gralej.blocks;
 
 import gralej.Config;
 import gralej.om.IEntity;
+import gralej.om.IRelation;
 import gralej.om.lrs.ILRSExpr;
 import gralej.util.BoundedHistory;
 import gralej.util.ChangeEventSource;
@@ -49,6 +50,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -239,15 +241,23 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         }
     }
     
+    public BlockPanel(gralej.om.IVisitable contentModel, List<IRelation> residue) {
+        this(contentModel, residue, BlockPanelStyle.getInstance());
+    }
+
     public BlockPanel(gralej.om.IVisitable contentModel) {
-        this(contentModel, BlockPanelStyle.getInstance());
+        this(contentModel, (List<IRelation>)null);
     }
     
     public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style) {
-        this(contentModel, style, Config.bool("behavior.autoexpandtags"));
+        this(contentModel, null, style);
+    }
+
+    public BlockPanel(gralej.om.IVisitable contentModel, List<IRelation> residue, BlockPanelStyle style) {
+        this(contentModel, residue, style, Config.bool("behavior.autoexpandtags"));
     }
     
-    public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style, boolean autoExpandTags) {
+    public BlockPanel(gralej.om.IVisitable contentModel, List<IRelation> residue, BlockPanelStyle style, boolean autoExpandTags) {
         _ui = new JPanel();
         _ui.setLayout(new BorderLayout());
         
@@ -303,7 +313,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         
         _content = new RootBlock(
                 this,
-                new BlockCreator(this).createBlock(contentModel)
+                new BlockCreator(this).createBlock(contentModel, residue)
                 );
         _content.update();
         if (!Config.bool("behavior.nodeContentInitiallyVisible")) {
@@ -320,11 +330,17 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     public void showNodeContents(boolean visible) {
-        if (!(_content.getContent() instanceof TreeBlock))
+        Block b = _content.getContent();
+        if (b instanceof VerticalListBlock)
+            if (!b.getChildren().isEmpty())
+                b = b.getChildren().get(0);
+        if (!(b instanceof TreeBlock))
             return;
-        for (Block b : ((TreeBlock)_content.getContent()).getChildren()) {
-            NodeBlock node = (NodeBlock) b;
-            node.getContent().setVisible(visible);
+        for (Block bb : ((TreeBlock)b).getChildren()) {
+            NodeBlock node = (NodeBlock) bb;
+            Block content = node.getContent();
+            if (content != null)
+                content.setVisible(visible);
         }
     }
     
@@ -748,6 +764,8 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             _lastHit = (ContentLabel) b;
         else
             _lastHit = null;
+//        if (_lastHit != null)
+//            System.err.println(_lastHit.getText());
         return _lastHit;
     }
     

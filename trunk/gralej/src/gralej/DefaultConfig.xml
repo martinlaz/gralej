@@ -207,6 +207,17 @@ where RR = 2byte hex value for red
 <entry key="block.label.lrsblock.text.colorAlt">0xc0c0c0</entry>
 <entry key="block.label.lrsblock.title"> = CLLRS = </entry>
 
+<entry key="block.label.relation.fontSpec">Monospaced-12</entry>
+<entry key="block.label.relation.frame.color">0x000000</entry>
+<entry key="block.label.relation.frame.isDashed">false</entry>
+<entry key="block.label.relation.frame.thickness">0</entry>
+<entry key="block.label.relation.margin.bottom">0</entry>
+<entry key="block.label.relation.margin.left">0</entry>
+<entry key="block.label.relation.margin.right">0</entry>
+<entry key="block.label.relation.margin.top">0</entry>
+<entry key="block.label.relation.text.color">0x000000</entry>
+<entry key="block.label.relation.text.colorAlt">0xc0c0c0</entry>
+
 <entry key="block.label.text.maxLength">70</entry>
 
 <entry key="block.layout.avm.compact">true</entry>
@@ -245,6 +256,18 @@ where RR = 2byte hex value for red
 <entry key="block.layout.reentrancy.space.intra">5</entry>
 <entry key="block.layout.reentrancy.space.leading">0</entry>
 <entry key="block.layout.reentrancy.space.trailing">0</entry>
+
+<entry key="block.layout.verticallist.space.intra">5</entry>
+<entry key="block.layout.verticallist.space.leading">0</entry>
+<entry key="block.layout.verticallist.space.trailing">0</entry>
+
+<entry key="block.layout.relation.space.intra">0</entry>
+<entry key="block.layout.relation.space.leading">0</entry>
+<entry key="block.layout.relation.space.trailing">0</entry>
+
+<entry key="block.layout.relationargs.space.intra">2</entry>
+<entry key="block.layout.relationargs.space.leading">0</entry>
+<entry key="block.layout.relationargs.space.trailing">0</entry>
 
 <entry key="block.panel.background">0xffffff</entry>
 <entry key="block.panel.margins.all">20</entry>

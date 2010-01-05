@@ -25,6 +25,7 @@
 package gralej.parsers;
 
 import gralej.om.*;
+import java.util.Collections;
 
 class OM {
     static class Flags {
@@ -290,6 +291,40 @@ class OM {
 
         public boolean isLeaf() {
             return _children.isEmpty();
+        }
+
+        public void accept(IVisitor v) {
+            v.visit(this);
+        }
+    }
+
+    static class Relation extends Entity implements IRelation {
+        String _name;
+        java.util.List<IEntity> _args;
+
+        Relation(Flags flags, String name,
+                java.util.List<IEntity> args) {
+            super(flags);
+            if (args.isEmpty())
+                throw new RuntimeException("relations can't be of zero arity: " + name);
+            _name = name;
+            _args = Collections.unmodifiableList(args);
+        }
+
+        public String name() {
+            return _name;
+        }
+
+        public int arity() {
+            return _args.size();
+        }
+
+        public IEntity arg(int pos) {
+            return _args.get(pos);
+        }
+
+        public Iterable<IEntity> args() {
+            return _args;
         }
 
         public void accept(IVisitor v) {

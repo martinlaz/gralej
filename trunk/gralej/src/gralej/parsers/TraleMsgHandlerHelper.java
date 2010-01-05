@@ -26,8 +26,10 @@ package gralej.parsers;
 
 import gralej.controller.StreamInfo;
 import gralej.blocks.BlockPanel;
+import gralej.om.IRelation;
 import gralej.om.IVisitable;
 import gralej.util.Log;
+import java.util.List;
 
 class TraleMsgHandlerHelper {
 
@@ -47,7 +49,7 @@ class TraleMsgHandlerHelper {
         _streamInfo = streamInfo;
     }
 
-    void adviceResult(final String title, final IVisitable vob) {
+    void adviceResult(String title, IVisitable vob, List<IRelation> residue) {
         if (_resultReceiver == null) {
             Log.warning("parsed ok, but no result receiver");
             return;
@@ -55,7 +57,7 @@ class TraleMsgHandlerHelper {
         char[] chars = _charBuffer.toString().toCharArray();
         _charBuffer.delete(0, _charBuffer.length());
         _resultReceiver.newDataPackage(new DataPackage(title, vob, chars,
-                _streamInfo));
+                _streamInfo, residue));
     }
 
     static class DataPackage implements IDataPackage {
@@ -63,13 +65,15 @@ class TraleMsgHandlerHelper {
         IVisitable _model;
         char[] _chars;
         StreamInfo _streamInfo;
+        List<IRelation> _residue;
 
         DataPackage(String title, IVisitable model, char[] chars,
-                StreamInfo streamInfo) {
+                StreamInfo streamInfo, List<IRelation> residue) {
             _title = title;
             _model = model;
             _chars = chars;
             _streamInfo = streamInfo;
+            _residue = residue;
         }
 
         public String getTitle() {
@@ -88,8 +92,12 @@ class TraleMsgHandlerHelper {
             return _streamInfo;
         }
 
+        public List<IRelation> getResidue() {
+            return _residue;
+        }
+
         public BlockPanel createView() {
-            return new BlockPanel(_model);
+            return new BlockPanel(_model, _residue);
         }
     }
 }

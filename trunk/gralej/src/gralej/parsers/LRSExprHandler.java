@@ -37,81 +37,21 @@ public class LRSExprHandler extends tomato.GrammarHandler {
         public Terminals(tomato.Grammar g) {
             super(g);
         }
-        public tomato.Terminal __CHAR_100;
-        public tomato.Terminal __CHAR_101;
-        public tomato.Terminal __CHAR_102;
-        public tomato.Terminal __CHAR_103;
-        public tomato.Terminal __CHAR_104;
-        public tomato.Terminal __CHAR_105;
-        public tomato.Terminal __CHAR_106;
-        public tomato.Terminal __CHAR_107;
-        public tomato.Terminal __CHAR_108;
-        public tomato.Terminal __CHAR_109;
-        public tomato.Terminal __CHAR_110;
-        public tomato.Terminal __CHAR_111;
-        public tomato.Terminal __CHAR_112;
-        public tomato.Terminal __CHAR_113;
-        public tomato.Terminal __CHAR_114;
-        public tomato.Terminal __CHAR_115;
-        public tomato.Terminal __CHAR_116;
-        public tomato.Terminal __CHAR_117;
-        public tomato.Terminal __CHAR_118;
-        public tomato.Terminal __CHAR_119;
-        public tomato.Terminal __CHAR_120;
-        public tomato.Terminal __CHAR_121;
-        public tomato.Terminal __CHAR_122;
+        public tomato.Terminal _DIGIT;
+        public tomato.Terminal _LCASE_LETTER;
+        public tomato.Terminal _UCASE_LETTER;
         public tomato.Terminal __CHAR_123;
         public tomato.Terminal __CHAR_125;
         public tomato.Terminal __CHAR_126;
         public tomato.Terminal __CHAR_40;
         public tomato.Terminal __CHAR_41;
+        public tomato.Terminal __CHAR_42;
         public tomato.Terminal __CHAR_44;
         public tomato.Terminal __CHAR_47;
-        public tomato.Terminal __CHAR_48;
-        public tomato.Terminal __CHAR_49;
-        public tomato.Terminal __CHAR_50;
-        public tomato.Terminal __CHAR_51;
-        public tomato.Terminal __CHAR_52;
-        public tomato.Terminal __CHAR_53;
-        public tomato.Terminal __CHAR_54;
-        public tomato.Terminal __CHAR_55;
-        public tomato.Terminal __CHAR_56;
-        public tomato.Terminal __CHAR_57;
         public tomato.Terminal __CHAR_58;
-        public tomato.Terminal __CHAR_65;
-        public tomato.Terminal __CHAR_66;
-        public tomato.Terminal __CHAR_67;
-        public tomato.Terminal __CHAR_68;
-        public tomato.Terminal __CHAR_69;
-        public tomato.Terminal __CHAR_70;
-        public tomato.Terminal __CHAR_71;
-        public tomato.Terminal __CHAR_72;
-        public tomato.Terminal __CHAR_73;
-        public tomato.Terminal __CHAR_74;
-        public tomato.Terminal __CHAR_75;
-        public tomato.Terminal __CHAR_76;
-        public tomato.Terminal __CHAR_77;
-        public tomato.Terminal __CHAR_78;
-        public tomato.Terminal __CHAR_79;
-        public tomato.Terminal __CHAR_80;
-        public tomato.Terminal __CHAR_81;
-        public tomato.Terminal __CHAR_82;
-        public tomato.Terminal __CHAR_83;
-        public tomato.Terminal __CHAR_84;
-        public tomato.Terminal __CHAR_85;
-        public tomato.Terminal __CHAR_86;
-        public tomato.Terminal __CHAR_87;
-        public tomato.Terminal __CHAR_88;
-        public tomato.Terminal __CHAR_89;
-        public tomato.Terminal __CHAR_90;
         public tomato.Terminal __CHAR_91;
         public tomato.Terminal __CHAR_93;
         public tomato.Terminal __CHAR_94;
-        public tomato.Terminal __CHAR_97;
-        public tomato.Terminal __CHAR_98;
-        public tomato.Terminal __CHAR_99;
-        public tomato.Terminal __NON_ASCII_LCASE;
-        public tomato.Terminal __NON_ASCII_UCASE;
     } // end of Terminals
 
     protected void bindReduceHandlers() {
@@ -180,7 +120,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // AlnumSeqOpt -> 
-        bindReduceHandler(95, handler);
+        bindReduceHandler(33, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -188,9 +128,17 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // AlnumSeq -> AlnumSeq Alnum
-        bindReduceHandler(94, handler);
-        // Int -> Int Digit
-        bindReduceHandler(98, handler);
+        bindReduceHandler(32, handler);
+        // Int -> Int _DIGIT
+        bindReduceHandler(36, handler);
+
+        handler = new tomato.ReduceHandler() {
+            public Object execute(Object[] _) {
+                return -1;
+            }
+        };
+        // TagValue -> '*'
+        bindReduceHandler(18, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -198,14 +146,14 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // SubTerms -> 
-        bindReduceHandler(21, handler);
+        bindReduceHandler(23, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
                 return Integer.parseInt(S(_,1));
             }
         };
-        // Tag -> '[' Int ']'
+        // Tag -> '[' TagValue ']'
         bindReduceHandler(17, handler);
 
         handler = new tomato.ReduceHandler() {
@@ -214,21 +162,21 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // SubTerms -> ':' '[' Terms ']'
-        bindReduceHandler(22, handler);
+        bindReduceHandler(24, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
                 return _[0];
             }
         };
-        // Alnum -> Digit
-        bindReduceHandler(92, handler);
-        // Alnum -> LCase
-        bindReduceHandler(91, handler);
-        // Alnum -> UCase
-        bindReduceHandler(90, handler);
+        // Alnum -> _DIGIT
+        bindReduceHandler(30, handler);
+        // Alnum -> _LCASE_LETTER
+        bindReduceHandler(29, handler);
+        // Alnum -> _UCASE_LETTER
+        bindReduceHandler(28, handler);
         // AlnumSeqOpt -> AlnumSeq
-        bindReduceHandler(96, handler);
+        bindReduceHandler(34, handler);
         // BasicTerm -> ExCont
         bindReduceHandler(8, handler);
         // BasicTerm -> Functor
@@ -241,138 +189,12 @@ public class LRSExprHandler extends tomato.GrammarHandler {
         bindReduceHandler(10, handler);
         // BasicTerm -> Var
         bindReduceHandler(5, handler);
-        // Digit -> '0'
-        bindReduceHandler(80, handler);
-        // Digit -> '1'
-        bindReduceHandler(81, handler);
-        // Digit -> '2'
-        bindReduceHandler(82, handler);
-        // Digit -> '3'
-        bindReduceHandler(83, handler);
-        // Digit -> '4'
-        bindReduceHandler(84, handler);
-        // Digit -> '5'
-        bindReduceHandler(85, handler);
-        // Digit -> '6'
-        bindReduceHandler(86, handler);
-        // Digit -> '7'
-        bindReduceHandler(87, handler);
-        // Digit -> '8'
-        bindReduceHandler(88, handler);
-        // Digit -> '9'
-        bindReduceHandler(89, handler);
-        // LCase -> 'd'
-        bindReduceHandler(56, handler);
-        // LCase -> 'e'
-        bindReduceHandler(57, handler);
-        // LCase -> 'f'
-        bindReduceHandler(58, handler);
-        // LCase -> 'g'
-        bindReduceHandler(59, handler);
-        // LCase -> 'h'
-        bindReduceHandler(60, handler);
-        // LCase -> 'i'
-        bindReduceHandler(61, handler);
-        // LCase -> 'j'
-        bindReduceHandler(62, handler);
-        // LCase -> 'k'
-        bindReduceHandler(63, handler);
-        // LCase -> 'l'
-        bindReduceHandler(64, handler);
-        // LCase -> 'm'
-        bindReduceHandler(65, handler);
-        // LCase -> 'n'
-        bindReduceHandler(66, handler);
-        // LCase -> 'o'
-        bindReduceHandler(67, handler);
-        // LCase -> 'p'
-        bindReduceHandler(68, handler);
-        // LCase -> 'q'
-        bindReduceHandler(69, handler);
-        // LCase -> 'r'
-        bindReduceHandler(70, handler);
-        // LCase -> 's'
-        bindReduceHandler(71, handler);
-        // LCase -> 't'
-        bindReduceHandler(72, handler);
-        // LCase -> 'u'
-        bindReduceHandler(73, handler);
-        // LCase -> 'v'
-        bindReduceHandler(74, handler);
-        // LCase -> 'w'
-        bindReduceHandler(75, handler);
-        // LCase -> 'x'
-        bindReduceHandler(76, handler);
-        // LCase -> 'y'
-        bindReduceHandler(77, handler);
-        // LCase -> 'z'
-        bindReduceHandler(78, handler);
-        // LCase -> 'a'
-        bindReduceHandler(53, handler);
-        // LCase -> 'b'
-        bindReduceHandler(54, handler);
-        // LCase -> 'c'
-        bindReduceHandler(55, handler);
-        // LCase -> __NON_ASCII_LCASE
-        bindReduceHandler(79, handler);
         // LRSExpr -> Terms
         bindReduceHandler(0, handler);
+        // TagValue -> Int
+        bindReduceHandler(19, handler);
         // Term -> BasicTerm
         bindReduceHandler(3, handler);
-        // UCase -> 'A'
-        bindReduceHandler(26, handler);
-        // UCase -> 'B'
-        bindReduceHandler(27, handler);
-        // UCase -> 'C'
-        bindReduceHandler(28, handler);
-        // UCase -> 'D'
-        bindReduceHandler(29, handler);
-        // UCase -> 'E'
-        bindReduceHandler(30, handler);
-        // UCase -> 'F'
-        bindReduceHandler(31, handler);
-        // UCase -> 'G'
-        bindReduceHandler(32, handler);
-        // UCase -> 'H'
-        bindReduceHandler(33, handler);
-        // UCase -> 'I'
-        bindReduceHandler(34, handler);
-        // UCase -> 'J'
-        bindReduceHandler(35, handler);
-        // UCase -> 'K'
-        bindReduceHandler(36, handler);
-        // UCase -> 'L'
-        bindReduceHandler(37, handler);
-        // UCase -> 'M'
-        bindReduceHandler(38, handler);
-        // UCase -> 'N'
-        bindReduceHandler(39, handler);
-        // UCase -> 'O'
-        bindReduceHandler(40, handler);
-        // UCase -> 'P'
-        bindReduceHandler(41, handler);
-        // UCase -> 'Q'
-        bindReduceHandler(42, handler);
-        // UCase -> 'R'
-        bindReduceHandler(43, handler);
-        // UCase -> 'S'
-        bindReduceHandler(44, handler);
-        // UCase -> 'T'
-        bindReduceHandler(45, handler);
-        // UCase -> 'U'
-        bindReduceHandler(46, handler);
-        // UCase -> 'V'
-        bindReduceHandler(47, handler);
-        // UCase -> 'W'
-        bindReduceHandler(48, handler);
-        // UCase -> 'X'
-        bindReduceHandler(49, handler);
-        // UCase -> 'Y'
-        bindReduceHandler(50, handler);
-        // UCase -> 'Z'
-        bindReduceHandler(51, handler);
-        // UCase -> __NON_ASCII_UCASE
-        bindReduceHandler(52, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -380,7 +202,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // ExCont -> '^' BasicTerm
-        bindReduceHandler(23, handler);
+        bindReduceHandler(25, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -388,7 +210,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // Functor -> LCaseWord '(' Terms ')' SubTerms
-        bindReduceHandler(20, handler);
+        bindReduceHandler(22, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -396,7 +218,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // InCont -> '{' Terms '}'
-        bindReduceHandler(24, handler);
+        bindReduceHandler(26, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -428,7 +250,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // MetaVar -> UCaseWord SubTerms
-        bindReduceHandler(19, handler);
+        bindReduceHandler(21, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -436,17 +258,17 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // SqCont -> '[' Terms ']'
-        bindReduceHandler(25, handler);
+        bindReduceHandler(27, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
                 return new StringBuilder().append(S(_,0)).append(S(_,1));
             }
         };
-        // LCaseWord -> LCase AlnumSeqOpt
-        bindReduceHandler(99, handler);
-        // UCaseWord -> UCase AlnumSeqOpt
-        bindReduceHandler(100, handler);
+        // LCaseWord -> _LCASE_LETTER AlnumSeqOpt
+        bindReduceHandler(37, handler);
+        // UCaseWord -> _UCASE_LETTER AlnumSeqOpt
+        bindReduceHandler(38, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -454,9 +276,9 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // AlnumSeq -> Alnum
-        bindReduceHandler(93, handler);
-        // Int -> Digit
-        bindReduceHandler(97, handler);
+        bindReduceHandler(31, handler);
+        // Int -> _DIGIT
+        bindReduceHandler(35, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -464,7 +286,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
             }
         };
         // Var -> LCaseWord
-        bindReduceHandler(18, handler);
+        bindReduceHandler(20, handler);
     }
 }
 
