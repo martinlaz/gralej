@@ -24,8 +24,10 @@
 
 package gralej.blocks.finder;
 
+import gralej.Config;
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
+import gralej.blocks.ContentOwningBlock;
 import gralej.blocks.Label;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +41,8 @@ public abstract class Finder {
     private Stack<Iterator<Block>> _stack = new Stack<Iterator<Block>>();
     private BlockPanel _panel;
     protected FinderOptions _opts;
+
+    private final boolean _instantiateLazyContent = Config.bool("behavior.finder.instantiateLazyContent");
 
     protected Finder(FinderOptions opts) { _opts = opts; }
     
@@ -87,8 +91,11 @@ public abstract class Finder {
                     return true;
                 }
             }
-            else if (_panel.isDisplayingModelHiddenFeatures() || !b.isModelHidden())
+            else if (_panel.isDisplayingModelHiddenFeatures() || !b.isModelHidden()) {
+                if (_instantiateLazyContent && b instanceof ContentOwningBlock)
+                    ((ContentOwningBlock)b).getContent(); // instantiate lazy content
                 _stack.push(new ArrayList<Block>(b.getChildren()).iterator());
+            }
         }
         //_panel.setSelectedBlock(null);
         return false;

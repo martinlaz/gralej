@@ -37,6 +37,7 @@ public interface IDataPackage {
     String getTitle();
 
     IVisitable getModel();
+    Iterable<IRelation> getInequations();
     Iterable<IRelation> getResidue();
 
     char[] getCharacters();

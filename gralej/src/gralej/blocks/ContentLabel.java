@@ -25,7 +25,7 @@
 package gralej.blocks;
 
 public class ContentLabel extends Label {
-    private Block _content;
+    protected Block _content;
     
     ContentLabel(BlockPanel panel, LabelStyle style, String text) {
         super(panel, style, text);

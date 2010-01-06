@@ -1,5 +1,5 @@
 /*
- *  $Id: NodeBlock.java 324 2009-11-16 17:07:40Z martinlaz $
+ *  $Id$
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]

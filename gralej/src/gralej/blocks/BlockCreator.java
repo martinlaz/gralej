@@ -34,6 +34,7 @@ import gralej.om.ITag;
 import gralej.om.ITree;
 import gralej.om.ITypedFeatureStructure;
 import gralej.om.IVisitable;
+import gralej.om.IneqsAndResidue;
 
 import gralej.om.lrs.IExCont;
 import gralej.om.lrs.IFunctor;
@@ -44,6 +45,7 @@ import gralej.om.lrs.INamedTerm;
 import gralej.om.lrs.ISqCont;
 import gralej.om.lrs.ITerm;
 import gralej.om.lrs.IVar;
+import gralej.util.Log;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -63,36 +65,63 @@ public class BlockCreator extends AbstractVisitor {
     }
 
     public Block createBlock(IVisitable vob) {
-        return createBlock(vob, null);
+        return createBlock(vob, IneqsAndResidue.EMPTY);
     }
 
-    public Block createBlock(IVisitable vob, List<IRelation> residue) {
+    public Block createBlock(IVisitable vob, IneqsAndResidue iqres) {
         vob.accept(this);
-        if (residue != null && !residue.isEmpty()) {
+        if (!iqres.residue().isEmpty() || !iqres.ineqs().isEmpty()) {
             VerticalListBlock vl = new VerticalListBlock(_panel);
             vl.addChild(_result);
-
             vl.addChild(_labfac.createRelationNameLabel(" ", _panel));
 
-            ContentLabel residueSwitchLabel = _labfac.createRelationNameLabel("--", _panel);
-            vl.addChild(residueSwitchLabel);
+            if (!iqres.ineqs().isEmpty()) {
+                ContentLabel iqsSwitchLabel = _labfac.createRelationNameLabel("~~", _panel);
+                vl.addChild(iqsSwitchLabel);
 
-            VerticalListBlock relList = new VerticalListBlock(_panel);
-            for (IRelation rel : residue) {
-                visit(rel);
-                relList.addChild(_result);
+                VerticalListBlock iqsList = new VerticalListBlock(_panel);
+                iqsSwitchLabel.setContent(iqsList);
+                
+                for (IRelation iq : iqres.ineqs()) {
+                    if (iq.arity() != 2) {
+                        Log.warning("Ignoring inequation relation:", iq.name(), "/", iq.arity());
+                        continue;
+                    }
+                    iq.arg(0).accept(this);
+                    Block fs1 = _result;
+                    iq.arg(1).accept(this);
+                    Block fs2 = _result;
+                    iqsList.addChild(new IneqBlock(_panel, fs1, fs2));
+                }
+                iqsList.sealChildren();
+
+                vl.addChild(iqsList);
             }
-            relList.sealChildren();
 
-            vl.addChild(relList);
+            if (!iqres.residue().isEmpty()) {
+                //vl.addChild(_labfac.createRelationNameLabel(" ", _panel));
+                ContentLabel residueSwitchLabel = _labfac.createRelationNameLabel("--", _panel);
+                vl.addChild(residueSwitchLabel);
+
+                VerticalListBlock relList = new VerticalListBlock(_panel);
+                residueSwitchLabel.setContent(relList);
+
+                for (IRelation rel : iqres.residue()) {
+                    visit(rel);
+                    relList.addChild(_result);
+                }
+                relList.sealChildren();
+
+                vl.addChild(relList);
+            }
+
             vl.sealChildren();
-
-            residueSwitchLabel.setContent(relList);
 
             _result = vl;
         }
         return _result;
     }
+
 
     @Override
     public void visit(IList ls) {
@@ -324,13 +353,14 @@ public class BlockCreator extends AbstractVisitor {
 
     @Override
     public void visit(IRelation rel) {
-        List<Block> argBlocks = new LinkedList<Block>();
-        for (IEntity arg : rel.args()) {
-            arg.accept(this);
-            argBlocks.add(_result);
-        }
-        _result = new RelationBlock(_panel, rel.name(), argBlocks);
-        _result.setModel(rel);
+//        List<Block> argBlocks = new LinkedList<Block>();
+//        for (IEntity arg : rel.args()) {
+//            arg.accept(this);
+//            argBlocks.add(_result);
+//        }
+//        _result = new RelationBlock(_panel, rel.name(), argBlocks);
+//        _result.setModel(rel);
+        _result = new LazyRelationBlock(_panel, rel, this);
     }
 
     private ContentCreator getContentCreator(final IEntity entity) {

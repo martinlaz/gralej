@@ -28,6 +28,7 @@ import gralej.Config;
 import gralej.blocks.*;
 import gralej.controller.StreamInfo;
 import gralej.om.IVisitable;
+import gralej.om.IneqsAndResidue;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
@@ -54,7 +55,7 @@ public class BlockConfigurator extends BlockPanel {
         this(handler, Config.currentConfig());
     }
     public BlockConfigurator(Handler handler, Config cfg) {
-        super(getSample(), null, new BlockPanelStyle(cfg), false);
+        super(getSample(), IneqsAndResidue.EMPTY, new BlockPanelStyle(cfg), false);
         setDisplayingModelHiddenFeatures(true);
         showNodeContents(false);
         

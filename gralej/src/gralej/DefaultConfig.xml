@@ -65,6 +65,7 @@ where RR = 2byte hex value for red
 <entry key="behavior.defaultzoom">100</entry>
 <entry key="behavior.defaultzoom.min">10</entry>
 <entry key="behavior.defaultzoom.max">1600</entry>
+<entry key="behavior.finder.instantiateLazyContent">false</entry>
 
 <entry key="block.avm.bracket.color">0x003333</entry>
 <entry key="block.avm.bracket.edge.length">7</entry>
@@ -284,6 +285,8 @@ where RR = 2byte hex value for red
 <entry key="block.lrstree.minDistance.horizontal">2</entry>
 <entry key="block.lrstree.minDistance.vertical">20</entry>
 <entry key="block.lrstree.frameColor">0xe0e0e0</entry>
+
+<entry key="block.ineq.functor.text"> =\= </entry>
 
 <!--
     LRS name map is a comma-speparated list on key:value pairs.
