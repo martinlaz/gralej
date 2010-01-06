@@ -24,10 +24,24 @@
 
 package gralej.blocks;
 
+import gralej.Config;
+
 /**
  *
- * @author martin
+ * @author Martin
  */
-public class IneqBlock {
+public class IneqBlock extends ContainerBlock {
+    private static String FUNCTOR_TEXT;
 
+    IneqBlock(BlockPanel panel, Block fs1, Block fs2) {
+        setPanel(panel);
+        setLayout(panel.getStyle().getLayoutFactory().getListContentLayout());
+
+        if (FUNCTOR_TEXT == null)
+            FUNCTOR_TEXT = Config.s("block.ineq.functor.text");
+
+        addChild(fs1);
+        addChild(panel.getStyle().getLabelFactory().createRelationLabel(FUNCTOR_TEXT, panel));
+        addChild(fs2);
+    }
 }

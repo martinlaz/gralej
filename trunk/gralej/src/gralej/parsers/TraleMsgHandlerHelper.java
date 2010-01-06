@@ -28,6 +28,7 @@ import gralej.controller.StreamInfo;
 import gralej.blocks.BlockPanel;
 import gralej.om.IRelation;
 import gralej.om.IVisitable;
+import gralej.om.IneqsAndResidue;
 import gralej.util.Log;
 import java.util.List;
 
@@ -49,7 +50,7 @@ class TraleMsgHandlerHelper {
         _streamInfo = streamInfo;
     }
 
-    void adviceResult(String title, IVisitable vob, List<IRelation> residue) {
+    void adviceResult(String title, IVisitable vob, IneqsAndResidue residue) {
         if (_resultReceiver == null) {
             Log.warning("parsed ok, but no result receiver");
             return;
@@ -65,10 +66,10 @@ class TraleMsgHandlerHelper {
         IVisitable _model;
         char[] _chars;
         StreamInfo _streamInfo;
-        List<IRelation> _residue;
+        IneqsAndResidue _residue;
 
         DataPackage(String title, IVisitable model, char[] chars,
-                StreamInfo streamInfo, List<IRelation> residue) {
+                StreamInfo streamInfo, IneqsAndResidue residue) {
             _title = title;
             _model = model;
             _chars = chars;
@@ -92,8 +93,12 @@ class TraleMsgHandlerHelper {
             return _streamInfo;
         }
 
+        public List<IRelation> getInequations() {
+            return _residue.ineqs();
+        }
+
         public List<IRelation> getResidue() {
-            return _residue;
+            return _residue.residue();
         }
 
         public BlockPanel createView() {

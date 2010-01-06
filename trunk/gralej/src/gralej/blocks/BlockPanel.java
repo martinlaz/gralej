@@ -27,6 +27,7 @@ package gralej.blocks;
 import gralej.Config;
 import gralej.om.IEntity;
 import gralej.om.IRelation;
+import gralej.om.IneqsAndResidue;
 import gralej.om.lrs.ILRSExpr;
 import gralej.util.BoundedHistory;
 import gralej.util.ChangeEventSource;
@@ -241,23 +242,23 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         }
     }
     
-    public BlockPanel(gralej.om.IVisitable contentModel, List<IRelation> residue) {
+    public BlockPanel(gralej.om.IVisitable contentModel, IneqsAndResidue residue) {
         this(contentModel, residue, BlockPanelStyle.getInstance());
     }
 
     public BlockPanel(gralej.om.IVisitable contentModel) {
-        this(contentModel, (List<IRelation>)null);
+        this(contentModel, IneqsAndResidue.EMPTY);
     }
     
     public BlockPanel(gralej.om.IVisitable contentModel, BlockPanelStyle style) {
-        this(contentModel, null, style);
+        this(contentModel, IneqsAndResidue.EMPTY, style);
     }
 
-    public BlockPanel(gralej.om.IVisitable contentModel, List<IRelation> residue, BlockPanelStyle style) {
+    public BlockPanel(gralej.om.IVisitable contentModel, IneqsAndResidue residue, BlockPanelStyle style) {
         this(contentModel, residue, style, Config.bool("behavior.autoexpandtags"));
     }
     
-    public BlockPanel(gralej.om.IVisitable contentModel, List<IRelation> residue, BlockPanelStyle style, boolean autoExpandTags) {
+    public BlockPanel(gralej.om.IVisitable contentModel, IneqsAndResidue residue, BlockPanelStyle style, boolean autoExpandTags) {
         _ui = new JPanel();
         _ui.setLayout(new BorderLayout());
         

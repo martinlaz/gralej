@@ -1,5 +1,5 @@
 /*
- *  $Id$
+ *  $Id: $
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]
@@ -22,15 +22,32 @@
  *
  */
 
-package gralej.blocks;
+package gralej.om;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
  * @author Martin
  */
-public class VerticalListBlock extends ContainerBlock {
-    public VerticalListBlock(BlockPanel panel) {
-        setPanel(panel);
-        setLayout(getPanelStyle().getLayoutFactory().getVerticalListLayout());
+public final class IneqsAndResidue {
+    public final static IneqsAndResidue EMPTY = new IneqsAndResidue();
+    
+    List<IRelation> _ineqs, _residue;
+
+    public IneqsAndResidue() {
+        this(null, null);
     }
+    public IneqsAndResidue(List<IRelation> ineqs, List<IRelation> residue) {
+        if (ineqs == null)
+            ineqs = Collections.EMPTY_LIST;
+        if (residue == null)
+            residue = Collections.EMPTY_LIST;
+        _ineqs = ineqs;
+        _residue = residue;
+    }
+
+    public List<IRelation> ineqs() { return _ineqs; }
+    public List<IRelation> residue() { return _residue; }
 }

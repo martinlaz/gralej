@@ -12,15 +12,17 @@ import gralej.om.IList;
 import gralej.om.ITree;
 import gralej.om.IRelation;
 import gralej.om.IVisitable;
+import gralej.om.IneqsAndResidue;
 
 import java.util.Map;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import tomato.GrammarHandler;
 import tomato.Token;
 
 public class TraleMsgHandler extends GrammarHandler {
-    static class L<T> extends java.util.LinkedList<T> {
+    static class L<T> extends LinkedList<T> {
         L<T> a(T el) { add(el); return this; }
     }
     
@@ -93,22 +95,17 @@ datapackage ->
             L<IRelation> ineqs   = (L<IRelation>)_[4];
             L<IRelation> residue = (L<IRelation>)_[5];
 
-            if (ineqs != null) {
-                if (residue != null)
-                    residue.addAll(ineqs);
-                else
-                    residue = ineqs;
-            }
+            IneqsAndResidue iqsres = new IneqsAndResidue(ineqs, residue);
             
             if (_tree != null) {
-                _helper.adviceResult(title, _tree, residue);
+                _helper.adviceResult(title, _tree, iqsres);
                 return null;
             }
             IVisitable obj = (IVisitable)_[2];
             if (obj == null)
                 throw new NotImplementedException("in datapackage");
 
-            _helper.adviceResult(title, obj, residue);
+            _helper.adviceResult(title, obj, iqsres);
 
             return null;
         }}
