@@ -22,15 +22,12 @@
  *
  */
 
-package gralej.om;
+package gralej.blocks;
 
 /**
  *
  * @author martin
  */
-public interface IRelation extends IEntity {
-    String name();
-    int arity();
-    IEntity arg(int pos);
-    Iterable<IEntity> args();
+public class IneqBlock {
+
 }
