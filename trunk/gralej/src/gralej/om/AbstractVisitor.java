@@ -49,7 +49,9 @@ public abstract class AbstractVisitor implements IVisitor {
 
     public abstract void visit(ITree tree);
 
-    public void visit(IRelation expr) {}
+    public void visit(ITable table) {}
+
+    public void visit(IRelation rel) {}
 
     public void visit(ILRSExpr expr) {}
 }

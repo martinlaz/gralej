@@ -55,7 +55,7 @@ public class LazyRelationBlock extends ContentOwningBlock {
         if (_content == null) {
             List<Block> argBlocks = new LinkedList<Block>();
             for (IEntity arg : ((IRelation) getModel()).args()) {
-                argBlocks.add(_blockCreator.createBlock(arg));
+                argBlocks.add(_blockCreator.createBlock(arg, false));
             }
             _content = new RelationArgsBlock(getPanel(), argBlocks);
             // don't make it visible,

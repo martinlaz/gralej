@@ -117,7 +117,19 @@ class GrisuFormatParser implements IGraleParser {
                 Exception exception = null;
                 try {
                     _lexer.reset(fr);
-                    _parser.parse(_lexer);
+                    while (true) {
+                        try {
+                            _parser.parse(_lexer);
+                            break;
+                        }
+                        catch (tomato.ParseException ex) {
+                            if (!_lexer.skipAfterNewline()) {
+                                exception = ex;
+                                break;
+                            }
+                            Log.error(ex);
+                        }
+                    }
                 } catch (Exception ex) {
                     exception = ex;
                 }

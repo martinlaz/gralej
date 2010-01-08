@@ -45,7 +45,9 @@ public class ReentrancyBlock extends ContentOwningBlock {
             return;
         }
         if (!isHiddenByAncestor()) {
-            if (getPanel().getExpandedTags(getOutermostAVMBlock()).add(_tag)) {
+            //ContainerBlock outhermostBlock = getOutermostAVMBlock();
+            //if (getPanel().getExpandedTags(outhermostBlock).add(_tag)) {
+            if (getPanel().getExpandedTags().add(_tag)) {
                 addChild(_content = _contentCreator.createContent());
             }
         }

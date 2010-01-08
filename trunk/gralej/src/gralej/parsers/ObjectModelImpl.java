@@ -35,8 +35,6 @@ class OM {
         final static int MULTILINE = 8;
         final static int EXPANDED = 16;
         
-        final static Flags DEFAULT_FLAGS = new Flags();
-
         int flags;
 
         boolean isHidden() {
@@ -87,13 +85,15 @@ class OM {
         }
     }
 
+    final static Flags DEFAULT_FLAGS = new Flags();
+
     static class Entity implements IEntity {
         Flags _flags;
 
         Entity(Flags flags) {
             _flags = flags;
             if (flags.flags == 0)
-                _flags = OM.Flags.DEFAULT_FLAGS;
+                _flags = DEFAULT_FLAGS;
         }
 
         public boolean isHidden() {
@@ -105,7 +105,7 @@ class OM {
         }
         
         public void setDifferent(boolean flag) {
-            if (_flags == Flags.DEFAULT_FLAGS)
+            if (_flags == DEFAULT_FLAGS)
                 _flags = new OM.Flags();
             _flags.setDifferent(flag);
         }
@@ -182,7 +182,7 @@ class OM {
             _number = number;
         }
         Tag(int number) {
-            this(Flags.DEFAULT_FLAGS, number);
+            this(DEFAULT_FLAGS, number);
         }
 
         public int number() {
@@ -268,7 +268,7 @@ class OM {
         java.util.List<ITree> _children;
 
         Tree(String label, java.util.List<ITree> children) {
-            super(Flags.DEFAULT_FLAGS);
+            super(DEFAULT_FLAGS);
             _label = label;
             _children = children;
         }
@@ -327,6 +327,26 @@ class OM {
             return _args;
         }
 
+        public void accept(IVisitor v) {
+            v.visit(this);
+        }
+    }
+
+    static class Table extends Entity implements ITable {
+        private java.util.List<IFeatureValuePair> _rows;
+        private String _heading;
+
+        Table(String heading, java.util.List<IFeatureValuePair> rows) {
+            super(DEFAULT_FLAGS);
+            _heading = heading;
+            _rows = rows;
+        }
+        public String heading() {
+            return _heading;
+        }
+        public Iterable<IFeatureValuePair> rows() {
+            return _rows;
+        }
         public void accept(IVisitor v) {
             v.visit(this);
         }

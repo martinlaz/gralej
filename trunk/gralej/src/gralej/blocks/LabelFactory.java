@@ -217,4 +217,8 @@ public class LabelFactory {
     public Label createRelationLabel(String text, BlockPanel panel) {
         return createLabel(text, getLabelStyle("relation"), panel);
     }
+
+    public ContentLabel createHeadingLabel(String text, BlockPanel panel) {
+        return createContentLabel(text, getLabelStyle("heading"), panel);
+    }
 }

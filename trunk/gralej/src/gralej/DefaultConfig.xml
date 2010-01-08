@@ -219,6 +219,17 @@ where RR = 2byte hex value for red
 <entry key="block.label.relation.text.color">0x000000</entry>
 <entry key="block.label.relation.text.colorAlt">0xc0c0c0</entry>
 
+<entry key="block.label.heading.fontSpec">SansSerif-BOLD-14</entry>
+<entry key="block.label.heading.frame.color">0x000000</entry>
+<entry key="block.label.heading.frame.isDashed">false</entry>
+<entry key="block.label.heading.frame.thickness">0</entry>
+<entry key="block.label.heading.margin.bottom">10</entry>
+<entry key="block.label.heading.margin.left">0</entry>
+<entry key="block.label.heading.margin.right">0</entry>
+<entry key="block.label.heading.margin.top">0</entry>
+<entry key="block.label.heading.text.color">0x000000</entry>
+<entry key="block.label.heading.text.colorAlt">0xc0c0c0</entry>
+
 <entry key="block.label.text.maxLength">70</entry>
 
 <entry key="block.layout.avm.compact">true</entry>
