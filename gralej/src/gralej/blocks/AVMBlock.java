@@ -27,29 +27,19 @@ package gralej.blocks;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
-public class AVMBlock extends ContentOwningBlock {
-
+public class AVMBlock extends TableBlock {
     AVMBlock(BlockPanel panel, Label sort, AVPairListBlock avPairs) {
-        setPanel(panel);
-        setLayout(getPanelStyle().getLayoutFactory().getAVMLayout());
-        
-        addChild(sort);
-        lastAddChild(avPairs);
-        setContent(avPairs);
+        super(panel, sort, avPairs);
     }
     
     public Label getTypeLabel() {
         return (Label) _children.get(0);
     }
 
-    public AVPairListBlock getAVPairs() {
-        return (AVPairListBlock) getContent();
-    }
-
     @Override
     public void paint(Graphics2D g) {
         super.paint(g);
-        
+
         BlockPanelStyle style = getPanelStyle();
         
         // paint the brackets
@@ -83,7 +73,7 @@ public class AVMBlock extends ContentOwningBlock {
             return;
         }
 
-        // the default [style]
+        // the default [ style ]
 
         // left
         g.drawLine(x, y, x, y + h);

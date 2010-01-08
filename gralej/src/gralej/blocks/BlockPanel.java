@@ -491,6 +491,9 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         return _content;
     }
     
+    Set<Integer> getExpandedTags() {
+        return getExpandedTags(_content);
+    }
     Set<Integer> getExpandedTags(ContainerBlock block) {
         if (_expandedTags == null)
             _expandedTags = new HashMap<ContainerBlock,Set<Integer>>();

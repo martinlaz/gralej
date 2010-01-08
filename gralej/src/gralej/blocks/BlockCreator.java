@@ -30,6 +30,7 @@ import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
 import gralej.om.IRelation;
+import gralej.om.ITable;
 import gralej.om.ITag;
 import gralej.om.ITree;
 import gralej.om.ITypedFeatureStructure;
@@ -58,6 +59,8 @@ public class BlockCreator extends AbstractVisitor {
     BlockPanel _panel;
     LabelFactory _labfac;
     Map<IEntity, ContentCreator> _contentCreatorCache;
+
+    private boolean _instantiateLazy = true;
     
     public BlockCreator(BlockPanel panel) {
         _panel = panel;
@@ -65,6 +68,10 @@ public class BlockCreator extends AbstractVisitor {
     }
 
     public Block createBlock(IVisitable vob) {
+        return createBlock(vob, true);
+    }
+    public Block createBlock(IVisitable vob, boolean instantiateLazy) {
+        _instantiateLazy = instantiateLazy;
         return createBlock(vob, IneqsAndResidue.EMPTY);
     }
 
@@ -122,6 +129,16 @@ public class BlockCreator extends AbstractVisitor {
         return _result;
     }
 
+    @Override
+    public void visit(ITable table) {
+        processFeatVals(table.rows());
+        
+        if (table.heading() != null)
+            _result = new TableBlock(
+                    _panel,
+                    _labfac.createHeadingLabel(table.heading(), _panel),
+                    (AVPairListBlock) _result);
+    }
 
     @Override
     public void visit(IList ls) {
@@ -291,6 +308,22 @@ public class BlockCreator extends AbstractVisitor {
         }
     }
 
+    private void processFeatVals(Iterable<IFeatureValuePair> featVals) {
+        List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
+
+        for (IFeatureValuePair featVal : featVals) {
+            ContentLabel alab = _labfac.createAttributeLabel(
+                    featVal.feature().toUpperCase(), _panel);
+            alab.setModel(featVal);
+            featVal.value().accept(this);
+            ll.add(new AVPairBlock(_panel, alab, _result, featVal.isHidden()));
+            if (featVal.isHidden())
+                alab.flip();
+        }
+
+        _result = new AVPairListBlock(_panel, ll);
+    }
+
     @Override
     public void visit(ITypedFeatureStructure tfs) {
         if (tfs.isSpecies()) {
@@ -301,24 +334,15 @@ public class BlockCreator extends AbstractVisitor {
             return;
         }
 
-        List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
-
-        for (IFeatureValuePair featVal : tfs.featureValuePairs()) {
-            ContentLabel alab = _labfac.createAttributeLabel(
-                    featVal.feature().toUpperCase(), _panel);
-            alab.setModel(featVal);
-            featVal.value().accept(this);
-            ll.add(new AVPairBlock(_panel, alab, _result, featVal.isHidden()));
-            if (featVal.isHidden())
-                alab.flip();
-        }
+        processFeatVals(tfs.featureValuePairs());
+        AVPairListBlock avPairs = (AVPairListBlock) _result;
 
         ContentLabel sortLabel = _labfac.createSortLabel(tfs.typeName(), _panel);
         sortLabel.setModel(tfs.type());
         _result = new AVMBlock(
                 _panel,
                 sortLabel,
-                new AVPairListBlock(_panel, ll)
+                avPairs
                 );
         _result.setModel(tfs);
     }
@@ -360,7 +384,14 @@ public class BlockCreator extends AbstractVisitor {
 //        }
 //        _result = new RelationBlock(_panel, rel.name(), argBlocks);
 //        _result.setModel(rel);
-        _result = new LazyRelationBlock(_panel, rel, this);
+
+        Block b = new LazyRelationBlock(_panel, rel, this);
+        if (_instantiateLazy) {
+            ContentLabel lab = ((ContentLabel)b.getChildren().get(0));
+            lab.flip();
+            _instantiateLazy = true;
+        }
+        _result = b;
     }
 
     private ContentCreator getContentCreator(final IEntity entity) {

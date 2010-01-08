@@ -45,5 +45,7 @@ public interface IVisitor {
 
     void visit(IRelation expr);
 
+    void visit(ITable table);
+
     void visit(ILRSExpr expr);
 }

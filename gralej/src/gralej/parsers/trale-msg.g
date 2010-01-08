@@ -179,8 +179,9 @@ struct
   | list 
   | set 
   | any 
-  | disjunction 
+  | disjunction
   | conjunction
+  | table
   .
 
 tree
@@ -213,6 +214,25 @@ reentr
        }}
   .
 
+table
+  -> _LB tableHeading _MINUS tableRows _RB
+        { return new OM.Table((String)_[1], (L)_[3]); }
+  .
+
+tableHeading
+  -> | _STRING { return S(_[0]); } .
+
+tableRows
+  -> tableRow
+        { L ls = new L(); ls.add(_[0]); return ls; }
+  | tableRows tableRow
+        { ((L)_[0]).add(_[1]); return _[0]; }
+  .
+
+tableRow
+  -> _STRING struct
+        { return new OM.FeatVal(OM.DEFAULT_FLAGS, S(_[0]), (IEntity)_[1]); }
+  .
 struc
   ->  _BEGIN_STRUC flags id type featvals _RPAR
         {

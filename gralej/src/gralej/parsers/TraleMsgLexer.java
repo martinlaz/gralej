@@ -182,15 +182,21 @@ public class TraleMsgLexer implements Lexer {
                 case '/':
                     _current = _tokens._SLASH;
                     break;
+                case '[':
+                    _current = _tokens._LB;
+                    break;
+                case ']':
+                    _current = _tokens._RB;
+                    break;
                 case '!': // newdata
-                {
-                    String s = "newdata";
-                    for (int i = 0; i < s.length(); ++i) {
-                        if (s.charAt(i) != (char) read())
-                            throw new IllegalTokenException(
-                                    "Expected 'newdata' after '!'");
+                    {
+                        String s = "newdata";
+                        for (int i = 0; i < s.length(); ++i) {
+                            if (s.charAt(i) != (char) read())
+                                throw new IllegalTokenException(
+                                        "Expected '" + s + "' after '!'");
+                        }
                     }
-                }
                     _current = _tokens._NEWDATA;
                     break;
                 default:
@@ -228,6 +234,16 @@ public class TraleMsgLexer implements Lexer {
     private void unread(int c) throws IOException {
         _in.unread(c);
         _consumed.deleteCharAt(_consumed.length() - 1);
+    }
+
+    boolean skipAfterNewline() {
+        while (_current != _tokens._EOF) {
+            Object last = _current;
+            next();
+            if (last == _tokens._NEWLINE)
+                return true;
+        }
+        return false;
     }
 
     static class T implements Token {
@@ -288,6 +304,8 @@ public class TraleMsgLexer implements Lexer {
         T _STAR = new T("*");
         T _NEWLINE = new T("\n");
         T _SLASH = new T("/");
+        T _LB = new T("[");
+        T _RB = new T("]");
         // multi-char
         T _NEWDATA = new T("!newdata");
         // mutable
