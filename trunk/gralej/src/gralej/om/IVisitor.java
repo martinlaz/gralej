@@ -39,6 +39,8 @@ public interface IVisitor {
 
     void visit(IAny any);
 
+    void visit(IType tag);
+
     void visit(ITypedFeatureStructure tfs);
 
     void visit(ITree tree);

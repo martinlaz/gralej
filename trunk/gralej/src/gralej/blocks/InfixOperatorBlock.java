@@ -1,5 +1,5 @@
 /*
- *  $Id$
+ *  $Id $
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]
@@ -24,24 +24,24 @@
 
 package gralej.blocks;
 
-import gralej.Config;
+import gralej.om.IRelation;
 
 /**
  *
  * @author Martin
  */
-public class IneqBlock extends ContainerBlock {
-    private static String FUNCTOR_TEXT;
-
-    IneqBlock(BlockPanel panel, Block fs1, Block fs2) {
+public class InfixOperatorBlock extends ContainerBlock {
+    public InfixOperatorBlock(BlockPanel panel, IRelation rel, Block op1, Block op2) {
         setPanel(panel);
-        setLayout(panel.getStyle().getLayoutFactory().getListContentLayout());
+        setLayout(getPanelStyle().getLayoutFactory().getInfixOperatorLayout());
 
-        if (FUNCTOR_TEXT == null)
-            FUNCTOR_TEXT = Config.s("block.ineq.functor.text");
+        Label relName = getPanelStyle().getLabelFactory().createInfixOperatorLabel(rel.name(), panel);
+        relName.setModel(rel);
 
-        addChild(fs1);
-        addChild(panel.getStyle().getLabelFactory().createRelationLabel(FUNCTOR_TEXT, panel));
-        addChild(fs2);
+        addChild(op1);
+        addChild(relName);
+        addChild(op2);
+        
+        sealChildren();
     }
 }

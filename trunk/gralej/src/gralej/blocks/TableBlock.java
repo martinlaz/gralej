@@ -34,7 +34,8 @@ public class TableBlock extends ContentOwningBlock {
         setPanel(panel);
         setLayout(getPanelStyle().getLayoutFactory().getAVMLayout());
 
-        addChild(heading);
+        if (heading != null)
+            addChild(heading);
         addChild(avPairs);
 
         setContent(avPairs);

@@ -210,8 +210,8 @@ public class LabelFactory {
         return new LRSContentLabel(panel, getLabelStyle("lrs"), text);
     }
 
-    public ContentLabel createRelationNameLabel(String text, BlockPanel panel) {
-        return createContentLabel(text, getLabelStyle("relation"), panel);
+    public ContentLabel createFunctorLabel(String text, BlockPanel panel) {
+        return createContentLabel(text, getLabelStyle("functor"), panel);
     }
 
     public Label createRelationLabel(String text, BlockPanel panel) {
@@ -220,5 +220,9 @@ public class LabelFactory {
 
     public ContentLabel createHeadingLabel(String text, BlockPanel panel) {
         return createContentLabel(text, getLabelStyle("heading"), panel);
+    }
+
+    public Label createInfixOperatorLabel(String text, BlockPanel panel) {
+        return createLabel(text, getLabelStyle("infix"), panel);
     }
 }

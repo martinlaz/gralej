@@ -147,6 +147,10 @@ public class LayoutFactory {
         return getLayout("relation", HLC);
     }
 
+    public BlockLayout getInfixOperatorLayout() {
+        return getLayout("infix", HLC);
+    }
+
     public BlockLayout getRelationArgsLayout() {
         return getLayout("relationargs", HLC);
     }

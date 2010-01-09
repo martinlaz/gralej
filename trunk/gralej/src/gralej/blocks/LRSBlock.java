@@ -6,6 +6,7 @@
 
 package gralej.blocks;
 
+import gralej.om.lrs.ILRSExpr;
 import java.awt.Graphics2D;
 
 /**
@@ -13,11 +14,13 @@ import java.awt.Graphics2D;
  * @author Martin
  */
 public class LRSBlock extends ContentOwningBlock {
-    public LRSBlock(BlockPanel panel, LRSTreeBlock lrsTree) {
+    public LRSBlock(BlockPanel panel, LRSTreeBlock lrsTree, ILRSExpr model) {
         setPanel(panel);
         setLayout(panel.getStyle().getLayoutFactory().getLRSBlockLayout());
         setContent(lrsTree);
-        addChild(panel.getStyle().getLabelFactory().createLRSBlockLabel(panel));
+        Label lab = panel.getStyle().getLabelFactory().createLRSBlockLabel(panel);
+        lab.setModel(model);
+        addChild(lab);
         addChild(lrsTree);
         sealChildren();
     }

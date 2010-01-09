@@ -45,7 +45,7 @@ public class LazyRelationBlock extends ContentOwningBlock {
         setModel(rel);
 
         RelationContentLabel relName = new RelationContentLabel(panel,
-                getPanelStyle().getLabelFactory().getLabelStyle("relation"),
+                getPanelStyle().getLabelFactory().getLabelStyle("functor"),
                 rel);
         addChild(relName);
     }

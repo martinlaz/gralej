@@ -310,8 +310,10 @@ relation
     .
 
 type
-  ->  _LPAR flags id name _RPAR
-        { return new OM.Type((OM.Flags)_[1], S(_[3])); } .
+  ->
+  |   _LPAR flags id name _RPAR
+        { return new OM.Type((OM.Flags)_[1], S(_[3])); }
+  .
 
 ref
   ->  _BEGIN_REF flags id target _RPAR

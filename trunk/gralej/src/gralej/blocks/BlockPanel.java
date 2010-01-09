@@ -26,9 +26,7 @@ package gralej.blocks;
 
 import gralej.Config;
 import gralej.om.IEntity;
-import gralej.om.IRelation;
 import gralej.om.IneqsAndResidue;
-import gralej.om.lrs.ILRSExpr;
 import gralej.util.BoundedHistory;
 import gralej.util.ChangeEventSource;
 import gralej.util.Log;
@@ -42,6 +40,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -51,18 +50,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ChangeListener;
 
@@ -538,17 +538,16 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         if (e.getButton() == MouseEvent.BUTTON1) { // left button
             if (_selectOnHover || !_selectOnClick) {
                 Block target = findContainingBlock(_content, x, y);
-                if (target instanceof ContentLabel) {
-                    if (e.isControlDown()) {
-                        if (target.getParent() instanceof LRSBlock) {
-                            ILRSExpr lrsExpr = (ILRSExpr) target.getParent().getModel();
-                            frameEntity(lrsExpr, lrsExpr.text());
-                        }
+                final int mask = (MouseEvent.SHIFT_MASK | MouseEvent.CTRL_MASK);
+                if ((e.getModifiers() & mask) != 0) {
+                    if (target.getModel() != null) {
+                        boolean inFrame = e.isShiftDown() && !e.isControlDown();
+                        frameEntity(target.getModel(), inFrame);
                     }
-                    else {
-                        flipAndScrollTo(target, e.getX(), e.getY());
-                        return; // don't update cursor in this case, otherwise looks weird
-                    }
+                }
+                else if (target instanceof ContentLabel) {
+                    flipAndScrollTo(target, e.getX(), e.getY());
+                    return; // don't update cursor in this case, otherwise looks weird
                 }
             }
         }
@@ -883,25 +882,26 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         }
     }
 
-    public static JFrame frameEntity(IEntity ent) {
-        return frameEntity(ent, "", true);
-    }
-    public static JFrame frameEntity(IEntity ent, boolean show) {
-        return frameEntity(ent, "", show);
-    }
-    public static JFrame frameEntity(IEntity ent, String title) {
-        return frameEntity(ent, title, true);
-    }
-    public static JFrame frameEntity(IEntity ent, String title, boolean show) {
+    private void frameEntity(IEntity ent, boolean inFrame) {
         BlockPanel bp = new BlockPanel(ent);
-        JFrame f = new JFrame();
-        f.setContentPane(bp.getUI());
-        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f.setTitle(title);
-        if (show) {
-            f.pack();
-            f.setVisible(true);
+        String title = ent.text() != null ? ent.text() : "--";
+        Window w;
+        if (inFrame) {
+            JFrame f = new JFrame();
+            f.setContentPane(bp.getUI());
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setTitle(title);
+            w = f;
         }
-        return f;
+        else {
+            JDialog f = new JDialog(SwingUtilities.getWindowAncestor(_scrollPane));
+            f.setContentPane(bp.getUI());
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setTitle(title);
+            w = f;
+        }
+        w.pack();
+        w.setVisible(true);
+
     }
 }
