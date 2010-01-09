@@ -24,6 +24,7 @@
 
 package gralej.blocks;
 
+import gralej.Config;
 import gralej.om.AbstractVisitor;
 import gralej.om.IAny;
 import gralej.om.IEntity;
@@ -33,6 +34,7 @@ import gralej.om.IRelation;
 import gralej.om.ITable;
 import gralej.om.ITag;
 import gralej.om.ITree;
+import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 import gralej.om.IVisitable;
 import gralej.om.IneqsAndResidue;
@@ -46,21 +48,23 @@ import gralej.om.lrs.INamedTerm;
 import gralej.om.lrs.ISqCont;
 import gralej.om.lrs.ITerm;
 import gralej.om.lrs.IVar;
-import gralej.util.Log;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class BlockCreator extends AbstractVisitor {
-    Block _result;
+public final class BlockCreator extends AbstractVisitor {
+    private Block _result;
     
-    BlockPanel _panel;
-    LabelFactory _labfac;
-    Map<IEntity, ContentCreator> _contentCreatorCache;
+    private BlockPanel _panel;
+    private LabelFactory _labfac;
+    private Map<IEntity, ContentCreator> _contentCreatorCache;
 
     private boolean _instantiateLazy = true;
+    private static Set<String> _infixOps;
     
     public BlockCreator(BlockPanel panel) {
         _panel = panel;
@@ -80,53 +84,32 @@ public class BlockCreator extends AbstractVisitor {
         if (!iqres.residue().isEmpty() || !iqres.ineqs().isEmpty()) {
             VerticalListBlock vl = new VerticalListBlock(_panel);
             vl.addChild(_result);
-            vl.addChild(_labfac.createRelationNameLabel(" ", _panel));
+            vl.addChild(_labfac.createFunctorLabel(" ", _panel));
 
-            if (!iqres.ineqs().isEmpty()) {
-                ContentLabel iqsSwitchLabel = _labfac.createRelationNameLabel("~~", _panel);
-                vl.addChild(iqsSwitchLabel);
-
-                VerticalListBlock iqsList = new VerticalListBlock(_panel);
-                iqsSwitchLabel.setContent(iqsList);
-                
-                for (IRelation iq : iqres.ineqs()) {
-                    if (iq.arity() != 2) {
-                        Log.warning("Ignoring inequation relation:", iq.name(), "/", iq.arity());
-                        continue;
-                    }
-                    iq.arg(0).accept(this);
-                    Block fs1 = _result;
-                    iq.arg(1).accept(this);
-                    Block fs2 = _result;
-                    iqsList.addChild(new IneqBlock(_panel, fs1, fs2));
-                }
-                iqsList.sealChildren();
-
-                vl.addChild(iqsList);
-            }
-
-            if (!iqres.residue().isEmpty()) {
-                //vl.addChild(_labfac.createRelationNameLabel(" ", _panel));
-                ContentLabel residueSwitchLabel = _labfac.createRelationNameLabel("--", _panel);
-                vl.addChild(residueSwitchLabel);
-
-                VerticalListBlock relList = new VerticalListBlock(_panel);
-                residueSwitchLabel.setContent(relList);
-
-                for (IRelation rel : iqres.residue()) {
-                    visit(rel);
-                    relList.addChild(_result);
-                }
-                relList.sealChildren();
-
-                vl.addChild(relList);
-            }
+            _instantiateLazy = false;
+            processRelations(iqres.ineqs(), "~~", vl);
+            processRelations(iqres.residue(), "--", vl);
 
             vl.sealChildren();
 
             _result = vl;
         }
         return _result;
+    }
+
+    private void processRelations(List<IRelation> rels, String switchLabel, VerticalListBlock vl) {
+        if (rels.isEmpty())
+            return;
+        ContentLabel residueSwitchLabel = _labfac.createFunctorLabel(switchLabel, _panel);
+        vl.addChild(residueSwitchLabel);
+        VerticalListBlock relList = new VerticalListBlock(_panel);
+        residueSwitchLabel.setContent(relList);
+        for (IRelation rel : rels) {
+            visit(rel);
+            relList.addChild(_result);
+        }
+        relList.sealChildren();
+        vl.addChild(relList);
     }
 
     @Override
@@ -138,6 +121,7 @@ public class BlockCreator extends AbstractVisitor {
                     _panel,
                     _labfac.createHeadingLabel(table.heading(), _panel),
                     (AVPairListBlock) _result);
+        _result.setModel(table);
     }
 
     @Override
@@ -182,6 +166,7 @@ public class BlockCreator extends AbstractVisitor {
                 }
             };
         }
+        _result.setModel(tag);
     }
 
     @Override
@@ -195,7 +180,7 @@ public class BlockCreator extends AbstractVisitor {
         LRSTreeBlock lrsTree = new LRSTreeBlock(_panel, createLRSTree(lrs.subTerms()));
         lrsTree.setModel(lrs);
 
-        _result = new LRSBlock(_panel, lrsTree);
+        _result = new LRSBlock(_panel, lrsTree, lrs);
         _result.setModel(lrs);
     }
 
@@ -312,16 +297,23 @@ public class BlockCreator extends AbstractVisitor {
         List<AVPairBlock> ll = new LinkedList<AVPairBlock>();
 
         for (IFeatureValuePair featVal : featVals) {
-            ContentLabel alab = _labfac.createAttributeLabel(
-                    featVal.feature().toUpperCase(), _panel);
-            alab.setModel(featVal);
-            featVal.value().accept(this);
-            ll.add(new AVPairBlock(_panel, alab, _result, featVal.isHidden()));
-            if (featVal.isHidden())
-                alab.flip();
+            featVal.accept(this);
+            ll.add((AVPairBlock) _result);
         }
 
         _result = new AVPairListBlock(_panel, ll);
+    }
+
+    @Override
+    public void visit(IFeatureValuePair featVal) {
+        ContentLabel alab = _labfac.createAttributeLabel(
+            featVal.feature().toUpperCase(), _panel);
+        alab.setModel(featVal);
+        featVal.value().accept(this);
+        _result = new AVPairBlock(_panel, alab, _result, featVal.isHidden());
+        if (featVal.isHidden())
+            alab.flip();
+        _result.setModel(featVal);
     }
 
     @Override
@@ -337,14 +329,24 @@ public class BlockCreator extends AbstractVisitor {
         processFeatVals(tfs.featureValuePairs());
         AVPairListBlock avPairs = (AVPairListBlock) _result;
 
-        ContentLabel sortLabel = _labfac.createSortLabel(tfs.typeName(), _panel);
-        sortLabel.setModel(tfs.type());
+        ContentLabel sortLabel = null;
+        if (tfs.type() != null) {
+            sortLabel = _labfac.createSortLabel(tfs.typeName(), _panel);
+            sortLabel.setModel(tfs);
+        }
+        
         _result = new AVMBlock(
                 _panel,
                 sortLabel,
                 avPairs
                 );
         _result.setModel(tfs);
+    }
+
+    @Override
+    public void visit(IType type) {
+        _result = _labfac.createSortLabel(type.typeName(), _panel);
+        _result.setModel(type);
     }
 
     @Override
@@ -385,13 +387,23 @@ public class BlockCreator extends AbstractVisitor {
 //        _result = new RelationBlock(_panel, rel.name(), argBlocks);
 //        _result.setModel(rel);
 
-        Block b = new LazyRelationBlock(_panel, rel, this);
-        if (_instantiateLazy) {
-            ContentLabel lab = ((ContentLabel)b.getChildren().get(0));
-            lab.flip();
-            _instantiateLazy = true;
+        if (rel.arity() == 2 && isInfixOp(rel)) {
+            rel.arg(0).accept(this);
+            Block op1 = _result;
+            rel.arg(1).accept(this);
+            Block op2 = _result;
+            _result = new InfixOperatorBlock(_panel, rel, op1, op2);
         }
-        _result = b;
+        else {
+            Block b = new LazyRelationBlock(_panel, rel, this);
+            if (_instantiateLazy) {
+                ContentLabel lab = ((ContentLabel)b.getChildren().get(0));
+                lab.flip();
+                _instantiateLazy = true;
+            }
+            _result = b;
+        }
+        _result.setModel(rel);
     }
 
     private ContentCreator getContentCreator(final IEntity entity) {
@@ -411,5 +423,14 @@ public class BlockCreator extends AbstractVisitor {
             _contentCreatorCache.put(entity, cc);
         }
         return cc;
+    }
+
+    private static boolean isInfixOp(IRelation rel) {
+        if (_infixOps == null) {
+            _infixOps = new TreeSet<String>();
+            for (String s : Config.s("block.infixOperators").trim().split("\\s+"))
+                _infixOps.add(s);
+        }
+        return _infixOps.contains(rel.name());
     }
 }

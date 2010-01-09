@@ -87,7 +87,7 @@ class OM {
 
     final static Flags DEFAULT_FLAGS = new Flags();
 
-    static class Entity implements IEntity {
+    static abstract class Entity implements IEntity {
         Flags _flags;
 
         Entity(Flags flags) {
@@ -121,10 +121,6 @@ class OM {
         public boolean isExpanded() {
             return _flags.isExpanded();
         }
-
-        public void accept(IVisitor v) {
-            v.visit(this);
-        }
     }
 
     static class FeatVal extends Entity implements IFeatureValuePair {
@@ -143,6 +139,10 @@ class OM {
 
         public IEntity value() {
             return _v;
+        }
+
+        public String text() {
+            return _f;
         }
 
         public void accept(IVisitor v) {
@@ -166,6 +166,10 @@ class OM {
         
         public IEntity tail() {
             return _tail;
+        }
+
+        public String text() {
+            return "<" + _ls.size() + ">";
         }
 
         public void accept(IVisitor v) {
@@ -197,6 +201,10 @@ class OM {
             _target = target;
         }
 
+        public String text() {
+            return "[" + Integer.toString(_number) + "]";
+        }
+
         public void accept(IVisitor v) {
             v.visit(this);
         }
@@ -214,6 +222,10 @@ class OM {
             return _value;
         }
 
+        public String text() {
+            return _value;
+        }
+
         public void accept(IVisitor v) {
             v.visit(this);
         }
@@ -227,6 +239,12 @@ class OM {
         }
         public String typeName() {
             return _typeName;
+        }
+        public String text() {
+            return _typeName;
+        }
+        public void accept(IVisitor v) {
+            v.visit(this);
         }
     }
 
@@ -255,6 +273,10 @@ class OM {
 
         public boolean isSpecies() {
             return _featVals.isEmpty();
+        }
+
+        public String text() {
+            return _type.text();
         }
 
         public void accept(IVisitor v) {
@@ -293,6 +315,10 @@ class OM {
             return _children.isEmpty();
         }
 
+        public String text() {
+            return _label;
+        }
+
         public void accept(IVisitor v) {
             v.visit(this);
         }
@@ -327,6 +353,10 @@ class OM {
             return _args;
         }
 
+        public String text() {
+            return _name + "/" + arity();
+        }
+
         public void accept(IVisitor v) {
             v.visit(this);
         }
@@ -346,6 +376,9 @@ class OM {
         }
         public Iterable<IFeatureValuePair> rows() {
             return _rows;
+        }
+        public String text() {
+            return _heading == null ? "--" : _heading;
         }
         public void accept(IVisitor v) {
             v.visit(this);

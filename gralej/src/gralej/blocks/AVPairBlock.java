@@ -37,7 +37,7 @@ public class AVPairBlock extends ContentOwningBlock {
         
         _isModelHidden = isModelHidden;
     }
-    
+
     @Override
     public boolean isModelHidden() {
         return _isModelHidden;

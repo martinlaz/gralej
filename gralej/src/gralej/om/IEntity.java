@@ -40,4 +40,6 @@ public interface IEntity extends IVisitable {
 
     boolean isExpanded();
     //void setExpanded(boolean flag);
+
+    String text();
 }

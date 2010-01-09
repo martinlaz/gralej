@@ -205,7 +205,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // ref -> _BEGIN_REF flags id target _RPAR
-        bindReduceHandler(55, handler);
+        bindReduceHandler(56, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -241,7 +241,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // any -> _BEGIN_ANY flags id value _RPAR
-        bindReduceHandler(56, handler);
+        bindReduceHandler(57, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -249,7 +249,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // flag -> different
-        bindReduceHandler(71, handler);
+        bindReduceHandler(72, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -257,7 +257,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // flag -> expanded
-        bindReduceHandler(74, handler);
+        bindReduceHandler(75, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -265,7 +265,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // flag -> hidden
-        bindReduceHandler(70, handler);
+        bindReduceHandler(71, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -273,7 +273,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // flag -> multiline
-        bindReduceHandler(73, handler);
+        bindReduceHandler(74, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -281,7 +281,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // flag -> struckout
-        bindReduceHandler(72, handler);
+        bindReduceHandler(73, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -347,19 +347,19 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // arclabel -> _STRING
-        bindReduceHandler(62, handler);
-        // feature -> _STRING
-        bindReduceHandler(57, handler);
-        // functor -> _STRING
-        bindReduceHandler(58, handler);
-        // id -> _INT
         bindReduceHandler(63, handler);
-        // label -> _STRING
-        bindReduceHandler(60, handler);
-        // linkid -> _INT
+        // feature -> _STRING
+        bindReduceHandler(58, handler);
+        // functor -> _STRING
+        bindReduceHandler(59, handler);
+        // id -> _INT
         bindReduceHandler(64, handler);
-        // name -> _STRING
+        // label -> _STRING
+        bindReduceHandler(61, handler);
+        // linkid -> _INT
         bindReduceHandler(65, handler);
+        // name -> _STRING
+        bindReduceHandler(66, handler);
         // struct -> any
         bindReduceHandler(29, handler);
         // struct -> conjunction
@@ -387,13 +387,13 @@ public class TraleMsgHandler extends GrammarHandler {
         // structure -> tree
         bindReduceHandler(22, handler);
         // tag -> _INT
-        bindReduceHandler(67, handler);
-        // target -> _INT
         bindReduceHandler(68, handler);
+        // target -> _INT
+        bindReduceHandler(69, handler);
         // value -> _STRING
-        bindReduceHandler(66, handler);
+        bindReduceHandler(67, handler);
         // windowtitle -> _STRING
-        bindReduceHandler(59, handler);
+        bindReduceHandler(60, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -507,7 +507,7 @@ public class TraleMsgHandler extends GrammarHandler {
             }
         };
         // type -> _LPAR flags id name _RPAR
-        bindReduceHandler(54, handler);
+        bindReduceHandler(55, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
