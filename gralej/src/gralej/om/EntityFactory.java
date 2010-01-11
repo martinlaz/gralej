@@ -24,6 +24,7 @@
 
 package gralej.om;
 
+import gralej.om.lrs.ILRSExpr;
 import java.util.List;
 
 /**
@@ -61,4 +62,6 @@ public abstract class EntityFactory {
 
     public abstract ITypedFeatureStructure createTFS(IType type);
     public abstract ITypedFeatureStructure createTFS(IType type, List<IFeatureValuePair> featVals);
+
+    public abstract ILRSExpr createLRSExpr(String expr);
 }

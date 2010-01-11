@@ -9,6 +9,7 @@ import gralej.om.ITag;
 import gralej.om.ITree;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
+import gralej.om.lrs.ILRSExpr;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,5 +71,9 @@ public class EntityFactory extends gralej.om.EntityFactory {
 
     public IList createList(List<IEntity> elements) {
         return new OM.List(OM.DEFAULT_FLAGS, elements, null);
+    }
+
+    public ILRSExpr createLRSExpr(String expr) {
+        return LRSExpr.parse(expr);
     }
 }
