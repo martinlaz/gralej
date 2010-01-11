@@ -24,12 +24,15 @@
 
 package gralej.om;
 
-public interface ITree extends IEntity {
+public interface ITree extends IContainer {
     String label();
+    void setLabel(String label);
 
     IEntity content();
+    void setContent(IEntity content);
 
     Iterable<ITree> children();
+    void addChild(ITree child);
 
     boolean isLeaf();
 }

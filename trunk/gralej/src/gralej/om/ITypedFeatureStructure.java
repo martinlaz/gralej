@@ -24,11 +24,13 @@
 
 package gralej.om;
 
-public interface ITypedFeatureStructure extends IEntity {
+public interface ITypedFeatureStructure extends IContainer {
     String typeName();
     IType type();
+    void setType(IType type);
 
     Iterable<IFeatureValuePair> featureValuePairs();
+    void addFeatureValue(IFeatureValuePair featVal);
 
     boolean isSpecies();
 }

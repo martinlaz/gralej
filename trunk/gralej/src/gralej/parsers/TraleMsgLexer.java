@@ -35,11 +35,11 @@ import tomato.Token;
 import tomato.IllegalTokenException;
 import tomato.Terminal;
 
-public class TraleMsgLexer implements Lexer {
-    PushbackReader _in;
-    Tokens _tokens;
-    Token _current;
-    StringBuilder _consumed = new StringBuilder();
+public final class TraleMsgLexer implements Lexer {
+    private PushbackReader _in;
+    private Tokens _tokens;
+    private Token _current;
+    private StringBuilder _consumed = new StringBuilder();
 
     public TraleMsgLexer(Grammar g, Reader in) {
         this(g);

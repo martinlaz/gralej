@@ -26,6 +26,8 @@ package gralej.om;
 
 public interface IFeatureValuePair extends IEntity {
     String feature();
+    void setFeature(String feat);
 
     IEntity value();
+    void setValue(IEntity value);
 }

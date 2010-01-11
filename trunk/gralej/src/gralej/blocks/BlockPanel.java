@@ -883,25 +883,37 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
 
     private void frameEntity(IEntity ent, boolean inFrame) {
+        if (inFrame)
+            showInFrame(ent);
+        else
+            showInDialog(ent, SwingUtilities.getWindowAncestor(_scrollPane));
+    }
+
+    public static JFrame show(IEntity ent) {
+        return showInFrame(ent);
+    }
+
+    public static JFrame showInFrame(IEntity ent) {
         BlockPanel bp = new BlockPanel(ent);
         String title = ent.text() != null ? ent.text() : "--";
-        Window w;
-        if (inFrame) {
-            JFrame f = new JFrame();
-            f.setContentPane(bp.getUI());
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setTitle(title);
-            w = f;
-        }
-        else {
-            JDialog f = new JDialog(SwingUtilities.getWindowAncestor(_scrollPane));
-            f.setContentPane(bp.getUI());
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setTitle(title);
-            w = f;
-        }
-        w.pack();
-        w.setVisible(true);
+        JFrame f = new JFrame();
+        f.setContentPane(bp.getUI());
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setTitle(title);
+        f.pack();
+        f.setVisible(true);
+        return f;
+    }
 
+    public static JDialog showInDialog(IEntity ent, Window parent) {
+        BlockPanel bp = new BlockPanel(ent);
+        String title = ent.text() != null ? ent.text() : "--";
+        JDialog d = new JDialog(parent);
+        d.setContentPane(bp.getUI());
+        d.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        d.setTitle(title);
+        d.pack();
+        d.setVisible(true);
+        return d;
     }
 }
