@@ -26,6 +26,8 @@ package gralej.om;
 
 public interface ITag extends IEntity {
     int number();
+    void setNumber(int number);
 
     IEntity target();
+    void setTarget(IEntity target);
 }

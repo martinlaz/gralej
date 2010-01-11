@@ -25,7 +25,7 @@
 package gralej.parsers;
 
 import gralej.om.*;
-import java.util.Collections;
+import java.util.Arrays;
 
 class OM {
     static class Flags {
@@ -148,6 +148,14 @@ class OM {
         public void accept(IVisitor v) {
             v.visit(this);
         }
+
+        public void setFeature(String feat) {
+            _f = feat;
+        }
+
+        public void setValue(IEntity value) {
+            _v = value;
+        }
     }
 
     static class List extends Entity implements IList {
@@ -175,6 +183,18 @@ class OM {
         public void accept(IVisitor v) {
             v.visit(this);
         }
+
+        public void setTail(IEntity tail) {
+            _tail = tail;
+        }
+
+        public void append(IEntity element) {
+            _ls.add(element);
+        }
+
+        public void clear() {
+            _ls.clear();
+        }
     }
 
     static class Tag extends Entity implements ITag {
@@ -197,7 +217,7 @@ class OM {
             return _target;
         }
 
-        void setTarget(IEntity target) {
+        public void setTarget(IEntity target) {
             _target = target;
         }
 
@@ -207,6 +227,10 @@ class OM {
 
         public void accept(IVisitor v) {
             v.visit(this);
+        }
+
+        public void setNumber(int number) {
+            _number = number;
         }
     }
 
@@ -229,6 +253,10 @@ class OM {
         public void accept(IVisitor v) {
             v.visit(this);
         }
+
+        public void setValue(String value) {
+            _value = value;
+        }
     }
     
     static class Type extends Entity implements IType {
@@ -245,6 +273,10 @@ class OM {
         }
         public void accept(IVisitor v) {
             v.visit(this);
+        }
+
+        public void setTypeName(String typeName) {
+            _typeName = typeName;
         }
     }
 
@@ -282,6 +314,18 @@ class OM {
         public void accept(IVisitor v) {
             v.visit(this);
         }
+
+        public void setType(IType type) {
+            _type = type;
+        }
+
+        public void addFeatureValue(IFeatureValuePair featVal) {
+            _featVals.add(featVal);
+        }
+
+        public void clear() {
+            _featVals.clear();
+        }
     }
 
     static class Tree extends Entity implements ITree {
@@ -295,7 +339,7 @@ class OM {
             _children = children;
         }
 
-        void setContent(IEntity content) {
+        public void setContent(IEntity content) {
             _content = content;
         }
 
@@ -322,11 +366,23 @@ class OM {
         public void accept(IVisitor v) {
             v.visit(this);
         }
+
+        public void setLabel(String label) {
+            _label = label;
+        }
+
+        public void addChild(ITree child) {
+            _children.add(child);
+        }
+
+        public void clear() {
+            _children.clear();
+        }
     }
 
     static class Relation extends Entity implements IRelation {
         String _name;
-        java.util.List<IEntity> _args;
+        IEntity[] _args;
 
         Relation(Flags flags, String name,
                 java.util.List<IEntity> args) {
@@ -334,7 +390,10 @@ class OM {
             if (args.isEmpty())
                 throw new RuntimeException("relations can't be of zero arity: " + name);
             _name = name;
-            _args = Collections.unmodifiableList(args);
+            _args = new IEntity[args.size()];
+            int i = 0;
+            for (IEntity arg : args)
+                _args[i++] = arg;
         }
 
         public String name() {
@@ -342,15 +401,15 @@ class OM {
         }
 
         public int arity() {
-            return _args.size();
+            return _args.length;
         }
 
         public IEntity arg(int pos) {
-            return _args.get(pos);
+            return _args[pos];
         }
 
         public Iterable<IEntity> args() {
-            return _args;
+            return Arrays.asList(_args);
         }
 
         public String text() {
@@ -359,6 +418,14 @@ class OM {
 
         public void accept(IVisitor v) {
             v.visit(this);
+        }
+
+        public void setName(String name) {
+            _name = name;
+        }
+
+        public void setArg(int pos, IEntity arg) {
+            _args[pos] = arg;
         }
     }
 

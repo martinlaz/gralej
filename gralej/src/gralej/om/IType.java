@@ -10,4 +10,5 @@ package gralej.om;
  */
 public interface IType extends IEntity {
     String typeName();
+    void setTypeName(String typeName);
 }

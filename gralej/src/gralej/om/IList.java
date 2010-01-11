@@ -24,7 +24,11 @@
 
 package gralej.om;
 
-public interface IList extends IEntity {
+public interface IList extends IContainer {
     Iterable<IEntity> elements();
     IEntity tail();
+
+    void setTail(IEntity tail);
+
+    void append(IEntity element);
 }

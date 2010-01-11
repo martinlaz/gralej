@@ -367,8 +367,11 @@ public final class BlockCreator extends AbstractVisitor {
         }
         label.setModel(u);
 
-        u.content().accept(this);
-        Block content = _result;
+        Block content = null;
+        if (u.content() != null) {
+            u.content().accept(this);
+            content = _result;
+        }
 
         NodeBlock nodeBlock = new AVMNodeBlock(_panel, label, content, childNodes);
         nodeBlock.setModel(u);

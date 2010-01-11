@@ -24,13 +24,41 @@
 
 package gralej.om;
 
+import java.util.List;
+
 /**
  *
  * @author Martin
  */
-public class EntityFactory {
-//    public IAny newAny(String value) {}
-//    public IAny newAny(String value, IEntity flags) {}
-//
-//    public IFeatureValuePair newFeatval(String feature, )
+public abstract class EntityFactory {
+    private static EntityFactory _INSTANCE;
+
+    public static EntityFactory getInstance() {
+        if (_INSTANCE == null)
+            _INSTANCE = new gralej.parsers.EntityFactory();
+        return _INSTANCE;
+    }
+    public static void setInstance(EntityFactory fac) {
+        _INSTANCE = fac;
+    }
+
+    public abstract IAny createAny(String value);
+    public abstract IList createList();
+    public abstract IList createList(List<IEntity> elements);
+
+    public abstract IFeatureValuePair createFeatVal(String feat, IEntity val);
+
+    public abstract IRelation createRelation(String name, int arity);
+    public abstract IRelation createRelation(String name, List<IEntity> args);
+
+    public abstract ITag createTag(int number);
+    public abstract ITag createTag(int number, IEntity target);
+
+    public abstract ITree createTree(String label);
+    public abstract ITree createTree(String label, List<ITree> children);
+    
+    public abstract IType createType(String typeName);
+
+    public abstract ITypedFeatureStructure createTFS(IType type);
+    public abstract ITypedFeatureStructure createTFS(IType type, List<IFeatureValuePair> featVals);
 }

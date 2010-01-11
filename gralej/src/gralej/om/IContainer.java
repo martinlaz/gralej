@@ -1,5 +1,5 @@
 /*
- *  $Id$
+ *  $Id: IList.java 288 2008-10-26 13:30:28Z martinlaz $
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]
@@ -26,14 +26,8 @@ package gralej.om;
 
 /**
  *
- * @author martin
+ * @author Martin
  */
-public interface IRelation extends IEntity {
-    String name();
-    int arity();
-    IEntity arg(int pos);
-    Iterable<IEntity> args();
-
-    void setName(String name);
-    void setArg(int pos, IEntity arg);
+public interface IContainer extends IEntity {
+    void clear();
 }

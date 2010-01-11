@@ -40,9 +40,14 @@ public class AVMNodeBlock extends NodeBlock {
 
         if (label != null)
             addChild(label);
-        lastAddChild(content);
+        if (content != null) {
+            addChild(content);
+            setContent(content);
+        }
+        else if (label == null)
+            throw new RuntimeException("there can't be NodeBlock with label and content both equal to null");
 
-        setContent(content);
+        sealChildren();
 
         _childNodes = childNodes;
     }
