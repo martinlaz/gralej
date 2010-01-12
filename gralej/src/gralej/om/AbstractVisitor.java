@@ -28,11 +28,11 @@ import gralej.om.lrs.ILRSExpr;
 
 public abstract class AbstractVisitor implements IVisitor {
     public void visit(IVisitable visitable) {
-        throw new RuntimeException("unknown visitable: visitable");
+        throw new RuntimeException("unknown visitable: " + visitable);
     }
 
     public void visit(IEntity entity) {
-        throw new RuntimeException("unknown entity: visitable");
+        throw new RuntimeException("unknown entity: " + entity);
     }
 
     public abstract void visit(IList ls);

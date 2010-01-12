@@ -3,6 +3,7 @@ package gralej.testers;
 import gralej.blocks.Block;
 import gralej.controller.StreamInfo;
 import gralej.blocks.BlockPanel;
+import gralej.om.Entities;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
@@ -104,6 +105,8 @@ public class BlockPanelTester {
                         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
                         String line;
                         while ((line = r.readLine()) != null) {
+                            if (line.equals("quit"))
+                                break;
                             try {
                                 final Block b = lastPanel.getContent().getDescendant(line);
                                 if (b != null) {
@@ -114,6 +117,9 @@ public class BlockPanelTester {
                                             lastPanel.setSelectedBlock(b);
                                         }
                                     });
+                                    if (b.getModel() != null) {
+                                        System.out.println(Entities.toTraleDesc(b.getModel()));
+                                    }
                                 }
                             }
                             catch (Exception ex) {
@@ -143,6 +149,15 @@ public class BlockPanelTester {
                 if (b != null)
                     path = b.getPath();
                 System.err.println("selection changed; path: " + path);
+                if (b != null && b.getModel() != null) {
+                    try {
+                        String desc = Entities.toTraleDesc(b.getModel());
+                        System.err.println(desc);
+                    }
+                    catch (UnsupportedOperationException ex) {
+
+                    }
+                }
             }
         });
         JPanel view = blockPanel.getUI();

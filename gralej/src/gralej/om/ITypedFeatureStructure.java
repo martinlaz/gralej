@@ -24,12 +24,14 @@
 
 package gralej.om;
 
+import java.util.List;
+
 public interface ITypedFeatureStructure extends IContainer {
     String typeName();
     IType type();
     void setType(IType type);
 
-    Iterable<IFeatureValuePair> featureValuePairs();
+    List<IFeatureValuePair> featureValuePairs();
     void addFeatureValue(IFeatureValuePair featVal);
 
     boolean isSpecies();
