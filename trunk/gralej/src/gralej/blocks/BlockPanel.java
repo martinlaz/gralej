@@ -85,6 +85,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private boolean _displayHiddenFeatures;
     private boolean _selectOnClick;
     private boolean _selectOnHover;
+    //private boolean _paintSelection; // if there's one, should we paint it?
     private boolean _useKeyboardInterface;
     private Cursor _defaultCursor, _handCursor, _currentCursor;
     private ContentLabel _lastHit;
@@ -536,9 +537,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         int x = unscale(e.getX());
         int y = unscale(e.getY());
         if (e.getButton() == MouseEvent.BUTTON1) { // left button
-            if (_selectOnHover || !_selectOnClick) {
+            final int mask = (MouseEvent.SHIFT_MASK | MouseEvent.CTRL_MASK);
+            if (_selectOnHover || !_selectOnClick || (e.getModifiers() & mask) != 0) {
                 Block target = findContainingBlock(_content, x, y);
-                final int mask = (MouseEvent.SHIFT_MASK | MouseEvent.CTRL_MASK);
+                
                 if ((e.getModifiers() & mask) != 0) {
                     if (target.getModel() != null) {
                         boolean inFrame = e.isShiftDown() && !e.isControlDown();
@@ -585,6 +587,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
     
     protected void onMouseClicked(MouseEvent e) {
+
         if (_selectOnClick && !_selectOnHover) {
             if (e.getButton() == MouseEvent.BUTTON1) { // left button
                 

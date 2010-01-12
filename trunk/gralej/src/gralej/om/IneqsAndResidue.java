@@ -1,5 +1,5 @@
 /*
- *  $Id: $
+ *  $Id$
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]

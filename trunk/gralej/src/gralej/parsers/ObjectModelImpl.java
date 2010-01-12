@@ -292,14 +292,16 @@ class OM {
         }
 
         public String typeName() {
-            return _type.typeName();
+            if (_type != null)
+                return _type.typeName();
+            return null;
         }
         
         public IType type() {
             return _type;
         }
 
-        public Iterable<IFeatureValuePair> featureValuePairs() {
+        public java.util.List<IFeatureValuePair> featureValuePairs() {
             return _featVals;
         }
 

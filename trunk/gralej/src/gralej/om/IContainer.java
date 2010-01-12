@@ -1,5 +1,5 @@
 /*
- *  $Id: IList.java 288 2008-10-26 13:30:28Z martinlaz $
+ *  $Id$
  *
  *  Author:
  *     Martin Lazarov [mlazarov at sfs.uni-tuebingen.de]
