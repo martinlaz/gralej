@@ -25,6 +25,7 @@
 package gralej.om;
 
 import gralej.blocks.BlockPanel;
+import gralej.om.lrs.ILRSExpr;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
@@ -36,7 +37,7 @@ import javax.swing.JFrame;
 public final class Entities {
     public static String toTraleDesc(final IEntity ent) {
         final StringBuilder sb = new StringBuilder();
-        ent.accept(new AbstractVisitor() {
+        ent.accept(new IVisitor() {
             Set<Integer> _processedTags = new HashSet<Integer>();
 
             public void visit(IList ls) {
@@ -101,7 +102,31 @@ public final class Entities {
                 fv.value().accept(this);
             }
 
+            public void visit(IType tag) {
+                sb.append('(').append(tag.typeName()).append(')');
+            }
+
             public void visit(ITree tree) {
+                throw new UnsupportedOperationException();
+            }
+
+            public void visit(IVisitable visitable) {
+                throw new UnsupportedOperationException();
+            }
+
+            public void visit(IEntity entity) {
+                throw new UnsupportedOperationException();
+            }
+
+            public void visit(IRelation expr) {
+                throw new UnsupportedOperationException();
+            }
+
+            public void visit(ITable table) {
+                throw new UnsupportedOperationException();
+            }
+
+            public void visit(ILRSExpr expr) {
                 throw new UnsupportedOperationException();
             }
         });
