@@ -15,15 +15,18 @@ import java.util.List;
 
 public class EntityFactory extends gralej.om.EntityFactory {
 
-    public IAny createAny(String value) {
+    @Override
+    public IAny newAny(String value) {
         return new OM.Any(OM.DEFAULT_FLAGS, value);
     }
 
-    public IFeatureValuePair createFeatVal(String feat, IEntity val) {
+    @Override
+    public IFeatureValuePair newFeatVal(String feat, IEntity val) {
         return new OM.FeatVal(OM.DEFAULT_FLAGS, feat, val);
     }
 
-    public IRelation createRelation(String name, int arity) {
+    @Override
+    public IRelation newRelation(String name, int arity) {
         java.util.List<IEntity> args = new java.util.ArrayList<IEntity>(arity);
         for (int i = 0; i < arity; ++i) {
             args.add(null);
@@ -31,49 +34,60 @@ public class EntityFactory extends gralej.om.EntityFactory {
         return new OM.Relation(OM.DEFAULT_FLAGS, name, args);
     }
 
-    public IRelation createRelation(String name, java.util.List<IEntity> args) {
+    @Override
+    public IRelation newRelation(String name, java.util.List<IEntity> args) {
         return new OM.Relation(OM.DEFAULT_FLAGS, name, args);
     }
 
-    public ITag createTag(int number) {
+    @Override
+    public ITag newTag(int number) {
         return new OM.Tag(number);
     }
 
-    public ITag createTag(int number, IEntity target) {
+    @Override
+    public ITag newTag(int number, IEntity target) {
         OM.Tag t = new OM.Tag(number);
         t.setTarget(target);
         return t;
     }
 
-    public ITree createTree(String label) {
+    @Override
+    public ITree newTree(String label) {
         return new OM.Tree(label, new LinkedList<ITree>());
     }
 
-    public ITree createTree(String label, java.util.List<ITree> children) {
+    @Override
+    public ITree newTree(String label, java.util.List<ITree> children) {
         return new OM.Tree(label, children);
     }
 
-    public IType createType(String typeName) {
+    @Override
+    public IType newType(String typeName) {
         return new OM.Type(OM.DEFAULT_FLAGS, typeName);
     }
 
-    public ITypedFeatureStructure createTFS(IType type) {
+    @Override
+    public ITypedFeatureStructure newTFS(IType type) {
         return new OM.TFS(OM.DEFAULT_FLAGS, type, new LinkedList<IFeatureValuePair>());
     }
 
-    public ITypedFeatureStructure createTFS(IType type, java.util.List<IFeatureValuePair> featVals) {
+    @Override
+    public ITypedFeatureStructure newTFS(IType type, java.util.List<IFeatureValuePair> featVals) {
         return new OM.TFS(OM.DEFAULT_FLAGS, type, featVals);
     }
 
-    public IList createList() {
+    @Override
+    public IList newList() {
         return new OM.List(OM.DEFAULT_FLAGS, new LinkedList<IEntity>(), null);
     }
 
-    public IList createList(List<IEntity> elements) {
+    @Override
+    public IList newList(List<IEntity> elements) {
         return new OM.List(OM.DEFAULT_FLAGS, elements, null);
     }
 
-    public ILRSExpr createLRSExpr(String expr) {
+    @Override
+    public ILRSExpr newLRSExpr(String expr) {
         return LRSExpr.parse(expr);
     }
 }

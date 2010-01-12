@@ -43,25 +43,25 @@ public abstract class EntityFactory {
         _INSTANCE = fac;
     }
 
-    public abstract IAny createAny(String value);
-    public abstract IList createList();
-    public abstract IList createList(List<IEntity> elements);
+    public abstract IAny newAny(String value);
+    public abstract IList newList();
+    public abstract IList newList(List<IEntity> elements);
 
-    public abstract IFeatureValuePair createFeatVal(String feat, IEntity val);
+    public abstract IFeatureValuePair newFeatVal(String feat, IEntity val);
 
-    public abstract IRelation createRelation(String name, int arity);
-    public abstract IRelation createRelation(String name, List<IEntity> args);
+    public abstract IRelation newRelation(String name, int arity);
+    public abstract IRelation newRelation(String name, List<IEntity> args);
 
-    public abstract ITag createTag(int number);
-    public abstract ITag createTag(int number, IEntity target);
+    public abstract ITag newTag(int number);
+    public abstract ITag newTag(int number, IEntity target);
 
-    public abstract ITree createTree(String label);
-    public abstract ITree createTree(String label, List<ITree> children);
+    public abstract ITree newTree(String label);
+    public abstract ITree newTree(String label, List<ITree> children);
     
-    public abstract IType createType(String typeName);
+    public abstract IType newType(String typeName);
 
-    public abstract ITypedFeatureStructure createTFS(IType type);
-    public abstract ITypedFeatureStructure createTFS(IType type, List<IFeatureValuePair> featVals);
+    public abstract ITypedFeatureStructure newTFS(IType type);
+    public abstract ITypedFeatureStructure newTFS(IType type, List<IFeatureValuePair> featVals);
 
-    public abstract ILRSExpr createLRSExpr(String expr);
+    public abstract ILRSExpr newLRSExpr(String expr);
 }
