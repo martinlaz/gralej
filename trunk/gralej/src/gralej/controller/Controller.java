@@ -14,7 +14,6 @@ import gralej.server.IGraleServer;
 import gralej.server.SocketServer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -39,16 +38,20 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
     private IGraleServer server;
 
     public void open(File file) {
+        open(FileLoader.file2url(file));
+    }
+    
+    public void open(URL url) {
 
         // instantiate a new file handler
         Log.info(
-                "Opening File " + file.getAbsolutePath());
-        FileLoader fl = new FileLoader(file, true);
+                "Opening file/url " + url);
+        FileLoader fl = new FileLoader(url, true);
         fl.registerNewStreamListener(this);
         Log.debug("Starting to open");
         try {
             fl.loadFile();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         Log.debug("Opening should run in its thread now");

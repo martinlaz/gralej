@@ -5,11 +5,14 @@ import gralej.controller.StreamInfo;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
 
 /**
- * A file loader service class that takes care of loading a file in a seperated
+ * A file loader service class that takes care of loading a file/url in a seperated
  * thread.
  * 
  * @author Niels
@@ -17,7 +20,7 @@ import java.io.InputStream;
  */
 public class FileLoader extends FileLoaderBaseImpl {
 
-    private File file;
+    private URL url;
     private boolean threaded;
 
     /**
@@ -30,8 +33,7 @@ public class FileLoader extends FileLoaderBaseImpl {
 
         public BackgroundFileLoader(InputStream is, StreamInfo meta) {
             super();
-            this.setName("BackgroundFileLoader (" + file.getAbsolutePath()
-                    + ")");
+            this.setName("BackgroundFileLoader (" + url + ")");
             this.is = is;
             this.meta = meta;
         }
@@ -43,6 +45,19 @@ public class FileLoader extends FileLoaderBaseImpl {
     }
 
     /**
+     * @param url
+     *            the url to load
+     * @param threaded
+     *            if set to true, url loading happens as background action
+     *            (seperated thread).
+     */
+    public FileLoader(URL url, boolean threaded) {
+        super();
+        this.url = url;
+        this.threaded = threaded;
+    }
+
+    /**
      * @param file
      *            the file to load
      * @param threaded
@@ -50,9 +65,16 @@ public class FileLoader extends FileLoaderBaseImpl {
      *            (seperated thread).
      */
     public FileLoader(File file, boolean threaded) {
-        super();
-        this.file = file;
-        this.threaded = threaded;
+        this(file2url(file), threaded);
+    }
+
+    public static URL file2url(File f) {
+        try {
+            return f.toURI().toURL();
+        }
+        catch (MalformedURLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -73,11 +95,11 @@ public class FileLoader extends FileLoaderBaseImpl {
      *            the file
      * @return
      */
-    private String extension2type(File f) {
+    private static String extension2type(URL url) {
 
-        String lcfilename = file.getName().toLowerCase();
+        String lcfilename = url.getFile().toLowerCase();
 
-        if (lcfilename.endsWith(".grale")) {
+        if (lcfilename.endsWith(".grale") || lcfilename.endsWith(".grale.gz")) {
             return "grisu";
         }
 
@@ -86,14 +108,17 @@ public class FileLoader extends FileLoaderBaseImpl {
 
     }
 
-    public void loadFile() throws FileNotFoundException {
+    public void loadFile() throws IOException {
 
-        StreamInfo info = new StreamInfo(extension2type(file), file.getName());
+        StreamInfo info = new StreamInfo(extension2type(url), url.toString());
 
         // open
-        BufferedInputStream is = new BufferedInputStream(new FileInputStream(
-                file));
-
+        InputStream is = url.openStream();
+        if (url.getFile().toLowerCase().endsWith(".gz"))
+            is = new GZIPInputStream(is);
+        else
+            is = new BufferedInputStream(is);
+        
         // either call handlers or go into thread to do so
         if (!threaded) {
             notifyListeners(is, info);

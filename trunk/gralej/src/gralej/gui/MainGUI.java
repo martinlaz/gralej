@@ -60,7 +60,7 @@ public class MainGUI implements ActionListener, ItemListener {
 
     private JMenu saveallmenu;
 
-    private JMenuItem m_Quit, m_Close, m_CloseAll, m_Open, m_About, m_Options,
+    private JMenuItem m_Quit, m_Close, m_CloseAll, m_Open, m_OpenURL, m_About, m_Options,
             m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll,
             m_SaveAllXML, m_Server;
 
@@ -97,6 +97,14 @@ public class MainGUI implements ActionListener, ItemListener {
                 InputEvent.CTRL_DOWN_MASK));
         m_Open.addActionListener(this);
         filemenu.add(m_Open);
+
+        m_OpenURL = new JMenuItem("Open URL...");
+        m_OpenURL.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doOpenURL();
+            }
+        });
+        filemenu.add(m_OpenURL);
 
         m_TestFile = new JMenuItem("Open Sample");
         m_TestFile.addActionListener(this);
@@ -617,4 +625,15 @@ public class MainGUI implements ActionListener, ItemListener {
         frame.toFront();
     }
 
+    private void doOpenURL() {
+        String surl = JOptionPane.showInputDialog(frame, "Enter URL:");
+        if (surl == null)
+            return;
+        try {
+            c.open(new URL(surl));
+        }
+        catch (Exception ex) {
+            Log.error(ex);
+        }
+    }
 }
