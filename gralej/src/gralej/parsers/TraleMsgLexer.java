@@ -190,12 +190,12 @@ public final class TraleMsgLexer implements Lexer {
                     break;
                 case '!': // newdata
                     {
-                        String s = "newdata";
-                        for (int i = 0; i < s.length(); ++i) {
-                            if (s.charAt(i) != (char) read())
-                                throw new IllegalTokenException(
-                                        "Expected '" + s + "' after '!'");
-                        }
+                        match("newdata");
+                        c = read();
+                        if (c == '(')
+                            match("structure)"); // TODO: report this as a differen token?
+                        else
+                            unread(c);
                     }
                     _current = _tokens._NEWDATA;
                     break;
@@ -222,6 +222,14 @@ public final class TraleMsgLexer implements Lexer {
 
     public void remove() {
         throw new UnsupportedOperationException();
+    }
+
+    private void match(String s) throws IOException {
+        for (int i = 0; i < s.length(); ++i) {
+            if (s.charAt(i) != (char) read())
+                throw new IllegalTokenException(
+                        "Expected '" + s + "' after '!'");
+        }
     }
 
     private int read() throws IOException {
