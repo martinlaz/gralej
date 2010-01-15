@@ -37,6 +37,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -62,6 +63,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ChangeListener;
@@ -87,7 +89,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private boolean _selectOnHover;
     //private boolean _paintSelection; // if there's one, should we paint it?
     private boolean _useKeyboardInterface;
-    private Cursor _defaultCursor, _handCursor, _currentCursor;
+    private static Cursor _defaultCursor, _handCursor, _currentCursor, _moveCursor;
     private ContentLabel _lastHit;
     private Block _selectedBlock;
     private static Stroke _dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, 
@@ -513,13 +515,17 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
 
         if (e.getButton() != MouseEvent.BUTTON1) // left button
             return;
-        
-        if ((_selectOnClick || _selectOnHover)) {
-            int x = unscale(e.getX());
-            int y = unscale(e.getY());
 
-            Block target = findContainingBlock(_content, x, y);
-            if (target instanceof Label) {
+        int x = unscale(e.getX());
+        int y = unscale(e.getY());
+
+        Block target = findContainingBlock(_content, x, y);
+        boolean targetIsLabel = target instanceof Label;
+
+        //System.err.println(x + "," + y + ": " + target);
+
+        if ((_selectOnClick || _selectOnHover)) {
+            if (targetIsLabel) {
                 //TODO: if Ctrl -> add to selection
                 setSelectedBlock(target);
             }
@@ -531,6 +537,9 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         else if (_useKeyboardInterface) {
             setSelectedBlock(null, false);
         }
+
+        if (!targetIsLabel && (_scrollPane.getHorizontalScrollBar().isVisible() || _scrollPane.getVerticalScrollBar().isVisible()))
+            updateCursor(_moveCursor);
     }
 
     protected void onMouseReleased(MouseEvent e) {
@@ -548,8 +557,16 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
                     }
                 }
                 else if (target instanceof ContentLabel) {
+                    JViewport viewport = _scrollPane.getViewport();
+                    Point viewPos1 = viewport.getViewPosition();
+                    int scrollX = x - unscale(viewPos1.x);
+                    int scrollY = y - unscale(viewPos1.y);
+
                     flipAndScrollTo(target, e.getX(), e.getY());
-                    return; // don't update cursor in this case, otherwise looks weird
+
+                    Point viewPos2 = viewport.getViewPosition();
+                    x = unscale(viewPos2.x) + scrollX;
+                    y = unscale(viewPos2.y) + scrollY;
                 }
             }
         }
@@ -622,7 +639,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         if (ev.getID() != MouseEvent.MOUSE_MOVED) { // could it be something else??
             return;
         }
-        
+
         Block target = updateCursorForPoint(
                 unscale(ev.getX()), unscale(ev.getY()));
         
@@ -643,6 +660,10 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         //    return;
         if (_lastMousePressEvent == null)
             return;
+        if (_scrollPane.getHorizontalScrollBar().isVisible() || _scrollPane.getVerticalScrollBar().isVisible())
+            updateCursor(_moveCursor, true);
+        else
+            updateCursor(_defaultCursor, true);
         int dx = _lastMousePressEvent.getX() - ev.getX();
         int dy = _lastMousePressEvent.getY() - ev.getY();
         if (dx == 0 && dy == 0)
@@ -779,6 +800,7 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     private void initCursors() {
         _defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
         _handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        _moveCursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
         _currentCursor = _defaultCursor;
     }
 
@@ -787,7 +809,6 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
             initCursors();
 
         Block target = findContainingContentLabel(x, y);
-
         if (target == null)
             updateCursor(_defaultCursor);
         else
@@ -797,7 +818,11 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     }
 
     private void updateCursor(Cursor newCursor) {
-        if (newCursor == _currentCursor)
+        updateCursor(newCursor, false);
+    }
+    
+    private void updateCursor(Cursor newCursor, boolean force) {
+        if (!force && newCursor == _currentCursor)
             return;
         _canvas.setCursor(newCursor);
         _currentCursor = newCursor;
