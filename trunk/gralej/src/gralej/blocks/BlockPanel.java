@@ -660,6 +660,8 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         //    return;
         if (_lastMousePressEvent == null)
             return;
+        if ((ev.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0)
+            return;
         if (_scrollPane.getHorizontalScrollBar().isVisible() || _scrollPane.getVerticalScrollBar().isVisible())
             updateCursor(_moveCursor, true);
         else
