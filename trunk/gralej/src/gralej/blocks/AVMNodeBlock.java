@@ -30,6 +30,7 @@ import java.util.Stack;
 
 public class AVMNodeBlock extends NodeBlock {
 
+    @SuppressWarnings("unchecked")
     AVMNodeBlock(BlockPanel panel, Label label, Block content) {
         this(panel, label, content, Collections.EMPTY_LIST);
     }

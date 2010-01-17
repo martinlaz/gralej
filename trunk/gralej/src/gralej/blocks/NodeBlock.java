@@ -29,7 +29,7 @@ import java.util.List;
 
 public abstract class NodeBlock extends ContentOwningBlock {
     protected NodeBlock _parentNode;
-    protected List<NodeBlock> _childNodes = Collections.EMPTY_LIST;
+    protected List<NodeBlock> _childNodes = Collections.emptyList();
     private boolean _isCollapsed;
 
     NodeBlock(BlockPanel panel) {

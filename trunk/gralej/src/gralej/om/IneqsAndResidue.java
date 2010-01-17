@@ -41,9 +41,9 @@ public final class IneqsAndResidue {
     }
     public IneqsAndResidue(List<IRelation> ineqs, List<IRelation> residue) {
         if (ineqs == null)
-            ineqs = Collections.EMPTY_LIST;
+            ineqs = Collections.emptyList();
         if (residue == null)
-            residue = Collections.EMPTY_LIST;
+            residue = Collections.emptyList();
         _ineqs = ineqs;
         _residue = residue;
     }

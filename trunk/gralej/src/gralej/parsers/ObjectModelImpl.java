@@ -310,6 +310,8 @@ class OM {
         }
 
         public String text() {
+            if (_type == null)
+                return "typeless";
             return _type.text();
         }
 

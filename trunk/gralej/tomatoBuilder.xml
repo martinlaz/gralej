@@ -5,10 +5,6 @@
             value   =   "${basedir}/src/gralej/parsers/trale-msg.g" />
         
         <property
-            name    =   "grammar.bin.file"
-            value   =   "${basedir}/src/gralej/parsers/trale-msg.g.bin" />
-            
-        <property
             name    =   "grammar.handler.file"
             value   =   "${basedir}/src/gralej/parsers/TraleMsgHandler.java" />
         
@@ -17,33 +13,29 @@
             value   =   "${basedir}/src/gralej/parsers/lrs-expr.g" />
         
         <property
-            name    =   "lrs.grammar.bin.file"
-            value   =   "${basedir}/src/gralej/parsers/lrs-expr.g.bin" />
-            
-        <property
             name    =   "lrs.grammar.handler.file"
             value   =   "${basedir}/src/gralej/parsers/LRSExprHandler.java" />
+        
+        <property
+            name    =   "simple.grammar.src.file"
+            value   =   "${basedir}/src/gralej/parsers/simple.g" />
+        
+        <property
+            name    =   "simple.grammar.handler.file"
+            value   =   "${basedir}/src/gralej/parsers/SimpleFormatGrammarHandler.java" />
        
         <target name="catchup"
             depends="grale-protocol"
             unless="catchup.done">
             
             <echo message="Rebuilding the grammar derivatives..."/>
-            <!--<echo message="classpath=${javac.classpath}"/>-->
             
             <java classname="tomato.LRTableBuilder"
                 failonerror="true"
                 classpath="${javac.classpath}"
                 >
-                    <!-- classpath="${javac.classpath}" -->
                 <arg value="-i"/>
                 <arg value="${grammar.src.file}"/>
-                <!--
-                <arg value="-o"/>
-                <arg value="${grammar.bin.file}"/>
-                <arg value="-f"/>
-                <arg value="bin"/>
-                -->
                 <arg value="-f"/>
                 <arg value="null"/>
                 <arg value="-c"/>
@@ -56,41 +48,37 @@
                 >
                 <arg value="-i"/>
                 <arg value="${lrs.grammar.src.file}"/>
-                <!--
-                <arg value="-o"/>
-                <arg value="${lrs.grammar.bin.file}"/>
-                <arg value="-f"/>
-                <arg value="bin"/>
-                -->
                 <arg value="-f"/>
                 <arg value="null"/>
                 <arg value="-c"/>
                 <arg value="${lrs.grammar.handler.file}"/>
+            </java>
+            
+            <java classname="tomato.LRTableBuilder"
+                failonerror="true"
+                classpath="${javac.classpath}"
+                >
+                <arg value="-i"/>
+                <arg value="${simple.grammar.src.file}"/>
+                <arg value="-f"/>
+                <arg value="null"/>
+                <arg value="-c"/>
+                <arg value="${simple.grammar.handler.file}"/>
             </java>
         </target>
         
         <target name="grale-protocol">
             <condition property="catchup.done">
                 <and>
-                    <!--
-                    <uptodate
-                        srcfile="${grammar.src.file}"
-                        targetfile="${grammar.bin.file}" />
-                        -->
-                    
                     <uptodate
                         srcfile="${grammar.src.file}"
                         targetfile="${grammar.handler.file}" />
-                    
-                    <!--
-                    <uptodate
-                        srcfile="${lrs.grammar.src.file}"
-                        targetfile="${lrs.grammar.bin.file}" />
-                        -->
-                        
                     <uptodate
                         srcfile="${lrs.grammar.src.file}"
                         targetfile="${lrs.grammar.handler.file}" />
+                    <uptodate
+                        srcfile="${simple.grammar.src.file}"
+                        targetfile="${simple.grammar.handler.file}" />
                 </and>
             </condition>
         </target>

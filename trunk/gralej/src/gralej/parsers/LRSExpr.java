@@ -84,13 +84,14 @@ public final class LRSExpr implements ILRSExpr {
         if (_lexer == null) {
             LRTable lrt = Parsers.loadLRTable("lrs-expr.g");
             Grammar g = lrt.grammar();
-            _grammarHandler = (LRSExprHandler) GrammarHandler.bind("gralej.parsers.LRSExprHandler", g);
+            _grammarHandler = GrammarHandler.bind(LRSExprHandler.class, g);
             _parser = new Parser(lrt);
             _lexer = new CharLexer(g);
         }
 
         _lexer.reset(new StringReader(text));
         _grammarHandler.setTagStore(tags);
+        @SuppressWarnings("unchecked")
         List<ITerm> terms = (List<ITerm>) _parser.parse(_lexer);
         _grammarHandler.setTagStore(null);
         
@@ -130,9 +131,10 @@ public final class LRSExpr implements ILRSExpr {
 
     static class Term implements ITerm {
         protected List<ITerm> _subTerms;
-        protected List<ITag> _posConstraints = EMPTY_LIST;
-        protected List<ITag> _negConstraints = EMPTY_LIST;
+        protected List<ITag> _posConstraints = Collections.emptyList();
+        protected List<ITag> _negConstraints = Collections.emptyList();
 
+        @SuppressWarnings("unchecked")
         Term() {
             this(EMPTY_LIST);
         }

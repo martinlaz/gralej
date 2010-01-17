@@ -43,9 +43,12 @@ public class GraleParserFactory {
      */
     public static IGraleParser createParser(StreamInfo streamMeta)
             throws UnsupportedProtocolException {
-        // TODO: return other parsers
-        if (streamMeta.getType().compareTo("grisu") == 0) {
+        String type = streamMeta.getType();
+        if (type.equals("grisu")) {
             return new GrisuFormatParser();
+        }
+        if (type.equals("gralej-simple")) {
+            return new SimpleFormatParser();
         }
         /*
          * else if ( type.compareTo("grisu") == 0) { return new some other
