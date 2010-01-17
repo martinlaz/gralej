@@ -4,7 +4,6 @@ import gralej.controller.StreamInfo;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -101,6 +100,10 @@ public class FileLoader extends FileLoaderBaseImpl {
 
         if (lcfilename.endsWith(".grale") || lcfilename.endsWith(".grale.gz")) {
             return "grisu";
+        }
+
+        if (lcfilename.endsWith(".gralej-simple") || lcfilename.endsWith(".gralej-simple.gz")) {
+            return "gralej-simple";
         }
 
         // file type unknown

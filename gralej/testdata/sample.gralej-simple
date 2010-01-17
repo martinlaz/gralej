@@ -1,0 +1,40 @@
+relation(
+            $1: tfs1,
+            $1
+        );
+        
+root {
+    -
+    leaf1 {}
+    leaf2 {}
+};
+
+root {
+    type
+#    leaf1 {}
+    leaf2 {}
+};
+
+root {
+    type(
+        foo:bar,
+        baz:synsem:loc:rel($1,$2)
+        )
+    leaf1 {}
+    leaf2 {
+        *(  # note: typeless fs
+        
+            bar:relation(
+                $1: tfs1,
+                $2
+                ),
+            baz:relation(
+                $2: tfs2,
+                $1
+                ),
+            lrs:@"::LRS::A:[^B:[exists(b,expect(b,kim,C:[{exists(a,donate(a,sandy,fido))}]))]]",
+            atom:@"talk talk"
+        )
+    }
+};
+

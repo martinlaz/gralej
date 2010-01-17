@@ -32,8 +32,7 @@ public class ContentLabel extends Label {
     }
     
     public void flipContentVisibility() {
-        if (_content == null)
-            _content = ((ContentOwner) getParent()).getContent();
+        getContent();
         if (_content == null)
             return;
         
@@ -41,6 +40,12 @@ public class ContentLabel extends Label {
         _content.setVisible(newVisible);
 
         getPanel().getCanvas().repaint();
+    }
+
+    public Block getContent() {
+        if (_content == null)
+            _content = ((ContentOwner) getParent()).getContent();
+        return _content;
     }
     
     @Override

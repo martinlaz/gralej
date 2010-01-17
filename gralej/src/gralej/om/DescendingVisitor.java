@@ -64,4 +64,6 @@ public abstract class DescendingVisitor extends AbstractVisitor {
     public void visit(IFeatureValuePair featVal) {
         featVal.value().accept(this);
     }
+
+    public void visit(IAny any) { }
 }

@@ -9,6 +9,7 @@ package gralej.controller;
 public class StreamInfo {
     
     public final static StreamInfo GRISU = new StreamInfo("grisu");
+    public final static StreamInfo GRALEJ_SIMPLE = new StreamInfo("gralej-simple");
 
     private String type;
     private String name;

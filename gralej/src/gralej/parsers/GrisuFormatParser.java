@@ -55,8 +55,7 @@ class GrisuFormatParser implements IGraleParser {
             LRTable lr = Parsers.loadLRTable("trale-msg.g");
             _parser = new Parser(lr);
             _lexer = new TraleMsgLexer(lr.grammar());
-            _grammarHandler = (TraleMsgHandler) GrammarHandler.bind(
-                    "gralej.parsers.TraleMsgHandler", lr.grammar());
+            _grammarHandler = GrammarHandler.bind(TraleMsgHandler.class, lr.grammar());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

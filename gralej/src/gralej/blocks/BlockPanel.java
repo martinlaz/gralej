@@ -810,8 +810,8 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
         if (_defaultCursor == null)
             initCursors();
 
-        Block target = findContainingContentLabel(x, y);
-        if (target == null)
+        ContentLabel target = findContainingContentLabel(x, y);
+        if (target == null || target.getContent() == null)
             updateCursor(_defaultCursor);
         else
             updateCursor(_handCursor);

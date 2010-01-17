@@ -61,7 +61,14 @@ public abstract class EntityFactory {
     public abstract IType newType(String typeName);
 
     public abstract ITypedFeatureStructure newTFS(IType type);
+    public ITypedFeatureStructure newTFS(String typeName) {
+        return newTFS(newType(typeName));
+    }
+
     public abstract ITypedFeatureStructure newTFS(IType type, List<IFeatureValuePair> featVals);
+    public ITypedFeatureStructure newTFS(String typeName, List<IFeatureValuePair> featVals) {
+        return newTFS(newType(typeName), featVals);
+    }
 
     public abstract ILRSExpr newLRSExpr(String expr);
 }

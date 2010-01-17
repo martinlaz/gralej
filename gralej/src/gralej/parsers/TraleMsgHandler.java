@@ -21,6 +21,9 @@ import java.util.TreeMap;
 import tomato.GrammarHandler;
 import tomato.Token;
 
+import static gralej.Globals.LRS_PREFIX;
+
+@SuppressWarnings("unchecked")
 public class TraleMsgHandler extends GrammarHandler {
     static class L<T> extends LinkedList<T> {
         L<T> a(T el) { add(el); return this; }
@@ -44,8 +47,6 @@ public class TraleMsgHandler extends GrammarHandler {
     
     TraleMsgHandlerHelper _helper = new TraleMsgHandlerHelper();
 
-    final static String _LRS_PREFIX = "::LRS::";
-    
     private void bindRefs() {
         for (OM.Tag tag : _tags)
             tag.setTarget(_tag2ent.get(tag.number()));
@@ -227,8 +228,8 @@ public class TraleMsgHandler extends GrammarHandler {
             public Object execute(Object[] _) {
                 String s = S(_[3]);
             IEntity ent;
-            if (s.startsWith(_LRS_PREFIX)) {
-                s = s.substring(_LRS_PREFIX.length());
+            if (s.startsWith(LRS_PREFIX)) {
+                s = s.substring(LRS_PREFIX.length());
                 ent = LRSExpr.parse(s, _tags);
             }
             else

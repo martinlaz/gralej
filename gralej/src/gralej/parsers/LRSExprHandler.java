@@ -8,6 +8,7 @@ import static gralej.parsers.LRSExpr.*;
 import gralej.om.ITag;
 import gralej.om.lrs.ITerm;
 
+@SuppressWarnings("unchecked")
 public class LRSExprHandler extends tomato.GrammarHandler {
     private static class LN extends LinkedList<Integer> {}
     private static class LI extends LinkedList<ITag> {}

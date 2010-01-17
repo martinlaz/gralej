@@ -38,6 +38,8 @@ public class Globals {
     public static final String APP_NAME_VER = 
             APP_NAME + " (" + VERSION_STRING + ")";
     
+    public static final String LRS_PREFIX = "::LRS::";
+
     public static final Cursor HAND_CURSOR =
             Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     public static final Cursor WAIT_CURSOR =
