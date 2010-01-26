@@ -28,4 +28,7 @@ public class ParseException extends Exception {
     ParseException(Exception cause) {
         super(cause);
     }
+    ParseException(String message, Exception cause) {
+        super(message, cause);
+    }
 }
