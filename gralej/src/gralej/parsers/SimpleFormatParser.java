@@ -60,12 +60,13 @@ public final class SimpleFormatParser implements IGraleParser {
     @Override
     public List<IDataPackage> parseAll(InputStream s, StreamInfo meta) throws ParseException {
         List<IEntity> entResults;
+        SimpleLexer lexer = getLexer(s);
         try {
-            Lexer lexer = getLexer(s);
             entResults = (List<IEntity>) _parser.parse(lexer);
         }
         catch (Exception ex) {
-            throw new ParseException(ex);
+            String exInfo = "@row/col " + lexer.lineNumber() + "/" + lexer.charPos() + ": ";
+            throw new ParseException(exInfo + ex, ex);
         }
         List<IDataPackage> results = new ArrayList<IDataPackage>(entResults.size());
         for (IEntity ent : entResults) {
