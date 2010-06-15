@@ -1,0 +1,19 @@
+S {
+    foo(bar:baz)
+    
+    NP {
+        bar
+        
+        PN {
+            $1:@"peter"
+        }
+    }
+    VP {
+        baz
+        
+        V {
+            walks(walker:$1, lf:walk($1))
+        }
+    }
+};
+

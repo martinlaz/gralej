@@ -33,7 +33,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane1" alignment="0" pref="486" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane1" alignment="0" pref="501" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="_bImport" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -56,7 +56,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" pref="274" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="_bCancel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -93,34 +93,34 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="_chkAutoResize" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkAutoExpandTags" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="_chkAutoOpenWindows" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkDisplayHidden" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkAVMsInitiallyVisible" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="_chkAutoOpenWindows" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkOutputLatexSnippet" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="_chkModeGrale" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="172" max="32767" attributes="0"/>
+                      <EmptySpace pref="107" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="_chkAutoResize" min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="_chkAutoOpenWindows" min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="_chkAutoExpandTags" min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="_chkDisplayHidden" min="-2" pref="18" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="_chkAutoResize" min="-2" max="-2" attributes="0"/>
+                      <Component id="_chkAVMsInitiallyVisible" min="-2" pref="18" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="_chkAutoOpenWindows" min="-2" max="-2" attributes="0"/>
+                      <Component id="_chkOutputLatexSnippet" min="-2" pref="18" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="_chkAutoExpandTags" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="_chkDisplayHidden" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="_chkAVMsInitiallyVisible" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="_chkOutputLatexSnippet" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="_chkModeGrale" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="37" max="32767" attributes="0"/>
+                      <Component id="_chkModeGrale" min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace pref="77" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -199,7 +199,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jSeparator2" alignment="1" pref="461" max="32767" attributes="0"/>
+                          <Component id="jSeparator2" alignment="1" pref="489" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -209,12 +209,12 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                      <Component id="_cboJavaLF" pref="371" max="32767" attributes="0"/>
+                                      <Component id="_cboJavaLF" pref="378" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="_cboIconTheme" alignment="0" pref="372" max="32767" attributes="0"/>
+                                          <Component id="_cboIconTheme" alignment="0" pref="377" max="32767" attributes="0"/>
                                           <Component id="_bOpenAMVTreeConfigurator" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -251,7 +251,7 @@
                       <Component id="_chkSelectOnClick" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="_chkSelectOnHover" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="26" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -326,7 +326,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jSeparator1" alignment="0" pref="461" max="32767" attributes="0"/>
+                          <Component id="jSeparator1" alignment="0" pref="489" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="jLabel9" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -339,11 +339,11 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
-                                  <Component id="_cboLogCritical" alignment="0" pref="362" max="32767" attributes="0"/>
-                                  <Component id="_cboLogError" alignment="0" pref="362" max="32767" attributes="0"/>
-                                  <Component id="_cboLogWarning" alignment="0" pref="362" max="32767" attributes="0"/>
-                                  <Component id="_cboLogDebug" alignment="0" pref="362" max="32767" attributes="0"/>
-                                  <Component id="_cboLogInfo" alignment="0" pref="362" max="32767" attributes="0"/>
+                                  <Component id="_cboLogCritical" alignment="0" pref="385" max="32767" attributes="0"/>
+                                  <Component id="_cboLogError" alignment="0" pref="385" max="32767" attributes="0"/>
+                                  <Component id="_cboLogWarning" alignment="0" pref="385" max="32767" attributes="0"/>
+                                  <Component id="_cboLogDebug" alignment="0" pref="385" max="32767" attributes="0"/>
+                                  <Component id="_cboLogInfo" alignment="0" pref="385" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -386,7 +386,7 @@
                           <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="_cboLogInfo" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="50" max="32767" attributes="0"/>
+                      <EmptySpace pref="58" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -467,7 +467,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="_chkConfirmAppExit" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="376" max="32767" attributes="0"/>
+                      <EmptySpace pref="378" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -476,7 +476,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="_chkConfirmAppExit" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="187" max="32767" attributes="0"/>
+                      <EmptySpace pref="221" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -506,7 +506,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="461" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="489" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -515,7 +515,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="195" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="233" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

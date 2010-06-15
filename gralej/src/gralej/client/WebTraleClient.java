@@ -27,6 +27,7 @@
  */
 package gralej.client;
 
+import gralej.Config;
 import gralej.Globals;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -162,7 +163,8 @@ public class WebTraleClient extends JPanel {
         }
 
         try {
-            Authenticator.install();
+            if (Config.bool("client.webTrale.needsAuth"))
+                Authenticator.install();
         }
         catch (SecurityException ex) {
             // this is thrown if we run in a sandbox

@@ -51,7 +51,7 @@ public abstract class AbstractVisitor implements IVisitor {
 
     public void visit(ILRSExpr expr) {}
 
-    // most classes won't need to implement these two methods
+    // most classes won't need to implement these methods
     public void visit(IFeatureValuePair featVal) { }
     public void visit(IType type) { }
 }
