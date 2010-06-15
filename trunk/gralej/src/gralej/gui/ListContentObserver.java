@@ -66,6 +66,11 @@ public class ListContentObserver extends ContentObserver {
                     case KeyEvent.VK_BACK_SPACE:
                         model.deleteSelected();
                         break;
+                    case KeyEvent.VK_D:
+                        if (arg0.isControlDown()) {
+                            model.doDiff();
+                        }
+                        break;
                 }
             }
 

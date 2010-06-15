@@ -262,31 +262,31 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGroup(_pGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(_chkAutoResize)
                     .addComponent(_chkAutoExpandTags)
+                    .addComponent(_chkAutoOpenWindows)
                     .addComponent(_chkDisplayHidden)
                     .addComponent(_chkAVMsInitiallyVisible)
-                    .addComponent(_chkAutoOpenWindows)
                     .addComponent(_chkOutputLatexSnippet)
                     .addComponent(_chkModeGrale))
-                .addContainerGap(172, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
         );
         _pGeneralLayout.setVerticalGroup(
             _pGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pGeneralLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(_chkAutoResize)
+                .addComponent(_chkAutoResize, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_chkAutoOpenWindows)
+                .addComponent(_chkAutoOpenWindows, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_chkAutoExpandTags)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(_chkDisplayHidden)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(_chkAVMsInitiallyVisible)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(_chkOutputLatexSnippet)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(_chkModeGrale)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addComponent(_chkAutoExpandTags, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_chkDisplayHidden, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_chkAVMsInitiallyVisible, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_chkOutputLatexSnippet, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_chkModeGrale, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("General", _pGeneral);
@@ -321,7 +321,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _pLookAndFeelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
@@ -330,14 +330,14 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(_pLookAndFeelLayout.createSequentialGroup()
                                 .addGap(5, 5, 5)
-                                .addComponent(_cboJavaLF, 0, 371, Short.MAX_VALUE))
+                                .addComponent(_cboJavaLF, 0, 378, Short.MAX_VALUE))
                             .addGroup(_pLookAndFeelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(_cboIconTheme, 0, 372, Short.MAX_VALUE)
+                                    .addComponent(_cboIconTheme, 0, 377, Short.MAX_VALUE)
                                     .addComponent(_bOpenAMVTreeConfigurator)))))
-                    .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         _pLookAndFeelLayout.setVerticalGroup(
@@ -358,10 +358,10 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_chkSelectOnClick)
+                .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(_chkSelectOnHover)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         _chkSelectOnHover.getAccessibleContext().setAccessibleDescription("");
@@ -391,7 +391,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(_pLoggingLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                     .addGroup(_pLoggingLayout.createSequentialGroup()
                         .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel9)
@@ -403,11 +403,11 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
-                            .addComponent(_cboLogCritical, 0, 362, Short.MAX_VALUE)
-                            .addComponent(_cboLogError, 0, 362, Short.MAX_VALUE)
-                            .addComponent(_cboLogWarning, 0, 362, Short.MAX_VALUE)
-                            .addComponent(_cboLogDebug, 0, 362, Short.MAX_VALUE)
-                            .addComponent(_cboLogInfo, 0, 362, Short.MAX_VALUE))))
+                            .addComponent(_cboLogCritical, 0, 385, Short.MAX_VALUE)
+                            .addComponent(_cboLogError, 0, 385, Short.MAX_VALUE)
+                            .addComponent(_cboLogWarning, 0, 385, Short.MAX_VALUE)
+                            .addComponent(_cboLogDebug, 0, 385, Short.MAX_VALUE)
+                            .addComponent(_cboLogInfo, 0, 385, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         _pLoggingLayout.setVerticalGroup(
@@ -439,7 +439,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(_cboLogInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Logging", _pLogging);
@@ -454,14 +454,14 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(_pConfirmationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(_chkConfirmAppExit)
-                .addContainerGap(376, Short.MAX_VALUE))
+                .addContainerGap(378, Short.MAX_VALUE))
         );
         _pConfirmationsLayout.setVerticalGroup(
             _pConfirmationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pConfirmationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(_chkConfirmAppExit)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addContainerGap(221, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Confirmations", _pConfirmations);
@@ -492,14 +492,14 @@ public class OptionsDialog extends javax.swing.JDialog {
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                 .addContainerGap())
         );
         _pAdvancedLayout.setVerticalGroup(
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -554,7 +554,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(_bImport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -573,7 +573,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_bCancel)

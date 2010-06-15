@@ -5,8 +5,10 @@ import gralej.blocks.BlockPanel;
 import gralej.gui.ContentObserver;
 import gralej.gui.ListContentObserver;
 import gralej.gui.WindowsContentObserver;
+import gralej.om.DiffVisitor;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.OutputFormatter;
+import gralej.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -235,4 +237,17 @@ public class ContentModel {
             ((WindowsContentObserver) observer).notifyOfServerConnection(isConnected);
     }
 
+    public void doDiff() {
+        int[] selectedIdx = getFocus();
+        if (selectedIdx == null || selectedIdx.length != 2) {
+            Log.debug("can't diff: select exactly two items");
+            return;
+        }
+        IDataPackage d1 = files.get(selectedIdx[0]);
+        IDataPackage d2 = files.get(selectedIdx[1]);
+        String msg = "identical";
+        if (new DiffVisitor(d1, d2).isDiff)
+            msg = "different";
+        Log.debug(msg);
+    }
 }

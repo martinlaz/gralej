@@ -1,0 +1,30 @@
+# From: Stefan Müller (2010). Grammatiktheorie.
+# Figure 1.2. Entscheidungsbaum zur Bestimmung von Wortarten
+
+Wortart {
+    -
+    flektierbar {
+        -
+        'nach Tempus' {
+            - Verb {}
+        }
+        'nach Kasus' {
+            -
+            'festes Genus' {
+                - Nomen {}
+            }
+            'veränderbares Genus' {
+                -
+                'nicht komparierbar' {
+                    - 'Artikelwort Pronomen' {}
+                }
+                komparierbar {
+                    - Adjektiv {}
+                }
+            }
+        }
+    }
+    'nicht flektierbar' {
+        - Nichtflektierbare {}
+    }
+};

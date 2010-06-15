@@ -20,6 +20,8 @@ where RR = 2byte hex value for red
 <entry key="server.portrange.hi">5050</entry>
 <entry key="mode.grale">true</entry>
 
+<entry key="client.webTrale.needsAuth">true</entry>
+
 
 <!-- generic look and feel -->
 <entry key="gui.l+f.icontheme">crystal</entry>

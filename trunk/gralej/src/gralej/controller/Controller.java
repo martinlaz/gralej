@@ -51,7 +51,9 @@ public class Controller implements INewStreamListener, IParseResultReceiver {
         Log.debug("Starting to open");
         try {
             fl.loadFile();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
+            Log.error(e.getMessage());
             e.printStackTrace();
         }
         Log.debug("Opening should run in its thread now");
