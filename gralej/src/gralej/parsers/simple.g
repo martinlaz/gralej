@@ -32,9 +32,9 @@ S0 ->
     .
 
 S1 ->
-    S ';'
+    S
         { return Lnew(_,0); }
-    | S1 S ';'
+    | S1 S
         { return Ladd(_,0,1); }
     .
 
@@ -46,46 +46,31 @@ S ->
     .
 
 Tree ->
-    TreeLabel_opt '{' TreeContent_opt '}'
-        {{
+    '{' TreeLabel_opt TreeContent_opt Tree_seq_opt '}'
+        {
             ITree tree;
             String treeLabel = null;
-            if (_[0] != null)
-                treeLabel = S(_,0);
-            Object[] treeContent = (Object[])_[2];
-            IEntity tfs = null;
-            L subTrees = null;
-            if (treeContent != null) {
-                tfs = (IEntity) treeContent[0];
-                subTrees = (L) treeContent[1];
-            }
+            if (_[1] != null)
+                treeLabel = S(_,1);
+            IEntity tfs = (IEntity)_[2];
+            L subTrees = (L)_[3];
             if (subTrees == null)
                 tree = F.newTree(treeLabel);
             else
                 tree = F.newTree(treeLabel, subTrees);
-            tree.setContent(tfs);
+            if (tfs != null)
+                tree.setContent(tfs);
             return tree;
-        }}
+        }
     .
 
 TreeLabel_opt ->
-    '-'
         { return null; }
-    | Id
+    | ':' Id
+        { return _[1]; }
     .
 
 TreeContent_opt ->
-    | TreeContent
-    .
-
-TreeContent ->
-    TFS_opt Tree_seq_opt
-        {{ return new Object[] {_[0], _[1]}; }}
-    .
-
-TFS_opt ->
-    '-'
-        { return null; }
     | TFS
     .
 
@@ -150,8 +135,8 @@ TFS ->
     | Atom
     | Tag
     | Reentr
-    | '(' TFS ')'
-        { return _[1]; }
+#    | '(' TFS ')'
+#        { return _[1]; }
     .
 
 FeatVal_seq ->
@@ -177,7 +162,7 @@ Tag ->
         { return F.newTag(Integer.parseInt(S(_,1))); }
     .
 Reentr ->
-    Tag ':' TFS
+    Tag '=' TFS
         {
             ITag tag = (ITag)_[0];
             tag.setTarget((IEntity)_[2]);

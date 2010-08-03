@@ -1,19 +1,18 @@
-S {
+{ :S
     foo(bar:baz)
     
-    NP {
+    { :NP
         bar
-        
-        PN {
-            $1:@"peter"
+        { :PN
+            $1=@"peter"
         }
     }
-    VP {
+    
+    { :VP
         baz
         
-        V {
+        { :V
             walks(walker:$1, lf:walk($1))
         }
     }
-};
-
+}
