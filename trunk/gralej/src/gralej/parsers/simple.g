@@ -28,6 +28,8 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
 
 S0 ->
         { return java.util.Collections.EMPTY_LIST; }
+    | '@' _INT S1
+        { return _[2]; }
     | S1
     .
 
@@ -53,6 +55,8 @@ Tree ->
             if (_[1] != null)
                 treeLabel = S(_,1);
             IEntity tfs = (IEntity)_[2];
+            if (treeLabel == null && tfs == null)
+                throw new RuntimeException("Either the tree label or the tree contents must be specified");
             L subTrees = (L)_[3];
             if (subTrees == null)
                 tree = F.newTree(treeLabel);
