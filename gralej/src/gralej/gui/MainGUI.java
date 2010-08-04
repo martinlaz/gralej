@@ -20,10 +20,13 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import javax.swing.AbstractAction;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -200,6 +203,32 @@ public class MainGUI implements ActionListener, ItemListener {
 
             toolsmenu.addSeparator();
         }
+
+        // menu item for testing the gralej simple format parser
+        toolsmenu.add(
+                new AbstractAction("Parse Gralej expression...") {
+                    public void actionPerformed(ActionEvent e) {
+                        new TextInputDlg(
+                                frame,
+                                new TextInputDlg.Handler() {
+                                    @Override
+                                    public void processText(String text) {
+                                        try {
+                                            InputStream is = new ByteArrayInputStream(
+                                                    text.getBytes("UTF-8"));
+                                            c.newStream(is, StreamInfo.GRALEJ_SIMPLE);
+                                        }
+                                        catch (UnsupportedEncodingException ex) {
+                                            // will never be thrown for utf-8
+                                            Log.error(ex);
+                                        }
+                                    }
+                                },
+                                "Enter Gralej expression",
+                                "Parse").setVisible(true);
+                    }
+                });
+        toolsmenu.addSeparator();
         
         JMenuItem bcm = new JMenuItem("AVM Tree View Configurator");
         bcm.addActionListener(new ActionListener() {

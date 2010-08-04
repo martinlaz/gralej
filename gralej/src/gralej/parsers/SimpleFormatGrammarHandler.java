@@ -59,7 +59,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // List -> '[' TFS_seq ListTail_opt ']'
-        bindReduceHandler(18, handler);
+        bindReduceHandler(19, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -69,7 +69,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // Reentr -> Tag '=' TFS
-        bindReduceHandler(36, handler);
+        bindReduceHandler(37, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -78,6 +78,8 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             if (_[1] != null)
                 treeLabel = S(_,1);
             IEntity tfs = (IEntity)_[2];
+            if (treeLabel == null && tfs == null)
+                throw new RuntimeException("Either the tree label or the tree contents must be specified");
             L subTrees = (L)_[3];
             if (subTrees == null)
                 tree = F.newTree(treeLabel);
@@ -89,7 +91,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // Tree -> '{' TreeLabel_opt TreeContent_opt Tree_seq_opt '}'
-        bindReduceHandler(6, handler);
+        bindReduceHandler(7, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -99,7 +101,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // FeatVal -> Id ':' FeatVal
-        bindReduceHandler(34, handler);
+        bindReduceHandler(35, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -110,7 +112,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // Atom -> '@' _DQ_STRING
-        bindReduceHandler(16, handler);
+        bindReduceHandler(17, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -118,7 +120,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // FeatVal -> Id ':' TFS
-        bindReduceHandler(33, handler);
+        bindReduceHandler(34, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -126,7 +128,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // List -> '[' ']'
-        bindReduceHandler(17, handler);
+        bindReduceHandler(18, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -134,7 +136,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // Relation -> Id '(' TFS_seq ')'
-        bindReduceHandler(15, handler);
+        bindReduceHandler(16, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -142,7 +144,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // TFS -> '*' '(' FeatVal_seq ')'
-        bindReduceHandler(25, handler);
+        bindReduceHandler(26, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -150,7 +152,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // TFS -> Id
-        bindReduceHandler(23, handler);
+        bindReduceHandler(24, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -158,7 +160,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // TFS -> Id '(' FeatVal_seq ')'
-        bindReduceHandler(24, handler);
+        bindReduceHandler(25, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -166,7 +168,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // Tag -> '$' _INT
-        bindReduceHandler(35, handler);
+        bindReduceHandler(36, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -174,9 +176,9 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // S1 -> S1 S
-        bindReduceHandler(3, handler);
+        bindReduceHandler(4, handler);
         // Tree_seq -> Tree_seq Tree
-        bindReduceHandler(14, handler);
+        bindReduceHandler(15, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -184,9 +186,9 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // FeatVal_seq -> FeatVal_seq ',' FeatVal
-        bindReduceHandler(32, handler);
+        bindReduceHandler(33, handler);
         // TFS_seq -> TFS_seq ',' TFS
-        bindReduceHandler(22, handler);
+        bindReduceHandler(23, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -194,13 +196,13 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // FeatVal_seq -> FeatVal
-        bindReduceHandler(31, handler);
+        bindReduceHandler(32, handler);
         // S1 -> S
-        bindReduceHandler(2, handler);
+        bindReduceHandler(3, handler);
         // TFS_seq -> TFS
-        bindReduceHandler(21, handler);
+        bindReduceHandler(22, handler);
         // Tree_seq -> Tree
-        bindReduceHandler(13, handler);
+        bindReduceHandler(14, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -208,27 +210,27 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // Id -> _DQ_STRING
-        bindReduceHandler(38, handler);
-        // Id -> _ID
-        bindReduceHandler(37, handler);
-        // Id -> _SQ_STRING
         bindReduceHandler(39, handler);
+        // Id -> _ID
+        bindReduceHandler(38, handler);
+        // Id -> _SQ_STRING
+        bindReduceHandler(40, handler);
         // S0 -> S1
-        bindReduceHandler(1, handler);
+        bindReduceHandler(2, handler);
         // TFS -> Atom
-        bindReduceHandler(28, handler);
-        // TFS -> List
-        bindReduceHandler(27, handler);
-        // TFS -> Reentr
-        bindReduceHandler(30, handler);
-        // TFS -> Relation
-        bindReduceHandler(26, handler);
-        // TFS -> Tag
         bindReduceHandler(29, handler);
+        // TFS -> List
+        bindReduceHandler(28, handler);
+        // TFS -> Reentr
+        bindReduceHandler(31, handler);
+        // TFS -> Relation
+        bindReduceHandler(27, handler);
+        // TFS -> Tag
+        bindReduceHandler(30, handler);
         // TreeContent_opt -> TFS
-        bindReduceHandler(10, handler);
+        bindReduceHandler(11, handler);
         // Tree_seq_opt -> Tree_seq
-        bindReduceHandler(12, handler);
+        bindReduceHandler(13, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -236,9 +238,17 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // ListTail_opt -> '|' TFS
-        bindReduceHandler(20, handler);
+        bindReduceHandler(21, handler);
         // TreeLabel_opt -> ':' Id
-        bindReduceHandler(8, handler);
+        bindReduceHandler(9, handler);
+
+        handler = new tomato.ReduceHandler() {
+            public Object execute(Object[] _) {
+                return _[2];
+            }
+        };
+        // S0 -> '@' _INT S1
+        bindReduceHandler(1, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -246,9 +256,9 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // S -> TFS
-        bindReduceHandler(4, handler);
-        // S -> Tree
         bindReduceHandler(5, handler);
+        // S -> Tree
+        bindReduceHandler(6, handler);
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
@@ -264,7 +274,7 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
             }
         };
         // TreeLabel_opt -> 
-        bindReduceHandler(7, handler);
+        bindReduceHandler(8, handler);
     }
 }
 
