@@ -72,6 +72,28 @@ public final class BoundedHistory<T> {
         //Log.debug("retrieved next history item:", _current.data);
         return _current.data;
     }
+
+    public T remove() {
+        if (_current == null)
+            throw new IllegalStateException();
+
+        _current.prev.next = _current.next;
+        _current.next.prev = _current.prev;
+        _currentSize--;
+
+        if (_current.prev != _begin) {
+            _current = _current.prev;
+        }
+        else if (_current.next != _end) {
+            _current = _current.next;
+        }
+        else {
+            _current = null;
+            return null;
+        }
+        
+        return _current.data;
+    }
     
     public boolean hasPrev() {
         return _current != _begin && _current.prev != _begin;

@@ -51,6 +51,7 @@ import javax.print.SimpleDoc;
 import javax.print.StreamPrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.RepaintManager;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -61,6 +62,8 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import sun.print.PSStreamPrinterFactory;
+import org.sourceforge.jlibeps.epsgraphics.EpsGraphics2D;
+
 
 /**
  * A singleton instance of the OutputFormatter handles the different output
@@ -79,6 +82,7 @@ public class OutputFormatter {
     public final static int JPGFormat = 4;
     public final static int XMLFormat = 5;
     public final static int PNGFormat = 6;
+    public final static int EncapsulatedPostscriptFormat = 7;
 
     // instantiation
     private static OutputFormatter instance = null;
@@ -103,6 +107,8 @@ public class OutputFormatter {
             return "svg";
         case PostscriptFormat:
             return "ps";
+        case EncapsulatedPostscriptFormat:
+            return "eps";
         case JPGFormat:
             return "jpg";
         case PNGFormat:
@@ -143,6 +149,10 @@ public class OutputFormatter {
             case PostscriptFormat:
                 extension = "ps";
                 description = ".ps files";
+                break;
+            case EncapsulatedPostscriptFormat:
+                extension = "eps";
+                description = ".eps files";
                 break;
             case JPGFormat:
                 extension = "jpg";
@@ -211,6 +221,12 @@ public class OutputFormatter {
         case PostscriptFormat:
             if (view != null)
                 toPostscript(view, p);
+            else
+                Log.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
+            break;
+        case EncapsulatedPostscriptFormat:
+            if (view != null)
+                toEncapsulatedPostscript(view, p);
             else
                 Log.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
             break;
@@ -335,6 +351,22 @@ public class OutputFormatter {
         } catch (PrintException pe) {
             Log.error("PrintException:", pe);
         }
+    }
+
+    private void toEncapsulatedPostscript(BlockPanel bp, PrintStream p) {
+
+        EpsGraphics2D epsGraphics = new EpsGraphics2D();
+        JPanel canvas = bp.getCanvas();
+
+        boolean isDoubleBuffered = canvas.isDoubleBuffered();
+        canvas.setDoubleBuffered(false);
+        canvas.paint(epsGraphics);
+
+        // save
+        p.println(epsGraphics.toString());
+
+        // resetting
+        canvas.setDoubleBuffered(isDoubleBuffered);
     }
 
     /**
