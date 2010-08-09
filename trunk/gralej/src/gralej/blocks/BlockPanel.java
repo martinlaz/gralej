@@ -25,6 +25,7 @@
 package gralej.blocks;
 
 import gralej.Config;
+import gralej.om.Entities;
 import gralej.om.IEntity;
 import gralej.om.IneqsAndResidue;
 import gralej.util.BoundedHistory;
@@ -698,7 +699,27 @@ public class BlockPanel extends ChangeEventSource implements StyleChangeListener
     protected void onKeyPressed(KeyEvent ev) {
         Block b = null;
         boolean addToHistory = true;
-        
+
+        if (_selectedBlock != null) {
+            if (_selectedBlock.getModel() != null
+                && ev.getKeyCode() == KeyEvent.VK_D
+                && ev.isControlDown()) {
+                System.err.println(
+                    Entities.toTraleDesc(_selectedBlock.getModel())
+                    );
+            }
+            else if (ev.getKeyCode() == KeyEvent.VK_DELETE
+                    && _selectedBlock instanceof ContentLabel
+                    && _selectedBlock.getParent() instanceof AVPairBlock) {
+                ((AVPairBlock)_selectedBlock.getParent()).setModelHidden(true);
+                while (true) {
+                    b = _selectionHistory.remove();
+                    if (b == null || b.isVisible() && !b.isHiddenByAncestor())
+                        break;
+                }
+                addToHistory = false;
+            }
+        }
         if (ev.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
             if (ev.isShiftDown()) { // move forward in history
                 if (_selectionHistory.hasNext())

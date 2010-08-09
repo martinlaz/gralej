@@ -69,6 +69,7 @@ public final class Config extends ChangeEventSource {
             _key = key;
             _val = cfg.get(key);
             cfg.addChangeListener(new ChangeListener() {
+                @Override
                 public void stateChanged(ChangeEvent e) {
                     String val = cfg.get(_key);
                     if (!val.equals(_val)) {
@@ -95,6 +96,7 @@ public final class Config extends ChangeEventSource {
             for (String key : keySet)
                 _subCfg.put(key, cfg.get(key));
             cfg.addChangeListener(new ChangeListener() {
+                @Override
                 public void stateChanged(ChangeEvent e) {
                     Set<String> changeSet = new TreeSet<String>();
                     for (Map.Entry<String,String> entry : _subCfg.entrySet()) {

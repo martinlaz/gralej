@@ -447,7 +447,7 @@ public class WindowsContentObserver extends ContentObserver {
             } else if (source == m_Latex) {
                 save(OutputFormatter.LaTeXFormat);
             } else if (source == m_Postscript) {
-                save(OutputFormatter.PostscriptFormat);
+                save(OutputFormatter.EncapsulatedPostscriptFormat);
             } else if (source == m_SVG) {
                 save(OutputFormatter.SVGFormat);
             } else if (source == m_XML) {

@@ -102,8 +102,8 @@ public final class Entities {
                 fv.value().accept(this);
             }
 
-            public void visit(IType tag) {
-                sb.append('(').append(tag.typeName()).append(')');
+            public void visit(IType type) {
+                sb.append('(').append(type.typeName()).append(')');
             }
 
             public void visit(ITree tree) {

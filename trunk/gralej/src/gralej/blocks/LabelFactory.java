@@ -25,8 +25,12 @@
 package gralej.blocks;
 
 import gralej.Config;
+import static gralej.util.Strings.unescapeCString;
+
 import java.util.Map;
 import java.util.TreeMap;
+
+
 
 public class LabelFactory {
     Config _cfg;
@@ -62,6 +66,9 @@ public class LabelFactory {
         LIST_SEPARATOR      = _cfg.get("block.label.list.text.separator");
         LIST_TAIL_SEPARATOR = _cfg.get("block.label.list.text.tailSeparator");
         LRS_BLOCK_TITLE     = _cfg.get("block.label.lrsblock.title");
+
+        LIST_LBRACKET = unescapeCString(LIST_LBRACKET);
+        LIST_RBRACKET = unescapeCString(LIST_RBRACKET);
         
         String[] types = new String[] {
             "tag",
