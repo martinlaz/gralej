@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>hpsg1</title>
+        <style>body { margin: 0px; padding: 0px; background: gray } </style>
+    </head>
+    <body>
+    <script src="http://www.java.com/js/deployJava.js"></script> 
+    <script>
+    var grammar = 'hpsg1';
+    var attributes = {code:'tralegy.Applet.class', 
+                      archive: 'jale_'+grammar+'.jar,tralegy.jar', 
+                      style:'top: 0px; left: 0px; width: 100%; height: 100%'} ;
+    var parameters = {jnlp_href:grammar+'.jnlp', grammar_resource_sav:'/'+grammar,
+        
+about_grammar:
+    '<html>'+
+        '<p>... Some info about the grammar goes here...'+
+        '<p><p><i>Author: ...</i>'+
+    '</html>'
+                      
+    } ; 
+    var version = '1.6' ;
+    deployJava.runApplet(attributes, parameters, version);  
+    </script>
+    </body>
+</html>

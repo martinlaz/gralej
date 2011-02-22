@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" href="hpsg2.jnlp">
+    <information>
+        <title>Tralegy Applet</title>
+        <vendor>Martin Lazarov</vendor>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="tralegy.jar" main="true" />
+        <jar href="jale_hpsg2.jar"/>
+
+    </resources>
+    <applet-desc 
+         name="Tralegy Applet"
+         main-class="tralegy.Applet"
+         width="640"
+         height="480">
+     </applet-desc>
+     <update check="background"/>
+</jnlp>
