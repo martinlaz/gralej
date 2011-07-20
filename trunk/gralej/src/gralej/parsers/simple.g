@@ -75,7 +75,7 @@ Relation_seq:
         { return L_new(_, 0); }
         
     | Relation_seq Relation
-        { return L_add(_, 1); }
+        { return L_add(_, 0, 1); }
     .
 
 
@@ -122,10 +122,10 @@ Tree_seq_opt:
 
 Tree_seq:
     Tree
-        { return L_new(_,0); }
+        { return L_new(_, 0); }
     
     | Tree_seq Tree
-        { return L_add(_,0,1); }
+        { return L_add(_, 0, 1); }
     .
 
 
