@@ -356,16 +356,23 @@ public final class BlockCreator extends AbstractVisitor {
     }
 
     private NodeBlock createTree(ITree u) {
-        Label label;
+        if (u.label() == null && u.content() == null)
+            throw new IllegalStateException("both 'label' and 'content' are null");
+        
+        Label label = null;
         java.util.List<NodeBlock> childNodes = new LinkedList<NodeBlock>();
-        if (u.isLeaf())
-            label = _labfac.createLeafNodeLabel(u.label(), _panel);
+        if (u.isLeaf()) {
+            if (u.label() != null)
+                label = _labfac.createLeafNodeLabel(u.label(), _panel);
+        }
         else {
             for (ITree v : u.children())
                 childNodes.add(createTree(v));
-            label = _labfac.createInternalNodeLabel(u.label(), _panel);
+            if (u.label() != null)
+                label = _labfac.createInternalNodeLabel(u.label(), _panel);
         }
-        label.setModel(u);
+        if (label != null)
+            label.setModel(u);
 
         Block content = null;
         if (u.content() != null) {
