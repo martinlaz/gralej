@@ -51,6 +51,7 @@ DataPackage:
         Ineqs_opt           # inequations
         Residue_opt         # residuals
     '>'
+        { return bindTags((IEntity)_[2]); }
     .
 
 

@@ -38,6 +38,7 @@ class TagBindingVisitor extends DescendingVisitor {
             IEntity prev = _reents.put(tag.number(), tag.target());
             if (prev != null && prev != tag.target())
                 Log.warning("more than one reentrancy for tag", tag.number());
+            tag.target().accept(this);
         }
     }
 }

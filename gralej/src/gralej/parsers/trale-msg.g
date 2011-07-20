@@ -198,6 +198,17 @@ tree
         
         return _tree = t;
     }
+  | _BEGIN_TREE flags id label arclabel structure trees _RPAR
+    {
+        String label        = S(_[3]);
+        IEntity content     = (IEntity)_[5];
+        L<ITree> children   = (L<ITree>)_[6];
+        
+        OM.Tree t = new OM.Tree(label, children);
+        t.setContent(content);
+        
+        return _tree = t;
+    }
   .
 
 reentr
@@ -324,6 +335,7 @@ ref
                 N(_[3])     // tag number
                 );
             _tags.add(tag);
+            _id2ent.put(N(_[2]), tag);
             return tag;
         }
   .
