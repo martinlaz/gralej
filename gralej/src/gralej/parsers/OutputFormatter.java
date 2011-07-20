@@ -61,7 +61,7 @@ import org.apache.batik.svggen.SVGGraphics2DIOException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-import sun.print.PSStreamPrinterFactory;
+//import sun.print.PSStreamPrinterFactory;
 import org.sourceforge.jlibeps.epsgraphics.EpsGraphics2D;
 
 
@@ -78,7 +78,7 @@ public class OutputFormatter {
     public final static int TRALEFormat = 0;
     public final static int LaTeXFormat = 1;
     public final static int SVGFormat = 2;
-    public final static int PostscriptFormat = 3;
+//    public final static int PostscriptFormat = 3;
     public final static int JPGFormat = 4;
     public final static int XMLFormat = 5;
     public final static int PNGFormat = 6;
@@ -105,8 +105,8 @@ public class OutputFormatter {
             return "tex";
         case SVGFormat:
             return "svg";
-        case PostscriptFormat:
-            return "ps";
+//        case PostscriptFormat:
+//            return "ps";
         case EncapsulatedPostscriptFormat:
             return "eps";
         case JPGFormat:
@@ -146,10 +146,10 @@ public class OutputFormatter {
                 extension = "svg";
                 description = ".svg files";
                 break;
-            case PostscriptFormat:
-                extension = "ps";
-                description = ".ps files";
-                break;
+//            case PostscriptFormat:
+//                extension = "ps";
+//                description = ".ps files";
+//                break;
             case EncapsulatedPostscriptFormat:
                 extension = "eps";
                 description = ".eps files";
@@ -218,12 +218,12 @@ public class OutputFormatter {
                 Log.error(
                         "Bad function call (SVG rendering needs a Swing JComponent as input).");
             break;
-        case PostscriptFormat:
-            if (view != null)
-                toPostscript(view, p);
-            else
-                Log.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
-            break;
+//        case PostscriptFormat:
+//            if (view != null)
+//                toPostscript(view, p);
+//            else
+//                Log.error("Bad function call (postscript rendering needs a Swing JComponent as input).");
+//            break;
         case EncapsulatedPostscriptFormat:
             if (view != null)
                 toEncapsulatedPostscript(view, p);
@@ -339,19 +339,19 @@ public class OutputFormatter {
 
     }
 
-    private void toPostscript(BlockPanel bp, PrintStream p) {
-        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
-        StreamPrintService sps = factory.getPrintService(p);
-        DocPrintJob pj = sps.createPrintJob();
-        Doc doc = new SimpleDoc(new DataPrinter(bp.getCanvas()),
-                DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
-
-        try {
-            pj.print(doc, new HashPrintRequestAttributeSet());
-        } catch (PrintException pe) {
-            Log.error("PrintException:", pe);
-        }
-    }
+//    private void toPostscript(BlockPanel bp, PrintStream p) {
+//        PSStreamPrinterFactory factory = new PSStreamPrinterFactory();
+//        StreamPrintService sps = factory.getPrintService(p);
+//        DocPrintJob pj = sps.createPrintJob();
+//        Doc doc = new SimpleDoc(new DataPrinter(bp.getCanvas()),
+//                DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
+//
+//        try {
+//            pj.print(doc, new HashPrintRequestAttributeSet());
+//        } catch (PrintException pe) {
+//            Log.error("PrintException:", pe);
+//        }
+//    }
 
     private void toEncapsulatedPostscript(BlockPanel bp, PrintStream p) {
 

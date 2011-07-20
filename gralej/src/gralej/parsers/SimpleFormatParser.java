@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import tomato.GrammarHandler;
-import tomato.Lexer;
 import tomato.Parser;
 import tomato.SimpleLexer;
 
@@ -37,7 +36,9 @@ public final class SimpleFormatParser implements IGraleParser {
         if (_parser != null)
             return;
         _parser = new Parser(Parsers.loadLRTable("/gralej/parsers/simple.g"));
-        GrammarHandler.bind(SimpleFormatGrammarHandler.class, _parser.grammar());
+        SimpleFormatGrammarHandler gh = GrammarHandler.bind(
+                SimpleFormatGrammarHandler.class, _parser.grammar());
+        
     }
 
     private SimpleLexer getLexer(InputStream is) {

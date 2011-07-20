@@ -35,7 +35,7 @@ import java.util.List;
 class TraleMsgHandlerHelper {
 
     IParseResultReceiver _resultReceiver;
-    StringBuilder _charBuffer;
+    StringBuilder _charBuffer = new StringBuilder();
     StreamInfo _streamInfo;
 
     void setResultReceiver(IParseResultReceiver resultReceiver) {
@@ -57,8 +57,14 @@ class TraleMsgHandlerHelper {
         }
         char[] chars = _charBuffer.toString().toCharArray();
         _charBuffer.delete(0, _charBuffer.length());
-        _resultReceiver.newDataPackage(new DataPackage(title, vob, chars,
+        _resultReceiver.newDataPackage(makeDataPackage(title, vob, chars,
                 _streamInfo, residue));
+    }
+
+    DataPackage makeDataPackage(String title, IVisitable model, char[] chars,
+                StreamInfo streamInfo, IneqsAndResidue residue) {
+        return new DataPackage(title, model, chars,
+                _streamInfo, residue);
     }
 
     static class DataPackage implements IDataPackage {

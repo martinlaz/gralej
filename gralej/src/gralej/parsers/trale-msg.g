@@ -73,9 +73,9 @@ public class TraleMsgHandler extends GrammarHandler {
 ########################
 ## Root ################
 ########################
-datapackages -> | datapackages datapackage0 .
+datapackages: | datapackages datapackage0 .
 
-datapackage0 -> datapackage _NEWLINE 
+datapackage0: datapackage _NEWLINE 
         {
             // prepare for the next datapackage
             _tree = null;
@@ -87,7 +87,7 @@ datapackage0 -> datapackage _NEWLINE
         }
     .
 
-datapackage ->
+datapackage:
     _NEWDATA windowtitle structure structures0 ineqs residue
         {{
             bindRefs();
@@ -112,12 +112,12 @@ datapackage ->
         }}
     .
 
-ineqs ->
+ineqs:
     | _MINUS relations
         { return _[1]; }
     .
 
-residue ->
+residue:
     | _SLASH relations
         { return _[1]; }
     .
@@ -127,9 +127,9 @@ residue ->
 ## Sequences ###########
 ########################
 structures0
-  ->  | structure structures0 .
+ :  | structure structures0 .
 structs
-  ->    { return new L<IEntity>(); } 
+ :    { return new L<IEntity>(); } 
   |  structs struct 
         { L<IEntity> ls = (L<IEntity>)_[0];
           ls.add((IEntity)_[1]);
@@ -137,7 +137,7 @@ structs
         }
   .
 trees
-  ->    { return new L<ITree>(); }
+ :    { return new L<ITree>(); }
   |  trees tree
         { L<ITree> ls = (L<ITree>)_[0];
           ls.add((ITree)_[1]);
@@ -145,7 +145,7 @@ trees
         }
   .
 featvals
-  ->    { return new L<IFeatureValuePair>(); }
+ :    { return new L<IFeatureValuePair>(); }
   |   featvals featval
         { L<IFeatureValuePair> ls = (L<IFeatureValuePair>)_[0];
           ls.add((IFeatureValuePair)_[1]);
@@ -153,12 +153,12 @@ featvals
         }
   .
 flags
-  ->    { return _flags = new OM.Flags(); }
+ :    { return _flags = new OM.Flags(); }
   | flags flag
         { return _flags; }
   .
 
-relations ->
+relations:
     relation
         { return new L<IRelation>().a((IRelation)_[0]); }
     | relations relation
@@ -169,11 +169,11 @@ relations ->
 ## Structures ##########
 ########################
 structure
-  ->  struct | reentr | tree
+ :  struct | reentr | tree
   .
 
 struct
-  ->  struc
+ :  struc
   | ref 
   | function 
   | relation 
@@ -186,7 +186,7 @@ struct
   .
 
 tree
-  ->  _BEGIN_TREE flags id label arclabel linkid trees _RPAR
+ :  _BEGIN_TREE flags id label arclabel linkid trees _RPAR
     {
         String label        = S(_[3]);
         int linkid          = N(_[5]);
@@ -201,7 +201,7 @@ tree
   .
 
 reentr
-  ->  _BEGIN_REENTR flags id tag struct _RPAR
+ :  _BEGIN_REENTR flags id tag struct _RPAR
        {{
           if (_[4] != null) {
             int id  = N(_[2]);
@@ -216,26 +216,26 @@ reentr
   .
 
 table
-  -> _LB tableHeading _MINUS tableRows _RB
+ : _LB tableHeading _MINUS tableRows _RB
         { return new OM.Table((String)_[1], (L)_[3]); }
   .
 
 tableHeading
-  -> | _STRING { return S(_[0]); } .
+ : | _STRING { return S(_[0]); } .
 
 tableRows
-  -> tableRow
+ : tableRow
         { L ls = new L(); ls.add(_[0]); return ls; }
   | tableRows tableRow
         { ((L)_[0]).add(_[1]); return _[0]; }
   .
 
 tableRow
-  -> _STRING struct
+ : _STRING struct
         { return new OM.FeatVal(OM.DEFAULT_FLAGS, S(_[0]), (IEntity)_[1]); }
   .
 struc
-  ->  _BEGIN_STRUC flags id type featvals _RPAR
+ :  _BEGIN_STRUC flags id type featvals _RPAR
         {
             OM.TFS tfs = new OM.TFS(
                 (OM.Flags)_[1],
@@ -250,7 +250,7 @@ struc
   .
 
 featval
-  ->  _BEGIN_FEATVAL flags id feature struct _RPAR
+ :  _BEGIN_FEATVAL flags id feature struct _RPAR
         {
             return new OM.FeatVal(
                 (OM.Flags)_[1],
@@ -263,15 +263,15 @@ featval
   .
 
 disjunction
-  ->  _BEGIN_DISJ flags id struct struct structs _RPAR
+ :  _BEGIN_DISJ flags id struct struct structs _RPAR
         { throw new NotImplementedException("disjunction"); } . 
 
 conjunction
-  ->  _BEGIN_CONJ flags id struct struct structs _RPAR
+ :  _BEGIN_CONJ flags id struct struct structs _RPAR
         { throw new NotImplementedException("conjunction"); } . 
 
 list
-  ->  _BEGIN_LIST flags id structs tail _RPAR
+ :  _BEGIN_LIST flags id structs tail _RPAR
         {
             L<IEntity> structs  = (L<IEntity>)_[3];
             IEntity tail        = (IEntity)_[4];
@@ -283,24 +283,24 @@ list
   .
 
 tail
-  ->  | _BEGIN_TAIL flags id struct _RPAR 
+ :  | _BEGIN_TAIL flags id struct _RPAR 
             { return _[3]; }
   .
 
 set
-  ->  _BEGIN_SET flags id structs rest _RPAR
+ :  _BEGIN_SET flags id structs rest _RPAR
         { throw new NotImplementedException("set"); } .
 
 rest
-  ->  | _BEGIN_REST flags id struct _RPAR
+ :  | _BEGIN_REST flags id struct _RPAR
         { throw new NotImplementedException("rest"); } .
 
 function
-  ->  _BEGIN_FUNCT flags id type functor structs _RPAR
+ :  _BEGIN_FUNCT flags id type functor structs _RPAR
         { throw new NotImplementedException("function"); } .
 
 relation
-  ->  _BEGIN_REL flags id functor structs _RPAR
+ :  _BEGIN_REL flags id functor structs _RPAR
         {
             return new OM.Relation(
                 (OM.Flags)_[1],
@@ -311,13 +311,13 @@ relation
     .
 
 type
-  ->
+ :
   |   _LPAR flags id name _RPAR
         { return new OM.Type((OM.Flags)_[1], S(_[3])); }
   .
 
 ref
-  ->  _BEGIN_REF flags id target _RPAR
+ :  _BEGIN_REF flags id target _RPAR
         {
             OM.Tag tag = new OM.Tag(
                 (OM.Flags)_[1],
@@ -329,7 +329,7 @@ ref
   .
 
 any
-  ->  _BEGIN_ANY flags id value _RPAR
+ :  _BEGIN_ANY flags id value _RPAR
         {{
             String s = S(_[3]);
             IEntity ent;
@@ -350,22 +350,22 @@ any
 ########################
 # Values ###############
 ########################
-feature     ->  _STRING .
-functor     ->  _STRING .
-windowtitle ->  _STRING .
-label       ->	_STRING .
-arclabel    -> | _STRING .
-id          ->	_INT.
-linkid      ->	_INT.
-name        -> _STRING .
-value       -> _STRING .
-tag         -> _INT .
-target      -> _INT .
+feature    :  _STRING .
+functor    :  _STRING .
+windowtitle:  _STRING .
+label      :	_STRING .
+arclabel   : | _STRING .
+id         :	_INT.
+linkid     :	_INT.
+name       : _STRING .
+value      : _STRING .
+tag        : _INT .
+target     : _INT .
 
 ########################
 # Flags ################
 ########################
-flag        ->
+flag       :
     |   hidden      { _flags.setHidden();       return null; }
     |   different   { _flags.setDifferent();    return null; }
     |   struckout   { _flags.setStruckout();    return null; }
@@ -373,11 +373,11 @@ flag        ->
     |   expanded    { _flags.setExpanded();     return null; }
     .
 
-hidden      {} -> _PLUS .
-different   {} -> _STAR .
-struckout   {} -> _MINUS .
-multiline   {} -> _PIPE .
-expanded    {} -> _LT .
+hidden      {}: _PLUS .
+different   {}: _STAR .
+struckout   {}: _MINUS .
+multiline   {}: _PIPE .
+expanded    {}: _LT .
 
 %
 }
