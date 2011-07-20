@@ -268,6 +268,14 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
+                return bindTags((IEntity)_[2]);
+            }
+        };
+        // DataPackage -> '<' _DQ_STRING Tree_or_TFS Ineqs_opt Residue_opt '>'
+        bindReduceHandler(4, handler);
+
+        handler = new tomato.ReduceHandler() {
+            public Object execute(Object[] _) {
                 return null;
             }
         };

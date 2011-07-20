@@ -1,27 +1,34 @@
+<"relation \"test\""
 relation(
             $1 = tfs1,
             $1
         )
-        
+>
+
+<"tree-1"
 {:root
     {:leaf1}
     {:leaf2}
 }
+>
 
+<"tree-2"
 {:root
     type
 #    {:leaf1}
     {:leaf2}
 }
+>
 
+<"tree-fancy"
 {:root
     type(
         foo:bar,
-        baz:synsem:loc:rel($1,$2)
+        baz:synsem:loc:rel($1, $2, $3)
         )
     {:leaf1}
     {:leaf2
-        *(  # note: typeless fs
+        $3 = *(  # note: typeless fs
         
             bar:relation(
                 $1 = tfs1,
@@ -37,3 +44,4 @@ relation(
     }
 }
 
+>
