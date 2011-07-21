@@ -72,7 +72,7 @@ ContribConstraints ->
     | Constraints '~' Constraints # positive and negative
         {{ return new LI[]{ (LI)_[0], (LI)_[2]}; }}
     | '~' Constraints # only negative
-        {{ return new LI[]{ new LI(), (LI)_[2]}; }}
+        {{ return new LI[]{ new LI(), (LI)_[1]}; }}
     .
 
 Constraints ->
