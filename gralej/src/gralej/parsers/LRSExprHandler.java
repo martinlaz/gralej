@@ -239,7 +239,7 @@ public class LRSExprHandler extends tomato.GrammarHandler {
 
         handler = new tomato.ReduceHandler() {
             public Object execute(Object[] _) {
-                return new LI[]{ new LI(), (LI)_[2]};
+                return new LI[]{ new LI(), (LI)_[1]};
             }
         };
         // ContribConstraints -> '~' Constraints
