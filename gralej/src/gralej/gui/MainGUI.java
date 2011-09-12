@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 
 import javax.swing.BorderFactory;
@@ -64,7 +66,7 @@ public class MainGUI implements ActionListener, ItemListener {
     private JMenu saveallmenu;
 
     private JMenuItem m_Quit, m_Close, m_CloseAll, m_Open, m_OpenURL, m_About, m_Options,
-            m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll,
+            m_Cascade, m_Tile, m_TestFile, m_WebTrale, m_Save, m_SaveAll, m_SaveAllGralej,
             m_SaveAllXML, m_Server;
 
     private JToolBar toolbar;
@@ -124,6 +126,10 @@ public class MainGUI implements ActionListener, ItemListener {
         m_SaveAll = new JMenuItem("TRALE format");
         m_SaveAll.addActionListener(this);
         saveallmenu.add(m_SaveAll);
+
+        m_SaveAllGralej = new JMenuItem("Gralej format");
+        m_SaveAllGralej.addActionListener(this);
+        saveallmenu.add(m_SaveAllGralej);
 
         m_SaveAllXML = new JMenuItem("XML");
         m_SaveAllXML.addActionListener(this);
@@ -225,8 +231,25 @@ public class MainGUI implements ActionListener, ItemListener {
                                     }
                                 },
                                 "Enter Gralej expression",
-                                "Parse").setVisible(true);
+                                "Parse",
+                                getGralejSampleText()
+                                ).setVisible(true);
                     }
+
+            private String getGralejSampleText() {
+                InputStream is = getClass().getResourceAsStream("/gralej/resource/sample.gralej");
+                StringBuilder s = new StringBuilder();
+                byte[] buf = new byte[0x1000];
+                int n;
+                try {
+                    while ((n = is.read(buf)) > 0) {
+                        s.append(new String(buf, 0, n));
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return s.toString();
+            }
                 });
         toolsmenu.addSeparator();
         
@@ -399,6 +422,11 @@ public class MainGUI implements ActionListener, ItemListener {
             File f = saveDialog(OutputFormatter.TRALEFormat);
             if (f != null) {
                 c.getModel().saveAll(f, OutputFormatter.TRALEFormat);
+            }
+        } else if (source == m_SaveAllGralej) {
+            File f = saveDialog(OutputFormatter.GralejFormat);
+            if (f != null) {
+                c.getModel().saveAll(f, OutputFormatter.GralejFormat);
             }
         } else if (source == m_SaveAllXML) {
             File f = saveDialog(OutputFormatter.XMLFormat);

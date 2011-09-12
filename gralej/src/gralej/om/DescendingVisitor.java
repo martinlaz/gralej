@@ -25,6 +25,10 @@
 
 package gralej.om;
 
+import gralej.om.lrs.ILRSExpr;
+import gralej.om.lrs.ITerm;
+import java.util.List;
+
 /**
  *
  * @author Martin
@@ -66,4 +70,18 @@ public abstract class DescendingVisitor extends AbstractVisitor {
     }
 
     public void visit(IAny any) { }
+
+    public void visit(ILRSExpr expr) {
+        processLrsSubTerms(expr.subTerms());
+    }
+
+    private void processLrsSubTerms(Iterable<ITerm> terms) {
+        for (ITerm term : terms) {
+            for (ITag tag : term.positiveConstraints())
+                tag.accept(this);
+            for (ITag tag : term.negativeConstraints())
+                tag.accept(this);
+            processLrsSubTerms(term.subTerms());
+        }
+    }
 }

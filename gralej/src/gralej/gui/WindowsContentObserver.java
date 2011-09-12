@@ -187,7 +187,9 @@ public class WindowsContentObserver extends ContentObserver {
         private JMenuItem m_Close, m_Latex, m_Postscript, m_SVG, m_Print,
                 m_Tree, m_Struc, m_Expand, m_Restore, m_Find, m_FindNext,
                 m_Resize, m_ZoomPlus, m_ZoomMinus, m_Save, m_XML,
-                m_JPG, m_PNG, m_Raise, m_ShowHideNodeContents, m_CloseAllWindows;
+                m_JPG, m_PNG, m_GralejFormat, m_Raise, m_ShowHideNodeContents,
+                m_CloseAllWindows
+                ;
         private JCheckBoxMenuItem m_Hidden;
         
         private JCheckBoxMenuItem m_ShowWindowToolBar;
@@ -234,10 +236,14 @@ public class WindowsContentObserver extends ContentObserver {
             m_JPG = new JMenuItem("JPG");
             m_JPG.addActionListener(this);
             exportSubmenu.add(m_JPG);
-
+            // sub PNG
             m_PNG = new JMenuItem("PNG");
             m_PNG.addActionListener(this);
             exportSubmenu.add(m_PNG);
+
+            m_GralejFormat = new JMenuItem("Gralej format");
+            m_GralejFormat.addActionListener(this);
+            exportSubmenu.add(m_GralejFormat);
 
             filemenu.add(exportSubmenu);
             // menuitem Print
@@ -456,6 +462,8 @@ public class WindowsContentObserver extends ContentObserver {
                 save(OutputFormatter.JPGFormat);
             } else if (source == m_PNG) {
                 save(OutputFormatter.PNGFormat);
+            } else if (source == m_GralejFormat) {
+                save(OutputFormatter.GralejFormat);
             } else if (source == m_Print || source == b_Print) {
                 model.print(display);
 

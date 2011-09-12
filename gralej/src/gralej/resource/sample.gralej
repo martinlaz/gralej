@@ -1,0 +1,132 @@
+<'[peter,likes,mary]'
+{ :'phrase:[peter,likes,mary]'
+    phrase(
+        phon: [$17 = @peter | $18 = [$8 = @likes | $9 = [@mary]]],
+        synsem: synsem(
+            loc: loc(
+                cat: cat(
+                    head: $10 = verb(
+                        vform: fin,
+                        aux: minus,
+                        inv: boolean,
+                        marking: unmarked,
+                        mod: none,
+                        pred: plus),
+                    val: val(
+                        subj: [],
+                        comps: [])),
+                cont: $13 = present_rel(
+                    soa_arg: like_rel(
+                        liker: $3 = ref(
+                            gen: masc,
+                            num: sg,
+                            pers: third),
+                        liked: $2 = ref(
+                            gen: fem,
+                            num: sg,
+                            pers: third)))),
+            nonloc: 'mgsat nonloc'),
+        daughters: hs_struc(
+            hdtr: $16 = phrase(
+                phon: $18,
+                synsem: synsem(
+                    loc: loc(
+                        cat: cat(
+                            head: $10,
+                            val: val(
+                                subj: $12 = [$1 = synsem(
+                                    loc: loc(
+                                        cat: cat(
+                                            head: noun(
+                                                case: nom,
+                                                mod: none,
+                                                pred: minus),
+                                            val: val(
+                                                subj: [],
+                                                comps: $14 = [])),
+                                        cont: nom_obj(
+                                            index: $3)),
+                                    nonloc: 'mgsat nonloc')],
+                                comps: $11 = [])),
+                        cont: $13),
+                    nonloc: 'mgsat nonloc'),
+                daughters: hc_struc(
+                    hdtr: $6 = word(
+                        phon: [$8],
+                        synsem: synsem(
+                            loc: loc(
+                                cat: cat(
+                                    head: $10,
+                                    val: val(
+                                        subj: $12,
+                                        comps: $0 = [$5 = synsem(
+                                            loc: loc(
+                                                cat: cat(
+                                                    head: noun(
+                                                        case: acc,
+                                                        mod: none,
+                                                        pred: minus),
+                                                    val: val(
+                                                        subj: [],
+                                                        comps: $4 = [])),
+                                                cont: nom_obj(
+                                                    index: $2)),
+                                            nonloc: 'mgsat nonloc') | $11])),
+                                cont: $13),
+                            nonloc: 'mgsat nonloc'),
+                        arg_st: [$1 | $0]),
+                    ndtr: $7 = word(
+                        phon: $9,
+                        synsem: $5,
+                        arg_st: $4)),
+                dtrs: [$6, $7]),
+            ndtr: $15 = word(
+                phon: [$17],
+                synsem: $1,
+                arg_st: $14)),
+        dtrs: [$15, $16])
+    { :'word:[peter]'
+        word(
+            phon: [$17],
+            synsem: $1,
+            arg_st: $14)
+    }
+    { :'phrase:[likes,mary]'
+        phrase(
+            phon: $18,
+            synsem: synsem(
+                loc: loc(
+                    cat: cat(
+                        head: $10,
+                        val: val(
+                            subj: $12,
+                            comps: $11)),
+                    cont: $13),
+                nonloc: 'mgsat nonloc'),
+            daughters: hc_struc(
+                hdtr: $6,
+                ndtr: $7),
+            dtrs: [$6, $7])
+        { :'word:[likes]'
+            word(
+                phon: [$8],
+                synsem: synsem(
+                    loc: loc(
+                        cat: cat(
+                            head: $10,
+                            val: val(
+                                subj: $12,
+                                comps: $0)),
+                        cont: $13),
+                    nonloc: 'mgsat nonloc'),
+                arg_st: [$1 | $0])
+        }
+        { :'word:[mary]'
+            word(
+                phon: $9,
+                synsem: $5,
+                arg_st: $4)
+        }
+    }
+}
+>

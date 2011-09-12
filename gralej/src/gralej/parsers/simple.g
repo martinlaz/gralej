@@ -1,6 +1,7 @@
 package gralej.parsers;
 
 import gralej.om.*;
+import gralej.controller.StreamInfo;
 import static gralej.Globals.LRS_PREFIX;
 
 import java.util.LinkedList;
@@ -25,14 +26,18 @@ public class SimpleFormatGrammarHandler extends tomato.GrammarHandler {
         return ls;
     }
     
-    private static IEntity bindTags(IEntity ent) {
-        new TagBindingVisitor(ent);
-        return ent;
+    private static void bindTags(IEntity model, IneqsAndResidue ineqsAndResidue) {
+        TagBindingVisitor tagBinder = new TagBindingVisitor();
+        tagBinder.process(model);
+        for (IRelation rel : ineqsAndResidue.ineqs())
+            tagBinder.process(rel);
+        for (IRelation rel : ineqsAndResidue.residue())
+            tagBinder.process(rel);
     }
 %
 
 S:
-    | S1
+    | Protocol_opt S1
     .
 
 
@@ -45,13 +50,32 @@ S1:
     .
 
 
+Protocol_opt:
+    | '@' Id
+        {
+            String protocol = _[1].toString();
+            if (!"gralej".equals(protocol))
+                throw new RuntimeException("Unknown protocol: " + protocol);
+            return null;
+        }
+    .
+
+
 DataPackage:    
-    '<' _DQ_STRING          # title
-        Tree_or_TFS         # contents
-        Ineqs_opt           # inequations
-        Residue_opt         # residuals
+    '<' Id              # title
+        Tree_or_TFS     # contents
+        Ineqs_opt       # inequations
+        Residue_opt     # residuals
     '>'
-        { return bindTags((IEntity)_[2]); }
+        {
+            String title = _[1].toString();
+            IEntity model = (IEntity)_[2];
+            IneqsAndResidue ineqsAndResidue = IneqsAndResidue.getInstance((L)_[3], (L)_[4]);
+
+            bindTags(model, ineqsAndResidue);
+
+            return new DataPackage(title, model, new char[0], StreamInfo.GRALEJ_SIMPLE, ineqsAndResidue);
+        }
     .
 
 
@@ -63,11 +87,13 @@ Tree_or_TFS:
 
 Ineqs_opt:
     | '~' Relation_seq
+        { return _[1]; }
     .
 
 
 Residue_opt:
     | '/' Relation_seq
+        { return _[1]; }
     .
 
 
@@ -90,7 +116,7 @@ Tree:
             IEntity tfs = (IEntity)_[2];
             if (treeLabel == null && tfs == null)
                 throw new RuntimeException(
-                    "At least one of the tree label or the tree contents must be specified");
+                    "Both the tree label and the tree content are empty; at least one of them must be specified");
             L subTrees = (L)_[3];
             if (subTrees == null)
                 tree = F.newTree(treeLabel);
@@ -137,7 +163,7 @@ Relation:
 
 
 Atom:
-    '@' _DQ_STRING
+    '@' Id
         {
             String s = s(_,1);
             if (s.startsWith(LRS_PREFIX))

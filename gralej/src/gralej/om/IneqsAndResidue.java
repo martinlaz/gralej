@@ -34,18 +34,25 @@ import java.util.List;
 public final class IneqsAndResidue {
     public final static IneqsAndResidue EMPTY = new IneqsAndResidue();
     
-    List<IRelation> _ineqs, _residue;
+    private List<IRelation> _ineqs, _residue;
 
     public IneqsAndResidue() {
         this(null, null);
     }
+
     public IneqsAndResidue(List<IRelation> ineqs, List<IRelation> residue) {
         if (ineqs == null)
             ineqs = Collections.emptyList();
         if (residue == null)
             residue = Collections.emptyList();
-        _ineqs = ineqs;
-        _residue = residue;
+        _ineqs = Collections.unmodifiableList(ineqs);
+        _residue = Collections.unmodifiableList(residue);
+    }
+
+    public static IneqsAndResidue getInstance(List<IRelation> ineqs, List<IRelation> residue) {
+        if ((ineqs == null || ineqs.isEmpty()) && (residue == null || residue.isEmpty()))
+            return EMPTY;
+        return new IneqsAndResidue(ineqs, residue);
     }
 
     public List<IRelation> ineqs() { return _ineqs; }

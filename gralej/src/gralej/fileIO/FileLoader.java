@@ -106,6 +106,10 @@ public class FileLoader extends FileLoaderBaseImpl {
             return "gralej-simple";
         }
 
+        if (lcfilename.endsWith(".gralej") || lcfilename.endsWith(".gralej.gz")) {
+            return "gralej-simple";
+        }
+
         // file type unknown
         return "unknown";
 

@@ -16,15 +16,12 @@ public class StreamInfo {
     private String charsetName;
 
     public StreamInfo(String type, String name) {
-        this.type = new String(type);
-        this.name = new String(name);
-        charsetName = null;
+        this.type = type;
+        this.name = name;
     }
 
     public StreamInfo(String type) {
-        this.type = new String(type);
-        this.name = null;
-        charsetName = null;
+        this.type = type;
     }
 
     /**

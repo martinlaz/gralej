@@ -123,8 +123,8 @@ public class ContentModel {
      * @param f:
      *            The file to save to
      * @param format:
-     *            TRALEFormat: mindless append
-     *            XML: wrapped by <parses>
+     *            TRALEFormat, GralejFormat: mindless append
+     *            XML: wrapped by <gralej>
      */
     public void saveAll(File f, int format) {
         try {
@@ -133,6 +133,7 @@ public class ContentModel {
             	// for XML, enforce UTF8 encoding
             	p = new PrintStream(new FileOutputStream(f), false, "UTF8");
                 p.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                p.println("<gralej>");
             } else {
             	// not XML, use system encoding
             	p = new PrintStream(new FileOutputStream(f));
@@ -142,7 +143,7 @@ public class ContentModel {
                 of.save(p, files.get(i), null, format);
             }
             if (format == OutputFormatter.XMLFormat) {
-                p.print("</parses>");
+                p.println("</gralej>");
             }
             p.close();
         } catch (FileNotFoundException e) {

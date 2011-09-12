@@ -28,6 +28,7 @@ import gralej.controller.StreamInfo;
 import gralej.blocks.BlockPanel;
 import gralej.om.IRelation;
 import gralej.om.IVisitable;
+import java.util.List;
 
 /**
  * 
@@ -37,8 +38,8 @@ public interface IDataPackage {
     String getTitle();
 
     IVisitable getModel();
-    Iterable<IRelation> getInequations();
-    Iterable<IRelation> getResidue();
+    List<IRelation> getInequations();
+    List<IRelation> getResidue();
 
     char[] getCharacters();
 
