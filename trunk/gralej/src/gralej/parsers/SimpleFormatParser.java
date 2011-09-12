@@ -6,17 +6,16 @@
 package gralej.parsers;
 
 import gralej.controller.StreamInfo;
-import gralej.om.IEntity;
-import gralej.om.IneqsAndResidue;
-import gralej.parsers.TraleMsgHandlerHelper.DataPackage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import tomato.GrammarHandler;
+import tomato.ReduceResultHandler;
 import tomato.Parser;
+import tomato.Production;
 import tomato.SimpleLexer;
 
 /**
@@ -24,33 +23,13 @@ import tomato.SimpleLexer;
  * @author martin
  */
 public final class SimpleFormatParser implements IGraleParser {
-    
-    private static Parser _parser;
-    private static char[] _EMPTY_CHAR_ARRAY = new char[0];
 
-    public SimpleFormatParser() {
-        initParser();
-    }
+    private final static Parser _parser;
 
-    private void initParser() {
-        if (_parser != null)
-            return;
+    static {
         _parser = new Parser(Parsers.loadLRTable("/gralej/parsers/simple.g"));
         SimpleFormatGrammarHandler gh = GrammarHandler.bind(
                 SimpleFormatGrammarHandler.class, _parser.grammar());
-        
-    }
-
-    private SimpleLexer getLexer(InputStream is) {
-        SimpleLexer lexer = new SimpleLexer(_parser.grammar());
-        lexer.addWhitespaceEater();
-        lexer.addLineCommentHandler('#');
-        try {
-            lexer.reset(new InputStreamReader(is, "utf-8"));
-        } catch (UnsupportedEncodingException ex) {
-
-        }
-        return lexer;
     }
 
     public List<IDataPackage> parseAll(InputStream s) throws ParseException {
@@ -60,40 +39,76 @@ public final class SimpleFormatParser implements IGraleParser {
     @SuppressWarnings("unchecked")
     @Override
     public List<IDataPackage> parseAll(InputStream s, StreamInfo meta) throws ParseException {
-        List<IEntity> entResults;
-        SimpleLexer lexer = getLexer(s);
+        final List<IDataPackage> all = new LinkedList<IDataPackage>();
+        final Exception[] ex = new Exception[1];
+
+        Thread t = parseThread(s, meta, new IParseResultReceiver() {
+
+            @Override
+            public void newDataPackage(IDataPackage data) {
+                all.add(data);
+            }
+
+            @Override
+            public void streamClosed(InputStream is, StreamInfo meta, Exception exception) {
+                ex[0] = exception;
+            }
+        });
+
+        t.start();
         try {
-            entResults = (List<IEntity>) _parser.parse(lexer);
+            t.join();
+        } catch (InterruptedException ex1) {
+            Thread.currentThread().interrupt();
         }
-        catch (Exception ex) {
-            String exInfo = "@row/col " + lexer.lineNumber() + "/" + lexer.charPos() + ": ";
-            throw new ParseException(exInfo + ex, ex);
+
+        if (ex[0] != null) {
+            throw new ParseException(ex[0]);
         }
-        List<IDataPackage> results = new ArrayList<IDataPackage>(entResults.size());
-        for (IEntity ent : entResults) {
-            String title = ent.text();
-            if (title == null)
-                title = "<no title>";
-            IDataPackage dp = new DataPackage(title, ent, _EMPTY_CHAR_ARRAY, meta, IneqsAndResidue.EMPTY);
-            results.add(dp);
-        }
-        return results;
+
+        return all;
     }
 
     @Override
     public void parse(final InputStream s, final StreamInfo meta, final IParseResultReceiver receiver) {
-        new Thread(new Runnable() {
+        parseThread(s, meta, receiver).start();
+    }
+
+    private Thread parseThread(final InputStream s, final StreamInfo meta, final IParseResultReceiver receiver) {
+        return new Thread(new Runnable() {
             @Override
             public void run() {
+                Exception ex = null;
                 try {
-                    for (IDataPackage dp : parseAll(s, meta))
-                        receiver.newDataPackage(dp);
+                    _parser.parse(getLexer(s), new ReduceResultHandler() {
+                        @Override public Object handle(Object reduceResult, Production production) {
+                            if (reduceResult instanceof DataPackage) {
+                                receiver.newDataPackage(((DataPackage) reduceResult).setStreamInfo(meta));
+                            }
+                            return reduceResult;
+                        }
+                    });
+                } catch (Exception ex2) {
+                    ex = ex2;
                 }
-                catch (ParseException ex) {
-                    try { s.close(); } catch (IOException ioex) {}
-                    receiver.streamClosed(s, meta, ex);
+                try {
+                    s.close();
+                } catch (IOException ioex) {
                 }
+                receiver.streamClosed(s, meta, ex);
             }
-        }).start();
+        });
+    }
+
+    private SimpleLexer getLexer(InputStream is) {
+        SimpleLexer lexer = new SimpleLexer(_parser.grammar());
+        lexer.addWhitespaceEater();
+        lexer.addLineCommentHandler('#');
+        try {
+            lexer.reset(new InputStreamReader(is, "utf-8"));
+        } catch (UnsupportedEncodingException ex) {
+            // something must be really broken
+        }
+        return lexer;
     }
 }

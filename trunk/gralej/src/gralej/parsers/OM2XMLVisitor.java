@@ -33,16 +33,7 @@ import gralej.om.lrs.ILRSExpr;
 
 public class OM2XMLVisitor extends AbstractVisitor {
     StringBuffer _out;
-    // PrintWriter _out;
     Set<Integer> _reentrancies = new TreeSet<Integer>();
-
-    // OM2XMLVisitor(PrintWriter out) {
-    // _out = out;
-    // }
-
-    OM2XMLVisitor() {
-        // this(new PrintWriter(System.out, true));
-    }
 
     public String output(IVisitable root) {
         _out = new StringBuffer();
@@ -50,20 +41,24 @@ public class OM2XMLVisitor extends AbstractVisitor {
         return _out.toString();
     }
 
+    @Override
     public void visit(IVisitable visitable) {
         throw new RuntimeException("unknown visitable: " + visitable);
     }
 
+    @Override
     public void visit(IEntity entity) {
         throw new RuntimeException("unknown entity: " + entity);
     }
 
+    @Override
     public void visit(IFeatureValuePair featVal) {
-        _out.append("<f name='" + featVal.feature() + "'>\n");
+        _out.append("<f name='").append(featVal.feature()).append("'>\n");
         featVal.value().accept(this);
         _out.append("</f>\n");
     }
 
+    @Override
     public void visit(IList ls) {
         _out.append("<ls>\n");
         for (IEntity e : ls.elements())
@@ -71,31 +66,35 @@ public class OM2XMLVisitor extends AbstractVisitor {
         _out.append("</ls>\n");
     }
 
+    @Override
     public void visit(ITag tag) {
         _out.append("<tag ");
         if (_reentrancies.add(tag.number())) {
-            _out.append("id='" + tag.number() + "'>");
+            _out.append("id='").append(tag.number()).append("'>");
             if (tag.target() != null)
                 tag.target().accept(this);
             _out.append("</tag>\n");
         } else {
-            _out.append("ref='" + tag.number() + "'/>\n");
+            _out.append("ref='").append(tag.number()).append("'/>\n");
         }
     }
 
+    @Override
     public void visit(IAny any) {
-        _out.append("<any>" + any.value() + "</any>\n");
+        _out.append("<any>").append(any.value()).append("</any>\n");
     }
 
+    @Override
     public void visit(ITypedFeatureStructure tfs) {
-        _out.append("<tfs type='" + tfs.typeName() + "'>\n");
+        _out.append("<tfs type='").append(tfs.typeName()).append("'>\n");
         for (IFeatureValuePair featVal : tfs.featureValuePairs())
             featVal.accept(this);
         _out.append("</tfs>\n");
     }
 
+    @Override
     public void visit(ITree tree) {
-        _out.append("<tree label='" + tree.label() + "'>\n");
+        _out.append("<tree label='").append(tree.label()).append("'>\n");
         _out.append("<content>\n");
         tree.content().accept(this);
         _out.append("</content>\n");
@@ -106,6 +105,6 @@ public class OM2XMLVisitor extends AbstractVisitor {
 
     @Override
     public void visit(ILRSExpr lrs) {
-        _out.append("<cllrs>" + lrs.text() + "</cllrs>");
+        _out.append("<cllrs>").append(lrs.text()).append("</cllrs>");
     }
 }

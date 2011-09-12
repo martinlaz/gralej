@@ -83,6 +83,7 @@ public class OutputFormatter {
     public final static int XMLFormat = 5;
     public final static int PNGFormat = 6;
     public final static int EncapsulatedPostscriptFormat = 7;
+    public final static int GralejFormat = 8;
 
     // instantiation
     private static OutputFormatter instance = null;
@@ -101,6 +102,8 @@ public class OutputFormatter {
         switch (format) {
         case TRALEFormat:
             return "grale";
+        case GralejFormat:
+            return "gralej";
         case LaTeXFormat:
             return "tex";
         case SVGFormat:
@@ -127,6 +130,10 @@ public class OutputFormatter {
         return new FormatFilter(format);
     }
 
+    private void toGralejSimple(IDataPackage data, PrintStream p) {
+        new DataPackage2GralejFormatVisitor(data, p);
+    }
+
     class FormatFilter extends javax.swing.filechooser.FileFilter {
 
         private String extension;
@@ -137,6 +144,10 @@ public class OutputFormatter {
             case TRALEFormat:
                 extension = "grale";
                 description = ".grale files";
+                break;
+            case GralejFormat:
+                extension = "gralej";
+                description = ".gralej files";
                 break;
             case LaTeXFormat:
                 extension = "tex";
@@ -247,6 +258,9 @@ public class OutputFormatter {
                 toXML(data, p);
             else
                 Log.error("Bad function call (no data).");
+            break;
+        case GralejFormat:
+            toGralejSimple(data, p);
             break;
         }
     }
@@ -399,7 +413,6 @@ public class OutputFormatter {
             OM2XMLVisitor visitor = new OM2XMLVisitor();
             out.write(visitor.output(data.getModel()));
             out.write("</gralej>\n");
-            out.close();
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

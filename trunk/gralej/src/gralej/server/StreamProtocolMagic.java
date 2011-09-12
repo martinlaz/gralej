@@ -1,5 +1,7 @@
 package gralej.server;
 
+import gralej.controller.StreamInfo;
+import gralej.util.Log;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
@@ -15,15 +17,17 @@ public class StreamProtocolMagic {
 
     private static String doMagic(String inputSnippet) {
 
-        if (inputSnippet.startsWith("!newdata")) {
-            return "grisu";
-        }
+        if (inputSnippet.startsWith("!newdata"))
+            return StreamInfo.GRISU.getType();
 
         // TODO: implement protocol here, including encoding detection.
 
-        if (inputSnippet.matches(".*<\\?xml.+")) {
+        if (inputSnippet.matches("\\s*<\\?xml.+")) {
             return "xml-unknown";
         }
+
+        if (inputSnippet.startsWith("<\"") || inputSnippet.startsWith("@gralej"))
+            return StreamInfo.GRALEJ_SIMPLE.getType();
 
         return "unknown";
     }
@@ -46,21 +50,23 @@ public class StreamProtocolMagic {
      *             reset.
      */
     public static String stream2type(BufferedInputStream in) throws IOException {
-        // wait for half a sec for data to arrive
+        // wait for a couple of secs for data to arrive
         // and, if nothing comes in, assume 'grisu'
         if (in.available() == 0) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(3000);
             }
             catch (InterruptedException ex) {
 
             }
-            if (in.available() == 0)
-                return "grisu";
+            if (in.available() == 0) {
+                Log.debug("stream2type assumes 'grisu'");
+                return StreamInfo.GRISU.getType();
+            }
         }
 
         // max buffer size to read in
-        int bufsize = 1024;
+        int bufsize = 16;
 
         // mark bufsize bytes to be buffered
         in.mark(bufsize);

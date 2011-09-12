@@ -1,11 +1,9 @@
 //
-// WARNING: this is either trale-msg.g
-//   or a Java file generated from trale-msg.g !!!
+// WARNING: this is either trale-msg.g or a Java file generated from it !!!
 //
 
 package gralej.parsers;
 
-import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;

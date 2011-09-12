@@ -24,13 +24,13 @@ public class TextInputDlg extends javax.swing.JDialog {
     private Handler _handler;
 
     public TextInputDlg(java.awt.Frame parent, Handler handler,
-            String title, String okButtonText) {
-        this(parent, false, handler, title, okButtonText, "Close");
+            String title, String okButtonText, String text) {
+        this(parent, false, handler, title, okButtonText, "Close", text);
     }
 
     /** Creates new form TextInputDlg */
     public TextInputDlg(java.awt.Frame parent, boolean modal, Handler handler,
-            String title, String okButtonText, String closeButtonText) {
+            String title, String okButtonText, String closeButtonText, String text) {
         super(parent, modal);
         _handler = handler;
         initComponents();
@@ -39,6 +39,8 @@ public class TextInputDlg extends javax.swing.JDialog {
         if (okButtonText.length() > 0)
             _ok.setMnemonic(okButtonText.charAt(0));
         _close.setText(closeButtonText);
+        _textArea.setText(text);
+        _textArea.setCaretPosition(0);
     }
 
     /** This method is called from within the constructor to
@@ -73,7 +75,7 @@ public class TextInputDlg extends javax.swing.JDialog {
         });
 
         _textArea.setColumns(20);
-        _textArea.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        _textArea.setFont(new java.awt.Font("Monospaced", 0, 14));
         _textArea.setRows(5);
         _textArea.setBorder(null);
         jScrollPane1.setViewportView(_textArea);
@@ -85,7 +87,7 @@ public class TextInputDlg extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 645, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(_ok)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

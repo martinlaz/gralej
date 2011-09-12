@@ -20,11 +20,11 @@ import java.util.TreeMap;
  *
  * @author Martin
  */
-class TagBindingVisitor extends DescendingVisitor {
+final class TagBindingVisitor extends DescendingVisitor {
     private Map<Integer,IEntity> _reents = new TreeMap<Integer,IEntity>();
     private List<ITag> _tags = new LinkedList<ITag>();
 
-    TagBindingVisitor(IVisitable obj) {
+    void process(IVisitable obj) {
         obj.accept(this);
         for (ITag tag : _tags)
             tag.setTarget(_reents.get(tag.number()));
