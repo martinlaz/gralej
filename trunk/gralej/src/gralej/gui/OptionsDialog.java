@@ -220,6 +220,8 @@ public class OptionsDialog extends javax.swing.JDialog {
         _pAdvanced = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         _tabAdvOpts = new javax.swing.JTable();
+        jLabel11 = new javax.swing.JLabel();
+        _txtFilter = new javax.swing.JTextField();
         _bCancel = new javax.swing.JButton();
         _bOk = new javax.swing.JButton();
         _bImport = new javax.swing.JButton();
@@ -267,7 +269,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                     .addComponent(_chkAVMsInitiallyVisible)
                     .addComponent(_chkOutputLatexSnippet)
                     .addComponent(_chkModeGrale))
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         _pGeneralLayout.setVerticalGroup(
             _pGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -286,7 +288,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addComponent(_chkOutputLatexSnippet, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_chkModeGrale, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("General", _pGeneral);
@@ -321,7 +323,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _pLookAndFeelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pLookAndFeelLayout.createSequentialGroup()
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
@@ -330,11 +332,11 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(_pLookAndFeelLayout.createSequentialGroup()
                                 .addGap(5, 5, 5)
-                                .addComponent(_cboJavaLF, 0, 378, Short.MAX_VALUE))
+                                .addComponent(_cboJavaLF, 0, 328, Short.MAX_VALUE))
                             .addGroup(_pLookAndFeelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(_pLookAndFeelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(_cboIconTheme, 0, 377, Short.MAX_VALUE)
+                                    .addComponent(_cboIconTheme, 0, 321, Short.MAX_VALUE)
                                     .addComponent(_bOpenAMVTreeConfigurator)))))
                     .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -361,7 +363,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addComponent(_chkSelectOnClick, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(_chkSelectOnHover, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         _chkSelectOnHover.getAccessibleContext().setAccessibleDescription("");
@@ -391,7 +393,7 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(_pLoggingLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                     .addGroup(_pLoggingLayout.createSequentialGroup()
                         .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel9)
@@ -403,11 +405,11 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
-                            .addComponent(_cboLogCritical, 0, 385, Short.MAX_VALUE)
-                            .addComponent(_cboLogError, 0, 385, Short.MAX_VALUE)
-                            .addComponent(_cboLogWarning, 0, 385, Short.MAX_VALUE)
-                            .addComponent(_cboLogDebug, 0, 385, Short.MAX_VALUE)
-                            .addComponent(_cboLogInfo, 0, 385, Short.MAX_VALUE))))
+                            .addComponent(_cboLogCritical, 0, 339, Short.MAX_VALUE)
+                            .addComponent(_cboLogError, 0, 339, Short.MAX_VALUE)
+                            .addComponent(_cboLogWarning, 0, 339, Short.MAX_VALUE)
+                            .addComponent(_cboLogDebug, 0, 339, Short.MAX_VALUE)
+                            .addComponent(_cboLogInfo, 0, 339, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         _pLoggingLayout.setVerticalGroup(
@@ -439,7 +441,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                 .addGroup(_pLoggingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(_cboLogInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Logging", _pLogging);
@@ -454,14 +456,14 @@ public class OptionsDialog extends javax.swing.JDialog {
             .addGroup(_pConfirmationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(_chkConfirmAppExit)
-                .addContainerGap(378, Short.MAX_VALUE))
+                .addContainerGap(336, Short.MAX_VALUE))
         );
         _pConfirmationsLayout.setVerticalGroup(
             _pConfirmationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pConfirmationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(_chkConfirmAppExit)
-                .addContainerGap(221, Short.MAX_VALUE))
+                .addContainerGap(194, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Confirmations", _pConfirmations);
@@ -478,28 +480,57 @@ public class OptionsDialog extends javax.swing.JDialog {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
         _tabAdvOpts.getTableHeader().setReorderingAllowed(false);
+        _tabAdvOpts.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                _tabAdvOptsKeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(_tabAdvOpts);
+
+        jLabel11.setText("Filter:");
+
+        _txtFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                _txtFilterKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout _pAdvancedLayout = new javax.swing.GroupLayout(_pAdvanced);
         _pAdvanced.setLayout(_pAdvancedLayout);
         _pAdvancedLayout.setHorizontalGroup(
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(_pAdvancedLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addGroup(_pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _pAdvancedLayout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addGap(4, 4, 4)
+                        .addComponent(_txtFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         _pAdvancedLayout.setVerticalGroup(
             _pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_pAdvancedLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                .addGroup(_pAdvancedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(_txtFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -561,7 +592,7 @@ public class OptionsDialog extends javax.swing.JDialog {
                         .addComponent(_bExport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_bDefaults)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                         .addComponent(_bOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_bApply)
@@ -656,6 +687,42 @@ public class OptionsDialog extends javax.swing.JDialog {
     private void _bApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__bApplyActionPerformed
         applyChanges();
     }//GEN-LAST:event__bApplyActionPerformed
+
+    private void _tabAdvOptsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event__tabAdvOptsKeyTyped
+//        if (_tabAdvOpts.getSelectedColumn() == 1)
+//            return;
+//
+//        String searchKey = "server";
+//        DefaultTableModel tm = (DefaultTableModel) _tabAdvOpts.getModel();
+//        for (int n = tm.getRowCount(); n > 0; --n)
+//            tm.removeRow(0);
+//
+//        for (String key : new TreeSet<String>(_cfg.keySet()))
+//            if (key.indexOf(searchKey) != -1)
+//                tm.addRow(new Object[] { key, _cfg.get(key)});
+//      String searchKey = _searchKeyBuffer.append(evt.getKeyChar()).toString();
+//      for (int row = 0; row < _tabAdvOpts.getModel().getRowCount(); row++) {
+//          String key = (String) _tabAdvOpts.getModel().getValueAt(row, 0);
+//          if (key.indexOf(searchKey) != -1) {
+//              _tabAdvOpts.changeSelection(row, 0, false, false);
+//              System.err.println("goto " + key);
+//              break;
+//          }
+//      }
+    }//GEN-LAST:event__tabAdvOptsKeyTyped
+
+    private void _txtFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event__txtFilterKeyReleased
+        String searchKey = _txtFilter.getText().toLowerCase();
+        DefaultTableModel tm = (DefaultTableModel) _tabAdvOpts.getModel();
+        for (int n = tm.getRowCount(); n > 0; --n)
+            tm.removeRow(0);
+
+        for (String key : new TreeSet<String>(_cfg.keySet())) {
+            String value = _cfg.get(key);
+            if (key.toLowerCase().indexOf(searchKey) != -1 || value.toLowerCase().indexOf(searchKey) != -1)
+                tm.addRow(new Object[] { key, value });
+        }
+    }//GEN-LAST:event__txtFilterKeyReleased
     
     /**
      * @param args the command line arguments
@@ -705,9 +772,11 @@ public class OptionsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel _pLogging;
     private javax.swing.JPanel _pLookAndFeel;
     private javax.swing.JTable _tabAdvOpts;
+    private javax.swing.JTextField _txtFilter;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

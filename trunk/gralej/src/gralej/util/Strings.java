@@ -10,7 +10,7 @@ package gralej.util;
  *
  * @author Martin
  */
-public class Strings {
+public final class Strings {
     public static class IllegalEscapeSequence extends RuntimeException {
         IllegalEscapeSequence(String s, Throwable cause) {
             super(s, cause);
@@ -51,7 +51,7 @@ public class Strings {
                         sb.append(Character.toChars(cp));
                         break;
                     default:
-                        sb.append("\\" + c);
+                        sb.append("\\").append(c);
                 }
             }
         }

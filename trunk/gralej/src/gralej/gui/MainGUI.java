@@ -9,6 +9,7 @@ import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
 import gralej.parsers.OutputFormatter;
+import gralej.util.Streams;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -26,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 
 import javax.swing.BorderFactory;
@@ -236,20 +235,10 @@ public class MainGUI implements ActionListener, ItemListener {
                                 ).setVisible(true);
                     }
 
-            private String getGralejSampleText() {
-                InputStream is = getClass().getResourceAsStream("/gralej/resource/sample.gralej");
-                StringBuilder s = new StringBuilder();
-                byte[] buf = new byte[0x1000];
-                int n;
-                try {
-                    while ((n = is.read(buf)) > 0) {
-                        s.append(new String(buf, 0, n));
+                    private String getGralejSampleText() {
+                        InputStream is = getClass().getResourceAsStream("/gralej/resource/sample.gralej");
+                        return Streams.toString(is);
                     }
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                return s.toString();
-            }
                 });
         toolsmenu.addSeparator();
         
