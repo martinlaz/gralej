@@ -1,6 +1,6 @@
 // $Id$
 //
-// Copyright (C) 2010, Martin Lazarov (martinlaz at gmail).
+// Copyright (C) 2011, Martin Lazarov (martinlaz at gmail).
 // All rights reserved.
 //
 

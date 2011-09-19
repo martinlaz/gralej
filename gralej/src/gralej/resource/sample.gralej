@@ -1,7 +1,8 @@
-<'[peter,likes,mary]'
-{ :'phrase:[peter,likes,mary]'
-    phrase(
-        phon: [$17 = @peter | $18 = [$8 = @likes | $9 = [@mary]]],
+<'[peter,likes,mary]'              # window title
+{ :'phrase:[peter,likes,mary]'     # :'root node label'
+    phrase(                        # TFS content of the root node
+        phon: [$17 = @peter |
+               $18 = [$8 = @likes | $9 = [@mary]]],
         synsem: synsem(
             loc: loc(
                 cat: cat(
@@ -16,13 +17,14 @@
                         subj: [],
                         comps: [])),
                 cont: $13 = present_rel(
+                    relation: like($3, $2),
                     soa_arg: like_rel(
                         liker: $3 = ref(
-                            gen: masc,
+                            gen: gender,
                             num: sg,
                             pers: third),
                         liked: $2 = ref(
-                            gen: fem,
+                            gen: gender,
                             num: sg,
                             pers: third)))),
             nonloc: 'mgsat nonloc'),
@@ -129,4 +131,11 @@
         }
     }
 }
+
+# inequations
+#
+~
+'=\='($2, $3)
+
 >
+

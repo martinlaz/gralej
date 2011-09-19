@@ -24,7 +24,7 @@
 
 package gralej.util;
 
-public class Arrays {
+public final class Arrays {
     public static String concat(String delimiter, Object... objects) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < objects.length; ++i) {
