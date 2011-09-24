@@ -8,6 +8,7 @@ import gralej.controller.StreamInfo;
 import gralej.util.Log;
 import gralej.gui.icons.IconTheme;
 import gralej.gui.icons.IconThemeFactory;
+import gralej.gui.syntax.GralejExprStyledDocumentHandler;
 import gralej.parsers.OutputFormatter;
 import gralej.util.Streams;
 
@@ -213,7 +214,7 @@ public class MainGUI implements ActionListener, ItemListener {
         toolsmenu.add(
                 new AbstractAction("Parse Gralej expression...") {
                     public void actionPerformed(ActionEvent e) {
-                        new TextInputDlg(
+                        TextInputDlg dlg = new TextInputDlg(
                                 frame,
                                 new TextInputDlg.Handler() {
                                     @Override
@@ -231,8 +232,12 @@ public class MainGUI implements ActionListener, ItemListener {
                                 },
                                 "Enter Gralej expression",
                                 "Parse",
-                                getGralejSampleText()
-                                ).setVisible(true);
+                                ""
+                                );
+                                new GralejExprStyledDocumentHandler().install(dlg.getTextPane().getStyledDocument());
+                                dlg.getTextPane().setText(getGralejSampleText());
+                                dlg.getTextPane().setCaretPosition(0);
+                                dlg.setVisible(true);
                     }
 
                     private String getGralejSampleText() {

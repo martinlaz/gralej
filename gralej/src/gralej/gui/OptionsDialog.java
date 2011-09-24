@@ -38,6 +38,7 @@ import gralej.blocks.configurator.BlockConfiguratorDialog;
 import gralej.util.Log;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -493,6 +494,11 @@ public class OptionsDialog extends javax.swing.JDialog {
             }
         });
         _tabAdvOpts.getTableHeader().setReorderingAllowed(false);
+        _tabAdvOpts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _tabAdvOptsMouseClicked(evt);
+            }
+        });
         _tabAdvOpts.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 _tabAdvOptsKeyTyped(evt);
@@ -723,6 +729,10 @@ public class OptionsDialog extends javax.swing.JDialog {
                 tm.addRow(new Object[] { key, value });
         }
     }//GEN-LAST:event__txtFilterKeyReleased
+
+    private void _tabAdvOptsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__tabAdvOptsMouseClicked
+        
+    }//GEN-LAST:event__tabAdvOptsMouseClicked
     
     /**
      * @param args the command line arguments
