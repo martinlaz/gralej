@@ -1,4 +1,4 @@
-<'[peter,likes,mary]'              # window title
+< '[peter,likes,mary]'             # window title
 { :'phrase:[peter,likes,mary]'     # :'root node label'
     phrase(                        # TFS content of the root node
         phon: [$17 = @peter |

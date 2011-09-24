@@ -36,6 +36,16 @@ where RR = 2byte hex value for red
 <entry key="gui.windows.size.xmin">250</entry>
 <entry key="gui.windows.size.ymin">150</entry>
 
+<entry key="gui.syntax.gralej-expr.feature">0x115577</entry>
+<entry key="gui.syntax.gralej-expr.type">0x0022cc</entry>
+<entry key="gui.syntax.gralej-expr.id">0x0044ee</entry>
+<entry key="gui.syntax.gralej-expr.comment">0xaaaaaa</entry>
+<entry key="gui.syntax.gralej-expr.tag">0x880077</entry>
+<entry key="gui.syntax.gralej-expr.list">0x008877</entry>
+<entry key="gui.syntax.gralej-expr.atom">0x660066</entry>
+<entry key="gui.syntax.gralej-expr.node">0x993300</entry>
+<entry key="gui.syntax.gralej-expr.window">0x889911</entry>
+
 <!-- output formatting -->
 <entry key="output.latex.snippet">false</entry> 
 <!-- whether to print as snippet (as opposed to full document) -->

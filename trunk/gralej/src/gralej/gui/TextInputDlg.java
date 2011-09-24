@@ -11,6 +11,8 @@
 
 package gralej.gui;
 
+import javax.swing.JTextPane;
+
 /**
  *
  * @author Martin
@@ -39,8 +41,12 @@ public class TextInputDlg extends javax.swing.JDialog {
         if (okButtonText.length() > 0)
             _ok.setMnemonic(okButtonText.charAt(0));
         _close.setText(closeButtonText);
-        _textArea.setText(text);
-        _textArea.setCaretPosition(0);
+        _textPane.setText(text);
+        _textPane.setCaretPosition(0);
+    }
+
+    public JTextPane getTextPane() {
+        return _textPane;
     }
 
     /** This method is called from within the constructor to
@@ -55,7 +61,7 @@ public class TextInputDlg extends javax.swing.JDialog {
         _close = new javax.swing.JButton();
         _ok = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        _textArea = new javax.swing.JTextArea();
+        _textPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -74,11 +80,8 @@ public class TextInputDlg extends javax.swing.JDialog {
             }
         });
 
-        _textArea.setColumns(20);
-        _textArea.setFont(new java.awt.Font("Monospaced", 0, 14));
-        _textArea.setRows(5);
-        _textArea.setBorder(null);
-        jScrollPane1.setViewportView(_textArea);
+        _textPane.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        jScrollPane1.setViewportView(_textPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -113,7 +116,7 @@ public class TextInputDlg extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void _okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okActionPerformed
-        _handler.processText(_textArea.getText());
+        _handler.processText(_textPane.getText());
     }//GEN-LAST:event__okActionPerformed
 
     private void _closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__closeActionPerformed
@@ -124,7 +127,7 @@ public class TextInputDlg extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _close;
     private javax.swing.JButton _ok;
-    private javax.swing.JTextArea _textArea;
+    private javax.swing.JTextPane _textPane;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 

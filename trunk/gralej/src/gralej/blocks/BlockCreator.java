@@ -270,8 +270,10 @@ public final class BlockCreator extends AbstractVisitor {
             labels.add(_labfac.createLRSLabel("/", _panel));
                 labels.add(_labfac.createLRSLabel("(", _panel));
                 processConstraints(labels, term.positiveConstraints());
-                labels.add(_labfac.createLRSLabel(")~(", _panel));
-                processConstraints(labels, term.negativeConstraints());
+                if (term.hasNegativeConstraints()) {
+                    labels.add(_labfac.createLRSLabel(")~(", _panel));
+                    processConstraints(labels, term.negativeConstraints());
+                }
                 labels.add(_labfac.createLRSLabel(")", _panel));
         }
     }
