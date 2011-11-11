@@ -15,7 +15,7 @@ import gralej.om.IRelation;
 public class RelationContentLabel extends ContentLabel {
 
     RelationContentLabel(BlockPanel panel, LabelStyle style, IRelation rel) {
-        super(panel, style, rel.name() + "(...)");
+        super(panel, style, rel.name() + (rel.arity() == 0 ? "" : "(...)"));
         setModel(rel);
     }
 
@@ -26,7 +26,7 @@ public class RelationContentLabel extends ContentLabel {
     @Override
     public void flipContentVisibility() {
         super.flipContentVisibility();
-        if (_content.isVisible())
+        if (_content.isVisible() || getRelation().arity() == 0)
             setText(getRelation().name());
         else
             setText(getRelation().name() + "(...)");
