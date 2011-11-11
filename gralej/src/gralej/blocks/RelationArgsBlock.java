@@ -24,18 +24,22 @@
 
 package gralej.blocks;
 
+import java.util.List;
+
 /**
  *
  * @author Martin
  */
 public class RelationArgsBlock extends ContainerBlock {
-    public RelationArgsBlock(BlockPanel panel, Iterable<Block> args) {
+    public RelationArgsBlock(BlockPanel panel, List<Block> args) {
         setPanel(panel);
         setLayout(getPanelStyle().getLayoutFactory().getRelationArgsLayout());
 
         LabelFactory labfac = getPanelStyle().getLabelFactory();
 
-        addChild(labfac.createRelationLabel("(", panel));
+        if (args.size() > 0) {
+            addChild(labfac.createRelationLabel("(", panel));
+        }
 
         boolean comma = false;
         for (Block arg : args) {
@@ -47,7 +51,9 @@ public class RelationArgsBlock extends ContainerBlock {
             addChild(arg);
         }
 
-        addChild(labfac.createRelationLabel(")", panel));
+        if (args.size() > 0) {
+            addChild(labfac.createRelationLabel(")", panel));
+        }
 
         sealChildren();
     }

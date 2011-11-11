@@ -391,8 +391,6 @@ class OM {
         Relation(Flags flags, String name,
                 java.util.List<IEntity> args) {
             super(flags);
-            if (args.isEmpty())
-                throw new RuntimeException("relations can't be of zero arity: " + name);
             _name = name;
             _args = new IEntity[args.size()];
             int i = 0;
